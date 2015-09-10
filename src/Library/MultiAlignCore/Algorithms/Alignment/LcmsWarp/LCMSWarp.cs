@@ -739,7 +739,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Initializes the reference features to the features entered in
         /// </summary>
         /// <param name="features"></param>
-        public void SetReferenceFeatures(ref List<UMCLight> features)
+        public void SetReferenceFeatures(List<UMCLight> features)
         {
             m_baselineFeatures.Clear();
             foreach (var feature in features)
@@ -888,8 +888,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     // Now, keep only the first MaxPromiscuousUmcMatches in the temp list
                     //var scanMatches = netMatchesToIndex.First();
                     
-                    for (var index = 0; index < MaxPromiscuousUmcMatches; index++)
-                    {
+                    for (var index = 0; index < MaxPromiscuousUmcMatches && index < netMatchesToIndex.Count; index++)
+                    {                       
                         var matchIndex = netMatchesToIndex.ElementAt(index).Value[0];
                         var match = m_featureMatches[matchIndex];
                         matchesToUse.Add(match);

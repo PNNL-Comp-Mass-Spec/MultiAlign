@@ -120,10 +120,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {CurrentLcmsWarpTask.Unstarted, 0},
                 {CurrentLcmsWarpTask.GenerateCandidateMatches, 0},
                 {CurrentLcmsWarpTask.GetMatchProbabilities, 10},
-                {CurrentLcmsWarpTask.CalculateAlignmentMatrix, 30},
-                {CurrentLcmsWarpTask.CalculateAlignmentFunction, 50},
-                {CurrentLcmsWarpTask.GetTransformedNets, 70},
-                {CurrentLcmsWarpTask.CalculateAlignmentMatches, 90},
+                {CurrentLcmsWarpTask.CalculateAlignmentMatrix, 90},
+                {CurrentLcmsWarpTask.CalculateAlignmentFunction, 93},
+                {CurrentLcmsWarpTask.GetTransformedNets, 96},
+                {CurrentLcmsWarpTask.CalculateAlignmentMatches, 98},
                 {CurrentLcmsWarpTask.Complete, 100}
             };
 
@@ -371,7 +371,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     m_minAligneeDatasetMz = data.Mz;
                 }
             }
-            m_lcmsWarp.SetReferenceFeatures(ref mtFeatures);
+            m_lcmsWarp.SetReferenceFeatures(mtFeatures);
         }
 
         /// <summary>
@@ -384,18 +384,59 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var numMassTags = features.Count;
 
             var mtFeatures = new List<UMCLight> { Capacity = numMassTags };
-            mtFeatures.AddRange(features.Select(item => new UMCLight
-            {
-                NetAligned = item.NetAligned, 
-                MassMonoisotopic = item.MassMonoisotopic, 
-                MassMonoisotopicAligned = item.MassMonoisotopicAligned, 
-                Mz = item.MassMonoisotopic/item.ChargeState + (1.00782*(item.ChargeState - 1)), 
-                Net = item.Net, 
-                DriftTime = item.DriftTime, 
-                Id = item.Id,
-            }));
+            var minimumObservationCount = m_Options.MinimumAMTTagObsCount;
 
-            m_lcmsWarp.SetReferenceFeatures(ref mtFeatures);
+            while (true)
+            {
+                mtFeatures.AddRange(from item in features
+                                    where AMTTagPassesFilter(item, minimumObservationCount)
+                                    select new UMCLight
+                                    {
+                                        NetAligned = item.NetAligned,
+                                        MassMonoisotopic = item.MassMonoisotopic,
+                                        MassMonoisotopicAligned = item.MassMonoisotopicAligned,
+                                        Mz = item.MassMonoisotopic / item.ChargeState + (1.00782 * (item.ChargeState - 1)),
+                                        Net = item.Net,
+                                        DriftTime = item.DriftTime,
+                                        Id = item.Id,
+                                    });
+
+                if (mtFeatures.Count > 0)
+                    break;
+
+                if (minimumObservationCount == 0)
+                {
+                    break;
+                }
+                
+                // Lower the minimum observation and try again
+                if (minimumObservationCount >= 4)
+                    minimumObservationCount = (int)Math.Floor(minimumObservationCount / 2.0);
+                else
+                    minimumObservationCount = 0;
+            }
+
+            m_lcmsWarp.SetReferenceFeatures(mtFeatures);
+        }
+
+        private bool AMTTagPassesFilter(MassTagLight item, int minimumObservationCount)
+        {
+            if (item.ObservationCount < minimumObservationCount)
+                return false;
+
+            if (m_Options.AMTTagFilterNETMax > m_Options.AMTTagFilterNETMin)
+            {
+                if (item.Net < m_Options.AMTTagFilterNETMin || item.Net > m_Options.AMTTagFilterNETMax)
+                    return false;
+            }
+
+            if (m_Options.AMTTagFilterMassMax > m_Options.AMTTagFilterMassMin)
+            {
+                if (item.MassMonoisotopic < m_Options.AMTTagFilterMassMin || item.MassMonoisotopic > m_Options.AMTTagFilterMassMax)
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -412,7 +453,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             if (AligningToMassTagDb)
             {
-                func.SetNetFunction(ref aligneeNets, ref referenceNets);
+                func.SetNetFunction(aligneeNets, referenceNets);
             }
             else
             {
@@ -422,7 +463,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     referenceScans.Add(m_minReferenceDatasetScan + referenceNets[sectionNum] * (m_maxReferenceDatasetScan - m_minReferenceDatasetScan));
                 }
-                func.SetNetFunction(ref aligneeNets, ref referenceNets, ref referenceScans);
+                func.SetNetFunction(aligneeNets, referenceNets, referenceScans);
             }
 
             if (Options.AlignType == AlignmentType.NET_WARP)
@@ -450,7 +491,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     aligneeNetMassFunc.Add(net);
                     aligneePpmShiftMassFunc.Add(ppm);
                 }
-                func.SetMassCalibrationFunctionWithTime(ref aligneeNetMassFunc, ref aligneePpmShiftMassFunc);
+                func.SetMassCalibrationFunctionWithTime(aligneeNetMassFunc, aligneePpmShiftMassFunc);
             }
 
             if (Options.CalibrationType != LcmsWarpCalibrationType.MzRegression &&

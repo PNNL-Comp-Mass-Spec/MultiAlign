@@ -408,7 +408,7 @@ namespace MultiAlignRogue.Alignment
                 else
                 {
                     // Aligning to a database
-                    alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase);
+                    alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase, datasetProgress);
                     alignment.baselineIsAmtDB = true;
                 }
 

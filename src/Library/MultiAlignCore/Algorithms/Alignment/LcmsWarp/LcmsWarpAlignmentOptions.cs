@@ -102,6 +102,38 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public bool AlignToMassTagDatabase { get; set; }
 
         /// <summary>
+        /// When using AMT tags from a database, minimum NET filter
+        /// </summary>
+        /// <remarks>AMTTagFilterNETMin is ignored if AMTTagFilterNETMax is less than or equal to AMTTagFilterNETMin</remarks>
+        public double AMTTagFilterNETMin { get; set; }
+
+        /// <summary>
+        /// When using AMT tags from a database, maximum NET filter
+        /// </summary>
+        /// <remarks>AMTTagFilterNETMin is ignored if AMTTagFilterNETMax is less than or equal to AMTTagFilterNETMin</remarks>
+        public double AMTTagFilterNETMax { get; set; }
+
+        /// <summary>
+        /// When using AMT tags from a database, minimum monoisotopic mass filter
+        /// </summary>
+        /// <remarks>AMTTagFilterMassMin is ignored if AMTTagFilterMassMax is less than or equal to AMTTagFilterMassMin</remarks>
+        public double AMTTagFilterMassMin { get; set; }
+
+        /// <summary>
+        /// When using AMT tags from a database, maximum monoisotopic mass filter
+        /// </summary>
+        /// <remarks>AMTTagFilterMassMin is ignored if AMTTagFilterMassMax is less than or equal to AMTTagFilterMassMin</remarks>
+        public double AMTTagFilterMassMax { get; set; }
+
+        /// <summary>
+        /// When using AMT tags from a database, only use those AMT tags with an observation count of this value or larger
+        /// </summary>
+        /// <remarks>
+        /// If all of the AMT tags have an observation count of 0, then they will all be used 
+        /// (i.e. this filter will be effectively ignored)</remarks>
+        public int MinimumAMTTagObsCount { get; set; }
+
+        /// <summary>
         /// How wide the Mass histogram bins are (in ppm)
         /// </summary>
         public double MassBinSize { get; set; }
@@ -161,6 +193,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             CalibrationType = LcmsWarpCalibrationType.Both;
 
             AlignToMassTagDatabase = false;
+            
+            AMTTagFilterNETMin = 0;
+            AMTTagFilterNETMax = 0;
+
+            AMTTagFilterMassMin = 0;
+            AMTTagFilterMassMax = 0;
+
+            MinimumAMTTagObsCount = 5;          // 5 in VIPER
+
             MassBinSize = 0.2;                  // 0.2 in VIPER
             NetBinSize = 0.001;                 // 0.001 in VIPER
             DriftTimeBinSize = 0.03;

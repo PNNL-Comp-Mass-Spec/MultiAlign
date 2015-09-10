@@ -84,7 +84,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         /// <param name="aligneeTimes"></param>
         /// <param name="referenceNets"></param>
-        public void SetNetFunction(ref List<double> aligneeTimes, ref List<double> referenceNets)
+        public void SetNetFunction(IEnumerable<double> aligneeTimes, IEnumerable<double> referenceNets)
         {
             foreach (var value in aligneeTimes)
             {
@@ -103,8 +103,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeTimes"></param>
         /// <param name="referenceNets"></param>
         /// <param name="referenceScans"></param>
-        public void SetNetFunction(ref List<double> aligneeTimes, ref List<double> referenceNets,
-                            ref List<double> referenceScans)
+        public void SetNetFunction(
+            IEnumerable<double> aligneeTimes,
+            IEnumerable<double> referenceNets,
+            IEnumerable<double> referenceScans)
         {
             foreach (var value in aligneeTimes)
             {
@@ -125,7 +127,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         /// <param name="aligneeTimes"></param>
         /// <param name="ppmShifts"></param>
-        public void SetMassCalibrationFunctionWithTime(ref List<double> aligneeTimes, ref List<double> ppmShifts)
+        public void SetMassCalibrationFunctionWithTime(IEnumerable<double> aligneeTimes, IEnumerable<double> ppmShifts)
         {
             foreach (var value in aligneeTimes)
             {
