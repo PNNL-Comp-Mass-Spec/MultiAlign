@@ -374,7 +374,7 @@ namespace MultiAlignRogue.Alignment
             }
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
-            int i = 1;
+            int i = 0;
             foreach (var file in selectedFiles)
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -393,7 +393,10 @@ namespace MultiAlignRogue.Alignment
                         pd =>
                         {
                             file.Progress = pd.Percent;
-                            totalProgress.Report(new ProgressData {Percent = (((100.0 * (i - 1)) / selectedFiles.Count)) + ((i * pd.Percent) / selectedFiles.Count)});
+                            totalProgress.Report(new ProgressData
+                            {
+                                Percent = ((100.0 * i) / selectedFiles.Count) + (pd.Percent / selectedFiles.Count)
+                            });
                         });
 
                 if (ShouldAlignToBaseline)
