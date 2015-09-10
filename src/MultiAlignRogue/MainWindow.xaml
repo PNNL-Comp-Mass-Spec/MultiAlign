@@ -128,7 +128,7 @@
                         </Grid.ColumnDefinitions>
                         
                         <!-- Clustering Method -->
-                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Text="Clustering Method" FontWeight="Bold">Clustering Method</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold">Clustering Method</TextBlock>
                         <ComboBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"
                               ItemsSource="{Binding ClusteringMethods}" Height="22" />
                         
