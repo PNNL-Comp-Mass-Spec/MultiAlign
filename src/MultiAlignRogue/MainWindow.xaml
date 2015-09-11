@@ -30,6 +30,8 @@
                 <Separator />
                 <MenuItem Header="Save Project" HorizontalAlignment="Left" Command="{Binding SaveProjectCommand}"  Width="168"/>
                 <MenuItem Header="Save Project As" Command="{Binding SaveAsProjectCommand}" />
+                <Separator />
+                <MenuItem Header="Restore Defaults" Command="{Binding RestoreDefaultSettingsCommand}" />
             </MenuItem>
         </Menu>
         

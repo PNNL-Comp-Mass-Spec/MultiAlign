@@ -89,6 +89,7 @@ namespace MultiAlignRogue
             SaveProjectCommand = new RelayCommand(SaveProject, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             LoadProjectCommand = new RelayCommand(LoadProject);
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            RestoreDefaultSettingsCommand = new RelayCommand(this.RestoreDefaultSettings);
             
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
@@ -141,6 +142,11 @@ namespace MultiAlignRogue
         /// in a new project file.
         /// </summary>
         public RelayCommand SaveAsProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that restores all settings to their defaults.
+        /// </summary>
+        public RelayCommand RestoreDefaultSettingsCommand { get; private set; }
         #endregion
 
         #region Public Properties
@@ -577,5 +583,18 @@ namespace MultiAlignRogue
             return rogueProject;
         }
         #endregion
+
+        private void RestoreDefaultSettings()
+        {
+            if (
+                MessageBox.Show("Are you sure you would like to reset all settings to their default values?",
+                    "Restore Defaults", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                this.Analysis.Options = new MultiAlignAnalysisOptions();
+                this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+                this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+                this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);   
+            }
+        }
     }
 }
