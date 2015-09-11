@@ -208,6 +208,7 @@
     <Compile Include="ViewModels\Charting\PlotModelBase.cs" />
     <Compile Include="ViewModels\Charting\PositionArgs.cs" />
     <Compile Include="ViewModels\Charting\UmcClusterChargeHistogram.cs" />
+    <Compile Include="ViewModels\Charting\UmcClusterDatasetHistogram.cs" />
     <Compile Include="ViewModels\Charting\XicViewModel.cs" />
     <Compile Include="ViewModels\Databases\DatabasesViewModel.cs" />
     <Compile Include="ViewModels\Databases\DmsDatabaseServerViewModel.cs" />

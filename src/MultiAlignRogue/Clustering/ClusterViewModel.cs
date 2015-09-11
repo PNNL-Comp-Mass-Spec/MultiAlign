@@ -97,6 +97,7 @@ namespace MultiAlignRogue.Clustering
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
             this.ShowChargeStateDistributionCommand = new GalaSoft.MvvmLight.Command.RelayCommand(this.ShowChargeStateDistributionImpl);
+            this.ShowDatasetHistogramCommand = new RelayCommand(this.ShowDatasetHistogramImpl);
 
             // Listen for changes in selected cluster in ClusterViewModel.
             Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
@@ -150,6 +151,11 @@ namespace MultiAlignRogue.Clustering
         /// Gets a command that displays a charge state distribution plot.
         /// </summary>
         public ICommand ShowChargeStateDistributionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that displays the dataset cluster histogram plot.
+        /// </summary>
+        public ICommand ShowDatasetHistogramCommand { get; private set; }
 
         /// <summary>
         /// Gets a command that shows the settings window.
@@ -290,6 +296,14 @@ namespace MultiAlignRogue.Clustering
         private void ShowChargeStateDistributionImpl()
         {
             this.viewFactory.CreateChargeStateDistributionWindow(this.Clusters, "Charge State Distribution");
+        }
+
+        /// <summary>
+        /// Gets a command that displays a dataset distribution plot.
+        /// </summary>
+        private void ShowDatasetHistogramImpl()
+        {
+            this.viewFactory.CreateDatasetHistogramWindow(this.Clusters, "Dataset Distribution");
         }
     }
 }

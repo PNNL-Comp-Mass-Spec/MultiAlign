@@ -18,6 +18,7 @@
         <Menu Grid.Row="0">
             <MenuItem Header="Tools">
                 <MenuItem Header="Charge State Distribution" Command="{Binding ShowChargeStateDistributionCommand}" />
+                <MenuItem Header="Cluster Dataset Histogram" Command="{Binding ShowDatasetHistogramCommand}" />
                 <MenuItem Header="Settings" Command="{Binding SettingsCommand}" />
             </MenuItem>
         </Menu>

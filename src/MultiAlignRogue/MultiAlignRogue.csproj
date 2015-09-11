@@ -191,6 +191,9 @@
     <Compile Include="Clustering\ClusterViewFactory.cs" />
     <Compile Include="Clustering\ClusterViewModel.cs" />
     <Compile Include="Clustering\IClusterViewFactory.cs" />
+    <Compile Include="Clustering\UmcClusterDatasetHistogram.xaml.cs">
+      <DependentUpon>UmcClusterDatasetHistogram.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\XicPlotViewModel.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
@@ -243,6 +246,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Clustering\ClusterViewerSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\UmcClusterDatasetHistogram.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

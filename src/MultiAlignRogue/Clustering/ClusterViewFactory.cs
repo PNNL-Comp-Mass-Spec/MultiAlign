@@ -56,7 +56,7 @@ namespace MultiAlignRogue.Clustering
                 DataContext = viewModel
             };
 
-            window.ShowDialog();
+            window.Show();
         }
 
         public void CreateSettingsWindow(ClusterViewerSettings clusterViewerSettings)
@@ -75,6 +75,31 @@ namespace MultiAlignRogue.Clustering
             {
                 this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = viewModel.ClusterViewerSettings;
             }
+        }
+
+        public void CreateDatasetHistogramWindow(IEnumerable<UMCClusterLight> clusters, string title)
+        {
+            var histogram = new Dictionary<int, int>();
+            foreach (var cluster in clusters)
+            {
+                foreach (var umc in cluster.UmcList)
+                {
+                    var key = umc.GroupId + 1;
+                    if (!histogram.ContainsKey(key))
+                    {
+                        histogram.Add(key, 0);
+                    }
+                    histogram[key] = histogram[key] + 1;
+                }
+            }
+            
+            var viewModel = new ChargeHistogramPlot(histogram, "Dataset Histogram");
+            var window = new UmcClusterDatasetHistogram
+            {
+                DataContext = viewModel
+            };
+
+            window.Show();
         }
     }
 }
