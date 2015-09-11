@@ -50,6 +50,8 @@ namespace MultiAlignRogue.ViewModels
                     }
                 }, s => !this.DoingWork);
 
+            this.SetDatasetState();
+
             if (data != null)
             {
                 PlotData.Add(new PlotViewModel(data.Alignment,
@@ -417,5 +419,23 @@ namespace MultiAlignRogue.ViewModels
 
         public ICommand ModifyDatasetCommand { get; set; }
         public event EventHandler Selected;
+
+        private void SetDatasetState()
+        {
+            if (this.FeaturesFound)
+            {
+                this.DatasetState = DatasetStates.FeaturesFound;
+            }
+
+            if (this.IsAligned)
+            {
+                this.DatasetState = DatasetStates.Aligned;
+            }
+
+            if (this.IsClustered)
+            {
+                this.DatasetState = DatasetStates.Clustered;
+            }
+        }
     }
 }

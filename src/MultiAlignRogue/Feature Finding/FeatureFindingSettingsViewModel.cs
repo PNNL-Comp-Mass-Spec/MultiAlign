@@ -92,8 +92,12 @@ namespace MultiAlignRogue.Feature_Finding
                                         async () => await this.LoadMSFeaturesAsync(),
                                         () => this.Datasets.Any(ds => ds.IsSelected && !ds.IsFindingFeatures));
             this.PlotMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(false), 
-                                        () => this.Datasets.Any(ds => ds.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures));
+                                        async () => await this.PlotMSFeatures(false),
+                                        () => this.Datasets.Any(
+                                                ds =>
+                                                    ds.DatasetState >
+                                                    DatasetInformationViewModel.DatasetStates.FindingFeatures &&
+                                                    ds.IsSelected));
 
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
