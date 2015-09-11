@@ -77,7 +77,8 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <DataGridTextColumn Header="Status" Binding="{Binding DatasetState}" Width="110" IsReadOnly="True" />
+                        <!--<DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <DataGridCheckBoxColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}">
                                     <Setter Property="Background" Value="{Binding FindingFeatureLabelColor, UpdateSourceTrigger=PropertyChanged}" />
@@ -97,7 +98,7 @@
                                     <Setter Property="Background" Value="{Binding ClusterLabelColor, UpdateSourceTrigger=PropertyChanged}" />
                                 </Style>
                             </DataGridCheckBoxColumn.CellStyle>
-                        </DataGridCheckBoxColumn>
+                        </DataGridCheckBoxColumn>-->
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

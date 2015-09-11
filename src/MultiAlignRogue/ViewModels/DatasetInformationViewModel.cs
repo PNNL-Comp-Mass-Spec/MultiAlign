@@ -19,11 +19,12 @@ namespace MultiAlignRogue.ViewModels
     {
         public enum DatasetStates
         {
-            None,
+            Loaded,
             FindingFeatures,
             PersistingFeatures,
             FeaturesFound,
             Aligning,
+            Baseline,
             PersistingAlignment,
             Aligned,
             Clustering,
@@ -132,15 +133,30 @@ namespace MultiAlignRogue.ViewModels
                         this.StateChanged(this, EventArgs.Empty);
                     }
 
-                    this.ShouldShowProgress = (value == DatasetStates.FindingFeatures) ||
+                    this.ShouldShowProgress = ((value == DatasetStates.FindingFeatures) ||
                                               (value == DatasetStates.PersistingFeatures) ||
                                               (value == DatasetStates.Aligning) ||
-                                              (value == DatasetStates.PersistingAlignment);
+                                              (value == DatasetStates.PersistingAlignment)) && 
+                                              !this.Dataset.IsBaseline;
 
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("AligningLabelColor");
                     this.RaisePropertyChanged("ClusterLabelColor");
                     this.RaisePropertyChanged("DatasetState", prevValue, value, true);
+                }
+            }
+        }
+
+        public bool IsBaseline
+        {
+            get { return this.Dataset.IsBaseline; }
+            set
+            {
+                if (this.Dataset.IsBaseline != value)
+                {
+                    this.Dataset.IsBaseline = value;
+                    this.DatasetState = DatasetStates.Baseline;
+                    this.RaisePropertyChanged();
                 }
             }
         }

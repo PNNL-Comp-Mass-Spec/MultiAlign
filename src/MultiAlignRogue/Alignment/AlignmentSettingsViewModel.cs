@@ -353,7 +353,7 @@ namespace MultiAlignRogue.Alignment
             if (ShouldAlignToBaseline)
             {
                 baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
-                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Baseline;
                 var priorAlignment = (from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x).ToList();
                 if (priorAlignment.Any())
                 {
@@ -363,7 +363,7 @@ namespace MultiAlignRogue.Alignment
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
          
-            var selectedFiles = this.Datasets.Where(file => file.IsSelected && !file.DoingWork).ToList();
+            var selectedFiles = this.Datasets.Where(file => file.IsSelected && !file.DoingWork && !file.IsBaseline).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
