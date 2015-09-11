@@ -15,7 +15,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="75" />
             <RowDefinition Height="30"/>
-            <RowDefinition Height="80" />
+            <RowDefinition Height="100" />
             <RowDefinition />
             <RowDefinition Height="32"/>
             <RowDefinition Height="29.6"/>
@@ -90,12 +90,14 @@
         </GroupBox>
 
         <!-- Alignment Algorithm -->
-        <GroupBox Grid.Row="4" Margin="0,0.2,0,31.4" Grid.RowSpan="2">
+        <GroupBox Grid.Row="4" Grid.RowSpan="2">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Algorithm</TextBlock>
             </GroupBox.Header>
             <Grid Margin="3">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
@@ -114,13 +116,21 @@
                 <Label Content="Calibration Method" FontWeight="Bold"  HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="2" />
                 <ComboBox SelectedItem="{Binding SelectedCalibrationType}" Grid.Row="1" Grid.Column="2"
                           ItemsSource="{Binding CalibrationOptions}" />
+                
+                <!-- # NET Sections -->
+                <Label Content="# NET Sections" Grid.Row="2" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" />
+                <xctk:IntegerUpDown Grid.Row="3" Grid.Column="0" Minimum="0" Value="{Binding AlignmentNumTimeSections, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <!-- Contraction Factor -->
+                <Label Content="Contraction Factor" Grid.Row="2" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" />
+                <xctk:IntegerUpDown Grid.Row="3" Grid.Column="2" Value="{Binding AlignmentContractionFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </GroupBox>
 
-        <ProgressBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="1" Margin="0,4.6,0,1.4" Value="{Binding AlignmentProgress}"
+        <ProgressBar Grid.Row="6" Grid.Column="0" Value="{Binding AlignmentProgress}" Height="25"
                              Visibility="{Binding ShowAlignmentProgress, Converter={StaticResource BoolToVis}}" />
         <!-- Buttons -->
-        <Button Content="Align Datasets" HorizontalAlignment="Left" Width="125" Command="{Binding AlignCommand}" Grid.Row="7" Margin="0,0,0,0" />
-        <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="125" Grid.Row="7" Margin="0,0,0,0" />
+        <Button Content="Align Datasets" HorizontalAlignment="Left" Height="25" Width="125" Command="{Binding AlignCommand}" Grid.Row="7" Margin="0,0,0,0" />
+        <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Height="25" Width="125" Grid.Row="7" Margin="0,0,0,0" />
     </Grid>
 </UserControl>

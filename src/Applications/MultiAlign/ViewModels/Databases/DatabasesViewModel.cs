@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MultiAlign.ViewModels.IO;
 using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.ViewModels.Databases
@@ -71,6 +72,8 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         public ObservableCollection<string> Organisms { get; private set; }
+
+        public MassTagDatabaseOptionsViewModel MassTagOptions { get; set; }
 
         public string SelectedOrganism
         {

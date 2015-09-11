@@ -109,6 +109,10 @@ namespace MultiAlignCore.IO.MTDB
             command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.MinimumPmtScore));
             command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.MinimumDiscriminant));
             command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.MinimumPeptideProphetScore));
+            //command.Parameters.Add(CreateParameter("@MinimumNet", Options.MinimumNet));
+            //command.Parameters.Add(CreateParameter("@MaximumNet", Options.MaximumNet));
+            //command.Parameters.Add(CreateParameter("@MinimumMass", Options.MinimumMass));
+            //command.Parameters.Add(CreateParameter("@MaximumMass", Options.MaximumMass));
 
             // Optional filters that are not accessible from the GUI
             if (!string.IsNullOrWhiteSpace(Options.ExperimentFilter))

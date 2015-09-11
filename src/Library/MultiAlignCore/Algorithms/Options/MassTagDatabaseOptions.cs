@@ -4,7 +4,7 @@
     {
         public MassTagDatabaseOptions()
         {
-            MinimumObservationCountFilter = 0;
+            MinimumObservationCountFilter = 5;
             OnlyLoadTagsWithDriftTime = false;
             MinimumXCorr = 0.0F;
             MinimumPmtScore = 2;
@@ -12,6 +12,10 @@
             MinimumPeptideProphetScore = 0;
             ExperimentExclusionFilter = string.Empty;
             ExperimentFilter = string.Empty;
+            MinimumNet = 0;
+            MaximumNet = 1.0;
+            MinimumMass = 0;
+            MaximumMass = 100000;
         }
 
         public string ExperimentFilter { get; set; }
@@ -24,5 +28,10 @@
 
         public double MinimumDiscriminant { get; set; }
         public double MinimumPeptideProphetScore { get; set; }
+
+        public double MinimumNet { get; set; }
+        public double MaximumNet { get; set; }
+        public double MinimumMass { get; set; }
+        public double MaximumMass { get; set; }
     }
 }

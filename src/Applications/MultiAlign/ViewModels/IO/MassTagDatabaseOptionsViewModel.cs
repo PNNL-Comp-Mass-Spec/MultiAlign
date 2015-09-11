@@ -93,5 +93,45 @@ namespace MultiAlign.ViewModels.IO
                 OnPropertyChanged("ExperimentFilter");
             }
         }
+
+        public double MinimumNet
+        {
+            get { return m_options.MinimumNet; }
+            set
+            {
+                m_options.MinimumNet = value;
+                OnPropertyChanged("MinimumNet");
+            }
+        }
+
+        public double MaximumNet
+        {
+            get { return m_options.MaximumNet; }
+            set
+            {
+                m_options.MaximumNet = value;
+                OnPropertyChanged("MaximumNet");
+            }
+        }
+
+        public double MinimumMass
+        {
+            get { return m_options.MinimumMass; }
+            set
+            {
+                m_options.MinimumMass = value;
+                OnPropertyChanged("MinimumMass");
+            }
+        }
+
+        public double MaximumMass
+        {
+            get { return m_options.MaximumMass; }
+            set
+            {
+                m_options.MinimumMass = value;
+                OnPropertyChanged("MaximumMass");
+            }
+        }
     }
 }

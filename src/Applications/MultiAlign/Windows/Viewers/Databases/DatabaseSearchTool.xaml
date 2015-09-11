@@ -118,51 +118,51 @@
             </Border>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid
-        Grid.Row="1"
-        Grid.Column="1"
+    <TabControl Margin="5">
+        <TabItem Header="Database Search">
+            <Grid
         Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="128" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <WrapPanel>
-            <Label
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="128" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel>
+                    <Label
                 Grid.Row="0"
                 HorizontalContentAlignment="Left"
                 Margin="5">
-                Showing
-            </Label>
-            <Label
+                        Showing
+                    </Label>
+                    <Label
                 Grid.Row="0"
                 HorizontalContentAlignment="Left"
                 Margin="5"
                 FontWeight="Bold"
                 Content="{Binding Path=FilteredDatabases.Count, Converter={StaticResource ResourceKey=intConverter}}" />
 
-            <Label
+                    <Label
                 Grid.Row="0"
                 HorizontalContentAlignment="Left"
                 Margin="5"
                 Content=" Of " />
-            <Label
+                    <Label
                 Grid.Row="0"
                 HorizontalContentAlignment="Left"
                 Margin="5"
                 FontWeight="Bold"
                 Content="{Binding Path=Databases.Count, Converter={StaticResource ResourceKey=intConverter}}" />
 
-            <Label
+                    <Label
                 Grid.Row="0"
                 HorizontalContentAlignment="Left"
                 Margin="5"
                 Content="Total Available Databases" />
-        </WrapPanel>
-        <ListBox
+                </WrapPanel>
+                <ListBox
             Margin="5"
             Grid.Column="0"
             Grid.ColumnSpan="3"
@@ -172,26 +172,26 @@
             SelectedItem="{Binding Path=SelectedDatabase, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
             ItemTemplate="{StaticResource DatasetItemTemplate}"
             ItemsSource="{Binding Path=FilteredDatabases, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
-        <Grid
+                <Grid
             Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="2">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="128" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <Label
+                    <Label
                 Margin="5"
                 VerticalContentAlignment="Center">
-                Database Name
-            </Label>
-            <TextBox
+                        Database Name
+                    </Label>
+                    <TextBox
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="5"
@@ -199,14 +199,14 @@
                 Text="{Binding Path=DatabaseFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
                 FontSize="16" />
 
-            <Label
+                    <Label
                 Grid.Row="1"
                 Grid.Column="0"
                 Margin="5"
                 VerticalContentAlignment="Center">
-                Organism
-            </Label>
-            <ComboBox
+                        Organism
+                    </Label>
+                    <ComboBox
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="5"
@@ -214,6 +214,13 @@
                 SelectedItem="{Binding Path=SelectedOrganism, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
                 VerticalContentAlignment="Center"
                 ItemsSource="{Binding Path=Organisms, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
-        </Grid>
-    </Grid>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="AMT Settings">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                <databaseViews:MassTagOptionsView DataContext="{Binding MassTagOptions}" />
+            </ScrollViewer>
+        </TabItem>
+    </TabControl>
 </UserControl>

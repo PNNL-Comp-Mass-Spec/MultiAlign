@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
         <StackPanel>        
@@ -44,11 +45,11 @@
                             >
                             Minimum X-Corr
                         </TextBlock>
-                        <TextBox 
+                        <xctk:DoubleUpDown
                             Margin="5"
                             Grid.Row="0"
                             Grid.Column="1"                                
-                            Text="{Binding  Path=MinimumXcorr, 
+                            Value="{Binding  Path=MinimumXcorr, 
                                             Mode=TwoWay, 
                                             NotifyOnSourceUpdated=True, 
                                             UpdateSourceTrigger=PropertyChanged}"/>
@@ -63,11 +64,11 @@
                             >
                             Minimum PMT Score
                         </TextBlock>
-                        <TextBox 
+                        <xctk:DoubleUpDown 
                             Margin="5"
                             Grid.Row="1"
                             Grid.Column="1"                                
-                            Text="{Binding  Path=MinimumPmtScore, 
+                            Value="{Binding  Path=MinimumPmtScore, 
                                             Mode=TwoWay, 
                                             NotifyOnSourceUpdated=True, 
                                             UpdateSourceTrigger=PropertyChanged}"/>
@@ -82,11 +83,11 @@
                             >
                             Minimum Discriminant Score
                         </TextBlock>
-                        <TextBox 
+                        <xctk:DoubleUpDown
                             Margin="5"
                             Grid.Row="2"
                             Grid.Column="1"                                
-                            Text="{Binding  Path=MinimumDiscriminant, 
+                            Value="{Binding  Path=MinimumDiscriminant, 
                                             Mode=TwoWay, 
                                             NotifyOnSourceUpdated=True, 
                                             UpdateSourceTrigger=PropertyChanged}"/>
@@ -102,11 +103,11 @@
                             >
                             Minimum Peptide Prophet Score
                         </TextBlock>
-                        <TextBox 
+                        <xctk:DoubleUpDown 
                             Margin="5"
                             Grid.Row="3"
                             Grid.Column="1"                                
-                            Text="{Binding  Path=MinimumPeptideProphetScore, 
+                            Value="{Binding  Path=MinimumPeptideProphetScore, 
                                             Mode=TwoWay, 
                                             NotifyOnSourceUpdated=True, 
                                             UpdateSourceTrigger=PropertyChanged}"/>
@@ -130,22 +131,37 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="164"/>
                         </Grid.ColumnDefinitions>
 
-                    <CheckBox
-                            Foreground="Gray"
-                            Grid.Row="1"
-                            Margin="5"
-                            IsChecked="{Binding OnlyLoadTagsWithDriftTime}">
-                            Only Load Tags with Drift Time
+                        <CheckBox
+                                Foreground="Gray"
+                                Grid.Row="1"
+                                Margin="5"
+                                IsChecked="{Binding OnlyLoadTagsWithDriftTime}">
+                                Only Load Tags with Drift Time
                         </CheckBox>
 
+                        <TextBlock Grid.Row="2" Grid.Column="0" Height="25" VerticalAlignment="Center">Minimum NET</TextBlock>
+                        <xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" Margin="5" Minimum="0" Maximum="1"
+                                           Value="{Binding MinimumNet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    </Grid>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Height="25" VerticalAlignment="Center">Maximum NET</TextBlock>
+                        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" Minimum="0" Maximum="1"
+                                           Value="{Binding MaximumNet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Height="25" VerticalAlignment="Center">Minimum Mass</TextBlock>
+                        <xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" Minimum="0"
+                                           Value="{Binding MinimumMass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Height="25" VerticalAlignment="Center">Maximum Mass</TextBlock>
+                        <xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" Margin="5" Minimum="0"
+                                           Value="{Binding MaximumMass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
                 </Border>
             </Expander>
             <Expander
@@ -174,33 +190,33 @@
                         <TextBlock
                             Grid.Row="0"
                             Foreground="Gray">Minimum Observation Count</TextBlock>
-                        <TextBox
+                        <xctk:DoubleUpDown
                             Foreground="Gray"
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="5"
-                            Text="{Binding MinimumObservationCountFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                            Value="{Binding MinimumObservationCountFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock
                             Grid.Row="1"
                             Foreground="Gray">Experiment Exclusion Filter</TextBlock>
-                        <TextBox
+                        <xctk:DoubleUpDown
                             Foreground="Gray"
                             Grid.Row="1"
                             Grid.Column="1"
                             Margin="5"
-                            Text="{Binding ExperimentExclusionFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                            Value="{Binding ExperimentExclusionFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
 
                         <TextBlock 
                             Grid.Row="2"
                             Grid.Column="0"
                             Foreground="Gray">Experiment Filter</TextBlock>
-                        <TextBox
+                        <xctk:DoubleUpDown
                             Foreground="Gray"
                             Grid.Row="2"
                             Grid.Column="1"
                             Margin="5"
-                            Text="{Binding ExperimentFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                            Value="{Binding ExperimentFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
 
                     </Grid>

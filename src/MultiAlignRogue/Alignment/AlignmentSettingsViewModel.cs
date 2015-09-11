@@ -1,6 +1,7 @@
 ﻿using System.Windows.Navigation;
 using InformedProteomics.Backend.Utils;
 using MultiAlign.ViewModels.Databases;
+using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
@@ -312,11 +313,6 @@ namespace MultiAlignRogue.Alignment
                 }
             }
         }
-
-        void aligner_Progress(object sender, ProgressNotifierArgs e)
-        {
-            AlignmentProgress = e.PercentComplete;
-        }
         
         public async void AsyncAlign()
         {
@@ -429,6 +425,7 @@ namespace MultiAlignRogue.Alignment
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 i++;
+                file.Progress = 0;
             }
 
             if (ShouldAlignToBaseline)
@@ -437,6 +434,7 @@ namespace MultiAlignRogue.Alignment
             }
 
             ShowAlignmentProgress = false;
+            this.AlignmentProgress = 0;
         }
 
         public DmsDatabaseServerViewModel SelectedDatabaseServer { get; set; }
@@ -453,7 +451,8 @@ namespace MultiAlignRogue.Alignment
         private void SelectAMT()
         {
             var dmsWindow = new DatabaseSearchToolWindow();
-            var databaseView = new DatabasesViewModel();
+            var optionsViewModel = new MassTagDatabaseOptionsViewModel(this.analysis.Options.MassTagDatabaseOptions);
+            var databaseView = new DatabasesViewModel { MassTagOptions = optionsViewModel };
             dmsWindow.DataContext = databaseView;
             dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -496,6 +495,7 @@ namespace MultiAlignRogue.Alignment
             analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
             analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
                                         this.analysis.Options.MassTagDatabaseOptions);
+            analysis.MassTagDatabase.Filter(this.analysis.Options.MassTagDatabaseOptions);
             analysis.DataProviders.MassTags.DeleteAll();
             this.ShowMassTagProgress = true;
             analysis.DataProviders.MassTags.AddAllStateless(analysis.MassTagDatabase.MassTags, loadProgress);

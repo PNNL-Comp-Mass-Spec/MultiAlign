@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.Data.MassTags
 {
@@ -148,6 +149,16 @@ namespace MultiAlignCore.Data.MassTags
             Proteins                    = massTagToProteinMap;
 
             DetermineIfContainsDriftTime(massTags);
+        }
+
+        public void Filter(MassTagDatabaseOptions options)
+        {
+            var massTags = MassTags.Where(t => t.Net >= options.MinimumNet)
+                .Where(t => t.Net <= options.MaximumNet)
+                .Where(t => t.MassMonoisotopic >= options.MinimumMass)
+                .Where(t => t.MassMonoisotopic <= options.MaximumMass).ToList();
+            this.MassTags.Clear();
+            this.AddMassTagsAndProteins(massTags, this.Proteins);
         }
     }
 }
