@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
@@ -85,9 +86,9 @@ namespace MultiAlignRogue
             SelectDirectoryCommand = new RelayCommand(SelectDirectory, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath) && !string.IsNullOrWhiteSpace(this.ProjectPath));
             SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms && !string.IsNullOrWhiteSpace(this.ProjectPath));
-            CreateNewProjectCommand = new RelayCommand(this.CreateNewProject);
+            CreateNewProjectCommand = new RelayCommand(async () => await this.CreateNewProject());
             SaveProjectCommand = new RelayCommand(SaveProject, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
-            LoadProjectCommand = new RelayCommand(LoadProject);
+            LoadProjectCommand = new RelayCommand(async () => await LoadProject());
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             RestoreDefaultSettingsCommand = new RelayCommand(this.RestoreDefaultSettings);
             
@@ -443,7 +444,7 @@ namespace MultiAlignRogue
         #endregion
 
         #region Project Loading
-        private void CreateNewProject()
+        private async Task CreateNewProject()
         {
             var success = false;
             var newProjectViewModel = new NewProjectViewModel();
@@ -459,7 +460,7 @@ namespace MultiAlignRogue
             {
                 var rogueProject = newProjectViewModel.GetRogueProject();
                 rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
-                this.LoadRogueProject(rogueProject, true);
+                await this.LoadRogueProject(rogueProject, true);
                 this.Serialize(newProjectViewModel.ProjectFilePath);
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
                 this.outputDirectory = newProjectViewModel.OutputDirectory;
@@ -467,7 +468,7 @@ namespace MultiAlignRogue
             }
         }
 
-        private void LoadRogueProject(RogueProject rogueProject, bool isNewProject)
+        private async Task LoadRogueProject(RogueProject rogueProject, bool isNewProject)
         {
             this.Analysis = new MultiAlignAnalysis
             {
@@ -483,6 +484,11 @@ namespace MultiAlignRogue
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+            if (this.Analysis.Options.AlignmentOptions.InputDatabase != null)
+            {
+                await this.AlignmentSettingsViewModel.LoadMassTagDatabase(this.Analysis.Options.AlignmentOptions.InputDatabase);
+            }
+
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
             this.RaisePropertyChanged("Analysis");
         }
@@ -510,7 +516,7 @@ namespace MultiAlignRogue
             }
         }
 
-        private void LoadProject()
+        private async Task LoadProject()
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -528,7 +534,7 @@ namespace MultiAlignRogue
                         Path.GetDirectoryName(rogueProject.AnalysisPath));
                 }
 
-                this.LoadRogueProject(rogueProject, false);
+                await this.LoadRogueProject(rogueProject, false);
                 this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
                 this.ProjectPath = openFileDialog.FileName;
             }

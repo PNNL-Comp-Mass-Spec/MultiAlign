@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.Parameters;
 
 #endregion
@@ -15,6 +16,7 @@ namespace MultiAlignCore.Algorithms.Options
             LCMSWarpOptions = new LcmsWarpAlignmentOptions();
             AlignmentBaselineName = "";
             MassTagObservationCount = 5;
+            AlignToAMT = false;
         }
 
         #region Fields
@@ -182,6 +184,17 @@ namespace MultiAlignCore.Algorithms.Options
         [Category("Weights")]
         [Description("Determines how far away a baseline scan can be compared to alignee scans.")]
         public int ContractionFactor { get { return LCMSWarpOptions.ContractionFactor; } set { LCMSWarpOptions.ContractionFactor = value; } }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether the alignment should be
+        /// to an AMT database.
+        /// </summary>
+        public bool AlignToAMT { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mass tag database to align to.
+        /// </summary>
+        public InputDatabase InputDatabase { get; set; }
 
         #endregion
 

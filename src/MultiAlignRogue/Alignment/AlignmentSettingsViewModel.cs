@@ -6,6 +6,7 @@ using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignRogue.ViewModels;
 
@@ -93,8 +94,6 @@ namespace MultiAlignRogue.Alignment
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
             this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
-            this.ShouldAlignToBaseline = true;
-            this.ShouldAlignToAMT = false;
         }
 
         public RelayCommand AlignCommand { get; private set; }
@@ -109,35 +108,37 @@ namespace MultiAlignRogue.Alignment
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
-        private bool shouldAlignToBaseline;
-
         /// <summary>
         /// True when aligning to a baseline dataset; false when aligning to an AMT tag database
         /// </summary>
         public bool ShouldAlignToBaseline
         {
-            get
-            {
-                return shouldAlignToBaseline;
-            }
+            get { return !this.analysis.Options.AlignmentOptions.AlignToAMT; }
             set
             {
-                shouldAlignToBaseline = value;
-                this.AlignCommand.RaiseCanExecuteChanged();
-                this.RaisePropertyChanged();
+                if (this.analysis.Options.AlignmentOptions.AlignToAMT == value)
+                {
+                    this.analysis.Options.AlignmentOptions.AlignToAMT = !value;
+                    this.AlignCommand.RaiseCanExecuteChanged();
+                    this.RaisePropertyChanged("ShouldAlignToAMT");
+                    this.RaisePropertyChanged();
+                }
             }
         }
 
-        private bool shouldAlignToAMT;
         public bool ShouldAlignToAMT
         {
-            get { return shouldAlignToAMT; }
+            get { return this.analysis.Options.AlignmentOptions.AlignToAMT; }
             set
             {
-                shouldAlignToAMT = value; 
-                SelectAMTCommand.RaiseCanExecuteChanged();
-                this.AlignCommand.RaiseCanExecuteChanged();
-                this.RaisePropertyChanged();
+                if (this.analysis.Options.AlignmentOptions.AlignToAMT != value)
+                {
+                    this.analysis.Options.AlignmentOptions.AlignToAMT = value;
+                    SelectAMTCommand.RaiseCanExecuteChanged();
+                    this.AlignCommand.RaiseCanExecuteChanged();
+                    this.RaisePropertyChanged("ShouldAlignToBaseline");
+                    this.RaisePropertyChanged();
+                }
             }
         }
 
@@ -257,20 +258,6 @@ namespace MultiAlignRogue.Alignment
         }
 
         // ToDo: Add this to the GUI
-        public int AlignmentMinMsMsObservations
-        {
-            get { return this.analysis.Options.AlignmentOptions.MassTagObservationCount; }
-            set
-            {
-                if (this.analysis.Options.AlignmentOptions.MassTagObservationCount != value)
-                {
-                    this.analysis.Options.AlignmentOptions.MassTagObservationCount = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }  
-
-        // ToDo: Add this to the GUI
         public int AlignmentNumTimeSections
         {
             get { return this.analysis.Options.AlignmentOptions.NumTimeSections; }
@@ -326,6 +313,11 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        public async Task LoadMassTagDatabase(InputDatabase inputDatabase)
+        {
+            this.SelectedDatabaseServer = new DmsDatabaseServerViewModel(inputDatabase);
+            await this.AsyncAddMassTags();
+        }
 
         private void AlignToBaseline()
         {
@@ -444,7 +436,8 @@ namespace MultiAlignRogue.Alignment
             ThreadSafeDispatcher.Invoke(SelectAMT);
             if (this.SelectedDatabaseServer != null)
             {
-                ThreadSafeDispatcher.Invoke(AsyncAddMassTags);
+                this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabaseServer.Database;
+                ThreadSafeDispatcher.Invoke(async () => await AsyncAddMassTags());
             }
         }
 
@@ -479,7 +472,7 @@ namespace MultiAlignRogue.Alignment
             this.AlignCommand.RaiseCanExecuteChanged();
         }
 
-        private async void AsyncAddMassTags()
+        private async Task AsyncAddMassTags()
         {
             await Task.Run(() => AddMassTags());
         }
