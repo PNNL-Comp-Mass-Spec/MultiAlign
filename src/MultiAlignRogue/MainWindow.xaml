@@ -18,17 +18,17 @@
     <Grid Name="MainGrid">
         
         <!-- Menu -->
-        <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
+        <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
             <MenuItem Header="File">
                 <MenuItem Header="New Project" Command="{Binding CreateNewProjectCommand}" />
-                <MenuItem Header="Load Project" HorizontalAlignment="Left" Width="168" Command="{Binding LoadProjectCommand}" />
+                <MenuItem Header="Load Project" Command="{Binding LoadProjectCommand}" />
                 <MenuItem Header="Open Dataset" Command="{Binding SelectFilesCommand}">
-                    <MenuItem Header="Select Files" HorizontalAlignment="Left" Width="168" Margin="0,0,-8,0" Command="{Binding SelectFilesCommand}"/>
+                    <MenuItem Header="Select Files" Command="{Binding SelectFilesCommand}"/>
                     <MenuItem Header="Select Directory" Command="{Binding SelectDirectoryCommand}" />
                     <MenuItem Header="From DMS" Command="{Binding SearchDmsCommand}" Visibility="{Binding ShowOpenFromDms, Converter={StaticResource BoolToVis}}" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Save Project" HorizontalAlignment="Left" Command="{Binding SaveProjectCommand}"  Width="168"/>
+                <MenuItem Header="Save Project" Command="{Binding SaveProjectCommand}" />
                 <MenuItem Header="Save Project As" Command="{Binding SaveAsProjectCommand}" />
                 <Separator />
                 <MenuItem Header="Restore Defaults" Command="{Binding RestoreDefaultSettingsCommand}" />
