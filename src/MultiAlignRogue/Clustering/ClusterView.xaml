@@ -34,6 +34,7 @@
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
                                         <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="Abundance" Width="35*" Binding="{Binding Abundance}"/>
                                         <DataGridTextColumn Header="#" Width="20*" Binding="{Binding MemberCount}" />
                                     </DataGrid.Columns>
                                 </DataGrid>

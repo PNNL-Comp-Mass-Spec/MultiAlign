@@ -231,6 +231,7 @@ namespace MultiAlignRogue.Clustering
                 }
 
                 this.analysis.Clusters = clusters;
+                clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
 
                 foreach (var dataset in this.Datasets)
                 {
@@ -296,6 +297,7 @@ namespace MultiAlignRogue.Clustering
                     }
 
                     this.analysis.Clusters = clusters;
+                    clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
 
                     foreach (var dataset in this.Datasets)
                     {
