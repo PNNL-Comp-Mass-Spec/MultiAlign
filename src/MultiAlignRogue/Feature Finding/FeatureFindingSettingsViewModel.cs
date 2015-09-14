@@ -5,6 +5,7 @@ using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
+using MultiAlignCore.IO.Hibernate;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
@@ -510,6 +511,9 @@ namespace MultiAlignRogue.Feature_Finding
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
 
+            DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+            DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
+
             int i = 0;
             foreach (var file in selectedFiles)
             {
@@ -557,6 +561,9 @@ namespace MultiAlignRogue.Feature_Finding
                 file.Progress = 0;
                 i++;
             }
+
+            DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
+
             this.ShouldShowProgress = false;
         }
 

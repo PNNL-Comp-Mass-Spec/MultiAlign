@@ -362,6 +362,9 @@ namespace MultiAlignRogue.Alignment
             }
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
+            DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+            DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
+
             int i = 0;
             foreach (var file in selectedFiles)
             {
@@ -424,6 +427,8 @@ namespace MultiAlignRogue.Alignment
             {
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
             }
+
+            DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
             ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;

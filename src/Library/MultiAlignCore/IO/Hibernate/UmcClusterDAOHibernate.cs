@@ -1,8 +1,10 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using NHibernate.Criterion;
@@ -32,6 +34,17 @@ namespace MultiAlignCore.IO.Hibernate
             var criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
+        }
+
+        /// <summary>
+        ///     Adds a Collection of Objects to the Database.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be added</param>
+        public new virtual void AddAllStateless(ICollection<UMCClusterLight> tCollection, IProgress<ProgressData> progress = null)
+        {
+            DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+            base.AddAllStateless(tCollection, progress);
+            DatabaseIndexer.IndexClusters(NHibernateUtil.Path);
         }
 
         /// <summary>

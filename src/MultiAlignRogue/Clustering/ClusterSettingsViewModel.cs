@@ -6,6 +6,8 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Hibernate;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
@@ -268,6 +270,8 @@ namespace MultiAlignRogue.Clustering
                 var clusterProgress = new Progress<ProgressData>();
                 var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 0 };
 
+                DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+
                 /*
                  * Here we cluster all charge states separately.  Probably IMS Data.
                  */
@@ -308,8 +312,7 @@ namespace MultiAlignRogue.Clustering
                     }
 
                     progData.StepRange((maxPercent - maxFirstStep) / 3);
-                    providers.ClusterCache.ClearAllClusters();
-                    this.analysis.DataProviders.ClusterCache.AddAllStateless(this.analysis.Clusters, clusterProgress);
+                    this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
 
                     progData.StepRange(maxPercent);
                     this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
@@ -318,6 +321,8 @@ namespace MultiAlignRogue.Clustering
                     ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
                 }
+
+                DatabaseIndexer.IndexClusters(NHibernateUtil.Path);
 
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
 
