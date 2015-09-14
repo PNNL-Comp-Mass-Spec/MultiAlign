@@ -488,7 +488,6 @@ namespace MultiAlignRogue.Alignment
             analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
             analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
                                         this.analysis.Options.MassTagDatabaseOptions);
-            analysis.MassTagDatabase.Filter(this.analysis.Options.MassTagDatabaseOptions);
             analysis.DataProviders.MassTags.DeleteAll();
             this.ShowMassTagProgress = true;
             analysis.DataProviders.MassTags.AddAllStateless(analysis.MassTagDatabase.MassTags, loadProgress);

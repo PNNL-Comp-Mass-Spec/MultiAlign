@@ -259,16 +259,22 @@ namespace MultiAlignCore.IO.MTDB
 
                                         // If we are using drift time, then we should only 
                                         // use mass tags that have drift time.
-                                        if (Options.OnlyLoadTagsWithDriftTime)
+                                        if (massTag.Net >= Options.MinimumNet && 
+                                            massTag.Net <= Options.MaximumNet &&
+                                            massTag.MassMonoisotopic >= Options.MinimumMass &&
+                                            massTag.MassMonoisotopic <= Options.MaximumMass)
                                         {
-                                            if (driftTime > 0)
+                                            if (Options.OnlyLoadTagsWithDriftTime)
+                                            {
+                                                if (driftTime > 0)
+                                                {
+                                                    shouldAdd = true;
+                                                }
+                                            }
+                                            else
                                             {
                                                 shouldAdd = true;
                                             }
-                                        }
-                                        else
-                                        {
-                                            shouldAdd = true;
                                         }
 
                                         if (shouldAdd)

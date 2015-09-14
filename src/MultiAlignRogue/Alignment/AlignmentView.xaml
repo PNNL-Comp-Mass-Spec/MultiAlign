@@ -5,19 +5,19 @@
     <ScrollViewer>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="300"/>
-                <RowDefinition Height="300"/>
-                <RowDefinition Height="300"/>
+                <RowDefinition Height="300*"/>
+                <RowDefinition Height="300*"/>
+                <RowDefinition Height="300*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="350"/>
-                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="350*"/>
+                <ColumnDefinition Width="350*"/>
             </Grid.ColumnDefinitions>
-            <Image Source="{Binding HeatmapImage}"  Stretch="Fill" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+            <Image Source="{Binding HeatmapImage}"  Stretch="Fill" Grid.Row="0" Grid.Column="0"/>
             <Image Source="{Binding NetScanImage}"  Stretch="Fill" Grid.Row="0" Grid.Column="1"/>
-            <Image Source="{Binding MassHistogram}"  Stretch="Fill" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+            <Image Source="{Binding MassHistogram}"  Stretch="Fill" Grid.Row="1" Grid.Column="0"/>
             <Image Source="{Binding NetHistogram}"  Stretch="Fill" Grid.Row="1" Grid.Column="1"/>
-            <Image Source="{Binding MassMzImage}"  Stretch="Fill" Grid.Row="2" Grid.Column="0"  HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+            <Image Source="{Binding MassMzImage}"  Stretch="Fill" Grid.Row="2" Grid.Column="0"/>
             <Image Source="{Binding MassScanImage}"  Stretch="Fill" Grid.Row="2" Grid.Column="1"/>
         </Grid>
     </ScrollViewer>

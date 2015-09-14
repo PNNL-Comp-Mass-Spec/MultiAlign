@@ -30,9 +30,9 @@ namespace MultiAlignCore.Drawing
             var pngExporter = new PngExporter
             {
                 Width = size.Width,
-                Height = size.Height
+                Height = size.Height,
+                Resolution = 120
             };
-
             return pngExporter.ExportToBitmap(model);
         }
 
