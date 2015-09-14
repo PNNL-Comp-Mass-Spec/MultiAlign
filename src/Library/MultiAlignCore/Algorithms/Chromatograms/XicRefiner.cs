@@ -49,8 +49,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             for (int i = 0; i < xics.Count; i++)
             {
                 refinedXics.Add(RefineXic(xics[i]));
-                progressData.Percent = (i / xics.Count) * 100;
-                progress.Report(progressData);
+                progress.Report(progressData.UpdatePercent((i / xics.Count) * 100));
             }
 
             return refinedXics;

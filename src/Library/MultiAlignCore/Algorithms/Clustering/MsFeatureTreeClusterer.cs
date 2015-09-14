@@ -177,8 +177,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 var newFeatures = tree.Build();
                 clusters.AddRange(newFeatures);
-                progressData.Percent = (100.0 * i) / n;
-                progress.Report(progressData);
+                progress.Report(progressData.UpdatePercent((100.0 * i) / n));
             }
             return clusters;          
         }

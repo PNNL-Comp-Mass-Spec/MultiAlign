@@ -362,6 +362,8 @@ namespace MultiAlignRogue.Alignment
             }
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
+            var totalProgressData = new ProgressData();
+
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
 
@@ -384,10 +386,7 @@ namespace MultiAlignRogue.Alignment
                         pd =>
                         {
                             file.Progress = pd.Percent;
-                            totalProgress.Report(new ProgressData
-                            {
-                                Percent = ((100.0 * i) / selectedFiles.Count) + (pd.Percent / selectedFiles.Count)
-                            });
+                            totalProgress.Report(totalProgressData.UpdatePercent(((100.0 * i + pd.Percent) / selectedFiles.Count)));
                         });
 
                 if (ShouldAlignToBaseline)

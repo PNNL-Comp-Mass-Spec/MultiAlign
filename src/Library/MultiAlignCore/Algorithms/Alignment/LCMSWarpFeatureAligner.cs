@@ -74,8 +74,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
-                progData.Percent = e.PercentComplete;
-                progress.Report(progData);
+                progress.Report(progData.UpdatePercent(e.PercentComplete));
             };
 
             var umcLights = features as IList<UMCLight> ?? features.ToList();
@@ -115,8 +114,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
-                progData.Percent = e.PercentComplete;
-                progress.Report(progData);
+                progress.Report(progData.UpdatePercent(e.PercentComplete));
             };
 
             OnStatus("Setting features from baseline dataset.");

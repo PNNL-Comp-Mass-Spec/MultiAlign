@@ -510,6 +510,7 @@ namespace MultiAlignRogue.Feature_Finding
             }
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
+            var totalProgressData = new ProgressData();
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
@@ -521,10 +522,8 @@ namespace MultiAlignRogue.Feature_Finding
                 var progress = new Progress<ProgressData>(pd =>
                 {
                     file.Progress = progData.UpdatePercent(pd.Percent).Percent;
-                    totalProgress.Report(new ProgressData
-                    {
-                        Percent = ((100.0 * i) / selectedFiles.Count) + (file.Progress / selectedFiles.Count)
-                    });
+                    // same as i / selectedFiles.Count * 100 + file.Progress / selectedFiles.Count
+                    totalProgress.Report(totalProgressData.UpdatePercent(((100.0 * i + file.Progress) / selectedFiles.Count)));
                 });
 
                 var features = this.featureCache.LoadDataset(
