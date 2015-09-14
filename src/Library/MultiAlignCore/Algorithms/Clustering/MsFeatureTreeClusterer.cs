@@ -107,8 +107,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns></returns>
         public List<TParentFeature> Cluster(List<TChildFeature> features, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData();
+            var progressData = new ProgressData(progress);
             var clusters            = new List<TParentFeature>();            
             var currentIndex        = 0;
             int i = 0;
@@ -177,7 +176,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 var newFeatures = tree.Build();
                 clusters.AddRange(newFeatures);
-                progress.Report(progressData.UpdatePercent((100.0 * i) / n));
+                progressData.Report(i, n);
             }
             return clusters;          
         }

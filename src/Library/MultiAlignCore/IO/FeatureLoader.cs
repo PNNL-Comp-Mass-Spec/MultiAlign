@@ -29,7 +29,6 @@ namespace MultiAlignCore.IO
 
         public void CacheFeatures(IList<UMCLight> features, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
             // SpectraTracker - Makes sure that we only record a MS spectra once, before we cache
             // this keeps us from trying to put duplicate entries into the MS/MS data 
             // table/container.
@@ -111,11 +110,12 @@ namespace MultiAlignCore.IO
             //TODO: Fix!!! make sure sequence maps are unique
             sequenceMaps.ForEach(x => x.Id = count++);
 
-            var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 1 };
-            var internalProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
+            var progData = new ProgressData(progress);
+            var internalProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
             if (msmsFeatures.Count > 0)
             {
+                progData.StepRange(1);
                 Providers.MSnFeatureCache.AddAll(msmsFeatures, internalProgress);
             }
 
@@ -229,30 +229,27 @@ namespace MultiAlignCore.IO
             LcmsFeatureFilteringOptions lcmsFilteringOptions,
             IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progData = new ProgressData { IsPartialRange = true };
+            var progData = new ProgressData(progress);
 
-            progData.MaxPercentage = 1;
+            progData.StepRange(1);
             progData.Status = "Looking for existing features in the database.";
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
             var features = UmcLoaderFactory.LoadUmcFeatureData(dataset.Features.Path, dataset.DatasetId,
                 Providers.FeatureCache);
-            progress.Report(progData.UpdatePercent(100));
-
 
             progData.StepRange(2);
             progData.Status = "Loading MS Feature Data.";
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
             var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
-            progress.Report(progData.UpdatePercent(100));
 
             progData.StepRange(3);
             progData.Status = "Loading scan summaries.";
             var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             dataset.BuildScanTimes(scansInfo);
-            progress.Report(progData.UpdatePercent(100));
+            
+            progData.StepRange(100);
 
             var msnSpectra = new List<MSSpectra>();
 
@@ -263,13 +260,12 @@ namespace MultiAlignCore.IO
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
                 msFeatures = Filter(msFeatures, ref dataset);
 
-                progData.StepRange(100);
                 progData.Status = "Creating LCMS features.";
                 features = CreateLcmsFeatures(dataset,
                     msFeatures,
                     lcmsFindingOptions,
                     lcmsFilteringOptions,
-                    new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent))));
+                    new Progress<ProgressData>(pd => progData.Report(pd.Percent)));
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
@@ -325,7 +321,6 @@ namespace MultiAlignCore.IO
                 }
             }
 
-
             // Process the MS/MS data with peptides
             UpdateStatus("Reading List of Peptides");
             var sequenceProvider = PeptideReaderFactory.CreateReader(dataset.SequencePath);
@@ -342,6 +337,9 @@ namespace MultiAlignCore.IO
                 var linker = new PeptideMsMsLinker();
                 linker.LinkPeptidesToSpectra(msnSpectra, peptideList);
             }
+
+            progData.Report(100);
+
             return features;
         }
 

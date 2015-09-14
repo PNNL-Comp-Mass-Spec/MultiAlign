@@ -30,8 +30,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             bool refine = true,
             IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData();
+            var progressData = new ProgressData(progress);
             int id = 0, count = 0;
             int msmsFeatureId = 0;
             var resultFeatures = new List<UMCLight> { Capacity = features.Count };
@@ -125,7 +124,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 resultFeatures.Add(xicTarget.Feature);
                 if (count%100 == 0 || count == features.Count - 1)
                 {
-                    progress.Report(progressData.UpdatePercent((100.0 * count) / features.Count));
+                    progressData.Report(count, features.Count);
                 }
             }
 

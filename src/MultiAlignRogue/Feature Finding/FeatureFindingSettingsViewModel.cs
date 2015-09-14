@@ -509,29 +509,33 @@ namespace MultiAlignRogue.Feature_Finding
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
 
-            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
-            var totalProgressData = new ProgressData();
+            IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
+            var totalProgressData = new ProgressData(totalProgressRpt);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
 
-            int i = 0;
+            int i = 1;
             foreach (var file in selectedFiles)
             {
-                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 30 };
-                var progress = new Progress<ProgressData>(pd =>
+                // Set range based on file
+                totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
+                var progData = new ProgressData();
+                var progressRpt = new Progress<ProgressData>(pd =>
                 {
                     file.Progress = progData.UpdatePercent(pd.Percent).Percent;
-                    // same as i / selectedFiles.Count * 100 + file.Progress / selectedFiles.Count
-                    totalProgress.Report(totalProgressData.UpdatePercent(((100.0 * i + file.Progress) / selectedFiles.Count)));
+                    // Report file progress
+                    totalProgressData.Report(file.Progress);
                 });
+
+                progData.StepRange(30);
 
                 var features = this.featureCache.LoadDataset(
                                                     file.Dataset,
                                                     this.analysis.Options.MsFilteringOptions,
                                                     this.analysis.Options.LcmsFindingOptions,
                                                     this.analysis.Options.LcmsFilteringOptions,
-                                                    progress);
+                                                    progressRpt);
 
                 if (!this.features.ContainsKey(file.Dataset))
                 {
@@ -550,7 +554,7 @@ namespace MultiAlignRogue.Feature_Finding
                     stopWatch.Start();
 
                     progData.StepRange(100);
-                    this.featureCache.CacheFeatures(features, progress);
+                    this.featureCache.CacheFeatures(features, progressRpt);
                     stopWatch.Stop();
                     logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
                 }
@@ -558,7 +562,6 @@ namespace MultiAlignRogue.Feature_Finding
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
                 file.Progress = 0;
-                i++;
             }
 
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);

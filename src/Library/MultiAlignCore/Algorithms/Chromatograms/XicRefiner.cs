@@ -43,13 +43,12 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         /// <returns>List of refined XICs.</returns>
         public List<Xic> RefineXics(IList<Xic> xics, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData();
+            var progressData = new ProgressData(progress);
             var refinedXics = new List<Xic> { Capacity = xics.Count };
             for (int i = 0; i < xics.Count; i++)
             {
                 refinedXics.Add(RefineXic(xics[i]));
-                progress.Report(progressData.UpdatePercent((i / xics.Count) * 100));
+                progressData.Report(i, xics.Count);
             }
 
             return refinedXics;

@@ -100,9 +100,8 @@ namespace MultiAlignCore.Algorithms.Clustering
             this.SetNets(msFeatures);
 
             // Set up progress reporter
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData { IsPartialRange = true };
-            var internalProgress = new Progress<ProgressData>(pd =>  progress.Report(progressData.UpdatePercent(pd.Percent)));
+            var progressData = new ProgressData(progress);
+            var internalProgress = new Progress<ProgressData>(pd =>  progressData.Report(pd.Percent));
 
             var features = new List<UMCLight>();
             using (var logger = new StreamWriter("msfeatureClusteringStats.txt", true))
@@ -112,7 +111,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 stopWatch.Start();
 
                 // Step 1
-                progressData.MaxPercentage = 5;
+                progressData.StepRange(5);
                 progressData.Status = "First Pass Clustering";
                 features = this.FirstPassClustering(msFeatures, internalProgress);
                 stopWatch.Stop();
