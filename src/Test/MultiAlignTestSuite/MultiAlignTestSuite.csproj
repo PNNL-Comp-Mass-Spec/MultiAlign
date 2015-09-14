@@ -181,6 +181,7 @@
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
     <Compile Include="IO\Databases\MtdbLoaderTests.cs" />
     <Compile Include="IO\Databases\MtsLoaderTests.cs" />
+    <Compile Include="IO\PromexFileReading.cs" />
     <Compile Include="IO\UMCClusterIO.cs" />
     <Compile Include="IO\UMCClusterReconstruction.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
