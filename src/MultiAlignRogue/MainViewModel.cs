@@ -266,7 +266,7 @@ namespace MultiAlignRogue
             {
                 Multiselect = true,
                 DefaultExt = ".raw|.csv",
-                Filter = @"Supported Files|*.raw;*.csv;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv;"
+                Filter = @"Supported Files|*.raw;*.csv;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv|Promex Files (*.ms1ft)|*.ms1ft;"
             };
 
             var result = openFileDialog.ShowDialog();
@@ -274,12 +274,12 @@ namespace MultiAlignRogue
             {
                 var filePaths = openFileDialog.FileNames;
                 var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv")) &&
+                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft")) &&
                                        filePaths.Any(file => file.EndsWith("_scans.csv"));
                 if (!allFilesSelected)
                 {
                     var statusMessage =
-                        "MultiAlign Rogue requires at least a .raw file, an isos file, and a scans file.";
+                        "MultiAlign Rogue requires at least a .raw file, an feature (isos or ms1ft) file, and a scans file.";
                     ApplicationStatusMediator.SetStatus(statusMessage);
                     MessageBox.Show(statusMessage);
                     return;
@@ -563,7 +563,7 @@ namespace MultiAlignRogue
                 AnalysisPath = this.m_config.AnalysisPath
             };
 
-            var xmlSettings = new XmlWriterSettings() { Indent = true };
+            var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
 
             using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings))
             {

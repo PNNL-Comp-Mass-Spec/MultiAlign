@@ -607,8 +607,7 @@ namespace MultiAlignRogue.Feature_Finding
                 {
                     DatasetInformationViewModel file1 = file;
                     feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
-                            file1.Dataset.Features.Path,
-                            file1.DatasetId,
+                            file1.Dataset,
                             this.featureCache.Providers.FeatureCache));
                     this.features.Add(file.Dataset, feat);
                 }
