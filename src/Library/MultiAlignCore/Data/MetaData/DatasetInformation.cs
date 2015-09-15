@@ -71,6 +71,7 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets or sets a mapping of scans to retention times 
         /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public Dictionary<int, double> ScanTimes { get; set; }
 
         /// <summary>

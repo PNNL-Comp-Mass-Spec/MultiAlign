@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
@@ -561,7 +562,10 @@ namespace MultiAlignRogue
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
-            using (var writer = File.Open(filePath, FileMode.Create))
+
+            var xmlSettings = new XmlWriterSettings() { Indent = true };
+
+            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings))
             {
                 rogueProjectSerializer.WriteObject(writer, rogueProject);
             }
