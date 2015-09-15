@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InformedProteomics.Backend.Data.Biology;
 using InformedProteomics.Backend.Data.Spectrometry;
 using InformedProteomics.Backend.MassFeature;
 using MultiAlignCore.Data.Features;
@@ -34,22 +35,26 @@ namespace MultiAlignCore.IO.TextFiles
             int msId = 0;
             foreach (var feature in features)
             {
+                var chargeState = (feature.MinCharge + feature.MaxCharge) / 2;
+                var mz = (feature.Mass + (chargeState*Constants.Proton)) / chargeState;
+                // Parent feature
+                var umcLight = new UMCLight
+                {
+                    Id = umcId++,
+                    GroupId = this.datasetId,
+                    ScanStart = feature.MinScanNum,
+                    ScanEnd = feature.MaxScanNum,
+                    Abundance = feature.Abundance,
+                    AbundanceSum = feature.Abundance,
+                    ChargeState = chargeState,
+                    Net = feature.Net,
+                    NetAligned = feature.Net,
+                    MassMonoisotopic = feature.Mass,
+                    Mz = mz
+                };
+
                 for (int chargestate = feature.MinCharge; chargestate <= feature.MaxCharge; chargestate++)
                 {
-                    // Parent feature
-                    var umcLight = new UMCLight
-                    {
-                        Id = umcId++,
-                        GroupId = this.datasetId,
-                        ScanStart = feature.MinScanNum,
-                        ScanEnd = feature.MaxScanNum,
-                        Abundance = feature.Abundance,
-                        AbundanceSum = feature.Abundance,
-                        ChargeState = chargestate,
-                        Net = feature.Net,
-                        NetAligned = feature.Net,
-                    };
-
                     // Add min point
                     umcLight.AddChildFeature(new MSFeatureLight
                     {
@@ -58,7 +63,9 @@ namespace MultiAlignCore.IO.TextFiles
                         Scan = feature.MinScanNum,
                         Abundance = feature.Abundance,
                         ChargeState = chargestate,
-                        Net = feature.MinNet
+                        Net = feature.MinNet,
+                        MassMonoisotopic = feature.Mass,
+                        Mz = mz
                     });
 
                     // Add max point
@@ -69,13 +76,15 @@ namespace MultiAlignCore.IO.TextFiles
                         Scan = feature.MaxScanNum,
                         Abundance = feature.Abundance,
                         ChargeState = chargestate,
-                        Net = feature.MinNet
+                        Net = feature.MaxNet,
+                        MassMonoisotopic = feature.Mass,
+                        Mz = mz
                     });
-
-                    umcLight.CalculateStatistics(ClusterCentroidRepresentation.Median);
-
-                    umcLights.Add(umcLight);
                 }
+
+                //umcLight.CalculateStatistics(ClusterCentroidRepresentation.Median);
+
+                umcLights.Add(umcLight);
             }
 
             return umcLights;

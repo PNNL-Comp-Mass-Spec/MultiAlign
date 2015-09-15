@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InformedProteomics.Backend.Data.Spectrometry;
 using InformedProteomics.Backend.MassFeature;
+using InformedProteomics.Backend.MassSpecData;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.RawData;
@@ -13,7 +14,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 {
     public class PromexClusterer : IClusterer<UMCLight, UMCClusterLight>
     {
-        private InformedProteomicsReader reader;
+        private readonly InformedProteomicsReader reader;
 
         public PromexClusterer(InformedProteomicsReader reader)
         {
@@ -47,12 +48,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             // Convert UMCLights to InformedProteomics LcMsFeatures
             foreach (var ds in idToFeatures)
             {
-                var lcmsFeatures = new List<LcMsFeature>(ds.Value.Select(umcLight => new LcMsFeature(
-                                                    umcLight.MassMonoisotopic,
-                                                    umcLight.ChargeState,
-                                                    umcLight.Mz,
-                                                    umcLight.Scan,
-                                                    umcLight.Abundance)));
+                var lcmsFeatures = new List<LcMsFeature>(ds.Value.Select(this.GetLcMsFeature));
                 lcmsFeatureAligner.AddDataSet(ds.Key, lcmsFeatures, this.reader.GetReaderForGroup(ds.Key));
             }
 
@@ -65,24 +61,26 @@ namespace MultiAlignCore.Algorithms.Clustering
             var clusters = new List<UMCClusterLight>();
             foreach (var cluster in clusteredFeatures)
             {
-                if (cluster == null || cluster.Length == 0)
+                var firstFeature = cluster.FirstOrDefault(f => f != null);
+                if (firstFeature == null)
                 {
                     continue;
                 }
 
                 var umcCluster = new UMCClusterLight
                 {
-                    GroupId = cluster[0].DataSetId,
+                    GroupId = firstFeature.DataSetId,
                     Id = clustId++,
                 };
                 
                 foreach (var feature in cluster)
                 {
-                    var umcs = this.GetUMCs(feature, ref umcId, ref msId);
-                    foreach (var umc in umcs)
+                    if (feature == null)
                     {
-                        umcCluster.AddChildFeature(umc);
+                        continue;
                     }
+
+                    umcCluster.AddChildFeature(this.GetUMC(feature, ref umcId, ref msId));
                 }
 
                 umcCluster.CalculateStatistics(ClusterCentroidRepresentation.Median);
@@ -97,24 +95,57 @@ namespace MultiAlignCore.Algorithms.Clustering
             throw new NotImplementedException();
         }
 
-        private List<UMCLight> GetUMCs(LcMsFeature lcmsFeature, ref int umcId, ref int msId)
+        private LcMsFeature GetLcMsFeature(UMCLight umcLight)
         {
-            var umcLights = new List<UMCLight>();
+            var lcmsRun = this.reader.GetReaderForGroup(umcLight.GroupId);
+            double minNet = double.PositiveInfinity, maxNet = 0.0;
+            int minCharge = Int32.MaxValue, maxCharge = 0;
+            foreach (var msFeature in umcLight.MsFeatures)
+            {
+                minNet = Math.Min(minNet, msFeature.Net);
+                maxNet = Math.Max(maxNet, msFeature.Net);
+                minCharge = Math.Min(minCharge, msFeature.ChargeState);
+                maxCharge = Math.Max(maxCharge, msFeature.ChargeState);
+            }
+
+            return new LcMsFeature(
+                                    umcLight.MassMonoisotopic,
+                                    umcLight.ChargeState,
+                                    umcLight.Mz,
+                                    umcLight.Scan,
+                                    umcLight.Abundance,
+                                    minCharge,
+                                    maxCharge,
+                                    umcLight.ScanStart,
+                                    umcLight.ScanEnd,
+                                    lcmsRun.GetElutionTime(umcLight.ScanStart),
+                                    lcmsRun.GetElutionTime(umcLight.ScanEnd),
+                                    minNet,
+                                    maxNet)
+            {
+                DataSetId = umcLight.GroupId,
+                FeatureId = umcLight.Id,
+            };
+        }
+
+        private UMCLight GetUMC(LcMsFeature lcmsFeature, ref int umcId, ref int msId)
+        {
+            // Parent feature
+            var umcLight = new UMCLight
+            {
+                Id = umcId++,
+                GroupId = lcmsFeature.DataSetId,
+                ScanStart = lcmsFeature.MinScanNum,
+                ScanEnd = lcmsFeature.MaxScanNum,
+                Abundance = lcmsFeature.Abundance,
+                AbundanceSum = lcmsFeature.Abundance,
+                ChargeState = (lcmsFeature.MinCharge + lcmsFeature.MaxCharge) / 2,
+                Net = lcmsFeature.Net,
+                NetAligned = lcmsFeature.Net,
+                MassMonoisotopic = lcmsFeature.Mass,
+            };
             for (int chargestate = lcmsFeature.MinCharge; chargestate <= lcmsFeature.MaxCharge; chargestate++)
             {
-                // Parent feature
-                var umcLight = new UMCLight
-                {
-                    Id = umcId++,
-                    GroupId = lcmsFeature.DataSetId,
-                    ScanStart = lcmsFeature.MinScanNum,
-                    ScanEnd = lcmsFeature.MaxScanNum,
-                    Abundance = lcmsFeature.Abundance,
-                    AbundanceSum = lcmsFeature.Abundance,
-                    ChargeState = chargestate,
-                    Net = lcmsFeature.Net,
-                    NetAligned = lcmsFeature.Net,
-                };
 
                 // Add min point
                 umcLight.AddChildFeature(new MSFeatureLight
@@ -124,7 +155,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                     Scan = lcmsFeature.MinScanNum,
                     Abundance = lcmsFeature.Abundance,
                     ChargeState = chargestate,
-                    Net = lcmsFeature.MinNet
+                    Net = lcmsFeature.MinNet,
+                    MassMonoisotopic = lcmsFeature.Mass,
                 });
 
                 // Add max point
@@ -135,13 +167,12 @@ namespace MultiAlignCore.Algorithms.Clustering
                     Scan = lcmsFeature.MaxScanNum,
                     Abundance = lcmsFeature.Abundance,
                     ChargeState = chargestate,
-                    Net = lcmsFeature.MinNet
+                    Net = lcmsFeature.MaxNet,
+                    MassMonoisotopic = lcmsFeature.Mass,
                 });
-
-                umcLights.Add(umcLight);
             }
 
-            return umcLights;
+            return umcLight;
         }
     }
 }
