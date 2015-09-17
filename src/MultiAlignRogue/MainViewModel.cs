@@ -91,6 +91,7 @@ namespace MultiAlignRogue
             LoadProjectCommand = new RelayCommand(async () => await LoadProject());
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             RestoreDefaultSettingsCommand = new RelayCommand(this.RestoreDefaultSettings);
+            RunFullWorkflowCommand = new RelayCommand(this.AsyncWorkflow);
             
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
@@ -148,6 +149,11 @@ namespace MultiAlignRogue
         /// Gets a command that restores all settings to their defaults.
         /// </summary>
         public RelayCommand RestoreDefaultSettingsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for running feature finding, alignment, and clustering in succession.
+        /// </summary>
+        public RelayCommand RunFullWorkflowCommand { get; private set; }
         #endregion
 
         #region Public Properties
@@ -478,6 +484,7 @@ namespace MultiAlignRogue
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
+            if(!isNewProject)this.Analysis.MetaData.BaselineDataset = (from x in this.Analysis.MetaData.Datasets where x.IsBaseline select x).First();
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
@@ -601,6 +608,35 @@ namespace MultiAlignRogue
                 this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
                 this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);   
             }
+        }
+
+        private async void AsyncWorkflow()
+        {
+            await Task.Run(() => RunFullWorkflow());
+        }
+
+        private void RunFullWorkflow()
+        {
+            bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
+            bool alignmentChosen = (alignmentSettingsViewModel.ShouldAlignToBaseline && alignmentSettingsViewModel.SelectedBaseline != null) || 
+                (alignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
+            if (filesSelected && alignmentChosen)
+            {
+                List<DatasetInformationViewModel> selectedDatasetsCopy =
+                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
+                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);                 //even if the user changes the selection while the workflow is running.
+                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
+                ClusterSettingsViewModel.ClusterFeatures();
+            }
+            else if (!filesSelected)
+            {
+                MessageBox.Show("No datasets selected.");
+            }
+            else
+            {
+                MessageBox.Show("Alignment settings not set.");
+            }
+            
         }
     }
 }

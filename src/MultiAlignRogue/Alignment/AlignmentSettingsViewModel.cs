@@ -9,6 +9,7 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignRogue.ViewModels;
+using NHibernate.SqlCommand;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -60,6 +61,7 @@ namespace MultiAlignRogue.Alignment
             this.analysis = analysis;
             this.featureCache = featureCache;
             this.Datasets = datasets;
+            if(analysis.MetaData.BaselineDataset != null) this.selectedBaseline = datasets.First(x => x.Name == analysis.MetaData.BaselineDataset.DatasetName); //Don't set baseline if there are no files to choose from yet
             this.alignmentWindowFactory = alignmentWindowFactory ?? new AlignmentViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
             this.aligner = new LCMSFeatureAligner();            
@@ -319,7 +321,7 @@ namespace MultiAlignRogue.Alignment
             await this.AsyncAddMassTags();
         }
 
-        private void AlignToBaseline()
+        internal void AlignToBaseline(List<DatasetInformationViewModel> WorkFlowDatasets = null)
         {
 
             // Use Promiscuous points when aligning to an AMT tag database
@@ -355,7 +357,7 @@ namespace MultiAlignRogue.Alignment
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
          
-            var selectedFiles = this.Datasets.Where(file => file.IsSelected && !file.DoingWork && !file.IsBaseline).ToList();
+            var selectedFiles = WorkFlowDatasets ?? this.Datasets.Where(file => file.IsSelected && !file.DoingWork && !file.IsBaseline).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;

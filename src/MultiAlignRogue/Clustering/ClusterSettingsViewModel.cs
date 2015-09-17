@@ -168,7 +168,7 @@ namespace MultiAlignRogue.Clustering
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
 
-        public void ClusterFeatures()
+        internal void ClusterFeatures()
         {
             IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
             {

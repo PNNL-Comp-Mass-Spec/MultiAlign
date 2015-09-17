@@ -6,6 +6,7 @@ using MultiAlign.Commands.Plotting;
 using MultiAlign.ViewModels.Plotting;
 using MultiAlignCore.Data.MetaData;
 using NHibernate.Mapping;
+using Xceed.Wpf.DataGrid.Views;
 
 namespace MultiAlignRogue.ViewModels
 {
@@ -438,12 +439,12 @@ namespace MultiAlignRogue.ViewModels
 
         private void SetDatasetState()
         {
-            if (this.FeaturesFound)
+            if (this.FeaturesFound && !(this.IsAligned || this.IsClustered))
             {
                 this.DatasetState = DatasetStates.FeaturesFound;
             }
 
-            if (this.IsAligned)
+            if (this.IsAligned && ! this.IsClustered)
             {
                 this.DatasetState = DatasetStates.Aligned;
             }

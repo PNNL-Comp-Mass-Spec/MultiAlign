@@ -32,6 +32,7 @@
                 <MenuItem Header="Save Project As" Command="{Binding SaveAsProjectCommand}" />
                 <Separator />
                 <MenuItem Header="Restore Defaults" Command="{Binding RestoreDefaultSettingsCommand}" />
+                <MenuItem Header="Run Full Workflow" Command="{Binding RunFullWorkflowCommand}"/>
             </MenuItem>
         </Menu>
         

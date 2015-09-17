@@ -496,11 +496,11 @@ namespace MultiAlignRogue.Feature_Finding
             await Task.Run(() => this.LoadFeatures());
         }
 
-        private void LoadFeatures()
+        internal void LoadFeatures(List<DatasetInformationViewModel> WorkFlowDatasets = null)
         {
             this.ShouldShowProgress = true;
             this.featureCache.Providers = this.analysis.DataProviders;
-            var selectedFiles = this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
+            var selectedFiles = WorkFlowDatasets ?? this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
