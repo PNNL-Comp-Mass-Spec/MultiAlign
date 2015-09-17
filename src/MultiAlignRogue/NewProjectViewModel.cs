@@ -182,16 +182,16 @@ namespace MultiAlignRogue
             var openFileDialog = new OpenFileDialog
             {
                 Multiselect = true,
-                DefaultExt = ".raw|.csv",
-                Filter = @"Supported Files|*.raw;*.csv;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv;"
+                DefaultExt = ".raw|.pbf|.csv|.ms1ft",
+                Filter = @"Supported Files|*.raw;*.pbf;*.csv;*.ms1ft;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv|Promex Files (*.ms1ft)|*.ms1ft;"
             };
 
             var result = openFileDialog.ShowDialog();
             if (result != null && result.Value)
             {
                 var filePaths = openFileDialog.FileNames;
-                var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv")) &&
+                var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw") || file.EndsWith(".pbf")) &&
+                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft")) &&
                                        filePaths.Any(file => file.EndsWith("_scans.csv"));
                 if (!allFilesSelected)
                 {

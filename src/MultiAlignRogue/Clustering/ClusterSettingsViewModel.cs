@@ -6,6 +6,8 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Hibernate;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
@@ -202,17 +204,18 @@ namespace MultiAlignRogue.Clustering
             // IMS is said to require charge separation 
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 45 };
+                var progData = new ProgressData(internalProgress);
                 IProgress<ProgressData> clusterProgress =
-                    new Progress<ProgressData>(pd => internalProgress.Report(progData.UpdatePercent(pd.Percent)));
+                    new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
+                progData.StepRange(45);
                 var features = new List<UMCLight>();
                 int i = 0;
                 var datasets = this.Datasets.Where(ds => ds.FeaturesFound).ToList();
                 foreach (var dataset in datasets)
                 {
                     features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
-                    clusterProgress.Report(progData.UpdatePercent((100.0 * ++i) / datasets.Count));
+                    progData.Report(++i, datasets.Count);
                 }
 
                 progData.StepRange(50);
@@ -265,8 +268,10 @@ namespace MultiAlignRogue.Clustering
             else
             {
                 var maxChargeState = this.featureCache.FindMaxCharge();
-                var clusterProgress = new Progress<ProgressData>();
-                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 0 };
+                var progData = new ProgressData(internalProgress);
+                var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+
+                DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
 
                 /*
                  * Here we cluster all charge states separately.  Probably IMS Data.
@@ -308,8 +313,7 @@ namespace MultiAlignRogue.Clustering
                     }
 
                     progData.StepRange((maxPercent - maxFirstStep) / 3);
-                    providers.ClusterCache.ClearAllClusters();
-                    this.analysis.DataProviders.ClusterCache.AddAllStateless(this.analysis.Clusters, clusterProgress);
+                    this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
 
                     progData.StepRange(maxPercent);
                     this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
@@ -318,6 +322,8 @@ namespace MultiAlignRogue.Clustering
                     ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
                 }
+
+                DatabaseIndexer.IndexClusters(NHibernateUtil.Path);
 
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
 

@@ -99,20 +99,19 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be added</param>
         public virtual void AddAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 95 };
+                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                     int i = 0;
                     foreach (var t in tCollection)
                     {
                         session.SaveOrUpdate(t); //If we don't want to keep the unaligned features
                         if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
                         {
-                            progress.Report(progressData.UpdatePercent((100.0 * i) / tCollection.Count));
+                            progressData.Report(i, tCollection.Count);
                         }
 
                         i++;
@@ -120,7 +119,7 @@ namespace MultiAlignCore.IO.Hibernate
 
                     progressData.StepRange(100);
                     transaction.Commit();
-                    progress.Report(progressData.UpdatePercent(100));
+                    progressData.Report(100);
                 }
             }
         }
@@ -131,13 +130,12 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be added</param>
         public virtual void AddAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 95 };
+                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                     int i = 0;
                     var query1 = session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON");
                     var query2 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON");
@@ -149,7 +147,7 @@ namespace MultiAlignCore.IO.Hibernate
 
                         if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
                         {
-                            progress.Report(progressData.UpdatePercent((100.0 * i) / tCollection.Count));
+                            progressData.Report(i, tCollection.Count);
                         }
 
                         i++;
@@ -158,7 +156,7 @@ namespace MultiAlignCore.IO.Hibernate
                     query3.ExecuteUpdate();
                     progressData.StepRange(100);
                     transaction.Commit();
-                    progress.Report(progressData.UpdatePercent(100));
+                    progressData.Report(100);
                 }
             }
         }
@@ -185,13 +183,12 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be updated</param>
         public void UpdateAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 95 };
+                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                     int i = 0;
                     foreach (var t in tCollection)
                     {
@@ -199,7 +196,7 @@ namespace MultiAlignCore.IO.Hibernate
 
                         if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
                         {
-                            progress.Report(progressData.UpdatePercent((100.0 * i) / tCollection.Count));
+                            progressData.Report(i, tCollection.Count);
                         }
 
                         i++;
@@ -207,7 +204,7 @@ namespace MultiAlignCore.IO.Hibernate
 
                     progressData.StepRange(100);
                     transaction.Commit();
-                    progress.Report(progressData.UpdatePercent(100));
+                    progressData.Report(100);
                 }
             }
         }

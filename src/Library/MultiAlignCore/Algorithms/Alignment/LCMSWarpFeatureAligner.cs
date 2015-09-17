@@ -63,8 +63,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progData = new ProgressData();
+            var progData = new ProgressData(progress);
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
             {
                 Options = Options
@@ -74,8 +73,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
-                progData.Percent = e.PercentComplete;
-                progress.Report(progData);
+                progData.Report(e.PercentComplete);
             };
 
             var umcLights = features as IList<UMCLight> ?? features.ToList();
@@ -104,8 +102,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progData = new ProgressData();
+            var progData = new ProgressData(progress);
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
             {
                 Options = Options
@@ -115,8 +112,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
-                progData.Percent = e.PercentComplete;
-                progress.Report(progData);
+                progData.Report(e.PercentComplete);
             };
 
             OnStatus("Setting features from baseline dataset.");

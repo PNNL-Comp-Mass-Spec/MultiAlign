@@ -146,6 +146,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -221,6 +222,7 @@
     <Compile Include="Algorithms\Clustering\MSMSClusterer.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\MsToLcmsFeatures.cs" />
+    <Compile Include="Algorithms\Clustering\PromexClusterer.cs" />
     <Compile Include="Algorithms\Clustering\TreeNode.cs" />
     <Compile Include="Algorithms\Clustering\UMCCentroidClusterer.cs" />
     <Compile Include="Algorithms\Clustering\UMCAverageLinkageClusterer.cs" />
@@ -571,6 +573,7 @@
     <Compile Include="IO\TextFiles\MsgfReader.cs" />
     <Compile Include="IO\TextFiles\MsMsFileWriterFactory.cs" />
     <Compile Include="IO\TextFiles\PeptideReaderFactory.cs" />
+    <Compile Include="IO\TextFiles\PromexFileReader.cs" />
     <Compile Include="IO\TextFiles\ScansFileReader.cs" />
     <Compile Include="IO\TextFiles\SkylineTransitionFileReader.cs" />
     <Compile Include="IO\CommandLineProcessor.cs" />

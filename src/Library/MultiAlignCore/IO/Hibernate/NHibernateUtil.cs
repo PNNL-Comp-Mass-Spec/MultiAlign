@@ -177,7 +177,7 @@ namespace MultiAlignCore.IO.Hibernate
         private static void SetConfigurationDbLocation(string dbLocation)
         {
             Configuration.SetProperty("connection.connection_string",
-                "Data Source=" + dbLocation + ";Version=3;New=True");
+                "Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536");
         }
 
         public static string Connection

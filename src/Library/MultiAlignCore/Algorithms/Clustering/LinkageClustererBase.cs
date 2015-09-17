@@ -90,8 +90,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 			 * it will process the data before the gap (a block) until the current index of the features in question.
 			 */
 
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData();
+            var progressData = new ProgressData(progress);
 
 			// Make sure we have data to cluster first.
 			if (data == null)
@@ -167,8 +166,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 					startUMCIndex = i + 1;
 				}
 
-                var progressPercent = (100.0 * i) / totalFeatures;
-			    progress.Report(progressData.UpdatePercent(progressPercent));
+                progressData.Report(i, totalFeatures);
 			}
 
 			// Make sure that we cluster what is left over.

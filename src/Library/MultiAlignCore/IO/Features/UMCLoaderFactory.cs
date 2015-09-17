@@ -3,8 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.RawData;
 using MultiAlignCore.IO.TextFiles;
 
 #endregion
@@ -37,26 +40,31 @@ namespace MultiAlignCore.IO.Features
         ///     Loads feature data from the files provided.
         /// </summary>
         /// <returns></returns>
-        public static IList<UMCLight> LoadUmcFeatureData(string path,
-            int datasetId,
-            IUmcDAO featureCache)
+        public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset, IUmcDAO featureCache, InformedProteomicsReader provider = null)
         {
             var features = new List<UMCLight>();
-            var extension = Path.GetExtension(path);
+            var extension = Path.GetExtension(dataset.Features.Path);
             if (extension == null) return features;
 
             extension = extension.ToUpper();
             switch (extension)
             {
                 case ".TXT":
-                    var umcReader = new LCMSFeatureFileReader(path);
+                    var umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
                     features = umcReader.GetUmcList();
                     break;
                 case ".DB3":
-                    features = featureCache.FindByDatasetId(datasetId);
+                    features = featureCache.FindByDatasetId(dataset.DatasetId);
+                    break;
+                case ".MS1FT":
+                    if (provider != null)
+                    {
+                        var promexReader = new PromexFileReader(provider, dataset.DatasetId);
+                        features = promexReader.ReadFile(dataset.Features.Path).ToList();   
+                    }
                     break;
                 default: //Was reconstructing features from scratch even when they were already cached because the file extention was ".csv" not ".db3"
-                    features = featureCache.FindByDatasetId(datasetId);
+                    features = featureCache.FindByDatasetId(dataset.DatasetId);
                     break;
             }
             return features;

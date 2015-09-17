@@ -71,6 +71,7 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets or sets a mapping of scans to retention times 
         /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public Dictionary<int, double> ScanTimes { get; set; }
 
         /// <summary>
@@ -368,11 +369,13 @@ namespace MultiAlignCore.Data.MetaData
                 {
                     SupportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv", InputFileType.Features));
                     SupportedTypes.Add(new SupportedDatasetType("Decon Tools scans", "_scans.csv", InputFileType.Scans));
+                    SupportedTypes.Add(new SupportedDatasetType("Promex Features", ".ms1ft", InputFileType.Features));
                     SupportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt",
                         InputFileType.Features));
                     SupportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
                     SupportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
                     SupportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
+                    SupportedTypes.Add(new SupportedDatasetType("pbf", ".pbf", InputFileType.Raw));
                     SupportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt",
                         InputFileType.Sequence));
                     SupportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt",

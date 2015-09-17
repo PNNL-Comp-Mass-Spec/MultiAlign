@@ -364,7 +364,12 @@ namespace MultiAlignRogue.Alignment
             }
 
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
-            int i = 0;
+            var totalProgressData = new ProgressData(totalProgress);
+
+            DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+            DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
+
+            int i = 1;
             foreach (var file in selectedFiles)
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -378,15 +383,14 @@ namespace MultiAlignRogue.Alignment
                 IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
                 AlignmentData alignment;
 
+                totalProgressData.StepRange((100.0 * i++) / selectedFiles.Count);
+
                 var datasetProgress =
                     new Progress<ProgressData>(
                         pd =>
                         {
                             file.Progress = pd.Percent;
-                            totalProgress.Report(new ProgressData
-                            {
-                                Percent = ((100.0 * i) / selectedFiles.Count) + (pd.Percent / selectedFiles.Count)
-                            });
+                            totalProgressData.Report(pd.Percent);
                         });
 
                 if (ShouldAlignToBaseline)
@@ -418,7 +422,6 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                i++;
                 file.Progress = 0;
             }
 
@@ -426,6 +429,8 @@ namespace MultiAlignRogue.Alignment
             {
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
             }
+
+            DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
             ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;
