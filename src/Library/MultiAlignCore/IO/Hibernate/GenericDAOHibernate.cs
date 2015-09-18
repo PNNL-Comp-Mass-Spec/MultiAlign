@@ -104,6 +104,8 @@ namespace MultiAlignCore.IO.Hibernate
             {
                 using (var transaction = session.BeginTransaction())
                 {
+                    session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
+                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
                     var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                     int i = 0;
                     foreach (var t in tCollection)
@@ -117,6 +119,7 @@ namespace MultiAlignCore.IO.Hibernate
                         i++;
                     }
 
+                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
                     progressData.StepRange(100);
                     transaction.Commit();
                     progressData.Report(100);
@@ -137,10 +140,8 @@ namespace MultiAlignCore.IO.Hibernate
                 {
                     var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                     int i = 0;
-                    var query1 = session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON");
-                    var query2 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON");
-                    query2.ExecuteUpdate();
-                    query1.ExecuteUpdate();
+                    session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
+                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
                     foreach (var t in tCollection)
                     {
                         session.Insert(t); //If we don't want to keep the unaligned features
@@ -152,8 +153,7 @@ namespace MultiAlignCore.IO.Hibernate
 
                         i++;
                     }
-                    var query3 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF");
-                    query3.ExecuteUpdate();
+                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
                     progressData.StepRange(100);
                     transaction.Commit();
                     progressData.Report(100);
