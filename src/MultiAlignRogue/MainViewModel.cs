@@ -470,6 +470,7 @@ namespace MultiAlignRogue
                 await this.LoadRogueProject(rogueProject, true);
                 this.Serialize(newProjectViewModel.ProjectFilePath);
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
                 this.outputDirectory = newProjectViewModel.OutputDirectory;
                 this.RaisePropertyChanged("Analysis");
             }
@@ -596,6 +597,8 @@ namespace MultiAlignRogue
                     MessageBox.Show("Could not deserialize analysis options.");
                 }
             }
+
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
 
             return rogueProject;
         }
