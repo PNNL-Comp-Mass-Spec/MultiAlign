@@ -19,6 +19,7 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
+using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
 
@@ -51,6 +52,8 @@ namespace MultiAlignRogue
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
+
+        private TaskBarProgressSingleton taskBarProgressSingleton;
 
         private IClusterViewFactory clusterViewFactory;
 
@@ -96,6 +99,8 @@ namespace MultiAlignRogue
             
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
+
+            taskBarProgressSingleton = new TaskBarProgressSingleton(null, null, null);
 
             featureCache.Providers = Analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
@@ -240,6 +245,7 @@ namespace MultiAlignRogue
             private set
             {
                 this.featureFindingSettingsViewModel = value;
+                TaskBarProgressSingleton.SetFeatureModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -250,6 +256,7 @@ namespace MultiAlignRogue
             set
             {
                 this.alignmentSettingsViewModel = value;
+                TaskBarProgressSingleton.SetAlignmentModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -260,6 +267,7 @@ namespace MultiAlignRogue
             set
             {
                 this.clusterSettingsViewModel = value;
+                TaskBarProgressSingleton.SetClusterModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -624,16 +632,20 @@ namespace MultiAlignRogue
 
         private void RunFullWorkflow()
         {
-            bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
-            bool alignmentChosen = (alignmentSettingsViewModel.ShouldAlignToBaseline && alignmentSettingsViewModel.SelectedBaseline != null) || 
-                (alignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
+            bool filesSelected = FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
+            bool alignmentChosen = (AlignmentSettingsViewModel.ShouldAlignToBaseline && AlignmentSettingsViewModel.SelectedBaseline != null) || 
+                (AlignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
             if (filesSelected && alignmentChosen)
             {
+                TaskBarProgressSingleton.TakeTaskbarControl(this);
+                TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
+                    FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
                 FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);                 //even if the user changes the selection while the workflow is running.
                 AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
                 ClusterSettingsViewModel.ClusterFeatures();
+                TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
+                TaskBarProgressSingleton.ReleaseTaskbarControl(this);
             }
             else if (!filesSelected)
             {

@@ -334,7 +334,7 @@ namespace MultiAlignRogue.Alignment
             
             // Show the progress bar
             ShowAlignmentProgress = true;
-            TaskBarProgressSingleton.ShowTaskBarProgress = true;
+            TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
 
             //Update algorithms and providers
             this.featureCache.Providers = this.analysis.DataProviders;
@@ -368,7 +368,7 @@ namespace MultiAlignRogue.Alignment
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
             {
                 this.AlignmentProgress = pd.Percent;
-                TaskBarProgressSingleton.TaskBarProgress = pd.Percent / 100.0;
+                TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
             });
             var totalProgressData = new ProgressData(totalProgress);
 
@@ -438,7 +438,7 @@ namespace MultiAlignRogue.Alignment
 
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
-            TaskBarProgressSingleton.ShowTaskBarProgress = false;
+            TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
             ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;
         }
