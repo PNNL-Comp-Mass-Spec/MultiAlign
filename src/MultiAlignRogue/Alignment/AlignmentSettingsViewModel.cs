@@ -8,6 +8,7 @@ using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
+using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using NHibernate.SqlCommand;
 
@@ -333,6 +334,7 @@ namespace MultiAlignRogue.Alignment
             
             // Show the progress bar
             ShowAlignmentProgress = true;
+            TaskBarProgressSingleton.ShowTaskBarProgress = true;
 
             //Update algorithms and providers
             this.featureCache.Providers = this.analysis.DataProviders;
@@ -363,7 +365,11 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
             }
 
-            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
+            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+            {
+                this.AlignmentProgress = pd.Percent;
+                TaskBarProgressSingleton.TaskBarProgress = pd.Percent / 100.0;
+            });
             var totalProgressData = new ProgressData(totalProgress);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
@@ -432,6 +438,7 @@ namespace MultiAlignRogue.Alignment
 
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
+            TaskBarProgressSingleton.ShowTaskBarProgress = false;
             ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;
         }

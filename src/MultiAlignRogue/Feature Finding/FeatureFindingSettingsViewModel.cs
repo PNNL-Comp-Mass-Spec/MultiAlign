@@ -6,6 +6,7 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Hibernate;
+using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
@@ -509,7 +510,12 @@ namespace MultiAlignRogue.Feature_Finding
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
 
-            IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
+            TaskBarProgressSingleton.ShowTaskBarProgress = true;
+            IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd =>
+            {
+                this.TotalProgress = pd.Percent;
+                TaskBarProgressSingleton.TaskBarProgress = pd.Percent / 100.0;
+            });
             var totalProgressData = new ProgressData(totalProgressRpt);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
@@ -566,6 +572,7 @@ namespace MultiAlignRogue.Feature_Finding
 
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
+            TaskBarProgressSingleton.ShowTaskBarProgress = false;
             this.ShouldShowProgress = false;
         }
 

@@ -14,6 +14,9 @@
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProjectCommand}" />
     </Window.InputBindings>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskBarItemInfo"></TaskbarItemInfo>
+    </Window.TaskbarItemInfo>
 
     <Grid Name="MainGrid">
         

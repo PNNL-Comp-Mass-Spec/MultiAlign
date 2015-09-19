@@ -8,6 +8,7 @@ using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Hibernate;
+using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
@@ -172,10 +173,12 @@ namespace MultiAlignRogue.Clustering
 
         internal void ClusterFeatures()
         {
+            TaskBarProgressSingleton.ShowTaskBarProgress = true;
             IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
             {
                 this.progress.Report((int)pd.Percent);
                 this.ProgressPercent = pd.Percent;
+                TaskBarProgressSingleton.TaskBarProgress = pd.Percent / 100.0;
             });
 
             this.algorithms = this.builder.GetAlgorithmProvider(this.options);
@@ -339,6 +342,7 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
 
+            TaskBarProgressSingleton.ShowTaskBarProgress = false;
             this.ShouldShowProgress = false;
         }
 
