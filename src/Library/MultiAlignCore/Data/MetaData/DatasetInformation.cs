@@ -12,6 +12,8 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.MetaData
 {
+    using MultiAlignCore.IO.RawData;
+
     /// <summary>
     ///     Contains information about a dataset used for analysis.r
     /// </summary>
@@ -482,6 +484,22 @@ namespace MultiAlignCore.Data.MetaData
                 x.DatasetId = id++;
             }
             return addedSets;
+        }
+
+        private static InformedProteomicsReader reader;
+        public static InformedProteomicsReader GetInformedProteomicsReader(IEnumerable<DatasetInformation> datasets)
+        {
+            if (reader == null)
+            {
+                reader = new InformedProteomicsReader();
+            }
+
+            foreach (var dataset in datasets)
+            {
+                reader.AddDataFile(dataset.RawPath, dataset.DatasetId);
+            }
+
+            return reader;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

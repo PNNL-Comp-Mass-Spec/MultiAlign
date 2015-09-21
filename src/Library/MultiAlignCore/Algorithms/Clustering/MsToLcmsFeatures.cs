@@ -53,7 +53,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             this.options = options ?? new LcmsFeatureFindingOptions();
             
             // Set clusterers
-            if (this.options.FirstPassClusterer == LcmsFeatureClusteringAlgorithmType.BinarySearchTree)
+            if (this.options.FirstPassClusterer == MsFeatureClusteringAlgorithmType.BinarySearchTree)
             {
                 this.firstPassClusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>(
                     mzSort,
@@ -63,11 +63,10 @@ namespace MultiAlignCore.Algorithms.Clustering
             }
             else
             {
-                var clusterFactory = new GenericClusterFactory<MSFeatureLight, UMCLight>();
-                this.firstPassClusterer = clusterFactory.Create(this.options.FirstPassClusterer);
+                this.firstPassClusterer = ClusterFactory.Create(this.options.FirstPassClusterer);
             }
 
-            if (this.options.SecondPassClusterer == LcmsFeatureClusteringAlgorithmType.BinarySearchTree)
+            if (this.options.SecondPassClusterer == GenericClusteringAlgorithmType.BinarySearchTree)
             {
                 this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(
                                                             monoSort,

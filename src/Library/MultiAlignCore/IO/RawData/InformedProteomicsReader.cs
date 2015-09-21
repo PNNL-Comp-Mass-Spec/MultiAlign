@@ -319,7 +319,7 @@ namespace MultiAlignCore.IO.RawData
         {
             if (!m_dataFiles.ContainsKey(groupId))
             {
-                throw new Exception("The group-dataset ID provided was not found.");
+                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
             }
 
             // If we don't have a reader, then create one for this group 

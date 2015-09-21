@@ -4,7 +4,24 @@ namespace MultiAlignCore.Algorithms.Clustering
     {
         AverageLinkage,
         SingleLinkage,
-        FastSingleLinkage,
+        Centroid,
+        Prims,
+        Promex,
+    }
+
+    public enum MsFeatureClusteringAlgorithmType
+    {
+        AverageLinkage,
+        SingleLinkage,
+        Centroid,
+        Prims,
+        BinarySearchTree,
+    }
+
+    public enum GenericClusteringAlgorithmType
+    {
+        AverageLinkage,
+        SingleLinkage,
         Centroid,
         Prims,
         BinarySearchTree,

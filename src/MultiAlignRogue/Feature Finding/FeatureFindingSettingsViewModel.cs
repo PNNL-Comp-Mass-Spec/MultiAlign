@@ -62,8 +62,10 @@ namespace MultiAlignRogue.Feature_Finding
             this.progress = progressReporter ?? new Progress<int>();
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            this.MsFeatureClusterers = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>(
-                                       Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>());
+            this.MsFeatureClusterers = new ObservableCollection<MsFeatureClusteringAlgorithmType>(
+                                       Enum.GetValues(typeof(MsFeatureClusteringAlgorithmType)).Cast<MsFeatureClusteringAlgorithmType>());
+            this.LcmsFeatureClusterers = new ObservableCollection<GenericClusteringAlgorithmType>(
+                           Enum.GetValues(typeof(GenericClusteringAlgorithmType)).Cast<GenericClusteringAlgorithmType>());
 
             // When dataset is selected/unselected, update can executes.
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
@@ -108,7 +110,9 @@ namespace MultiAlignRogue.Feature_Finding
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
 
-        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; } 
+        public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; }
+
+        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; private set; } 
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
@@ -441,7 +445,7 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public LcmsFeatureClusteringAlgorithmType FirstPassClusterer
+        public MsFeatureClusteringAlgorithmType FirstPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.FirstPassClusterer; }
             set
@@ -454,7 +458,7 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public LcmsFeatureClusteringAlgorithmType SecondPassClusterer
+        public GenericClusteringAlgorithmType SecondPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.SecondPassClusterer; }
             set

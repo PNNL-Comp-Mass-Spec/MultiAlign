@@ -23,8 +23,8 @@
         {
             InstrumentTolerances = new FeatureTolerances();
 
-            this.FirstPassClusterer = LcmsFeatureClusteringAlgorithmType.FastSingleLinkage;
-            this.SecondPassClusterer = LcmsFeatureClusteringAlgorithmType.BinarySearchTree;
+            this.FirstPassClusterer = MsFeatureClusteringAlgorithmType.SingleLinkage;
+            this.SecondPassClusterer = GenericClusteringAlgorithmType.BinarySearchTree;
             this.FindXics = true;
             this.RefineXics = true;
             this.SmoothingWindowSize = 5;
@@ -36,8 +36,8 @@
             MaximumNetRange = .005;
         }
 
-        public LcmsFeatureClusteringAlgorithmType FirstPassClusterer { get; set; }
-        public LcmsFeatureClusteringAlgorithmType SecondPassClusterer { get; set; }
+        public MsFeatureClusteringAlgorithmType FirstPassClusterer { get; set; }
+        public GenericClusteringAlgorithmType SecondPassClusterer { get; set; }
 
         public bool FindXics { get; set; }       
         public bool RefineXics { get; set; }

@@ -185,6 +185,13 @@ namespace MultiAlignRogue.Clustering
             var clusterer = this.algorithms.Clusterer;
             clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(this.options.LcmsClusteringOptions);
             this.featureCache = this.analysis.DataProviders.FeatureCache;
+            if (clusterer is PromexClusterer)
+            {
+                var promexClusterer = clusterer as PromexClusterer;
+                promexClusterer.Reader =
+                    DatasetInformation.GetInformedProteomicsReader(
+                        this.Datasets.Where(ds => ds.FeaturesFound).Select(ds => ds.Dataset));
+            }
 
             // This just tells us whether we are using mammoth memory partitions or not.          
             var clusterCount = 0;

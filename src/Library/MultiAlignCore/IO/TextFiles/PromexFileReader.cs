@@ -52,6 +52,7 @@ namespace MultiAlignCore.IO.TextFiles
                     NetStart = feature.MinNet,
                     NetEnd = feature.MaxNet,
                     MassMonoisotopic = feature.Mass,
+                    MassMonoisotopicAligned = feature.Mass,
                     Mz = mz
                 };
 
