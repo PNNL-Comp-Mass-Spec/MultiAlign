@@ -58,7 +58,11 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 {
                     continue;
                 }
-               
+
+                var minEt = ipr.GetElutionTime(ipr.MinLcScan);
+                var maxEt = ipr.GetElutionTime(ipr.MaxLcScan);
+                var diffEt = maxEt - minEt;
+
                 // Add xic points as MSFeatures.
                 xicTarget.Feature.MsFeatures.Clear();
                 foreach (var point in xic)
@@ -72,7 +76,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         Abundance = Convert.ToInt64(point.Intensity),
                         Id = id++,
                         DriftTime = xicTarget.Feature.DriftTime,
-                        Net = ipr.GetElutionTime(point.ScanNum),
+                        Net = (ipr.GetElutionTime(point.ScanNum) - minEt) / diffEt,
                         GroupId = xicTarget.Feature.GroupId
                     });
                 }

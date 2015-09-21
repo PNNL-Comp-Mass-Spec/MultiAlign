@@ -14,6 +14,8 @@
 		<property name="MassMonoisotopicAligned"    column="Mass_Aligned"            type="double" not-null="false" />
 		<property name="Net"                        column="NET"                        type="double" not-null="false" />
     <property name="NetAligned"                 column="NET_Aligned"                type="double" not-null="false" />
+    <property name="NetStart"                   column="NET_Start"                  type="double" not-null="false" />
+    <property name="NetEnd"                     column="NET_End"                    type="double" not-null="false" />
 		<property name="Mz"                         column="MZ"                         type="double" not-null="false" />
 		<property name="Scan"                       column="Scan_LC"                    type="int" not-null="false" />
 		<property name="ScanStart"                  column="Scan_LC_Start"              type="int" not-null="false" />

@@ -49,6 +49,8 @@ namespace MultiAlignCore.IO.TextFiles
                     ChargeState = chargeState,
                     Net = feature.Net,
                     NetAligned = feature.Net,
+                    NetStart = feature.MinNet,
+                    NetEnd = feature.MaxNet,
                     MassMonoisotopic = feature.Mass,
                     Mz = mz
                 };

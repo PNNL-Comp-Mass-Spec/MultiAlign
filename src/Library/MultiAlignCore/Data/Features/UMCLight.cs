@@ -4,7 +4,9 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.Features
 {
-	/// <summary>
+    using System.Security.Permissions;
+
+    /// <summary>
 	/// Representation of a UMC with only basic information
 	/// </summary>
     public class UMCLight : FeatureLight,
@@ -105,6 +107,8 @@ namespace MultiAlignCore.Data.Features
             set;
         }
 
+        public double NetStart { get; set; }
+
         /// <summary>
         /// Gets or sets the last scan number the feature was seen in.
         /// </summary>
@@ -113,6 +117,8 @@ namespace MultiAlignCore.Data.Features
             get;
             set;
         }
+
+        public double NetEnd { get; set; }
 
         public int ScanAligned
         {
@@ -273,6 +279,8 @@ namespace MultiAlignCore.Data.Features
             double  sumAbundance    = 0;
             var     minScan         = int.MaxValue;
             var     maxScan         = int.MinValue;
+            var minNet              = double.PositiveInfinity;
+            var maxNet              = 0.0; 
             double  maxAbundance = int.MinValue;
             double representativeMz = 0;
             foreach (var feature in MsFeatures)
@@ -298,11 +306,15 @@ namespace MultiAlignCore.Data.Features
                 sumDrifttime    += feature.DriftTime;
                 minScan          = Math.Min(feature.Scan, minScan);
                 maxScan          = Math.Max(feature.Scan, maxScan);
+                minNet           = Math.Min(feature.Net, minNet);
+                maxNet           = Math.Max(feature.Net, maxNet);
             }            
             Abundance       = maxAbundance;
             AbundanceSum    = sumAbundance;
             ScanEnd         = maxScan;
             ScanStart       = minScan;
+            NetStart        = minNet;
+            NetEnd          = maxNet;
             var numUmCs     = MsFeatures.Count;
 
             // Calculate the centroid of the cluster.
