@@ -25,6 +25,7 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data;
+    using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
 
     public class ClusterSettingsViewModel : ViewModelBase

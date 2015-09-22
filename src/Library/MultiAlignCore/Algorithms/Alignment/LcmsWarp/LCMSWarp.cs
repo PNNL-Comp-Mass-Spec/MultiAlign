@@ -531,9 +531,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             int featureIndex;
             var numFeatures = m_features.Count;
-            var alignmentFuncLength = m_alignmentFunc.Count;
-            var dicSectionToIndex = new Dictionary<int, int>();
 
+            var dicSectionToIndex = new Dictionary<int, int>();
             for (var i = 0; i < m_alignmentFunc.Count; i++)
             {
                 dicSectionToIndex.Add(m_alignmentFunc[i].SectionStart, i);
@@ -542,51 +541,63 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (featureIndex = 0; featureIndex < numFeatures; featureIndex++)
             {
                 var feature = m_features[featureIndex];
-                double netStart;
-                double netEndBaseline;
-                double netEnd;
-                double netStartBaseline;
-                if (feature.Net < m_alignmentFunc[0].NetStart)
-                {
-                    netStart = m_alignmentFunc[0].NetStart;
-                    netStartBaseline = m_alignmentFunc[0].NetStart2;
-                    netEnd = m_alignmentFunc[0].NetEnd;
-                    netEndBaseline = m_alignmentFunc[0].NetEnd2;
-
-                    var msNetTransformed = ((feature.Net - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
-                    m_features[featureIndex].NetAligned = msNetTransformed;
-                    continue;
-                }
-                double netTransformed;
-                if (feature.Net > m_alignmentFunc[alignmentFuncLength - 1].NetEnd)
-                {
-                    netStart = m_alignmentFunc[alignmentFuncLength - 1].NetStart;
-                    netStartBaseline = m_alignmentFunc[alignmentFuncLength - 1].NetStart2;
-                    netEnd = m_alignmentFunc[alignmentFuncLength - 1].NetEnd;
-                    netEndBaseline = m_alignmentFunc[alignmentFuncLength - 1].NetEnd2;
-
-                    netTransformed = ((feature.Net - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
-                    m_features[featureIndex].NetAligned = netTransformed;
-                    continue;
-                }
-
-                var msSection1 = Convert.ToInt32(((feature.Net - MinNet) * NumSections) / (MaxNet - MinNet));
-                if (msSection1 >= NumSections)
-                {
-                    msSection1 = NumSections - 1;
-                }
-
-                var msSectionIndex = dicSectionToIndex[msSection1];
-
-                netStart = m_alignmentFunc[msSectionIndex].NetStart;
-                netEnd = m_alignmentFunc[msSectionIndex].NetEnd;
-
-                netStartBaseline = m_alignmentFunc[msSectionIndex].NetStart2;
-                netEndBaseline = m_alignmentFunc[msSectionIndex].NetEnd2;
-
-                netTransformed = ((feature.Net - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
-                m_features[featureIndex].NetAligned = netTransformed;
+                m_features[featureIndex].NetAligned = this.GetTransformedNet(feature.Net, dicSectionToIndex);
+                m_features[featureIndex].NetStart = this.GetTransformedNet(feature.NetStart, dicSectionToIndex);
+                m_features[featureIndex].NetEnd = this.GetTransformedNet(feature.NetEnd, dicSectionToIndex);
             }
+        }
+
+        /// <summary>
+        /// Transform a single NET value using alignment function.
+        /// </summary>
+        /// <param name="aligneeNet">NET to transform.</param>
+        /// <param name="dicSectionToIndex">Mapping of section to net index.</param>
+        /// <returns>Transformed NET.</returns>
+        private double GetTransformedNet(double aligneeNet, Dictionary<int, int> dicSectionToIndex)
+        {
+            var alignmentFuncLength = m_alignmentFunc.Count;
+            double netStart;
+            double netEndBaseline;
+            double netEnd;
+            double netStartBaseline;
+            if (aligneeNet < m_alignmentFunc[0].NetStart)
+            {
+                netStart = m_alignmentFunc[0].NetStart;
+                netStartBaseline = m_alignmentFunc[0].NetStart2;
+                netEnd = m_alignmentFunc[0].NetEnd;
+                netEndBaseline = m_alignmentFunc[0].NetEnd2;
+
+                var msNetTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+                return msNetTransformed;
+            }
+            double netTransformed;
+            if (aligneeNet > m_alignmentFunc[alignmentFuncLength - 1].NetEnd)
+            {
+                netStart = m_alignmentFunc[alignmentFuncLength - 1].NetStart;
+                netStartBaseline = m_alignmentFunc[alignmentFuncLength - 1].NetStart2;
+                netEnd = m_alignmentFunc[alignmentFuncLength - 1].NetEnd;
+                netEndBaseline = m_alignmentFunc[alignmentFuncLength - 1].NetEnd2;
+
+                netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+                return netTransformed;
+            }
+
+            var msSection1 = Convert.ToInt32(((aligneeNet - MinNet) * NumSections) / (MaxNet - MinNet));
+            if (msSection1 >= NumSections)
+            {
+                msSection1 = NumSections - 1;
+            }
+
+            var msSectionIndex = dicSectionToIndex[msSection1];
+
+            netStart = m_alignmentFunc[msSectionIndex].NetStart;
+            netEnd = m_alignmentFunc[msSectionIndex].NetEnd;
+
+            netStartBaseline = m_alignmentFunc[msSectionIndex].NetStart2;
+            netEndBaseline = m_alignmentFunc[msSectionIndex].NetEnd2;
+
+            netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+            return netTransformed;
         }
 
         /// <summary>
@@ -696,13 +707,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="umcAlignedNets"></param>
         /// <param name="alignedDriftTimes"></param>
         public void GetFeatureCalibratedMassesAndAlignedNets(ref List<int> umcIndices, ref List<double> umcCalibratedMass,
-                                                             ref List<double> umcAlignedNets, ref List<double> alignedDriftTimes)
+                                                             ref List<double> umcAlignedNets,
+                                                             ref List<double> umcAlignedStartNets,
+                                                             ref List<double> umcAlignedEndNets,
+                                                             ref List<double> alignedDriftTimes)
         {
             foreach (var feature in m_features)
             {
                 umcIndices.Add(feature.Id);
                 umcCalibratedMass.Add(feature.MassMonoisotopicAligned);
                 umcAlignedNets.Add(feature.NetAligned);
+                umcAlignedStartNets.Add(feature.NetStart);
+                umcAlignedEndNets.Add(feature.NetEnd);
                 alignedDriftTimes.Add(feature.DriftTime);
             }
         }
@@ -719,7 +735,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="minScan"></param>
         /// <param name="maxScan"></param>
         public void GetFeatureCalibratedMassesAndAlignedNets(ref List<int> umcIndices, ref List<double> umcCalibratedMasses,
-                                                             ref List<double> umcAlignedNets, ref List<int> umcAlignedScans,
+                                                             ref List<double> umcAlignedNets, ref List<double> umcStartNets,
+                                                             ref List<double> umcEndNets, ref List<int> umcAlignedScans,
                                                              ref List<double> umcDriftTimes, int minScan, int maxScan)
         {
             var numFeatures = m_features.Count;
@@ -730,6 +747,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 umcIndices.Add(feature.Id);
                 umcCalibratedMasses.Add(feature.MassMonoisotopicAligned);
                 umcAlignedNets.Add(feature.NetAligned);
+                umcStartNets.Add(feature.NetStart);
+                umcEndNets.Add(feature.NetEnd);
                 umcAlignedScans.Add(minScan + (int)(feature.NetAligned * (maxScan - minScan)));
                 umcDriftTimes.Add(feature.DriftTime);
             }

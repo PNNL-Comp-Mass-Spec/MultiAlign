@@ -138,5 +138,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 m_massFuncTimePpmOutput.Add(value);
             }
         }
+
+        /// <summary>
+        /// Get warped NET. If warped net is not in alignment function, it will interpolate
+        /// between points.
+        /// </summary>
+        /// <param name="aligneeNet">The alignee net to warp.</param>
+        /// <returns>Warped NET.</returns>
+        //public double GetInterpolatedNet(double aligneeNet)
+        //{
+        //    this.m_netFuncTimeInput.BinarySearch(aligneeNet);
+        //}
     }
 }

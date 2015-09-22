@@ -8,6 +8,8 @@ using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using NHibernate.Linq;
+
     /// <summary>
     /// Class which will use LCMSWarp to process alignment
     /// </summary>
@@ -195,13 +197,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var umcIndices = new List<int>();
             var umcCalibratedMasses = new List<double>();
             var umcAlignedNets = new List<double>();
+            var umcStartNets = new List<double>();
+            var umcEndNets = new List<double>();
             var umcAlignedScans = new List<int>();
             var umcDriftTimes = new List<double>();
 
             if (AligningToMassTagDb)
             {
                 m_lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(ref umcIndices, ref umcCalibratedMasses,
-                                                                    ref umcAlignedNets, ref umcDriftTimes);
+                                                                    ref umcAlignedNets, ref umcStartNets,
+                                                                    ref umcEndNets,
+                                                                    ref umcDriftTimes);
 
                 for (var i = 0; i < umcIndices.Count; i++)
                 {
@@ -210,6 +216,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         Id = umcIndices[i],
                         MassMonoisotopicAligned = umcCalibratedMasses[i],
                         NetAligned = umcAlignedNets[i],
+                        NetStart = umcStartNets[i],
+                        NetEnd = umcEndNets[i],
                         DriftTime = umcDriftTimes[i]
                     };
 
@@ -218,6 +226,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         // Update the data without stomping the data that shouldn't change.
                         data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
                         data[i].NetAligned = point.NetAligned;
+                        data[i].NetStart = point.NetStart;
+                        data[i].NetEnd = point.NetEnd;
                         data[i].DriftTime = point.DriftTime;
                     }
                     else
@@ -230,7 +240,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             else
             {
                 m_lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(ref umcIndices, ref umcCalibratedMasses,
-                                                                    ref umcAlignedNets, ref umcAlignedScans,
+                                                                    ref umcAlignedNets, ref umcStartNets,
+                                                                    ref umcEndNets, ref umcAlignedScans,
                                                                     ref umcDriftTimes, m_minReferenceDatasetScan,
                                                                     m_maxReferenceDatasetScan);
 
@@ -241,6 +252,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         Id = umcIndices[i],
                         MassMonoisotopicAligned = umcCalibratedMasses[i],
                         NetAligned = umcAlignedNets[i],
+                        NetStart = umcStartNets[i],
+                        NetEnd = umcEndNets[i],
                         ScanAligned = umcAlignedScans[i],
                         DriftTime = umcDriftTimes[i]
                     };
@@ -250,6 +263,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         // Update the data without stomping the data that shouldn't change.
                         data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
                         data[i].NetAligned = point.NetAligned;
+                        data[i].NetStart = point.NetStart;
+                        data[i].NetEnd = point.NetEnd;
                         data[i].ScanAligned = point.ScanAligned;
                         data[i].DriftTime = point.DriftTime;
                     }
