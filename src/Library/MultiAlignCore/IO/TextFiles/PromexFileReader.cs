@@ -27,7 +27,7 @@ namespace MultiAlignCore.IO.TextFiles
         public IEnumerable<UMCLight> ReadFile(string fileLocation)
         {
             var features = LcMsFeatureAlignment.LoadProMexResult(this.datasetId, fileLocation,
-                this.reader.GetReaderForGroup(0));
+                this.reader.GetReaderForGroup(this.datasetId));
 
             var umcLights = new List<UMCLight> { Capacity = features.Count };
 

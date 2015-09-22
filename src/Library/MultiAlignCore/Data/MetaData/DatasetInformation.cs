@@ -12,6 +12,8 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.MetaData
 {
+    using InformedProteomics.Backend.MassSpecData;
+
     using MultiAlignCore.IO.RawData;
 
     /// <summary>
@@ -294,6 +296,16 @@ namespace MultiAlignCore.Data.MetaData
                 }
             }
             return System.IO.Path.GetFileNameWithoutExtension(datasetName);
+        }
+
+        public void BuildScanTimes(ILcMsRun lcms)
+        {
+            this.ScanTimes = new Dictionary<int, double>();
+            var ms1Scans = lcms.GetScanNumbers(1);
+            foreach (var scan in ms1Scans)
+            {
+                this.ScanTimes.Add(scan, lcms.GetElutionTime(scan));
+            }
         }
 
         public void BuildScanTimes(List<ScanSummary> scanSummaries)

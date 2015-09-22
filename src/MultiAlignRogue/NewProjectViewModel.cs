@@ -191,12 +191,11 @@ namespace MultiAlignRogue
             {
                 var filePaths = openFileDialog.FileNames;
                 var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw") || file.EndsWith(".pbf")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft")) &&
-                                       filePaths.Any(file => file.EndsWith("_scans.csv"));
+                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft"));
                 if (!allFilesSelected)
                 {
                     var statusMessage =
-                        "MultiAlign Rogue requires at least a .raw file, an isos file, and a scans file.";
+                        "MultiAlign Rogue requires at least a .pbf file.";
                     ApplicationStatusMediator.SetStatus(statusMessage);
                     MessageBox.Show(statusMessage);
                     return;

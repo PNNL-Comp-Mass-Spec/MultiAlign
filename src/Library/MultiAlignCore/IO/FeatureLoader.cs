@@ -251,8 +251,9 @@ namespace MultiAlignCore.IO
 
             progData.StepRange(3);
             progData.Status = "Loading scan summaries.";
-            var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
-            dataset.BuildScanTimes(scansInfo);
+            ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
+            ////dataset.BuildScanTimes(scansInfo);
+            dataset.BuildScanTimes(provider.GetReaderForGroup(0));
             
             progData.StepRange(100);
 

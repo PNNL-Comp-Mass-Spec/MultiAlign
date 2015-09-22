@@ -14,6 +14,8 @@ using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.IO.Features
 {
+    using InformedProteomics.Backend.MassSpecData;
+
     /// <summary>
     ///     Loads UMC's from the given sources.
     /// </summary>

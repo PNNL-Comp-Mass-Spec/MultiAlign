@@ -288,8 +288,7 @@ namespace MultiAlignRogue
             {
                 var filePaths = openFileDialog.FileNames;
                 var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft")) &&
-                                       filePaths.Any(file => file.EndsWith("_scans.csv"));
+                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft"));
                 if (!allFilesSelected)
                 {
                     var statusMessage =
