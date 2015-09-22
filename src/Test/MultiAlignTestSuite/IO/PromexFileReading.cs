@@ -63,7 +63,10 @@ namespace MultiAlignTestSuite.IO
             features.AddRange(features2);
             features.AddRange(features3);
 
-            var clusterer = new PromexClusterer(reader);
+            var clusterer = new PromexClusterer()
+            {
+                Reader =  reader,
+            };
             var clusters = clusterer.Cluster(features);
 
             Console.WriteLine(clusters.Count(c => c.Features.Count > 1));
@@ -112,7 +115,10 @@ namespace MultiAlignTestSuite.IO
             features.AddRange(features1);
             features.AddRange(features2);
 
-            var clusterer = new PromexClusterer(reader);
+            var clusterer = new PromexClusterer()
+            {
+                Reader = reader,
+            };
             var clusters = clusterer.Cluster(features);
             var clusterCount = clusters.Count(c => c.UmcList.Count > 1);
 
