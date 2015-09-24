@@ -1,18 +1,4 @@
-﻿using System.Windows.Navigation;
-using InformedProteomics.Backend.Utils;
-using MultiAlign.ViewModels.Databases;
-using MultiAlign.ViewModels.IO;
-using MultiAlign.Windows.Viewers.Databases;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.IO.InputFiles;
-using MultiAlignCore.IO.MTDB;
-using MultiAlignRogue.Utils;
-using MultiAlignRogue.ViewModels;
-using NHibernate.SqlCommand;
-
-namespace MultiAlignRogue.Alignment
+﻿namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
@@ -25,46 +11,88 @@ namespace MultiAlignRogue.Alignment
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
 
+    using InformedProteomics.Backend.Utils;
+
     using MultiAlign.Data;
+    using MultiAlign.ViewModels.Databases;
 
     using MultiAlignCore.Algorithms;
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Alignment;
+    using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Hibernate;
 
+    using MultiAlignRogue.Utils;
+    using MultiAlignRogue.ViewModels;
+
     public class AlignmentSettingsViewModel : ViewModelBase
     {
+        /// <summary>
+        /// The analysis information to run alignment on.
+        /// </summary>
         private readonly MultiAlignAnalysis analysis;
 
+        /// <summary>
+        /// The cache for loading features from the analysis database.
+        /// </summary>
         private readonly FeatureLoader featureCache;
 
+        /// <summary>
+        /// Factory for creating windows related to alignment (such as alignment plot windows).
+        /// </summary>
         private readonly IAlignmentWindowFactory alignmentWindowFactory;
 
-        private readonly IProgress<int> progress;
-
+        /// <summary>
+        /// Algorithm builder for creating correct aligner based on aligner selection type.
+        /// </summary>
         private readonly AlgorithmBuilder builder;
 
+        /// <summary>
+        /// The selected aligner.
+        /// </summary>
         private readonly LCMSFeatureAligner aligner;
 
+        /// <summary>
+        /// Stores the selected alignment algorithm based on parameters selected here.
+        /// </summary>
         private AlgorithmProvider algorithms;
 
+        /// <summary>
+        /// The selected dataset for pairwise alignments.
+        /// </summary>
         private DatasetInformationViewModel selectedBaseline;
 
+        /// <summary>
+        /// The alignment data for each aligned dataset.
+        /// </summary>
         private readonly List<AlignmentData> alignmentInformation;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlignmentSettingsViewModel"/> class.
+        /// </summary>
+        /// <param name="analysis">The analysis information to run alignment on.</param>
+        /// <param name="featureCache">The cache for loading features from the analysis database.</param>
+        /// <param name="datasets">List of all potential datasets to run alignment on.</param>
+        /// <param name="alignmentWindowFactory">
+        /// Factory for creating windows related to alignment (such as alignment plot windows).
+        /// </param>
         public AlignmentSettingsViewModel(MultiAlignAnalysis analysis,
                                           FeatureLoader featureCache,
                                           ObservableCollection<DatasetInformationViewModel> datasets,
-                                          IAlignmentWindowFactory alignmentWindowFactory = null,
-                                          IProgress<int> progressReporter = null)
+                                          IAlignmentWindowFactory alignmentWindowFactory = null)
         {
             this.analysis = analysis;
             this.featureCache = featureCache;
             this.Datasets = datasets;
-            if(analysis.MetaData.BaselineDataset != null) this.selectedBaseline = datasets.First(x => x.Name == analysis.MetaData.BaselineDataset.DatasetName); //Don't set baseline if there are no files to choose from yet
+            if (analysis.MetaData.BaselineDataset != null)
+            {
+                // Don't set baseline if there are no files to choose from yet
+                this.selectedBaseline = datasets.First(x => x.Name == analysis.MetaData.BaselineDataset.DatasetName);
+            }
+
             this.alignmentWindowFactory = alignmentWindowFactory ?? new AlignmentViewFactory();
-            this.progress = progressReporter ?? new Progress<int>();
             this.aligner = new LCMSFeatureAligner();            
             this.builder = new AlgorithmBuilder();
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
@@ -72,7 +100,12 @@ namespace MultiAlignRogue.Alignment
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
             this.alignmentInformation = new List<AlignmentData>();
 
-            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
+            this.DatabaseSelectionViewModel = DatabaseSelectionViewModel.Instance;
+
+            // When dataset is selected/unselected, update CanExecutes for alignment and plotting commands.
+            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(
+                this,
+                args =>
             {
                 if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
                 {
@@ -81,8 +114,10 @@ namespace MultiAlignRogue.Alignment
                 }
             });
 
-            // When dataset state changes, update can executes.
-            this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(this, args =>
+            // When dataset state changes, update CanExecutes for alignment and plotting commands.
+            this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(
+                this,
+                args =>
             {
                 if (args.Sender is DatasetInformationViewModel && args.PropertyName == "DatasetState")
                 {
@@ -91,25 +126,37 @@ namespace MultiAlignRogue.Alignment
                 }
             });
 
+            // When database server is selected, update CanExecute for the alignment command.
+            this.MessengerInstance.Register<PropertyChangedMessage<DmsDatabaseServerViewModel>>(
+                this,
+                args =>
+                    {
+                        if (args.Sender is DatabaseSelectionViewModel && args.PropertyName == "SelectedDatabaseServer")
+                        {
+                            ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                        }
+                    });
+
             this.AlignCommand = new RelayCommand(this.AsyncAlign, this.CanAlign);
+
+            // Executable if the selected files are aligned and alignment information is available.
             this.DisplayAlignmentCommand = new RelayCommand(
                                                             this.DisplayAlignment,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
-            this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
         }
 
         public RelayCommand AlignCommand { get; private set; }
 
         public RelayCommand DisplayAlignmentCommand { get; private set; }
 
-        public RelayCommand SelectAMTCommand { get; private set; }
-
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
         public ObservableCollection<AlignmentType> CalibrationOptions { get; private set; }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+
+        public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; private set; }
 
         /// <summary>
         /// True when aligning to a baseline dataset; false when aligning to an AMT tag database
@@ -137,7 +184,6 @@ namespace MultiAlignRogue.Alignment
                 if (this.analysis.Options.AlignmentOptions.AlignToAMT != value)
                 {
                     this.analysis.Options.AlignmentOptions.AlignToAMT = value;
-                    SelectAMTCommand.RaiseCanExecuteChanged();
                     this.AlignCommand.RaiseCanExecuteChanged();
                     this.RaisePropertyChanged("ShouldAlignToBaseline");
                     this.RaisePropertyChanged();
@@ -170,56 +216,6 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        public double MassTolerance
-        {
-            get { return this.analysis.Options.LcmsClusteringOptions.InstrumentTolerances.Mass; }
-            set
-            {
-                this.analysis.Options.LcmsClusteringOptions.InstrumentTolerances.Mass = value;
-                this.RaisePropertyChanged();
-            }
-        }
-
-        public double NetTolerance
-        {
-            get { return this.analysis.Options.LcmsClusteringOptions.InstrumentTolerances.Net; }
-            set
-            {
-                this.analysis.Options.LcmsClusteringOptions.InstrumentTolerances.Net = value;
-                this.RaisePropertyChanged();
-            }
-        }
-
-
-        private double massTagLoadProgress;
-        public double MassTagLoadProgress
-        {
-            get { return this.massTagLoadProgress; }
-            set
-            {
-                if (Math.Abs(this.massTagLoadProgress - value) > float.Epsilon)
-                {
-                    this.massTagLoadProgress = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        private bool showMassTagProgress;
-
-        public bool ShowMassTagProgress
-        {
-            get { return this.showMassTagProgress; }
-            set
-            {
-                if (this.showMassTagProgress != value)
-                {
-                    this.showMassTagProgress = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
         public FeatureAlignmentType SelectedAlignmentAlgorithm
         {
             get { return this.analysis.Options.AlignmentOptions.AlignmentAlgorithm; }
@@ -246,7 +242,6 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        // ToDo: Add this to the GUI
         public int AlignmentContractionFactor
         {
             get { return this.analysis.Options.AlignmentOptions.ContractionFactor; }
@@ -260,7 +255,6 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        // ToDo: Add this to the GUI
         public int AlignmentNumTimeSections
         {
             get { return this.analysis.Options.AlignmentOptions.NumTimeSections; }
@@ -290,7 +284,6 @@ namespace MultiAlignRogue.Alignment
         }
 
         private bool showAlignmentProgress;
-
         public bool ShowAlignmentProgress
         {
             get { return this.showAlignmentProgress; }
@@ -314,12 +307,6 @@ namespace MultiAlignRogue.Alignment
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
-        }
-
-        public async Task LoadMassTagDatabase(InputDatabase inputDatabase)
-        {
-            this.SelectedDatabaseServer = new DmsDatabaseServerViewModel(inputDatabase);
-            await this.AsyncAddMassTags();
         }
 
         internal void AlignToBaseline(List<DatasetInformationViewModel> WorkFlowDatasets = null)
@@ -399,7 +386,7 @@ namespace MultiAlignRogue.Alignment
                             totalProgressData.Report(pd.Percent);
                         });
 
-                if (ShouldAlignToBaseline)
+                if (this.ShouldAlignToBaseline)
                 {                 
                     // Aligning to a baseline dataset
                     alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures, datasetProgress);
@@ -412,8 +399,8 @@ namespace MultiAlignRogue.Alignment
                     alignment.baselineIsAmtDB = true;
                 }
 
-                //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
-                var priorAlignment = (this.alignmentInformation.Where(x => x.DatasetID == alignment.DatasetID)).ToList();
+                // Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
+                var priorAlignment = this.alignmentInformation.Where(x => x.DatasetID == alignment.DatasetID).ToList();
                 if (priorAlignment.Any())
                 {
                     this.alignmentInformation.Remove(priorAlignment.Single());
@@ -441,71 +428,6 @@ namespace MultiAlignRogue.Alignment
             TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
             ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;
-        }
-
-        public DmsDatabaseServerViewModel SelectedDatabaseServer { get; set; }
-
-        private void AsyncSelectAMT()
-        {
-            ThreadSafeDispatcher.Invoke(SelectAMT);
-            if (this.SelectedDatabaseServer != null)
-            {
-                this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabaseServer.Database;
-                ThreadSafeDispatcher.Invoke(async () => await AsyncAddMassTags());
-            }
-        }
-
-        private void SelectAMT()
-        {
-            var dmsWindow = new DatabaseSearchToolWindow();
-            var optionsViewModel = new MassTagDatabaseOptionsViewModel(this.analysis.Options.MassTagDatabaseOptions);
-            var databaseView = new DatabasesViewModel { MassTagOptions = optionsViewModel };
-            dmsWindow.DataContext = databaseView;
-            dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
-            var databases = loader.LoadDatabases();
-
-            foreach (var database in databases)
-            {
-                databaseView.AddDatabase(database);
-            }
-
-            if (this.SelectedDatabaseServer != null)
-                databaseView.SelectedDatabase = this.SelectedDatabaseServer;
-
-            var result = dmsWindow.ShowDialog();
-            if (result == true)
-            {
-                if (databaseView.SelectedDatabase != null)
-                {
-                    this.SelectedDatabaseServer = databaseView.SelectedDatabase;
-                }
-            }
-
-            this.AlignCommand.RaiseCanExecuteChanged();
-        }
-
-        private async Task AsyncAddMassTags()
-        {
-            await Task.Run(() => AddMassTags());
-        }
-
-        private void AddMassTags()
-        {
-            var loadProgress = new Progress<ProgressData>(pd => this.MassTagLoadProgress = pd.Percent);
-            this.RaisePropertyChanged("SelectedDatabaseServer");
-            var database = this.SelectedDatabaseServer.Database;
-            database.DatabaseName = database.DatabaseName;
-            database.DatabaseServer = database.DatabaseServer;
-            analysis.MetaData.Database = database;
-            analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
-            analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
-                                        this.analysis.Options.MassTagDatabaseOptions);
-            analysis.DataProviders.MassTags.DeleteAll();
-            this.ShowMassTagProgress = true;
-            analysis.DataProviders.MassTags.AddAllStateless(analysis.MassTagDatabase.MassTags, loadProgress);
-            this.ShowMassTagProgress = false;
         }
 
         private void DisplayAlignment()

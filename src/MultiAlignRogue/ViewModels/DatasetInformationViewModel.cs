@@ -30,7 +30,10 @@ namespace MultiAlignRogue.ViewModels
             Aligned,
             Clustering,
             PersistingClusters,
-            Clustered
+            Clustered,
+            Matching,
+            PersistingMatches,
+            Matched,
         };
 
         private readonly DatasetInformation m_information;

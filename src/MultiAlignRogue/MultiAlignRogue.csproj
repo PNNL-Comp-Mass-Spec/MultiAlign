@@ -173,6 +173,10 @@
     <Compile Include="Alignment\AlignmentSettings.xaml.cs">
       <DependentUpon>AlignmentSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AMTMatching\StacSettingsView.xaml.cs">
+      <DependentUpon>StacSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AMTMatching\StacSettingsViewModel.cs" />
     <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
       <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
     </Compile>
@@ -216,6 +220,7 @@
     <Compile Include="Utils\TaskBarProgressSingleton.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Compile Include="ViewModels\ChargeStateViewModel.cs" />
+    <Compile Include="ViewModels\DatabaseSelectionViewModel.cs" />
     <Compile Include="ViewModels\DatasetInformationViewModel.cs" />
     <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -235,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Alignment\AlignmentSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AMTMatching\StacSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

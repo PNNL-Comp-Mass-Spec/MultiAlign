@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MultiAlignRogue.Alignment
+namespace MultiAlignRogue.AMTMatching
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for StacSettingsView.xaml
     /// </summary>
-    public partial class AlignmentSettings : UserControl
+    public partial class StacSettingsView : UserControl
     {
-        public AlignmentSettings()
+        public StacSettingsView()
         {
             InitializeComponent();
 
@@ -32,11 +32,11 @@ namespace MultiAlignRogue.Alignment
         {
             if (this.AmtTagDatabaseProgressBar.Visibility == Visibility.Visible)
             {
-                this.AmtTagDatabaseRow.Height = new GridLength(25, GridUnitType.Pixel);
+                this.AmtTagDatabaseRow.Height = new GridLength(85, GridUnitType.Pixel);
             }
             else
             {
-                this.AmtTagDatabaseRow.Height = new GridLength(0, GridUnitType.Pixel);
+                this.AmtTagDatabaseRow.Height = new GridLength(55, GridUnitType.Pixel);
             }
         }
     }

@@ -33,6 +33,7 @@ namespace MultiAlignRogue
     using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.Alignment;
+    using MultiAlignRogue.AMTMatching;
     using MultiAlignRogue.Clustering;
     using MultiAlignRogue.Feature_Finding;
 
@@ -41,6 +42,8 @@ namespace MultiAlignRogue
     public class MainViewModel : ViewModelBase
     {
         #region Private Data Members
+        private MultiAlignAnalysis analysis;
+
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
 
         private readonly AnalysisConfig m_config;
@@ -52,6 +55,7 @@ namespace MultiAlignRogue
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
+        private StacSettingsViewModel stacSettingsViewModel;
 
         private TaskBarProgressSingleton taskBarProgressSingleton;
 
@@ -163,7 +167,19 @@ namespace MultiAlignRogue
         #endregion
 
         #region Public Properties
-        public MultiAlignAnalysis Analysis { get; private set; }
+
+        public MultiAlignAnalysis Analysis
+        {
+            get { return this.analysis; }
+            private set
+            {
+                if (this.analysis != value)
+                {
+                    this.analysis = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
@@ -268,6 +284,16 @@ namespace MultiAlignRogue
             {
                 this.clusterSettingsViewModel = value;
                 TaskBarProgressSingleton.SetClusterModel(this, value);
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public StacSettingsViewModel StacSettingsViewModel
+        {
+            get { return this.stacSettingsViewModel; }
+            set
+            {
+                this.stacSettingsViewModel = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -479,7 +505,6 @@ namespace MultiAlignRogue
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
                 this.outputDirectory = newProjectViewModel.OutputDirectory;
-                this.RaisePropertyChanged("Analysis");
             }
         }
 
@@ -493,20 +518,23 @@ namespace MultiAlignRogue
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
-            if(!isNewProject)this.Analysis.MetaData.BaselineDataset = (from x in this.Analysis.MetaData.Datasets where x.IsBaseline select x).First();
+
+            this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
+
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+            this.StacSettingsViewModel = new StacSettingsViewModel(this.Analysis, this.Datasets);
+            DatabaseSelectionViewModel.Instance.Analysis = this.Analysis;
             if (this.Analysis.Options.AlignmentOptions.InputDatabase != null)
             {
-                await this.AlignmentSettingsViewModel.LoadMassTagDatabase(this.Analysis.Options.AlignmentOptions.InputDatabase);
+                await DatabaseSelectionViewModel.Instance.LoadMassTagDatabase(this.Analysis.Options.AlignmentOptions.InputDatabase);
             }
 
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
-            this.RaisePropertyChanged("Analysis");
         }
 
         private void SaveProjectAs()
@@ -638,9 +666,12 @@ namespace MultiAlignRogue
             {
                 TaskBarProgressSingleton.TakeTaskbarControl(this);
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+
+                // Make copy of selected datasets at time of function call so all work is done on the same set of files
+                // even if the user changes the selection while the workflow is running.
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
-                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);                 //even if the user changes the selection while the workflow is running.
+                    FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();
+                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);
                 AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
                 ClusterSettingsViewModel.ClusterFeatures();
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, false);

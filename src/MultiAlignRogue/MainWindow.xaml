@@ -4,6 +4,7 @@
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
+        xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
         Title="{Binding WindowTitle}" Height="650" Width="1100" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
@@ -156,6 +157,9 @@
                         <Button Grid.Row="8" Grid.Column="0" Content="Cluster Features" Command="{Binding ClusterFeaturesCommand}" Width="125" HorizontalAlignment="Left" />
                         <Button Grid.Row="8" Grid.Column="2" Content="View Clusters" Command="{Binding DisplayClustersCommand}" Width="125" HorizontalAlignment="Right" />
                     </Grid>
+                </TabItem>
+                <TabItem Header="4. AMT Tag Matching" DataContext="{Binding StacSettingsViewModel}">
+                    <amtMatching:StacSettingsView Margin="5" />
                 </TabItem>
             </TabControl>
         </Grid>
