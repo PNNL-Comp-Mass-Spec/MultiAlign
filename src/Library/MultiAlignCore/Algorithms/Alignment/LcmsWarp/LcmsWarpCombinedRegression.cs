@@ -60,15 +60,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Sets the regression points to the appropriate values for the regression function
         /// </summary>
         /// <param name="matches"></param>
-        public void CalculateRegressionFunction(ref List<RegressionPoint> matches)
+        public void CalculateRegressionFunction(List<RegressionPoint> matches)
         {
             switch (RegressionType)
             {
                 case LcmsWarpRegressionType.Central:
-                    _central.CalculateRegressionFunction(ref matches);                    
+                    _central.CalculateRegressionFunction(matches);                    
                     break;
                 default:
-                    _central.CalculateRegressionFunction(ref matches);
+                    _central.CalculateRegressionFunction(matches);
                     _central.RemoveRegressionOutliers();
                     var centralPoints = _central.Points;
                     _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(centralPoints);                    

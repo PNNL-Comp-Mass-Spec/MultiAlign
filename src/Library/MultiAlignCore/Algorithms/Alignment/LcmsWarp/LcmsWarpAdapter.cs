@@ -173,7 +173,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             alignmentFunctions.Add(alignmentFunction);
 
             // Correct the features
-            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(ref aligneeFeatures);
+            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(aligneeFeatures);
                         
             // Get the heat maps
             double[,] heatScore;

@@ -63,6 +63,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private bool _aligningToMassTagDb;
 
         #region Public properties
+
         /// <summary>
         /// Get property for the NET Intercept that LCMS Warp is holding
         /// Simulates a pure linear regression
@@ -71,6 +72,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             get { return _lcmsWarp.NetIntercept; }
         }
+
         /// <summary>
         /// Get property for the NET RSquared that LCMS Warp is holding
         /// Simulates a pure linear regression
@@ -79,6 +81,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             get { return _lcmsWarp.NetLinearRsq; }
         }
+
         /// <summary>
         /// Get property for the NET Slope that LCMS Warp is holding
         /// Simulates a pure linear regression
@@ -186,7 +189,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Alignment. 
         /// </summary>
         /// <param name="data"></param>
-        public void ApplyNetMassFunctionToAligneeDatasetFeatures(ref List<UMCLight> data)
+        public void ApplyNetMassFunctionToAligneeDatasetFeatures(List<UMCLight> data)
         {
             if (_lcmsWarp == null)
             {
@@ -390,9 +393,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             var func = new LcmsWarpAlignmentFunction(Options.CalibrationType, Options.AlignType);
 
-            var aligneeNets = new List<double>();
-            var referenceNets = new List<double>();
-            _lcmsWarp.AlignmentFunction(ref aligneeNets, ref referenceNets);
+            List<double> aligneeNets;
+            List<double> referenceNets;
+            _lcmsWarp.AlignmentFunction(out aligneeNets, out referenceNets);
 
             if (_aligningToMassTagDb)
             {
@@ -591,11 +594,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _lcmsWarp = new LcmsWarp();
             }
 
-            var alignmentScores = new List<double>();
-            var aligneeIntervals = new List<double>();
-            var baselineIntervals = new List<double>();
+            List<double> alignmentScores;
+            List<double> aligneeIntervals;
+            List<double> baselineIntervals;
 
-            _lcmsWarp.GetSubsectionMatchScore(ref alignmentScores, ref aligneeIntervals, ref baselineIntervals, true);
+            _lcmsWarp.GetSubsectionMatchScore(out alignmentScores, out aligneeIntervals, out baselineIntervals, true);
 
             var numBaselineSections = baselineIntervals.Count;
             var numAligneeSections = aligneeIntervals.Count;
@@ -653,54 +656,39 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         #region Public Statistic Getter properties
+
         /// <summary>
         /// Returns the Standard Deviation of the Mass of the data
         /// </summary>
         public double MassStd
         {
-            get
-            {
-                double massStd, netStd, netMu, massMu;
-                _lcmsWarp.GetStatistics(out massStd, out netStd, out massMu, out netMu);
-                return massStd;
-            }
+            get { return _lcmsWarp.StatisticMassStd; }
         }
+
         /// <summary>
         /// Returns the Standard Deviation of the NET of the data
         /// </summary>
         public double NetStd
         {
-            get
-            {
-                double massStd, netStd, netMu, massMu;
-                _lcmsWarp.GetStatistics(out massStd, out netStd, out massMu, out netMu);
-                return netStd;
-            }
+            get { return _lcmsWarp.StatisticNetStd; }
         }
+
         /// <summary>
         /// Returns the Mean of the Mass of the data
         /// </summary>
         public double MassMu
         {
-            get
-            {
-                double massStd, netStd, netMu, massMu;
-                _lcmsWarp.GetStatistics(out massStd, out netStd, out massMu, out netMu);
-                return massMu;
-            }
+            get { return _lcmsWarp.StatisticMassMu; }
         }
+
         /// <summary>
         /// Returns the Mean of the NET of the data
         /// </summary>
         public double NetMu
         {
-            get
-            {
-                double massStd, netStd, netMu, massMu;
-                _lcmsWarp.GetStatistics(out massStd, out netStd, out massMu, out netMu);
-                return netMu;
-            }
+            get { return _lcmsWarp.StatisticNetMu; }
         }
+
         #endregion
 
         //TODO: Redesign this so that when we say "align(x,y)" we get this in an object separate from everything
@@ -713,8 +701,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="massHistogram"></param>
         /// <param name="netHistogram"></param>
         /// <param name="driftHistogram"></param>
-        //public void GetErrorHistograms(double massBin, double netBin, double driftBin,
-        //                out double[,] massHistogram, out double[,] netHistogram, out double[,] driftHistogram)
         public void GetErrorHistograms(double massBin, double netBin, double driftBin,
                         out Dictionary<double, int> massHistogram, out Dictionary<double, int> netHistogram, out Dictionary<double, int> driftHistogram)
         {

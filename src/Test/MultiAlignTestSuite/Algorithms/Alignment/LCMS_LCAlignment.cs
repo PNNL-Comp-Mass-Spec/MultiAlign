@@ -50,10 +50,10 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
             processor.PerformAlignmentToMsFeatures();
 
             //6.  apply alignment to data
-            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(ref experimentalTimesAsUmc);
+            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(experimentalTimesAsUmc);
             
             //7.  test alignment
-            Console.WriteLine("index" + "," + "ReferecneNet" + "," + "ExperimentalNet" + "," + "AlignedNet");
+            Console.WriteLine("index" + "," + "ReferenceNet" + "," + "ExperimentalNet" + "," + "AlignedNet");
             double sum = 0;
             for (int i = 0; i < experimentalTimes.Count; i++)
             {

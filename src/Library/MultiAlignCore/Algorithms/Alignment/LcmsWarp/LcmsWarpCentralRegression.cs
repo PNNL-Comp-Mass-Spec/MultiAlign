@@ -449,14 +449,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _alignmentFunction.Add(xSection, yShift);
                 bestPreviousIndex = _bestPreviousIndex[bestPreviousIndex];
             }
-
         }
 
         /// <summary>
         /// Calculates Central regression for the matches found and passed in
         /// </summary>
         /// <param name="calibMatches"></param>
-        public void CalculateRegressionFunction(ref List<RegressionPoint> calibMatches)
+        public void CalculateRegressionFunction(List<RegressionPoint> calibMatches)
         {
             Clear();
             foreach (var point in calibMatches)
@@ -481,8 +480,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             CalculateScoreMatrix();
             CalculateAlignmentMatrix();
             CalculateRegressionFunction();
-
-
         }
 
         /// <summary>

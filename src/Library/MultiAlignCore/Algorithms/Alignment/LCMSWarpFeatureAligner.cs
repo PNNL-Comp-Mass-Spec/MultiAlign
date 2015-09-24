@@ -187,7 +187,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             // Correct the features (updates MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
-            alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(ref umcLights);
+            alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
 
 
             // Find min/max scan for meta-data

@@ -22,14 +22,8 @@ namespace MultiAlignCore.Algorithms.Statistics
 
             foreach (var val in inputValues)
             {
-                if (val < minVal)
-                {
-                    minVal = val;
-                }
-                if (val > maxVal)
-                {
-                    maxVal = val;
-                }
+                minVal = Math.Min(minVal, val);
+                maxVal = Math.Max(maxVal, val);
             }
 
             //Only one unique value in the input values

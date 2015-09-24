@@ -416,20 +416,37 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
             return likelihood;
         }
-        
+
         /// <summary>
-        /// Method to grab the Mass and NET statistical data from the LCMS Warper
+        /// Statistical Mass standard deviation, or standard error, or standard something... (from LCMS Warper)
         /// </summary>
-        /// <param name="massStd"></param>
-        /// <param name="netStd"></param>
-        /// <param name="massMu"></param>
-        /// <param name="netMu"></param>
-        public void GetStatistics(out double massStd, out double netStd, out double massMu, out double netMu)
+        public double StatisticMassStd
         {
-            massStd = _massStd;
-            netStd  = _netStd;
-            massMu  = _muMass;
-            netMu   = _muNet;
+            get { return _massStd; }
+        }
+
+        /// <summary>
+        /// Statistical Net standard deviation, or standard error, or standard something... (from LCMS Warper)
+        /// </summary>
+        public double StatisticNetStd
+        {
+            get { return _netStd; }
+        }
+
+        /// <summary>
+        /// Statistical Mass Mu (population mean) (from LCMS Warper)
+        /// </summary>
+        public double StatisticMassMu
+        {
+            get { return _muMass; }
+        }
+
+        /// <summary>
+        /// Statistical Net Mu (population mean) (from LCMS Warper)
+        /// </summary>
+        public double StatisticNetMu
+        {
+            get { return _muNet; }
         }
 
         /// <summary>
@@ -511,10 +528,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         /// <param name="aligneeNet"></param>
         /// <param name="referenceNet"></param>
-        public void AlignmentFunction(ref List<double> aligneeNet, ref List<double> referenceNet)
+        public void AlignmentFunction(out List<double> aligneeNet, out List<double> referenceNet)
         {
-            aligneeNet.Clear();
-            referenceNet.Clear();
+            aligneeNet = new List<double>();
+            referenceNet = new List<double>();
             var numPieces = _alignmentFunc.Count;
             for (var pieceNum = 0; pieceNum < numPieces; pieceNum++)
             {              
@@ -983,7 +1000,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 calibrations.Add(calibrationMatch);
             }
-            MzRecalibration.CalculateRegressionFunction(ref calibrations);
+            MzRecalibration.CalculateRegressionFunction(calibrations);
 
             var numFeatures = _features.Count;
             for (var featureNum = 0; featureNum < numFeatures; featureNum++)
@@ -1021,7 +1038,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 calibrations.Add(calibrationMatch);
             }
 
-            NetRecalibration.CalculateRegressionFunction(ref calibrations);
+            NetRecalibration.CalculateRegressionFunction(calibrations);
 
             var numFeatures = _features.Count;
             for (var featureNum = 0; featureNum < numFeatures; featureNum++)
@@ -1174,7 +1191,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     }
                 }
                 
-                ComputeSectionMatch(section, ref sectionFeatures, sectionStartNet, sectionEndNet);
+                ComputeSectionMatch(section, sectionFeatures, sectionStartNet, sectionEndNet);
 
                 var percentComplete = section / (double)NumSections * 100;
                 OnProgress("Getting match probabilities", percentComplete);
@@ -1354,7 +1371,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }            
         }
 
-        private void ComputeSectionMatch(int msSection, ref List<LcmsWarpFeatureMatch> sectionMatchingFeatures, double minNet, double maxNet)
+        private void ComputeSectionMatch(int msSection, List<LcmsWarpFeatureMatch> sectionMatchingFeatures, double minNet, double maxNet)
         {
             var numMatchingFeatures = sectionMatchingFeatures.Count;
             var baselineSectionWidth = (MaxBaselineNet - MinBaselineNet) / NumBaselineSections;
@@ -1470,10 +1487,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeVals"></param>
         /// <param name="refVals"></param>
         /// <param name="standardize"></param>
-        public void GetSubsectionMatchScore(ref List<double> subsectionMatchScores, ref List<double> aligneeVals,
-                                            ref List<double> refVals, bool standardize)
+        public void GetSubsectionMatchScore(out List<double> subsectionMatchScores, out List<double> aligneeVals,
+                                            out List<double> refVals, bool standardize)
         {
-            subsectionMatchScores.Clear();
+            subsectionMatchScores = new List<double>();
+            aligneeVals = new List<double>();
+            refVals = new List<double>();
             for (var msSection = 0; msSection < NumSections; msSection++)
             {
                 aligneeVals.Add(MinNet + (msSection * (MaxNet - MinNet)) / NumSections);
