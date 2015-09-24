@@ -7,7 +7,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// Contains the feature index, baseline index, feature normalized elution time,
     /// baseline normalized elution time and the error for the mass, the net and the drift time
     /// </summary>
-    public class LcmsWarpFeatureMatch: IComparable<LcmsWarpFeatureMatch>
+    public class LcmsWarpFeatureMatch : IComparable<LcmsWarpFeatureMatch>
     {
         /// <summary>
         /// Constructor, initializes the testing values to -1 to ensure ability to see
@@ -19,7 +19,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             FeatureIndex2 = -1;
             Net = -1;
             Net2 = -1;
-
         }
 
         /// <summary>
@@ -61,6 +60,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Auto property - 
         /// </summary>
         public int FeatureIndex { get; set; }
+
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the baseline feature that this match corresponds to
@@ -79,12 +79,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 return 1;
             }
-            return Net.CompareTo(compareFeature.Net);    
+            return Net.CompareTo(compareFeature.Net);
         }
-        
+
         public override string ToString()
         {
-        	return "Index=" + FeatureIndex + "; Index2=" + FeatureIndex2 + "; NET=" + Net.ToString("0.000") + "; NET2=" + Net2.ToString("0.000");
+            return "Index=" + FeatureIndex + "; Index2=" + FeatureIndex2 + "; NET=" + Net.ToString("0.000") + "; NET2=" +
+                   Net2.ToString("0.000");
         }
     }
 }

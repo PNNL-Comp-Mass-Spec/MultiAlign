@@ -11,11 +11,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// <summary>
     /// Class which will use LCMSWarp to process alignment
     /// </summary>
-    public sealed class LcmsWarpAlignmentProcessor:
+    public sealed class LcmsWarpAlignmentProcessor :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>,
         IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, LcmsWarpAlignmentData>
     {
-
         private enum CurrentLcmsWarpTask
         {
             Unstarted,
@@ -28,13 +27,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             Complete
         }
 
-
         // In case alignment was to MS features, this will keep track of the minimum scan in the
         // reference features. They are needed because LCMSWarp uses NET values for reference and
         // are scaled to between 0 and 1. These will scale it back to actual scan numbers
         private int _minReferenceDatasetScan;
         private int _maxReferenceDatasetScan;
-        
+
         private int _minAligneeDatasetScan;
         private int _maxAligneeDatasetScan;
         private double _minAligneeDatasetMz;
@@ -96,10 +94,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpAlignmentOptions Options
         {
-            get { 
-                return _options; 
-            }
-            set { 
+            get { return _options; }
+            set
+            {
                 _options = value;
                 ApplyAlignmentOptions();
             }
@@ -114,8 +111,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpAlignmentProcessor()
         {
-            _lcmsWarp  = new LcmsWarp();
-            Options     = new LcmsWarpAlignmentOptions();
+            _lcmsWarp = new LcmsWarp();
+            Options = new LcmsWarpAlignmentOptions();
 
             _lcmsWarp.Progress += lcmsWarp_Progress;
 
@@ -133,7 +130,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             _percentCompleteAtStartOfTask = 0;
             _percentCompleteAtEndOfTask = 100;
-            
+
             _aligningToMassTagDb = false;
         }
 
@@ -147,10 +144,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _lcmsWarp.NetTolerance = Options.NetTolerance;
 
             // Applying options for NET Calibration
-            _lcmsWarp.NumSections = Options.NumTimeSections;            
+            _lcmsWarp.NumSections = Options.NumTimeSections;
             _lcmsWarp.MaxJump = Options.MaxTimeDistortion;
             _lcmsWarp.NumBaselineSections = Options.NumTimeSections * Options.ContractionFactor;
-            _lcmsWarp.NumMatchesPerBaseline = Options.ContractionFactor*Options.ContractionFactor;
+            _lcmsWarp.NumMatchesPerBaseline = Options.ContractionFactor * Options.ContractionFactor;
             _lcmsWarp.NumMatchesPerSection = _lcmsWarp.NumBaselineSections * _lcmsWarp.NumMatchesPerBaseline;
 
             _lcmsWarp.KeepPromiscuousMatches = Options.UsePromiscuousPoints;
@@ -168,12 +165,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 regType = LcmsWarpRegressionType.Hybrid;
             }
-            _lcmsWarp.MzRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices, _lcmsWarp.MassCalNumDeltaBins,
-                                                                   _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
-                                                                   regType);
-            _lcmsWarp.NetRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices, _lcmsWarp.MassCalNumDeltaBins,
-                                                                    _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
-                                                                    regType);
+            _lcmsWarp.MzRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices,
+                _lcmsWarp.MassCalNumDeltaBins,
+                _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
+                regType);
+            _lcmsWarp.NetRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices,
+                _lcmsWarp.MassCalNumDeltaBins,
+                _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
+                regType);
 
             // Applying LSQ options
             _lcmsWarp.MzRecalibration.SetLsqOptions(Options.MassCalibLsqNumKnots, Options.MassCalibLsqMaxZScore);
@@ -204,7 +203,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
             else
             {
-                featureData = _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(_minReferenceDatasetScan, _maxReferenceDatasetScan);
+                featureData = _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(_minReferenceDatasetScan,
+                    _maxReferenceDatasetScan);
             }
 
             var i = 0;
@@ -230,7 +230,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 i++;
             }
         }
-        
+
         /// <summary>
         /// For a given List of UMCLights, warp the alignee features to the baseline.
         /// </summary>
@@ -239,13 +239,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             var numPts = features.Count;
 
-            var mtFeatures = new List<UMCLight> { Capacity = numPts };
+            var mtFeatures = new List<UMCLight> {Capacity = numPts};
 
             _minAligneeDatasetScan = int.MaxValue;
             _maxAligneeDatasetScan = int.MinValue;
             _minAligneeDatasetMz = double.MaxValue;
             _maxAligneeDatasetMz = double.MinValue;
-
 
             for (var index = 0; index < numPts; index++)
             {
@@ -271,17 +270,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 // AND if we are within the specified boundary
                 //if (ValidateAlignmentBoundary(Options.AlignSplitMZs, mtFeature.Mz, boundary))
                 //{
-                    mtFeatures.Add(mtFeature);
+                mtFeatures.Add(mtFeature);
 
-                    _maxAligneeDatasetScan = Math.Max(_maxAligneeDatasetScan, features[index].Scan);
-                    _minAligneeDatasetScan = Math.Min(_minAligneeDatasetScan, features[index].Scan);
-                    _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, features[index].Mz);
-                    _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, features[index].Mz);
+                _maxAligneeDatasetScan = Math.Max(_maxAligneeDatasetScan, features[index].Scan);
+                _minAligneeDatasetScan = Math.Min(_minAligneeDatasetScan, features[index].Scan);
+                _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, features[index].Mz);
+                _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, features[index].Mz);
                 //}
             }
             _lcmsWarp.SetFeatures(mtFeatures);
         }
-        
+
         /// <summary>
         /// 
         /// Use the NET value of the UMCs in the List as the value to align to, the predictor variable
@@ -293,7 +292,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var numPts = umcData.Count;
 
-            var mtFeatures = new List<UMCLight> { Capacity = numPts };
+            var mtFeatures = new List<UMCLight> {Capacity = numPts};
 
             _minAligneeDatasetScan = int.MaxValue;
             _maxAligneeDatasetScan = int.MinValue;
@@ -301,7 +300,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (var index = 0; index < numPts; index++)
             {
                 var feature = new UMCLight();
-                var data = umcData[index];                
+                var data = umcData[index];
                 feature.MassMonoisotopic = data.MassMonoisotopic;
                 feature.MassMonoisotopicAligned = data.MassMonoisotopicAligned;
                 feature.Net = data.Net;
@@ -329,23 +328,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _aligningToMassTagDb = true;
             var numMassTags = features.Count;
 
-            var mtFeatures = new List<UMCLight> { Capacity = numMassTags };
+            var mtFeatures = new List<UMCLight> {Capacity = numMassTags};
             var minimumObservationCount = _options.MinimumAMTTagObsCount;
 
             while (true)
             {
-                mtFeatures.AddRange(from item in features
-                                    where AMTTagPassesFilter(item, minimumObservationCount)
-                                    select new UMCLight
-                                    {
-                                        NetAligned = item.NetAligned,
-                                        MassMonoisotopic = item.MassMonoisotopic,
-                                        MassMonoisotopicAligned = item.MassMonoisotopicAligned,
-                                        Mz = item.MassMonoisotopic / item.ChargeState + (1.00782 * (item.ChargeState - 1)),
-                                        Net = item.Net,
-                                        DriftTime = item.DriftTime,
-                                        Id = item.Id,
-                                    });
+                mtFeatures.AddRange(
+                    features.Where(item => AMTTagPassesFilter(item, minimumObservationCount))
+                        .Select(item => new UMCLight
+                        {
+                            NetAligned = item.NetAligned,
+                            MassMonoisotopic = item.MassMonoisotopic,
+                            MassMonoisotopicAligned = item.MassMonoisotopicAligned,
+                            Mz = item.MassMonoisotopic / item.ChargeState + (1.00782 * (item.ChargeState - 1)),
+                            Net = item.Net,
+                            DriftTime = item.DriftTime,
+                            Id = item.Id
+                        }));
 
                 if (mtFeatures.Count > 0)
                     break;
@@ -354,10 +353,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     break;
                 }
-                
+
                 // Lower the minimum observation and try again
                 if (minimumObservationCount >= 4)
-                    minimumObservationCount = (int)Math.Floor(minimumObservationCount / 2.0);
+                    minimumObservationCount = (int) Math.Floor(minimumObservationCount / 2.0);
                 else
                     minimumObservationCount = 0;
             }
@@ -378,7 +377,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             if (_options.AMTTagFilterMassMax > _options.AMTTagFilterMassMin)
             {
-                if (item.MassMonoisotopic < _options.AMTTagFilterMassMin || item.MassMonoisotopic > _options.AMTTagFilterMassMax)
+                if (item.MassMonoisotopic < _options.AMTTagFilterMassMin ||
+                    item.MassMonoisotopic > _options.AMTTagFilterMassMax)
                     return false;
             }
 
@@ -407,7 +407,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var numSections = referenceNets.Count;
                 for (var sectionNum = 0; sectionNum < numSections; sectionNum++)
                 {
-                    referenceScans.Add(_minReferenceDatasetScan + referenceNets[sectionNum] * (_maxReferenceDatasetScan - _minReferenceDatasetScan));
+                    referenceScans.Add(_minReferenceDatasetScan +
+                                       referenceNets[sectionNum] * (_maxReferenceDatasetScan - _minReferenceDatasetScan));
                 }
                 func.SetNetFunction(aligneeNets, referenceNets, referenceScans);
             }
@@ -443,12 +444,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             if (Options.CalibrationType != LcmsWarpCalibrationType.MzRegression &&
                 Options.CalibrationType != LcmsWarpCalibrationType.Both) return func;
 
-
             // Get the ppm for each knot
             for (var knotNum = 0; knotNum < numXKnots; knotNum++)
             {
                 var net = knotNum * 1.0 / numXKnots;
-                var mz = _minAligneeDatasetMz + (int)((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
+                var mz = _minAligneeDatasetMz + (int) ((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
                 var ppm = _lcmsWarp.GetPpmShiftFromMz(mz);
                 aligneeMzMassFunc.Add(mz);
                 aligneePpmShiftMassFunc.Add(ppm);
@@ -477,7 +477,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 PerformNetMassWarp();
             }
         }
-        
+
         /// <summary>
         /// Performs the NET Warping; Generates matches, gets the probabilities,
         /// calculates the alignment matrix and alignment function, gets the transformed NETs
@@ -485,8 +485,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd)
         {
-
-            var percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GenerateCandidateMatches);
+            var percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.GenerateCandidateMatches);
             OnProgress("NET Warp, get candidate matches", percentCompleteOverall);
             _lcmsWarp.GenerateCandidateMatches();
 
@@ -495,23 +495,28 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 throw new ApplicationException("Insufficient number of candidate matches by mass alone");
             }
 
-            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GetMatchProbabilities);
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.GetMatchProbabilities);
             OnProgress("NET Warp, get match probabilities", percentCompleteOverall);
             _lcmsWarp.GetMatchProbabilities();
 
-            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentMatrix);
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.CalculateAlignmentMatrix);
             OnProgress("NET Warp, calculate alignment matrix", percentCompleteOverall);
             _lcmsWarp.CalculateAlignmentMatrix();
 
-            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentFunction);
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.CalculateAlignmentFunction);
             OnProgress("NET Warp, calculate alignment function", percentCompleteOverall);
             _lcmsWarp.CalculateAlignmentFunction();
 
-            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GetTransformedNets);
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.GetTransformedNets);
             OnProgress("NET Warp, get transformed NETs", percentCompleteOverall);
             _lcmsWarp.GetTransformedNets();
 
-            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentMatches);
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
+                CurrentLcmsWarpTask.CalculateAlignmentMatches);
             OnProgress("NET Warp, calculate alignment matches", percentCompleteOverall);
             _lcmsWarp.CalculateAlignmentMatches();
 
@@ -525,9 +530,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="percentCompleteAtEnd"></param>
         /// <param name="subtaskPercentComplete"></param>
         /// <returns></returns>
-        private double ComputeIncrementalProgress(double percentCompleteAtStart, double percentCompleteAtEnd, double subtaskPercentComplete)
+        private double ComputeIncrementalProgress(double percentCompleteAtStart, double percentCompleteAtEnd,
+            double subtaskPercentComplete)
         {
-            return percentCompleteAtStart + (percentCompleteAtEnd - percentCompleteAtStart) * subtaskPercentComplete / 100;
+            return percentCompleteAtStart +
+                   (percentCompleteAtEnd - percentCompleteAtStart) * subtaskPercentComplete / 100;
         }
 
         /// <summary>
@@ -537,10 +544,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="percentCompleteAtEnd"></param>
         /// <param name="currentTask"></param>
         /// <returns>Effective percent complete overall</returns>
-        private double UpdateCurrentTask(double percentCompleteAtStart, double percentCompleteAtEnd, CurrentLcmsWarpTask currentTask)
+        private double UpdateCurrentTask(double percentCompleteAtStart, double percentCompleteAtEnd,
+            CurrentLcmsWarpTask currentTask)
         {
-            _percentCompleteAtStartOfTask = ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, _currentTaskPercentCompleteAtStart[currentTask]);
-            
+            _percentCompleteAtStartOfTask = ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd,
+                _currentTaskPercentCompleteAtStart[currentTask]);
+
             if (!_currentTaskPercentCompleteAtStart.TryGetValue(currentTask + 1, out _percentCompleteAtEndOfTask))
                 _percentCompleteAtEndOfTask = _percentCompleteAtStartOfTask;
 
@@ -561,12 +570,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var massTolerance = _lcmsWarp.MassTolerance;
             _lcmsWarp.MassTolerance = _lcmsWarp.MassCalibrationWindow;
             _lcmsWarp.UseMassAndNetScore(false);
-            
+
             PerformNetWarp(0, 50);
 
             OnProgress("Calibrating mass", 50);
 
-            _lcmsWarp.PerformMassCalibration();             
+            _lcmsWarp.PerformMassCalibration();
             _lcmsWarp.CalculateStandardDeviations();
 
             OnProgress("LCMSWarp phase two", 60);
@@ -574,7 +583,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _lcmsWarp.MassTolerance = massTolerance;
             _lcmsWarp.UseMassAndNetScore(true);
 
-            PerformNetWarp(60, 100);            
+            PerformNetWarp(60, 100);
 
             OnProgress("Complete", 100);
         }
@@ -587,7 +596,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="xIntervals"></param>
         /// <param name="yIntervals"></param>
         public void GetAlignmentHeatMap(out double[,] outputScores, out double[] xIntervals,
-                                        out double[] yIntervals)
+            out double[] yIntervals)
         {
             if (_lcmsWarp == null)
             {
@@ -621,9 +630,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     continue;
                 }
-                baselineSection = 0;    
+                baselineSection = 0;
                 aligneeSection++;
-                
             }
 
             xIntervals = new double[numAligneeSections];
@@ -702,9 +710,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="netHistogram"></param>
         /// <param name="driftHistogram"></param>
         public void GetErrorHistograms(double massBin, double netBin, double driftBin,
-                        out Dictionary<double, int> massHistogram, out Dictionary<double, int> netHistogram, out Dictionary<double, int> driftHistogram)
+            out Dictionary<double, int> massHistogram, out Dictionary<double, int> netHistogram,
+            out Dictionary<double, int> driftHistogram)
         {
-            _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, out massHistogram, out netHistogram, out driftHistogram);
+            _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, out massHistogram, out netHistogram,
+                out driftHistogram);
         }
 
         /// <summary>
@@ -716,19 +726,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             return _lcmsWarp.GetResiduals();
         }
-       
+
         public ISpectraProvider BaselineSpectraProvider { get; set; }
-        public ISpectraProvider AligneeSpectraProvider  { get; set; }
+        public ISpectraProvider AligneeSpectraProvider { get; set; }
 
         #region ProgressReporting
 
-        void lcmsWarp_Progress(object sender, ProgressNotifierArgs e)
+        private void lcmsWarp_Progress(object sender, ProgressNotifierArgs e)
         {
             // e.PercentComplete is a value between 0 and 100
 
             var percentCompleteOverall = ComputeIncrementalProgress(
                 _percentCompleteAtStartOfTask,
-                _percentCompleteAtEndOfTask,                
+                _percentCompleteAtEndOfTask,
                 e.PercentComplete);
 
             OnProgress(_lastProgressMessage, percentCompleteOverall);
@@ -744,19 +754,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private void OnProgress(string message, double percentComplete)
         {
             _lastProgressMessage = message;
-            
+
             if (Progress != null)
             {
                 Progress(this, new ProgressNotifierArgs(message, percentComplete));
             }
         }
+
         #endregion region
 
-        public LcmsWarpAlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+        public LcmsWarpAlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee,
+            IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
-        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+
+        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee,
+            IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

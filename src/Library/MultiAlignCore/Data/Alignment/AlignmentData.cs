@@ -34,7 +34,6 @@ namespace MultiAlignCore.Data.Alignment
         public double MassStandardDeviation { get; set; }
         public double NETStandardDeviation { get; set; }
 
-
         /// <summary>
         ///     Gets or sets the anchor points defined by spectral matching if that algorithm was used.
         ///     This is a stop gap until I can port this all to better objects.
@@ -48,12 +47,12 @@ namespace MultiAlignCore.Data.Alignment
 
         public double MassKurtosis
         {
-            get { return Math.Pow(MassMean, 4)/Math.Pow(MassStandardDeviation, 4); }
+            get { return Math.Pow(MassMean, 4) / Math.Pow(MassStandardDeviation, 4); }
         }
 
         public double NETKurtosis
         {
-            get { return Math.Pow(NETMean, 4)/Math.Pow(NETStandardDeviation, 4); }
+            get { return Math.Pow(NETMean, 4) / Math.Pow(NETStandardDeviation, 4); }
         }
 
         public override bool Equals(object obj)
@@ -74,9 +73,7 @@ namespace MultiAlignCore.Data.Alignment
         public override int GetHashCode()
         {
             var hash = 17;
-
-            hash = hash*23 + DatasetID.GetHashCode();
-
+            hash = hash * 23 + DatasetID.GetHashCode();
             return hash;
         }
     }

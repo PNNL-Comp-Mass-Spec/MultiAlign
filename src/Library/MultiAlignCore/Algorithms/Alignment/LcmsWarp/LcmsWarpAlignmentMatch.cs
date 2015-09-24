@@ -33,8 +33,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         #endregion
 
         public void Set(double netStartA, double netEndA, int sectStartA, int sectEndA,
-                        double netStartB, double netEndB, int sectStartB, int sectEndB,
-                        double alignScore, double matchScore)
+            double netStartB, double netEndB, int sectStartB, int sectEndB,
+            double alignScore, double matchScore)
         {
             NetStart = netStartA;
             NetEnd = netEndA;

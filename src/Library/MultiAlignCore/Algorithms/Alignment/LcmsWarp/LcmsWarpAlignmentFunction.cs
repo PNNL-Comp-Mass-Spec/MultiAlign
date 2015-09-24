@@ -12,19 +12,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     {
         private readonly LcmsWarpCalibrationType _calibrationType;
         private readonly AlignmentType _alignmentType;
-        
+
         private readonly List<double> _netFuncTimeInput = new List<double>();
         private readonly List<double> _netFuncNetOutput = new List<double>();
-        
+
         private readonly List<double> _netFuncTimeOutput = new List<double>();
-        
+
         private readonly List<double> _massFuncTimeInput = new List<double>();
         private readonly List<double> _massFuncTimePpmOutput = new List<double>();
-        
+
         private readonly List<double> _massFuncMzInput = new List<double>();
         private readonly List<double> _massFuncMzppmOutput = new List<double>();
 
-                
         /// <summary>
         /// Constructs the Alignment function data members, used when there isn't a specified name for the
         /// alignee or reference names, sets up the calibration type and alignment type.
@@ -32,13 +31,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="calibType"></param>
         /// <param name="alignmentType"></param>
         public LcmsWarpAlignmentFunction(LcmsWarpCalibrationType calibType,
-                                 AlignmentType alignmentType)
+            AlignmentType alignmentType)
         {
             _calibrationType = calibType;
             _alignmentType = alignmentType;
         }
 
-        
         /// <summary>
         /// Sets up the mass calibration function using ppm and mz.
         /// Throws exceptions if there is no PPM data, alignment type is not of NET-Mass warping or if calibration type is
@@ -56,12 +54,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             if (_alignmentType != AlignmentType.NET_MASS_WARP)
             {
-                throw new InvalidOperationException("Recalibration of mass not enabled with NET_WARP alignment type. PPM shift cannot be retrieved. Used NET_MASS_WARP as alignment type instead");
+                throw new InvalidOperationException(
+                    "Recalibration of mass not enabled with NET_WARP alignment type. PPM shift cannot be retrieved. Used NET_MASS_WARP as alignment type instead");
             }
 
             if (_calibrationType == LcmsWarpCalibrationType.ScanRegression)
             {
-                throw new InvalidOperationException("Attempting to set MZ calibration of masses when option chosen was SCAN_CALIBRATION");
+                throw new InvalidOperationException(
+                    "Attempting to set MZ calibration of masses when option chosen was SCAN_CALIBRATION");
             }
 
             _massFuncMzInput.AddRange(mz);

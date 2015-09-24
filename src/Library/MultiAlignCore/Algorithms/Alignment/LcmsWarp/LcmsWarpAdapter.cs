@@ -8,11 +8,10 @@ using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
-
     /// <summary>
     /// Object which performs feature alignment through LCMSWarp
     /// </summary>
-    public sealed class LcmsWarpAdapter :  
+    public sealed class LcmsWarpAdapter :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>,
         IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>
     {
@@ -34,6 +33,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Gets or sets the baseline spectra provider
         /// </summary>
         public ISpectraProvider BaselineSpectraProvider { get; set; }
+
         /// <summary>
         /// Gets or sets the alignee spectra provider.
         /// </summary>
@@ -46,7 +46,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
+        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features,
+            IProgress<ProgressData> progress = null)
         {
             return AlignFeatures(baseline as List<UMCLight>, features as List<UMCLight>, _options);
         }
@@ -59,11 +60,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
+        public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
+            IProgress<ProgressData> progress = null)
         {
             return AlignFeatures(baseline as List<MassTagLight>, features as List<UMCLight>, _options);
         }
-    
+
         /// <summary>
         /// Uses a list of MassTagLights as a baseline for aligning a list of UMCLights to it, using
         /// the passed in options for processor options as well as a boolean for whether to align based on
@@ -75,9 +77,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>        
         /// <returns></returns>
-        private LcmsWarpAlignmentData AlignFeatures(
-            List<MassTagLight> massTags, 
-            List<UMCLight> aligneeFeatures,
+        private LcmsWarpAlignmentData AlignFeatures(List<MassTagLight> massTags, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
@@ -133,7 +133,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        private LcmsWarpAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures, LcmsWarpAlignmentOptions options)
+        private LcmsWarpAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures,
+            LcmsWarpAlignmentOptions options)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
             {
@@ -146,13 +147,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             alignmentProcessor.SetReferenceDatasetFeatures(filteredBaselineFeatures);
 
-            return AlignFeatures(alignmentProcessor, aligneeFeatures, options);            
+            return AlignFeatures(alignmentProcessor, aligneeFeatures, options);
         }
 
-        private LcmsWarpAlignmentData AlignFeatures(LcmsWarpAlignmentProcessor processor, List<UMCLight> aligneeFeatures, LcmsWarpAlignmentOptions options)
+        private LcmsWarpAlignmentData AlignFeatures(LcmsWarpAlignmentProcessor processor, List<UMCLight> aligneeFeatures,
+            LcmsWarpAlignmentOptions options)
         {
             var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
-            
+
             var heatScores = new List<double[,]>();
             var xIntervals = new List<double[]>();
             var yIntervals = new List<double[]>();
@@ -160,8 +162,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var minMtdbNet = processor.MinReferenceNet;
             var maxMtdbNet = processor.MaxReferenceNet;
 
-            var filteredFeatures = FilterFeaturesByAbundance(aligneeFeatures, options).ToList();            
-                       
+            var filteredFeatures = FilterFeaturesByAbundance(aligneeFeatures, options).ToList();
+
             // Set features
             processor.SetAligneeDatasetFeatures(filteredFeatures);
 
@@ -174,7 +176,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             // Correct the features
             processor.ApplyNetMassFunctionToAligneeDatasetFeatures(aligneeFeatures);
-                        
+
             // Get the heat maps
             double[,] heatScore;
             double[] xInterval;
@@ -192,31 +194,32 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             processor.GetErrorHistograms(options.MassBinSize, options.NetBinSize, options.DriftTimeBinSize,
                 out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);
-            
+
             // Get the residual data
             var residualData = processor.GetResidualData();
 
             var data = new LcmsWarpAlignmentData
             {
-                MassErrorHistogram      = massErrorHistogram,
-                DriftErrorHistogram     = driftErrorHistogram,
-                NetErrorHistogram       = netErrorHistogram,
-                AlignmentFunction       = alignmentFunction,
-                HeatScores              = heatScore,
-                NetIntercept            = processor.NetIntercept,
-                NetRsquared             = processor.NetRsquared,
-                NetSlope                = processor.NetSlope,
-                ResidualData            = residualData,
-                MassMean                = processor.MassMu,
-                MassStandardDeviation   = processor.MassStd,
-                NetMean                 = processor.NetMu,
-                NetStandardDeviation    = processor.NetStd
+                MassErrorHistogram = massErrorHistogram,
+                DriftErrorHistogram = driftErrorHistogram,
+                NetErrorHistogram = netErrorHistogram,
+                AlignmentFunction = alignmentFunction,
+                HeatScores = heatScore,
+                NetIntercept = processor.NetIntercept,
+                NetRsquared = processor.NetRsquared,
+                NetSlope = processor.NetSlope,
+                ResidualData = residualData,
+                MassMean = processor.MassMu,
+                MassStandardDeviation = processor.MassStd,
+                NetMean = processor.NetMu,
+                NetStandardDeviation = processor.NetStd
             };
-            
+
             return data;
         }
 
-        private static IEnumerable<UMCLight> FilterFeaturesByAbundance(List<UMCLight> features, LcmsWarpAlignmentOptions options)
+        private static IEnumerable<UMCLight> FilterFeaturesByAbundance(List<UMCLight> features,
+            LcmsWarpAlignmentOptions options)
         {
             // Sort by abundance to ease filtering process. Options look at the percentage of abundance
             // so threshhold needs to be converted to what the abundance sum would be. 
@@ -225,7 +228,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var percent = 1 - (options.TopFeatureAbundancePercent / 100);
             var total = features.Count - Convert.ToInt32(features.Count * percent);
             var threshhold = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;
-            
+
             // Re-sort with regards to monoisotopic mass for accurate application of NET-Mass function
             // to the dataset we need to align.
             features.Sort((x, y) => x.MassMonoisotopic.CompareTo(y.MassMonoisotopic));

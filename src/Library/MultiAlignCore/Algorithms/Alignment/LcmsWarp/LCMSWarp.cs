@@ -14,6 +14,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     public sealed class LcmsWarp
     {
         #region Private values
+
         private readonly List<double> _tempFeatureBestDelta;
         private readonly List<int> _tempFeatureBestIndex;
 
@@ -40,7 +41,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private readonly double _minScore;
 
         // Mass window around which the mass tolerance is applied
-
         private double _massStd;
 
         private double _normalProb;
@@ -50,14 +50,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private readonly List<LcmsWarpAlignmentMatch> _alignmentFunc;
         private readonly List<UMCLight> _features;
         private readonly List<UMCLight> _baselineFeatures;
-        
-        
+
         public List<LcmsWarpFeatureMatch> FeatureMatches;
 
         private readonly List<double> _subsectionMatchScores;
         // Slope and intercept calculated using likelihood score in m_subsectionMatchScores.
         // Range of scans used is the range which covers the start scan of the Q2 and the end
         // scan of the Q3 of the nets of the matched features.
+
         #endregion
 
         #region ProgressReporting
@@ -112,7 +112,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Gets or sets the LCMS Net Tolerance
         /// </summary>
         public double NetTolerance { private get; set; }
-        
+
         /// <summary>
         /// Gets or sets the  Net Intercept of what would be a linear regression of the sets
         /// </summary>
@@ -137,8 +137,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Gets or sets the the LCMSWarp calibration type
         /// </summary>
         public LcmsWarpCalibrationType CalibrationType { private get; set; }
-        
-        
 
         /// <summary>
         /// AutoProperty for the number of sections that the alignee features is split into
@@ -168,12 +166,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             get { return FeatureMatches.Count; }
         }
 
-
         /// <summary>
         /// AutoProperty for the Max Time distortion of the warper
         /// </summary>
         public int MaxJump { private get; set; }
-        
+
         /// <summary>
         /// Whether or not promiscuous matches are kept in the scoring function for alignment
         /// to a MT database. 
@@ -183,7 +180,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// It should be false for MS to MS alignment, otherwise all split UMCs will match to the first instance
         /// </remarks>
         public bool KeepPromiscuousMatches { get; set; }
-        
+
         /// <summary>
         /// AutoProperty for the number of promiscuous matches above which to filter UMC matches
         /// </summary>
@@ -238,7 +235,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _sectionUniqueFeatureIndices = new List<int>();
             _numFeaturesInSections = new List<int>();
             _numFeaturesInBaselineSections = new List<int>();
-            
+
             MzRecalibration = new LcmsWarpCombinedRegression();
             NetRecalibration = new LcmsWarpCombinedRegression();
 
@@ -250,15 +247,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             _useMass = false;
             MassCalibrationWindow = 50;
-            MassTolerance = 20;		// ppm
+            MassTolerance = 20; // ppm
             NetTolerance = 0.02;
-            
+
             _netStd = 0.007;
             _alignmentScore = null;
             _bestPreviousIndex = null;
             MaxJump = 10;
             _massStd = 20;
-            
+
             KeepPromiscuousMatches = false;
             MaxPromiscuousUmcMatches = 3;
 
@@ -273,12 +270,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             const LcmsWarpRegressionType regType = LcmsWarpRegressionType.Central;
 
             MzRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
-                                                          ztolerance, regType);
+                ztolerance, regType);
             NetRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
-                                                          ztolerance, regType);
+                ztolerance, regType);
 
-            const double outlierZScore  = 2.5;
-            const int numKnots          = 12;
+            const double outlierZScore = 2.5;
+            const int numKnots = 12;
             MzRecalibration.SetLsqOptions(numKnots, outlierZScore);
             NetRecalibration.SetLsqOptions(numKnots, outlierZScore);
 
@@ -332,7 +329,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                     {
-                        var alignmentIndex = (section * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) + sectionWidth;
+                        var alignmentIndex = (section * NumMatchesPerSection) +
+                                             (baselineSection * NumMatchesPerBaseline) + sectionWidth;
 
                         if (!(_subsectionMatchScores[alignmentIndex] > maxScore))
                             continue;
@@ -356,7 +354,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             NetSlope = ((numSumPoints * sumXy) - (sumX * sumY)) / ((numSumPoints * sumXx) - (sumX * sumX));
             NetIntercept = (sumY - NetSlope * sumX) / numSumPoints;
 
-            var temp = ((numSumPoints * sumXy) - (sumX * sumY)) / Math.Sqrt(((numSumPoints * sumXx) - (sumX * sumX)) * ((numSumPoints * sumYy) - (sumY * sumY)));
+            var temp = ((numSumPoints * sumXy) - (sumX * sumY)) /
+                       Math.Sqrt(((numSumPoints * sumXx) - (sumX * sumX)) * ((numSumPoints * sumYy) - (sumY * sumY)));
             NetLinearRsq = temp * temp;
         }
 
@@ -366,7 +365,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         /// <param name="numUniqueFeatures"></param>
         /// <returns></returns>
-        private double CurrentlyStoredSectionMatchScore(int numUniqueFeatures)   
+        private double CurrentlyStoredSectionMatchScore(int numUniqueFeatures)
         {
             //Compute match scores for this section: log(P(match of ms section to MSMS section))
             double matchScore = 0;
@@ -383,7 +382,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 if (_useMass)
                 {
-                    var massDelta = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) * 1000000 / baselineFeature.MassMonoisotopic;
+                    var massDelta = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) * 1000000 /
+                                    baselineFeature.MassMonoisotopic;
                     var likelihood = GetMatchLikelihood(massDelta, deltaNet);
                     matchScore += Math.Log(likelihood);
                 }
@@ -492,7 +492,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             rd.MzMassError.Capacity = count;
             rd.MzMassErrorCorrected.Capacity = count;
 
-            
             foreach (var match in FeatureMatches)
             {
                 var feature = _features[match.FeatureIndex];
@@ -534,7 +533,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             referenceNet = new List<double>();
             var numPieces = _alignmentFunc.Count;
             for (var pieceNum = 0; pieceNum < numPieces; pieceNum++)
-            {              
+            {
                 aligneeNet.Add(_alignmentFunc[pieceNum].NetStart);
                 referenceNet.Add(_alignmentFunc[pieceNum].NetStart2);
             }
@@ -557,9 +556,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (featureIndex = 0; featureIndex < numFeatures; featureIndex++)
             {
                 var feature = _features[featureIndex];
-                _features[featureIndex].NetAligned = this.GetTransformedNet(feature.Net, dicSectionToIndex);
-                _features[featureIndex].NetStart = this.GetTransformedNet(feature.NetStart, dicSectionToIndex);
-                _features[featureIndex].NetEnd = this.GetTransformedNet(feature.NetEnd, dicSectionToIndex);
+                _features[featureIndex].NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
+                _features[featureIndex].NetStart = GetTransformedNet(feature.NetStart, dicSectionToIndex);
+                _features[featureIndex].NetEnd = GetTransformedNet(feature.NetEnd, dicSectionToIndex);
             }
         }
 
@@ -583,7 +582,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 netEnd = _alignmentFunc[0].NetEnd;
                 netEndBaseline = _alignmentFunc[0].NetEnd2;
 
-                var msNetTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+                var msNetTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) /
+                                       (netEnd - netStart) + netStartBaseline;
                 return msNetTransformed;
             }
             double netTransformed;
@@ -594,7 +594,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 netEnd = _alignmentFunc[alignmentFuncLength - 1].NetEnd;
                 netEndBaseline = _alignmentFunc[alignmentFuncLength - 1].NetEnd2;
 
-                netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+                netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) +
+                                 netStartBaseline;
                 return netTransformed;
             }
 
@@ -612,7 +613,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             netStartBaseline = _alignmentFunc[msSectionIndex].NetStart2;
             netEndBaseline = _alignmentFunc[msSectionIndex].NetEnd2;
 
-            netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
+            netTransformed = ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) +
+                             netStartBaseline;
             return netTransformed;
         }
 
@@ -630,7 +632,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var baselineFeatureIndex = 0;
             var numFeatures = _features.Count;
             var numBaselineFeatures = _baselineFeatures.Count;
-            
+
             FeatureMatches.Clear();
 
             var minMatchScore = -0.5 * (MassTolerance * MassTolerance) / (_massStd * _massStd);
@@ -647,7 +649,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     baselineFeatureIndex = numBaselineFeatures - 1;
                 }
 
-                while (baselineFeatureIndex >= 0 && _baselineFeatures[baselineFeatureIndex].MassMonoisotopic > feature.MassMonoisotopic - massTolerance)
+                while (baselineFeatureIndex >= 0 &&
+                       _baselineFeatures[baselineFeatureIndex].MassMonoisotopic >
+                       feature.MassMonoisotopic - massTolerance)
                 {
                     baselineFeatureIndex--;
                 }
@@ -655,23 +659,27 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 LcmsWarpFeatureMatch bestMatchFeature = null;
                 var bestMatchScore = minMatchScore;
-                while (baselineFeatureIndex < numBaselineFeatures && _baselineFeatures[baselineFeatureIndex].MassMonoisotopic < feature.MassMonoisotopic + massTolerance)
+                while (baselineFeatureIndex < numBaselineFeatures &&
+                       _baselineFeatures[baselineFeatureIndex].MassMonoisotopic <
+                       feature.MassMonoisotopic + massTolerance)
                 {
-                    if (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic > feature.MassMonoisotopic - massTolerance)
+                    if (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic >
+                        feature.MassMonoisotopic - massTolerance)
                     {
                         //Calculate the mass and net errors
-                        var netDiff         = _baselineFeatures[baselineFeatureIndex].Net - feature.NetAligned;
-                        var baselineDrift   = _baselineFeatures[baselineFeatureIndex].DriftTime;
-                        var driftDiff       = baselineDrift - feature.DriftTime;
-                        var massDiff        = (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic - feature.MassMonoisotopic) * 1000000.0 / feature.MassMonoisotopic;
+                        var netDiff = _baselineFeatures[baselineFeatureIndex].Net - feature.NetAligned;
+                        var baselineDrift = _baselineFeatures[baselineFeatureIndex].DriftTime;
+                        var driftDiff = baselineDrift - feature.DriftTime;
+                        var massDiff = (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic -
+                                        feature.MassMonoisotopic) * 1000000.0 / feature.MassMonoisotopic;
 
                         //Calculate the match score
-                        var matchScore  = -0.5 * (netDiff * netDiff) / (_netStd * _netStd);
-                        matchScore      = matchScore - 0.5 * (massDiff * massDiff) / (_massStd * _massStd);
+                        var matchScore = -0.5 * (netDiff * netDiff) / (_netStd * _netStd);
+                        matchScore = matchScore - 0.5 * (massDiff * massDiff) / (_massStd * _massStd);
 
                         //If the match score is greater than the best match score, update the holding item
                         if (matchScore > bestMatchScore)
-                        {                            
+                        {
                             bestMatchScore = matchScore;
                             bestMatchFeature = new LcmsWarpFeatureMatch
                             {
@@ -691,15 +699,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 //If we found a match, add it to the list of matches
                 if (bestMatchFeature != null)
                 {
-                    FeatureMatches.Add(bestMatchFeature);                    
+                    FeatureMatches.Add(bestMatchFeature);
                 }
                 featureIndex++;
             }
 
-
             CalculateNetSlopeAndIntercept();
-
-
         }
 
         /// <summary>
@@ -717,14 +722,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets()
         {
-            return _features.Select(x => new UMCLight()
+            return _features.Select(x => new UMCLight
             {
                 Id = x.Id,
                 MassMonoisotopicAligned = x.MassMonoisotopicAligned,
                 NetAligned = x.NetAligned,
                 NetStart = x.NetStart,
                 NetEnd = x.NetEnd,
-                DriftTime = x.DriftTime,
+                DriftTime = x.DriftTime
             });
         }
 
@@ -736,15 +741,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="maxScan"></param>
         public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets(int minScan, int maxScan)
         {
-            return _features.OrderBy(x => x.Id).Select(x => new UMCLight()
+            return _features.OrderBy(x => x.Id).Select(x => new UMCLight
             {
                 Id = x.Id,
                 MassMonoisotopicAligned = x.MassMonoisotopicAligned,
                 NetAligned = x.NetAligned,
                 NetStart = x.NetStart,
                 NetEnd = x.NetEnd,
-                ScanAligned = minScan + (int)(x.NetAligned * (maxScan - minScan)),
-                DriftTime = x.DriftTime,
+                ScanAligned = minScan + (int) (x.NetAligned * (maxScan - minScan)),
+                DriftTime = x.DriftTime
             });
         }
 
@@ -757,8 +762,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _baselineFeatures.Clear();
             _baselineFeatures.AddRange(features);
         }
-
-
 
         /// <summary>
         /// Function generates candidate matches between m_Features and m_baselineFeatures
@@ -780,7 +783,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             FeatureMatches.Clear();
             _subsectionMatchScores.Clear();
             _tempFeatureBestDelta.Clear();
-            _tempFeatureBestIndex .Clear();
+            _tempFeatureBestIndex.Clear();
 
 
             _features.Sort(ByMass);
@@ -798,19 +801,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 return;
             }
 
-            
             while (featureIndex < numFeatures)
             {
                 var feature = _features[featureIndex];
-                var massToleranceDa = feature.MassMonoisotopic * MassTolerance/1000000;
+                var massToleranceDa = feature.MassMonoisotopic * MassTolerance / 1000000;
 
-				// Backtrack baselineFeatureIndex while the baseline feature's mass is greater than the candidate feature's mass minus massToleranceDa
+                // Backtrack baselineFeatureIndex while the baseline feature's mass is greater than the candidate feature's mass minus massToleranceDa
                 if (baselineFeatureIndex == numBaselineFeatures)
                 {
                     baselineFeatureIndex = numBaselineFeatures - 1;
                 }
                 var baselineFeature = _baselineFeatures[baselineFeatureIndex];
-                while (baselineFeatureIndex >= 0 && (baselineFeature.MassMonoisotopic > feature.MassMonoisotopic - massToleranceDa))
+                while (baselineFeatureIndex >= 0 &&
+                       (baselineFeature.MassMonoisotopic > feature.MassMonoisotopic - massToleranceDa))
                 {
                     baselineFeatureIndex--;
                     if (baselineFeatureIndex >= 0)
@@ -820,11 +823,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 }
                 baselineFeatureIndex++;
 
-				// Add candidate matches
+                // Add candidate matches
                 while (baselineFeatureIndex < numBaselineFeatures &&
-                       (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic < (feature.MassMonoisotopic + massToleranceDa)))
+                       (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic <
+                        (feature.MassMonoisotopic + massToleranceDa)))
                 {
-                    if (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic > (feature.MassMonoisotopic - massToleranceDa))
+                    if (_baselineFeatures[baselineFeatureIndex].MassMonoisotopic >
+                        (feature.MassMonoisotopic - massToleranceDa))
                     {
                         var matchToAdd = new LcmsWarpFeatureMatch
                         {
@@ -894,12 +899,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         }
                         netMatchesToIndex[FeatureMatches[matchIndex].Net].Add(matchIndex);
                     }
-                    
+
                     // Now, keep only the first MaxPromiscuousUmcMatches in the temp list
                     //var scanMatches = netMatchesToIndex.First();
-                    
+
                     for (var index = 0; index < MaxPromiscuousUmcMatches && index < netMatchesToIndex.Count; index++)
-                    {                       
+                    {
                         var matchIndex = netMatchesToIndex.ElementAt(index).Value[0];
                         var match = FeatureMatches[matchIndex];
                         matchesToUse.Add(match);
@@ -931,7 +936,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     break;
             }
         }
-        
+
         /// <summary>
         /// Calculates the Standard deviations of the matches.
         /// Note: method requires more than 6 matches to produce meaningful
@@ -953,7 +958,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var match = FeatureMatches[matchNum];
                 var feature = _features[match.FeatureIndex];
                 var baselineFeature = _baselineFeatures[match.FeatureIndex2];
-                var currentMassDelta = ((baselineFeature.MassMonoisotopic - feature.MassMonoisotopic) * 1000000) / feature.MassMonoisotopic;
+                var currentMassDelta = ((baselineFeature.MassMonoisotopic - feature.MassMonoisotopic) * 1000000) /
+                                       feature.MassMonoisotopic;
                 var currentNetDelta = baselineFeature.Net - feature.NetAligned;
 
                 massDeltas.Add(currentMassDelta);
@@ -966,7 +972,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             MathUtilities.TwoDem(massDeltas, netDeltas, out _normalProb, out _u,
                 out _muMass, out _muNet, out _massStd, out _netStd);
         }
-        
+
         /// <summary>
         /// Method to set the flag for whether to use the Mass and the Net
         /// match scores with the LCMSWarper
@@ -984,17 +990,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             //Copy all MZs and mass errors into a list of regression points
             var calibrations = new List<RegressionPoint>();
-            
+
             var numMatches = FeatureMatches.Count;
 
             for (var matchNum = 0; matchNum < numMatches; matchNum++)
             {
-                var match           = FeatureMatches[matchNum];
-                var feature         = _features[match.FeatureIndex];
+                var match = FeatureMatches[matchNum];
+                var feature = _features[match.FeatureIndex];
                 var baselineFeature = _baselineFeatures[match.FeatureIndex2];
-                var ppm             = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) / baselineFeature.MassMonoisotopic * 1000000; //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
-                var mz              = feature.Mz;
-                var netDiff         = baselineFeature.Net - feature.NetAligned;
+                var ppm = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) /
+                          baselineFeature.MassMonoisotopic * 1000000;
+                    //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
+                var mz = feature.Mz;
+                var netDiff = baselineFeature.Net - feature.NetAligned;
 
                 var calibrationMatch = new RegressionPoint(mz, 0, netDiff, ppm);
 
@@ -1005,15 +1013,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var numFeatures = _features.Count;
             for (var featureNum = 0; featureNum < numFeatures; featureNum++)
             {
-                var feature     = _features[featureNum];
-                var mz          = feature.Mz;
-                var mass        = feature.MassMonoisotopic;
-                var ppmShift    = MzRecalibration.GetPredictedValue(mz);
-                var newMass     = mass - (mass * ppmShift) / 1000000;
+                var feature = _features[featureNum];
+                var mz = feature.Mz;
+                var mass = feature.MassMonoisotopic;
+                var ppmShift = MzRecalibration.GetPredictedValue(mz);
+                var newMass = mass - (mass * ppmShift) / 1000000;
                 feature.MassMonoisotopicAligned = newMass;
-                feature.MassMonoisotopic        = newMass;
+                feature.MassMonoisotopic = newMass;
             }
-
         }
 
         /// <summary>
@@ -1021,19 +1028,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         private void PerformScanMassErrorRegression()
         {
-            var calibrations = new List<RegressionPoint>();            
-            var numMatches   = FeatureMatches.Count;            
+            var calibrations = new List<RegressionPoint>();
+            var numMatches = FeatureMatches.Count;
 
             for (var matchNum = 0; matchNum < numMatches; matchNum++)
             {
-                var match           = FeatureMatches[matchNum];
-                var feature         = _features[match.FeatureIndex];
+                var match = FeatureMatches[matchNum];
+                var feature = _features[match.FeatureIndex];
                 var baselineFeature = _baselineFeatures[match.FeatureIndex2];
-                var ppm             = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) / baselineFeature.MassMonoisotopic * 1000000; //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
-                var net             = feature.Net;
-                var netDiff         = baselineFeature.Net - feature.NetAligned;
+                var ppm = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) /
+                          baselineFeature.MassMonoisotopic * 1000000;
+                    //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
+                var net = feature.Net;
+                var netDiff = baselineFeature.Net - feature.NetAligned;
 
-                var calibrationMatch = new RegressionPoint(net, 0, netDiff, ppm);                
+                var calibrationMatch = new RegressionPoint(net, 0, netDiff, ppm);
 
                 calibrations.Add(calibrationMatch);
             }
@@ -1043,11 +1052,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var numFeatures = _features.Count;
             for (var featureNum = 0; featureNum < numFeatures; featureNum++)
             {
-                var feature         = _features[featureNum];
-                var net             = feature.Net;
-                var mass            = feature.MassMonoisotopic;
-                var ppmShift        = MzRecalibration.GetPredictedValue(net);
-                var newMass         = mass - (mass * ppmShift) / 1000000;
+                var feature = _features[featureNum];
+                var net = feature.Net;
+                var mass = feature.MassMonoisotopic;
+                var ppmShift = MzRecalibration.GetPredictedValue(net);
+                var newMass = mass - (mass * ppmShift) / 1000000;
                 feature.MassMonoisotopicAligned = newMass;
                 feature.MassMonoisotopic = newMass;
             }
@@ -1105,7 +1114,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var net = _features[i].Net;
                 var sectionNum = Convert.ToInt32(((net - MinNet) * NumSections) / (MaxNet - MinNet));
-                
+
                 if (sectionNum >= NumSections)
                 {
                     sectionNum = NumSections - 1;
@@ -1140,7 +1149,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (var i = 0; i < numBaselineFeatures; i++)
             {
                 var net = _baselineFeatures[i].Net;
-                var msmsSectionNum = (int)(((net - MinBaselineNet) * NumBaselineSections) / (MaxBaselineNet - MinBaselineNet));
+                var msmsSectionNum =
+                    (int) (((net - MinBaselineNet) * NumBaselineSections) / (MaxBaselineNet - MinBaselineNet));
                 if (msmsSectionNum == NumBaselineSections)
                 {
                     msmsSectionNum--;
@@ -1149,7 +1159,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
 
             FeatureMatches = FeatureMatches.OrderBy(x => x.Net).ToList();
-            var numMatches   = FeatureMatches.Count;
+            var numMatches = FeatureMatches.Count;
 
             var sectionFeatures = new List<LcmsWarpFeatureMatch>();
 
@@ -1190,10 +1200,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         sectionFeatures.Add(FeatureMatches[index]);
                     }
                 }
-                
+
                 ComputeSectionMatch(section, sectionFeatures, sectionStartNet, sectionEndNet);
 
-                var percentComplete = section / (double)NumSections * 100;
+                var percentComplete = section / (double) NumSections * 100;
                 OnProgress("Getting match probabilities", percentComplete);
             }
         }
@@ -1215,8 +1225,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 // Everything past this section would have remained unmatched.
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
-                {                                       
-                    var alignmentIndex = (section * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) + sectionWidth;
+                {
+                    var alignmentIndex = (section * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) +
+                                         sectionWidth;
                     var alignmentScore = _alignmentScore[alignmentIndex];
 
                     if (!(alignmentScore > bestScore))
@@ -1240,7 +1251,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var match = new LcmsWarpAlignmentMatch();
             match.Set(netStart, netEnd, section, NumSections, baselineStartNet, baselineEndNet, baselineSectionStart,
-                      baselineSectionEnd, bestScore, _subsectionMatchScores[bestAlignmentIndex]);
+                baselineSectionEnd, bestScore, _subsectionMatchScores[bestAlignmentIndex]);
             _alignmentFunc.Clear();
             _alignmentFunc.Add(match);
 
@@ -1248,25 +1259,25 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var sectionStart = (bestPreviousAlignmentIndex / NumMatchesPerSection); // should be current - 1
                 var sectionEnd = sectionStart + 1;
-                
+
                 var nextNetStart = MinNet + (sectionStart * (MaxNet - MinNet)) / NumSections;
                 var nextNetEnd = MinNet + (sectionEnd * (MaxNet - MinNet)) / NumSections;
 
-                var nextBaselineSectionStart = (bestPreviousAlignmentIndex - (sectionStart * NumMatchesPerSection)) / NumMatchesPerBaseline;
-                var nextBaselineSectionEnd = nextBaselineSectionStart + (bestPreviousAlignmentIndex % NumMatchesPerBaseline) + 1;
+                var nextBaselineSectionStart = (bestPreviousAlignmentIndex - (sectionStart * NumMatchesPerSection)) /
+                                               NumMatchesPerBaseline;
+                var nextBaselineSectionEnd = nextBaselineSectionStart +
+                                             (bestPreviousAlignmentIndex % NumMatchesPerBaseline) + 1;
                 var nextBaselineStartNet = (nextBaselineSectionStart * msmsSectionWidth) + MinBaselineNet;
                 var nextBaselineEndNet = nextBaselineSectionEnd * msmsSectionWidth + MinBaselineNet;
                 match = new LcmsWarpAlignmentMatch();
                 match.Set(nextNetStart, nextNetEnd, sectionStart, sectionEnd, nextBaselineStartNet, nextBaselineEndNet,
-                          nextBaselineSectionStart, nextBaselineSectionEnd, _alignmentScore[bestPreviousAlignmentIndex],
-                          _subsectionMatchScores[bestPreviousAlignmentIndex]);
+                    nextBaselineSectionStart, nextBaselineSectionEnd, _alignmentScore[bestPreviousAlignmentIndex],
+                    _subsectionMatchScores[bestPreviousAlignmentIndex]);
 
                 bestPreviousAlignmentIndex = _bestPreviousIndex[bestPreviousAlignmentIndex];
                 _alignmentFunc.Add(match);
             }
             _alignmentFunc.Sort();
-
-            
         }
 
         /// <summary>
@@ -1304,7 +1315,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 unmatchedScore = 2 * unmatchedScore;
             }
 
-            
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
                 //Assume everything that was matched was past 3 standard devs in net.
@@ -1313,7 +1323,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     //no need to mulitply with msSection because its 0
                     var alignmentIndex = baselineSection * NumMatchesPerBaseline + sectionWidth;
                     _alignmentScore[alignmentIndex] = 0;
-                }            
+                }
             }
 
             var numUnmatchedMsFeatures = 0;
@@ -1322,7 +1332,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
                     var alignmentIndex = section * NumMatchesPerSection + sectionWidth;
-                    _alignmentScore[alignmentIndex] = _subsectionMatchScores[alignmentIndex] + unmatchedScore * numUnmatchedMsFeatures;
+                    _alignmentScore[alignmentIndex] = _subsectionMatchScores[alignmentIndex] +
+                                                      unmatchedScore * numUnmatchedMsFeatures;
                 }
                 numUnmatchedMsFeatures += _numFeaturesInSections[section];
             }
@@ -1333,12 +1344,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                     {
-                        var alignmentIndex = section * NumMatchesPerSection + baselineSection * NumMatchesPerBaseline + sectionWidth;
+                        var alignmentIndex = section * NumMatchesPerSection + baselineSection * NumMatchesPerBaseline +
+                                             sectionWidth;
 
                         var currentBestScore = double.MinValue;
                         var bestPreviousAlignmentIndex = 0;
 
-                        for (var previousBaselineSection = baselineSection - 1; previousBaselineSection >= baselineSection - NumMatchesPerBaseline - MaxJump; previousBaselineSection--)
+                        for (var previousBaselineSection = baselineSection - 1;
+                            previousBaselineSection >= baselineSection - NumMatchesPerBaseline - MaxJump;
+                            previousBaselineSection--)
                         {
                             if (previousBaselineSection < 0)
                             {
@@ -1350,7 +1364,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 maxWidth = NumMatchesPerBaseline;
                             }
                             var previousBaselineSectionWidth = maxWidth;
-                            var previousAlignmentIndex = (section - 1) * NumMatchesPerSection + previousBaselineSection * NumMatchesPerBaseline + previousBaselineSectionWidth - 1;
+                            var previousAlignmentIndex = (section - 1) * NumMatchesPerSection +
+                                                         previousBaselineSection * NumMatchesPerBaseline +
+                                                         previousBaselineSectionWidth - 1;
                             if (!(_alignmentScore[previousAlignmentIndex] > currentBestScore))
                                 continue;
 
@@ -1368,10 +1384,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         }
                     }
                 }
-            }            
+            }
         }
 
-        private void ComputeSectionMatch(int msSection, List<LcmsWarpFeatureMatch> sectionMatchingFeatures, double minNet, double maxNet)
+        private void ComputeSectionMatch(int msSection, List<LcmsWarpFeatureMatch> sectionMatchingFeatures,
+            double minNet, double maxNet)
         {
             var numMatchingFeatures = sectionMatchingFeatures.Count;
             var baselineSectionWidth = (MaxBaselineNet - MinBaselineNet) / NumBaselineSections;
@@ -1398,7 +1415,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
 
             var numUniqueFeaturesStart = _sectionUniqueFeatureIndices.Count;
-            
+
             for (var baselineSectionStart = 0; baselineSectionStart < NumBaselineSections; baselineSectionStart++)
             {
                 var baselineStartNet = MinBaselineNet + baselineSectionStart * baselineSectionWidth;
@@ -1407,12 +1424,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     endSection = NumBaselineSections;
                 }
-                for (var baselineSectionEnd = baselineSectionStart; baselineSectionEnd < endSection; baselineSectionEnd++)
+                for (var baselineSectionEnd = baselineSectionStart;
+                    baselineSectionEnd < endSection;
+                    baselineSectionEnd++)
                 {
                     var numUniqueFeatures = numUniqueFeaturesStart;
 
                     var sectionIndex = msSection * NumMatchesPerSection + baselineSectionStart * NumMatchesPerBaseline
-                                     + (baselineSectionEnd - baselineSectionStart);
+                                       + (baselineSectionEnd - baselineSectionStart);
                     var baselineEndNet = MinBaselineNet + (baselineSectionEnd + 1) * baselineSectionWidth;
 
                     for (var i = 0; i < numUniqueFeatures; i++)
@@ -1455,7 +1474,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public double GetPpmShiftFromMz(double mz)
         {
-            if (CalibrationType == LcmsWarpCalibrationType.MzRegression || CalibrationType == LcmsWarpCalibrationType.Both)
+            if (CalibrationType == LcmsWarpCalibrationType.MzRegression ||
+                CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 return MzRecalibration.GetPredictedValue(mz);
             }
@@ -1471,7 +1491,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public double GetPpmShiftFromNet(double net)
         {
-            if (CalibrationType == LcmsWarpCalibrationType.ScanRegression || CalibrationType == LcmsWarpCalibrationType.Both)
+            if (CalibrationType == LcmsWarpCalibrationType.ScanRegression ||
+                CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 return NetRecalibration.GetPredictedValue(net);
             }
@@ -1488,7 +1509,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="refVals"></param>
         /// <param name="standardize"></param>
         public void GetSubsectionMatchScore(out List<double> subsectionMatchScores, out List<double> aligneeVals,
-                                            out List<double> refVals, bool standardize)
+            out List<double> refVals, bool standardize)
         {
             subsectionMatchScores = new List<double>();
             aligneeVals = new List<double>();
@@ -1513,7 +1534,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         {
                             continue;
                         }
-                        var matchIndex = (msSection * NumMatchesPerSection) + (msmsSection * NumMatchesPerBaseline) + msmsSectionWidth;
+                        var matchIndex = (msSection * NumMatchesPerSection) + (msmsSection * NumMatchesPerBaseline) +
+                                         msmsSectionWidth;
                         if (_subsectionMatchScores[matchIndex] > maxScore)
                         {
                             maxScore = _subsectionMatchScores[matchIndex];
@@ -1584,13 +1606,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
-        public void GetErrorHistograms(double massBin, double netBin, double driftBin, out Dictionary<double, int> massErrorHist,
-                                       out Dictionary<double, int> netErrorHist, out Dictionary<double, int> driftErrorHist)
+        public void GetErrorHistograms(double massBin, double netBin, double driftBin,
+            out Dictionary<double, int> massErrorHist,
+            out Dictionary<double, int> netErrorHist, out Dictionary<double, int> driftErrorHist)
         {
             var numMatches = FeatureMatches.Count;
-            var massErrors = new List<double> { Capacity = numMatches };
-            var netErrors = new List<double> { Capacity = numMatches };
-            var driftErrors = new List<double> { Capacity = numMatches };
+            var massErrors = new List<double> {Capacity = numMatches};
+            var netErrors = new List<double> {Capacity = numMatches};
+            var driftErrors = new List<double> {Capacity = numMatches};
 
             foreach (var match in FeatureMatches)
             {
@@ -1602,7 +1625,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             massErrorHist = Histogram.CreateHistogram(massErrors, massBin);
             netErrorHist = Histogram.CreateHistogram(netErrors, netBin);
             driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBin);
-
         }
     }
 }

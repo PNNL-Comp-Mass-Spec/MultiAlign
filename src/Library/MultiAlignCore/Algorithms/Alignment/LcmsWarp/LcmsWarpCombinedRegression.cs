@@ -20,11 +20,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpCombinedRegression()
         {
-            RegressionType    = LcmsWarpRegressionType.Hybrid;
-            _lsqFailed         = false;
-            _central           = new LcmsWarpCentralRegression();
-            _lsqReg            = new LeastSquaresSplineRegressionModel();
-            _cubicSpline       = new LcmsNaturalCubicSplineRegression();
+            RegressionType = LcmsWarpRegressionType.Hybrid;
+            _lsqFailed = false;
+            _central = new LcmsWarpCentralRegression();
+            _lsqReg = new LeastSquaresSplineRegressionModel();
+            _cubicSpline = new LcmsNaturalCubicSplineRegression();
         }
 
         public LcmsWarpRegressionType RegressionType { get; set; }
@@ -50,7 +50,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="numJumps"></param>
         /// <param name="regZtolerance"></param>
         /// <param name="regType"></param>
-        public void SetCentralRegressionOptions(int numXBins, int numYBins, int numJumps, double regZtolerance, LcmsWarpRegressionType regType)
+        public void SetCentralRegressionOptions(int numXBins, int numYBins, int numJumps, double regZtolerance,
+            LcmsWarpRegressionType regType)
         {
             _central.SetOptions(numXBins, numYBins, numJumps, regZtolerance);
             RegressionType = regType;
@@ -65,16 +66,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             switch (RegressionType)
             {
                 case LcmsWarpRegressionType.Central:
-                    _central.CalculateRegressionFunction(matches);                    
+                    _central.CalculateRegressionFunction(matches);
                     break;
                 default:
                     _central.CalculateRegressionFunction(matches);
                     _central.RemoveRegressionOutliers();
                     var centralPoints = _central.Points;
-                    _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(centralPoints);                    
+                    _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(centralPoints);
                     break;
             }
         }
+
         /// <summary>
         /// Given a value x, finds the appropriate y value that would correspond to it in the regression function
         /// </summary>
@@ -86,11 +88,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 case LcmsWarpRegressionType.Central:
                     return _central.GetPredictedValue(x);
-                
+
                 default:
                     return !_lsqFailed ? _cubicSpline.GetPredictedValue(x) : _central.GetPredictedValue(x);
             }
         }
-
     }
 }

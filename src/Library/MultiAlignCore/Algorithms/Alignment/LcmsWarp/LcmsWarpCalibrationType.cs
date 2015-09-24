@@ -9,10 +9,12 @@
         /// Performs Regression based on MZ of the features
         /// </summary>
         MzRegression = 0,
+
         /// <summary>
         /// Performs Regression based on the Scan of the features
         /// </summary>
         ScanRegression,
+
         /// <summary>
         /// Performs a hybrid regression, performing MZ regression and then
         /// subsequently performing Scan regression

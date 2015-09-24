@@ -264,7 +264,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 for (var pointNum = 0; pointNum < numPts; pointNum++)
                 {
                     var point = _pts[pointNum];
-                    var xSection = Convert.ToInt32((point.X - _minX)/xIntervalSize);
+                    var xSection = Convert.ToInt32((point.X - _minX) / xIntervalSize);
                     if (xSection == _numXBins)
                     {
                         xSection = _numXBins - 1;
@@ -278,7 +278,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                     var yTolerance = _sectionTolerance[xSection];
 
-                    var yInterval = Convert.ToInt32((0.0001 + (point.MassError - _minY)/yIntervalSize));
+                    var yInterval = Convert.ToInt32((0.0001 + (point.MassError - _minY) / yIntervalSize));
 
                     if (yInterval == _numYBins)
                     {
@@ -286,12 +286,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     }
 
                     // Matches to the section that the point would contribute to.
-                    var minYStart = Convert.ToInt32(yInterval - yTolerance/yIntervalSize);
-                    var maxYStart = Convert.ToInt32(yInterval + yTolerance/yIntervalSize);
+                    var minYStart = Convert.ToInt32(yInterval - yTolerance / yIntervalSize);
+                    var maxYStart = Convert.ToInt32(yInterval + yTolerance / yIntervalSize);
 
                     var sectionMismatchScore = _sectionMisMatchScore[xSection];
 
-                    var xFraction = (point.X - _minX)/xIntervalSize - xSection;
+                    var xFraction = (point.X - _minX) / xIntervalSize - xSection;
 
                     for (var yFrom = minYStart; yFrom <= maxYStart; yFrom++)
                     {
@@ -315,7 +315,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             }
 
                             //Assumes linear piecewise transform to calculate the estimated y
-                            var yEstimated = (yFrom + (yTo - yFrom)*xFraction)*yIntervalSize + _minY;
+                            var yEstimated = (yFrom + (yTo - yFrom) * xFraction) * yIntervalSize + _minY;
                             var yDelta = point.MassError - yEstimated;
 
                             //Make sure the point is in the linear range to effect the score
@@ -324,9 +324,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 continue;
                             }
 
-                            var matchScore = (yDelta*yDelta)/(_stdY[xSection]*_stdY[xSection]);
+                            var matchScore = (yDelta * yDelta) / (_stdY[xSection] * _stdY[xSection]);
                             var jump = yTo - yFrom + _numJumps;
-                            var sectionIndex = xSection*_numSectionMatches + yFrom*(2*_numJumps + 1) + jump;
+                            var sectionIndex = xSection * _numSectionMatches + yFrom * (2 * _numJumps + 1) + jump;
                             var currentMatchScore = _matchScores[sectionIndex];
                             _matchScores[sectionIndex] = currentMatchScore - sectionMismatchScore + matchScore;
                         }
@@ -372,7 +372,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             break;
                         }
                         var previousAlignmentIndex = (xSection - 1) * _numYBins + ySectionFrom;
-                        var previousMatchIndex = (xSection - 1) * _numSectionMatches + ySectionFrom * (2 * _numJumps + 1) + jump;
+                        var previousMatchIndex = (xSection - 1) * _numSectionMatches +
+                                                 ySectionFrom * (2 * _numJumps + 1) + jump;
                         var previousAlignmentScore = _alignmentScores[previousAlignmentIndex];
                         var previousMatchScore = _matchScores[previousMatchIndex];
                         if (previousAlignmentScore + previousMatchScore < bestAlignmentScore)
@@ -391,8 +392,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             break;
                         }
                         var previousAlignmentIndex = (xSection - 1) * _numYBins + ySectionFrom;
-                        var previousMatchIndex = (xSection - 1) * _numSectionMatches + ySectionFrom * (2 * _numJumps + 1) + jump;
-                        if ((previousAlignmentIndex > _alignmentScores.Count-1) || (previousMatchIndex > _matchScores.Count-1))
+                        var previousMatchIndex = (xSection - 1) * _numSectionMatches +
+                                                 ySectionFrom * (2 * _numJumps + 1) + jump;
+                        if ((previousAlignmentIndex > _alignmentScores.Count - 1) ||
+                            (previousMatchIndex > _matchScores.Count - 1))
                         {
                             break;
                         }
@@ -493,7 +496,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             for (var pointNum = 0; pointNum < numPts; pointNum++)
             {
-                var point  = _pts[pointNum];
+                var point = _pts[pointNum];
                 var intervalNum = Convert.ToInt32((point.X - _minX) / xIntervalSize);
                 if (intervalNum == _numXBins)
                 {
@@ -549,7 +552,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
 
             var yPred = xFraction * yIntervalSize * (ySectionTo - ySectionFrom)
-                            + ySectionFrom * yIntervalSize + _minY;
+                        + ySectionFrom * yIntervalSize + _minY;
 
             return yPred;
         }

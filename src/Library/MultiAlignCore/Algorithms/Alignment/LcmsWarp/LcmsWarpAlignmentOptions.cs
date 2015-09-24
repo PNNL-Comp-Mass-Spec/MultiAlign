@@ -8,10 +8,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     public class LcmsWarpAlignmentOptions
     {
         #region Auto Properties
+
         /// <summary>
         /// Number of Time Sections
         /// </summary>
-        [Description("Percentage of top Abundance features to use for alignment. ")]        
+        [Description("Percentage of top Abundance features to use for alignment. ")]
         public int NumTimeSections { get; set; }
 
         /// <summary>
@@ -164,7 +165,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// The type of aligner the processor uses.
         /// </summary>
         public FeatureAlignmentType AlignmentAlgorithmType { get; set; }
-        
+
         #endregion
 
         /// <summary>
@@ -172,44 +173,43 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpAlignmentOptions()
         {
-            NumTimeSections = 100;              // 100 in VIPER
+            NumTimeSections = 100; // 100 in VIPER
             TopFeatureAbundancePercent = 0;
-            ContractionFactor = 3;              //   3 in VIPER
-            MaxTimeDistortion = 10;             //  10 in VIPER
-            MaxPromiscuity = 3;                 //   2 in VIPER
-            UsePromiscuousPoints = false;       // false for Dataset to Dataset alignment; true for Dataset to AMT tag alignment
+            ContractionFactor = 3; //   3 in VIPER
+            MaxTimeDistortion = 10; //  10 in VIPER
+            MaxPromiscuity = 3; //   2 in VIPER
+            UsePromiscuousPoints = false;
+                // false for Dataset to Dataset alignment; true for Dataset to AMT tag alignment
             MassCalibUseLsq = false;
-            MassCalibrationWindow = 40.0;       //  50 ppm in VIPER
-            MassCalibNumXSlices = 12;           //  20 in VIPER
-            MassCalibNumYSlices = 50;           // 100 in VIPER
-            MassCalibMaxJump = 20;              //  50 in VIPER
-            MassCalibMaxZScore = 3;             //   3 in VIPER
-            MassCalibLsqMaxZScore = 2.5;        //   3 in VIPER
-            MassCalibLsqNumKnots = 12;          //  12 in VIPER
-            MassTolerance = 10;                 //  10 in VIPER
-            NetTolerance = 0.02;                //   0.02 in VIPER
+            MassCalibrationWindow = 40.0; //  50 ppm in VIPER
+            MassCalibNumXSlices = 12; //  20 in VIPER
+            MassCalibNumYSlices = 50; // 100 in VIPER
+            MassCalibMaxJump = 20; //  50 in VIPER
+            MassCalibMaxZScore = 3; //   3 in VIPER
+            MassCalibLsqMaxZScore = 2.5; //   3 in VIPER
+            MassCalibLsqNumKnots = 12; //  12 in VIPER
+            MassTolerance = 10; //  10 in VIPER
+            NetTolerance = 0.02; //   0.02 in VIPER
 
             AlignType = AlignmentType.NET_MASS_WARP;
             CalibrationType = LcmsWarpCalibrationType.Both;
 
             AlignToMassTagDatabase = false;
-            
+
             AMTTagFilterNETMin = 0;
             AMTTagFilterNETMax = 0;
 
             AMTTagFilterMassMin = 0;
             AMTTagFilterMassMax = 0;
 
-            MinimumAMTTagObsCount = 5;          // 5 in VIPER
+            MinimumAMTTagObsCount = 5; // 5 in VIPER
 
-            MassBinSize = 0.2;                  // 0.2 in VIPER
-            NetBinSize = 0.001;                 // 0.001 in VIPER
+            MassBinSize = 0.2; // 0.2 in VIPER
+            NetBinSize = 0.001; // 0.001 in VIPER
             DriftTimeBinSize = 0.03;
             StoreAlignmentFunction = false;
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
         }
-
-
     }
 
     /// <summary>
@@ -229,6 +229,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         SPECTRAL_ALIGNMENT
     }
+
     /// <summary>
     /// Enumerations of possible Alignment Types
     /// </summary>
@@ -238,6 +239,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Alignment type that uses a single NET warp
         /// </summary>
         NET_WARP = 0,
+
         /// <summary>
         /// Alignment type that performs a NET warp, recalibrates with regards to Mass
         /// and then performs warping again

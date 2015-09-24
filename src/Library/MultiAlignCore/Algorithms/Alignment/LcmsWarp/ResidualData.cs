@@ -7,7 +7,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// </summary>
     public sealed class ResidualData
     {
-        #region Public Properties
         /// <summary>
         /// AutoProperty to hold all the scans from the alignment data
         /// </summary>
@@ -54,7 +53,5 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Same as MassErrorCorrected
         /// </summary>
         public List<double> MzMassErrorCorrected { get; set; }
-
-        #endregion
     }
 }
