@@ -690,7 +690,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Initializes the features in the LCMSWarp object to the list of UMCLights
         /// </summary>
         /// <param name="features"></param>
-        public void SetFeatures(ref List<UMCLight> features)
+        public void SetFeatures(List<UMCLight> features)
         {
             _features.Clear();
             _features.AddRange(features);

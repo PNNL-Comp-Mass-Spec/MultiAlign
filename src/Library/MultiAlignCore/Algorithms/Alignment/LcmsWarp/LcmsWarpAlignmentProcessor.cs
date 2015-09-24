@@ -323,7 +323,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, features[index].Mz);
                 //}
             }
-            _lcmsWarp.SetFeatures(ref mtFeatures);
+            _lcmsWarp.SetFeatures(mtFeatures);
         }
         
         /// <summary>
@@ -684,14 +684,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Method that copies the baseline nets into the parameters passed in
+        /// Minimum baseline/reference NET
         /// </summary>
-        /// <param name="minRefNet"></param>
-        /// <param name="maxRefNet"></param>
-        public void GetReferenceNetRange(out double minRefNet, out double maxRefNet)
+        public double MinReferenceNet
         {
-            minRefNet = _lcmsWarp.MinBaselineNet;
-            maxRefNet = _lcmsWarp.MaxBaselineNet;
+            get { return _lcmsWarp.MinBaselineNet; }
+        }
+
+        /// <summary>
+        /// Maximum baseline/reference NET
+        /// </summary>
+        public double MaxReferenceNet
+        {
+            get { return _lcmsWarp.MaxBaselineNet; }
         }
 
         #region Public Statistic Getter properties

@@ -157,9 +157,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var xIntervals = new List<double[]>();
             var yIntervals = new List<double[]>();
 
-            double minMtdbNet;
-            double maxMtdbNet;
-            processor.GetReferenceNetRange(out minMtdbNet, out maxMtdbNet);
+            var minMtdbNet = processor.MinReferenceNet;
+            var maxMtdbNet = processor.MaxReferenceNet;
 
             var filteredFeatures = FilterFeaturesByAbundance(aligneeFeatures, options).ToList();            
                        

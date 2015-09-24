@@ -157,12 +157,10 @@ namespace MultiAlignCore.Algorithms.Alignment
             var xIntervals = new List<double[]>();
             var yIntervals = new List<double[]>();
 
-            double minMtdbnet;
-            double maxMtdbnet;
-            
-            // This function will set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
+            // Set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
             // The values will be updated later
-            alignmentProcessor.GetReferenceNetRange(out minMtdbnet, out maxMtdbnet);
+            var minMtdbNet = alignmentProcessor.MinReferenceNet;
+            var maxMtdbNet = alignmentProcessor.MaxReferenceNet;
 
             var minScanBaseline = int.MaxValue;
             var maxScanBaseline = int.MinValue;
@@ -272,8 +270,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             // type of baseline dataset it was (MTDB or dataset).                 
             if (alignmentOptions.AlignToMassTagDatabase)
             {
-                alignmentData.MinMTDBNET = (float)minMtdbnet;
-                alignmentData.MaxMTDBNET = (float)maxMtdbnet;
+                alignmentData.MinMTDBNET = (float)minMtdbNet;
+                alignmentData.MaxMTDBNET = (float)maxMtdbNet;
             }
 
             return alignmentData;
