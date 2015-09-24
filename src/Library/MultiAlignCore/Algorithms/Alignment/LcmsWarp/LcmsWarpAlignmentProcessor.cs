@@ -760,42 +760,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="massHistogram"></param>
         /// <param name="netHistogram"></param>
         /// <param name="driftHistogram"></param>
+        //public void GetErrorHistograms(double massBin, double netBin, double driftBin,
+        //                out double[,] massHistogram, out double[,] netHistogram, out double[,] driftHistogram)
         public void GetErrorHistograms(double massBin, double netBin, double driftBin,
-                        out double[,] massHistogram, out double[,] netHistogram, out double[,] driftHistogram)
+                        out Dictionary<double, int> massHistogram, out Dictionary<double, int> netHistogram, out Dictionary<double, int> driftHistogram)
         {
-            var massErrorBin = new List<double>();
-            var netErrorBin = new List<double>();
-            var driftErrorBin = new List<double>();
-            var massErrorFreq = new List<int>();
-            var netErrorFreq = new List<int>();
-            var driftErrorFreq = new List<int>();
-
-            _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, ref massErrorBin, ref massErrorFreq, ref netErrorBin,
-                                          ref netErrorFreq, ref driftErrorBin, ref driftErrorFreq);
-
-            //ErrorHistogram massErrorHistogram = new ErrorHistogram(massErrorBin, massErrorFreq);
-            //ErrorHistogram netErrorHistogram = new ErrorHistogram(netErrorBin, netErrorFreq);
-            //ErrorHistogram driftErrorHistogram = new ErrorHistogram(driftErrorBin, driftErrorFreq);
-
-            massHistogram = new double[massErrorBin.Count, 2];
-            netHistogram = new double[netErrorBin.Count, 2];
-            driftHistogram = new double[driftErrorBin.Count, 2];
-
-            for (var i = 0; i < massErrorBin.Count; i++)
-            {
-                massHistogram[i, 0] = massErrorBin[i];
-                massHistogram[i, 1] = massErrorFreq[i];
-            }
-            for (var i = 0; i < netErrorBin.Count; i++)
-            {
-                netHistogram[i, 0] = netErrorBin[i];
-                netHistogram[i, 1] = netErrorFreq[i];
-            }
-            for (var i = 0; i < driftErrorBin.Count; i++)
-            {
-                driftHistogram[i, 0] = driftErrorBin[i];
-                driftHistogram[i, 1] = driftErrorFreq[i];
-            }
+            _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, out massHistogram, out netHistogram, out driftHistogram);
         }
 
         /// <summary>

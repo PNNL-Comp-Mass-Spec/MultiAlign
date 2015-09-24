@@ -23,15 +23,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Property to hold the mass error histogram from the alignment
         /// </summary>
-        public double[,] MassErrorHistogram { get; set; }
+        public Dictionary<double, int> MassErrorHistogram { get; set; }
         /// <summary>
         /// Property to hold the net error histogram from the alignment
         /// </summary>
-        public double[,] NetErrorHistogram { get; set; }
+        public Dictionary<double, int> NetErrorHistogram { get; set; }
         /// <summary>
         /// Property to hold the drift error histogram from the alignment
         /// </summary>
-        public double[,] DriftErrorHistogram { get; set; }
+        public Dictionary<double, int> DriftErrorHistogram { get; set; }
         /// <summary>
         /// Property to hold the R squared value from a linear regression of the whole alignment
         /// </summary>

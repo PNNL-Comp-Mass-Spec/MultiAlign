@@ -1585,10 +1585,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
-        public void GetErrorHistograms(double massBin, double netBin, double driftBin, ref List<double> massErrorBin,
-                                       ref List<int> massErrorFrequency, ref List<double> netErrorBin,
-                                       ref List<int> netErrorFrequency, ref List<double> driftErrorBin,
-                                       ref List<int> driftErrorFrequency)
+        public void GetErrorHistograms(double massBin, double netBin, double driftBin, out Dictionary<double, int> massErrorHist,
+                                       out Dictionary<double, int> netErrorHist, out Dictionary<double, int> driftErrorHist)
         {
             var numMatches = FeatureMatches.Count;
             var massErrors = new List<double> { Capacity = numMatches };
@@ -1602,9 +1600,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 driftErrors.Add(match.DriftError);
             }
 
-            Histogram.CreateHistogram(massErrors, ref massErrorBin, ref massErrorFrequency, massBin);
-            Histogram.CreateHistogram(netErrors, ref netErrorBin, ref netErrorFrequency, netBin);
-            Histogram.CreateHistogram(driftErrors, ref driftErrorBin, ref driftErrorFrequency, driftBin);
+            massErrorHist = Histogram.CreateHistogram(massErrors, massBin);
+            netErrorHist = Histogram.CreateHistogram(netErrors, netBin);
+            driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBin);
 
         }
     }

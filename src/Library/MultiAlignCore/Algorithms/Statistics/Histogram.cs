@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Statistics
 {
     public class Histogram
     {
-        public static void CreateHistogram(List<double> inputValues, ref List<double> bins,
-                                            ref List<int> frequency, double valStep)
+        public static Dictionary<double, int> CreateHistogram(List<double> inputValues, double valStep)
         {
-            bins.Clear();
-            frequency.Clear();
+            var histData = new Dictionary<double, int>();
             var numPts = inputValues.Count;
 
             // Tried to pass an empty list to the histogram creator
             if (numPts == 0)
             {
-                return;
+                return histData;
             }
 
             var minVal = inputValues[0];
@@ -34,22 +33,14 @@ namespace MultiAlignCore.Algorithms.Statistics
             }
 
             //Only one unique value in the input values
-            if (System.Math.Abs(minVal - maxVal) < double.Epsilon)
+            if (Math.Abs(minVal - maxVal) < double.Epsilon)
             {
-                bins.Add(minVal);
-                frequency.Add(1);
-                return;
+                histData.Add(minVal, 1);
+                return histData;
             }
 
             var numBins = Math.Max((int)Math.Floor((maxVal - minVal) / valStep), 1);
-
-            var binVal = minVal;
-            for (var i = 0; i < numBins; i++)
-            {
-                bins.Add(binVal);
-                frequency.Add(0);
-                binVal += valStep;
-            }
+            var frequencies = Enumerable.Range(0, numBins).Select(x => 0).ToList();
 
             for (var i = 0; i < numPts; i++)
             {
@@ -58,8 +49,16 @@ namespace MultiAlignCore.Algorithms.Statistics
                 {
                     binIndex = numBins - 1;
                 }
-                frequency[binIndex]++;
+                frequencies[binIndex]++;
             }
+
+            var binVal = minVal;
+            for (var i = 0; i < numBins; i++)
+            {
+                histData.Add(binVal, frequencies[i]);
+                binVal += valStep;
+            }
+            return histData;
         }
     }
 }

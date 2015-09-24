@@ -150,9 +150,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         {
             OnStatus("Starting alignment of features.");
             var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
-            var netErrorHistograms = new List<double[,]>();
-            var massErrorHistograms = new List<double[,]>();
-            var driftErrorHistograms = new List<double[,]>();
+            var netErrorHistograms = new List<Dictionary<double, int>>();
+            var massErrorHistograms = new List<Dictionary<double, int>>();
+            var driftErrorHistograms = new List<Dictionary<double, int>>();
             var heatScores = new List<double[,]>();
             var xIntervals = new List<double[]>();
             var yIntervals = new List<double[]>();
@@ -227,17 +227,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             yIntervals.Add(yInterval);
             heatScores.Add(heatScore);
 
-            // Mass and net error histograms!  
-            double[,] massErrorHistogram;
-            double[,] netErrorHistogram;
-            double[,] driftErrorHistogram;
+            // Mass and net error histograms!
+            Dictionary<double, int> massErrorHistogram;
+            Dictionary<double, int> netErrorHistogram;
+            Dictionary<double, int> driftErrorHistogram;
 
-            alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize,
-                alignmentOptions.NetBinSize,
-                alignmentOptions.DriftTimeBinSize,
-                out massErrorHistogram,
-                out netErrorHistogram,
-                out driftErrorHistogram);
+            alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize, alignmentOptions.NetBinSize,
+                alignmentOptions.DriftTimeBinSize, out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);
             massErrorHistograms.Add(massErrorHistogram);
             netErrorHistograms.Add(netErrorHistogram);
             driftErrorHistograms.Add(driftErrorHistogram);

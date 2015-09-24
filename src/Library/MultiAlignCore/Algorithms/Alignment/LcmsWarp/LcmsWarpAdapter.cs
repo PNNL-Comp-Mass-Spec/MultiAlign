@@ -186,9 +186,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             heatScores.Add(heatScore);
 
             // Get the histograms
-            double[,] massErrorHistogram;
-            double[,] netErrorHistogram;
-            double[,] driftErrorHistogram;
+            Dictionary<double, int> massErrorHistogram;
+            Dictionary<double, int> netErrorHistogram;
+            Dictionary<double, int> driftErrorHistogram;
 
             processor.GetErrorHistograms(options.MassBinSize, options.NetBinSize, options.DriftTimeBinSize,
                 out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);

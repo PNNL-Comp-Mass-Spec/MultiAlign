@@ -23,9 +23,9 @@ namespace MultiAlignCore.Data.Alignment
         public int MaxScanBaseline { get; set; }
         public float MinMTDBNET { get; set; }
         public float MaxMTDBNET { get; set; }
-        public double[,] MassErrorHistogram { get; set; }
-        public double[,] NetErrorHistogram { get; set; }
-        public double[,] DriftErrorHistogram { get; set; }
+        public Dictionary<double, int> MassErrorHistogram { get; set; }
+        public Dictionary<double, int> NetErrorHistogram { get; set; }
+        public Dictionary<double, int> DriftErrorHistogram { get; set; }
         public double NETRsquared { get; set; }
         public double NETSlope { get; set; }
         public double NETIntercept { get; set; }
