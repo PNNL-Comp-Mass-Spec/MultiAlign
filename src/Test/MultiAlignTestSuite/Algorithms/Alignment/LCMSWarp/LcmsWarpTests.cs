@@ -107,11 +107,11 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var netHistogram   = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
             var massHistogram  = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
-            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                residuals.LinearNet, "NET Residuals", "Scans", "NET");
             var massMzResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
-            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 
             var directory   = Path.Combine(outputPath, name);
@@ -212,13 +212,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var netHistogram    = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error Histogram", "NET Error");
             var massHistogram   = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error Histogram", "Mass Error (ppm)");
 
-            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                residuals.LinearNet, "NET Residuals", "Scans", "NET");
 
             var massMzResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
 
-            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 
             var directory   = Path.Combine(outputPath, name);

@@ -813,7 +813,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var data = new ResidualData
             {
-                Scan = net,
+                Net = net,
                 Mz = mz,
                 LinearNet = linearNet,
                 CustomNet = customNet,

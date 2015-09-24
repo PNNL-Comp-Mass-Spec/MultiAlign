@@ -11,7 +11,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// AutoProperty to hold all the scans from the alignment data
         /// </summary>
-        public List<double> Scan { get; set; }
+        public List<double> Net { get; set; }
 
         /// <summary>
         /// AutoProperty to hold all the M/Z from the alignment data

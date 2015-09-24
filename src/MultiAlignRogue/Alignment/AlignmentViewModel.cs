@@ -29,7 +29,7 @@
             var residuals = alignment.ResidualData;
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignment.HeatScores, alignment.BaselineIsAmtDB);
-            var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+            var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                 residuals.LinearNet, "NET Residuals", "Scans", "NET");
             
             var massHistogram = HistogramFactory.CreateHistogram(alignment.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
@@ -38,7 +38,7 @@
             var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
             
-            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
             
             this.HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
