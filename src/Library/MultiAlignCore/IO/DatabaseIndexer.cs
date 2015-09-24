@@ -26,6 +26,9 @@ namespace MultiAlignCore.IO
 
                     command.CommandText = "CREATE INDEX idx_umc_cluster_id on T_LCMS_Features(Cluster_ID ASC)";
                     command.ExecuteNonQuery();
+
+                    command.CommandText = "CREATE INDEX idx_cluster_mt_id on T_Cluster_To_Mass_Tag_Map(Cluster_ID ASC)";
+                    command.ExecuteNonQuery();
                 }
 
                 connection.Close();
@@ -46,6 +49,9 @@ namespace MultiAlignCore.IO
                     command.ExecuteNonQuery();
 
                     command.CommandText = "DROP INDEX IF EXISTS idx_umc_cluster_id";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DROP INDEX IF EXISTS idx_cluster_mt_id";
                     command.ExecuteNonQuery();
                 }
 
