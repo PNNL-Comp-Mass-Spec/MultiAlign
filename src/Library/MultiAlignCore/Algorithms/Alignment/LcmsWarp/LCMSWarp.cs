@@ -693,10 +693,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public void SetFeatures(ref List<UMCLight> features)
         {
             _features.Clear();
-            foreach (var feature in features)
-            {
-                _features.Add(feature);
-            }
+            _features.AddRange(features);
         }
 
         /// <summary>
@@ -761,10 +758,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public void SetReferenceFeatures(List<UMCLight> features)
         {
             _baselineFeatures.Clear();
-            foreach (var feature in features)
-            {
-                _baselineFeatures.Add(feature);
-            }
+            _baselineFeatures.AddRange(features);
         }
 
 

@@ -34,7 +34,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         // are scaled to between 0 and 1. These will scale it back to actual scan numbers
         private int _minReferenceDatasetScan;
         private int _maxReferenceDatasetScan;
-
+        
         private int _minAligneeDatasetScan;
         private int _maxAligneeDatasetScan;
         private double _minAligneeDatasetMz;
@@ -317,22 +317,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 //{
                     mtFeatures.Add(mtFeature);
 
-                    if (features[index].Scan > _maxAligneeDatasetScan)
-                    {
-                        _maxAligneeDatasetScan = features[index].Scan;
-                    }
-                    if (features[index].Scan < _minAligneeDatasetScan)
-                    {
-                        _minAligneeDatasetScan = features[index].Scan;
-                    }
-                    if (features[index].Mz > _maxAligneeDatasetMz)
-                    {
-                        _maxAligneeDatasetMz = features[index].Mz;
-                    }
-                    if (features[index].Mz < _minAligneeDatasetMz)
-                    {
-                        _minAligneeDatasetMz = features[index].Mz;
-                    }
+                    _maxAligneeDatasetScan = Math.Max(_maxAligneeDatasetScan, features[index].Scan);
+                    _minAligneeDatasetScan = Math.Min(_minAligneeDatasetScan, features[index].Scan);
+                    _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, features[index].Mz);
+                    _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, features[index].Mz);
                 //}
             }
             _lcmsWarp.SetFeatures(ref mtFeatures);
@@ -368,22 +356,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 mtFeatures.Add(feature);
 
-                if (data.Scan > _maxReferenceDatasetScan)
-                {
-                    _maxReferenceDatasetScan = data.Scan;
-                }
-                if (data.Scan < _minReferenceDatasetScan)
-                {
-                    _minReferenceDatasetScan = data.Scan;
-                }
-                if (data.Mz > _maxAligneeDatasetMz)
-                {
-                    _maxAligneeDatasetMz = data.Mz;
-                }
-                if (data.Mz < _minAligneeDatasetMz)
-                {
-                    _minAligneeDatasetMz = data.Mz;
-                }
+                _maxReferenceDatasetScan = Math.Max(_maxReferenceDatasetScan, data.Scan);
+                _minReferenceDatasetScan = Math.Min(_minReferenceDatasetScan, data.Scan);
+                _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, data.Mz);
+                _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, data.Mz);
             }
             _lcmsWarp.SetReferenceFeatures(mtFeatures);
         }

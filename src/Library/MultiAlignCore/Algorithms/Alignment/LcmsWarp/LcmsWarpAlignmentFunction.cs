@@ -64,16 +64,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 throw new InvalidOperationException("Attempting to set MZ calibration of masses when option chosen was SCAN_CALIBRATION");
             }
 
-            foreach (var value in mz)
-            {
-                _massFuncMzInput.Add(value);
-            }
+            _massFuncMzInput.AddRange(mz);
 
             // ReSharper disable once PossibleMultipleEnumeration
-            foreach (var value in ppm)
-            {
-                _massFuncMzppmOutput.Add(value);
-            }
+            _massFuncMzppmOutput.AddRange(ppm);
         }
 
         /// <summary>
@@ -83,14 +77,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="referenceNets"></param>
         public void SetNetFunction(IEnumerable<double> aligneeTimes, IEnumerable<double> referenceNets)
         {
-            foreach (var value in aligneeTimes)
-            {
-                _netFuncTimeInput.Add(value);
-            }
-            foreach (var value in referenceNets)
-            {
-                _netFuncNetOutput.Add(value);
-            }
+            _netFuncTimeInput.AddRange(aligneeTimes);
+            _netFuncNetOutput.AddRange(referenceNets);
         }
 
         /// <summary>
@@ -105,18 +93,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             IEnumerable<double> referenceNets,
             IEnumerable<double> referenceScans)
         {
-            foreach (var value in aligneeTimes)
-            {
-                _netFuncTimeInput.Add(value);
-            }
-            foreach (var value in referenceNets)
-            {
-                _netFuncNetOutput.Add(value);
-            }
-            foreach (var value in referenceScans)
-            {
-                _netFuncTimeOutput.Add(value);
-            }
+            _netFuncTimeInput.AddRange(aligneeTimes);
+            _netFuncNetOutput.AddRange(referenceNets);
+            _netFuncTimeOutput.AddRange(referenceScans);
         }
 
         /// <summary>
@@ -126,14 +105,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="ppmShifts"></param>
         public void SetMassCalibrationFunctionWithTime(IEnumerable<double> aligneeTimes, IEnumerable<double> ppmShifts)
         {
-            foreach (var value in aligneeTimes)
-            {
-                _massFuncTimeInput.Add(value);
-            }
-            foreach (var value in ppmShifts)
-            {
-                _massFuncTimePpmOutput.Add(value);
-            }
+            _massFuncTimeInput.AddRange(aligneeTimes);
+            _massFuncTimePpmOutput.AddRange(ppmShifts);
         }
 
         /// <summary>

@@ -132,22 +132,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (var i = 0; i < numPts; i++)
             {
                 var point = _pts[i];
-                if (point.X < _minX)
-                {
-                    _minX = point.X;
-                }
-                if (point.X > _maxX)
-                {
-                    _maxX = point.X;
-                }
-                if (point.MassError < _minY)
-                {
-                    _minY = point.MassError;
-                }
-                if (point.MassError > _maxY)
-                {
-                    _maxY = point.MassError;
-                }
+                _minX = Math.Min(_minX, point.X);
+                _maxX = Math.Max(_maxX, point.X);
+                _minY = Math.Min(_minY, point.Y);
+                _maxY = Math.Max(_maxY, point.Y);
             }
         }
 
