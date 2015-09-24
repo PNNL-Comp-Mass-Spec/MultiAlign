@@ -7,6 +7,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// </summary>
     public sealed class ResidualData
     {
+        public ResidualData()
+        {
+            Net = new List<double>();
+            Mz = new List<double>();
+            LinearNet = new List<double>();
+            CustomNet = new List<double>();
+            LinearCustomNet = new List<double>();
+            MassError = new List<double>();
+            MassErrorCorrected = new List<double>();
+            MzMassError = new List<double>();
+            MzMassErrorCorrected = new List<double>();
+        }
+
         /// <summary>
         /// AutoProperty to hold all the scans from the alignment data
         /// </summary>

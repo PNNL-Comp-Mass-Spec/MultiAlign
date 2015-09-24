@@ -117,7 +117,6 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             OnStatus("Setting features from baseline dataset.");
 
-
             var umcLights = baselineFeatures as List<UMCLight> ?? baselineFeatures.ToList();
 
             var filteredFeatures = FilterFeaturesByAbundance(umcLights, Options);
@@ -171,7 +170,6 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             // Convert the features, and make a map, so that we can re-adjust the aligned values later.                        
             var map = FeatureDataConverters.MapFeature(umcLights);
-
 
             // Set features                
             OnStatus("Setting alignee features.");

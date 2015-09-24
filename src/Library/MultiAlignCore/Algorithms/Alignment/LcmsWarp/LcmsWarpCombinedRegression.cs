@@ -71,8 +71,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 default:
                     _central.CalculateRegressionFunction(matches);
                     _central.RemoveRegressionOutliers();
-                    var centralPoints = _central.Points;
-                    _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(centralPoints);
+                    _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(_central.Points);
                     break;
             }
         }

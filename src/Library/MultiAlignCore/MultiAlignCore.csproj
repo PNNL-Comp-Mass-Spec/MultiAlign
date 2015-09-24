@@ -153,7 +153,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LCMSWarp.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAdapter.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentData.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
