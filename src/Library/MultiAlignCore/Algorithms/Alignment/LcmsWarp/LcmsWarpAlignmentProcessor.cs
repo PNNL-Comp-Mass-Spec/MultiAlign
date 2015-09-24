@@ -193,85 +193,38 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _lcmsWarp = new LcmsWarp();
             }
 
-            var umcIndices = new List<int>();
-            var umcCalibratedMasses = new List<double>();
-            var umcAlignedNets = new List<double>();
-            var umcStartNets = new List<double>();
-            var umcEndNets = new List<double>();
-            var umcAlignedScans = new List<int>();
-            var umcDriftTimes = new List<double>();
+            IEnumerable<UMCLight> featureData;
 
             if (_aligningToMassTagDb)
             {
-                _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(ref umcIndices, ref umcCalibratedMasses,
-                                                                    ref umcAlignedNets, ref umcStartNets,
-                                                                    ref umcEndNets,
-                                                                    ref umcDriftTimes);
-
-                for (var i = 0; i < umcIndices.Count; i++)
-                {
-                    var point = new UMCLight
-                    {
-                        Id = umcIndices[i],
-                        MassMonoisotopicAligned = umcCalibratedMasses[i],
-                        NetAligned = umcAlignedNets[i],
-                        NetStart = umcStartNets[i],
-                        NetEnd = umcEndNets[i],
-                        DriftTime = umcDriftTimes[i]
-                    };
-
-                    if (i < data.Count)
-                    {
-                        // Update the data without stomping the data that shouldn't change.
-                        data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
-                        data[i].NetAligned = point.NetAligned;
-                        data[i].NetStart = point.NetStart;
-                        data[i].NetEnd = point.NetEnd;
-                        data[i].DriftTime = point.DriftTime;
-                    }
-                    else
-                    {
-                        data.Add(point);
-                    }
-                }
-
+                featureData = _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets();
             }
             else
             {
-                _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(ref umcIndices, ref umcCalibratedMasses,
-                                                                    ref umcAlignedNets, ref umcStartNets,
-                                                                    ref umcEndNets, ref umcAlignedScans,
-                                                                    ref umcDriftTimes, _minReferenceDatasetScan,
-                                                                    _maxReferenceDatasetScan);
+                featureData = _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(_minReferenceDatasetScan, _maxReferenceDatasetScan);
+            }
 
-                for (var i = 0; i < umcIndices.Count; i++)
+            var i = 0;
+            foreach (var point in featureData)
+            {
+                if (i < data.Count)
                 {
-                    var point = new UMCLight
+                    // Update the data without stomping the data that shouldn't change.
+                    data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
+                    data[i].NetAligned = point.NetAligned;
+                    data[i].NetStart = point.NetStart;
+                    data[i].NetEnd = point.NetEnd;
+                    data[i].DriftTime = point.DriftTime;
+                    if (_aligningToMassTagDb)
                     {
-                        Id = umcIndices[i],
-                        MassMonoisotopicAligned = umcCalibratedMasses[i],
-                        NetAligned = umcAlignedNets[i],
-                        NetStart = umcStartNets[i],
-                        NetEnd = umcEndNets[i],
-                        ScanAligned = umcAlignedScans[i],
-                        DriftTime = umcDriftTimes[i]
-                    };
-
-                    if (i < data.Count)
-                    {
-                        // Update the data without stomping the data that shouldn't change.
-                        data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
-                        data[i].NetAligned = point.NetAligned;
-                        data[i].NetStart = point.NetStart;
-                        data[i].NetEnd = point.NetEnd;
                         data[i].ScanAligned = point.ScanAligned;
-                        data[i].DriftTime = point.DriftTime;
-                    }
-                    else
-                    {
-                        data.Add(point);
                     }
                 }
+                else
+                {
+                    data.Add(point);
+                }
+                i++;
             }
         }
         
@@ -775,31 +728,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public ResidualData GetResidualData()
         {
-            var net = new List<double>();
-            var mz = new List<double>();
-            var linearNet = new List<double>();
-            var customNet = new List<double>();
-            var linearCustomNet = new List<double>();
-            var massError = new List<double>();
-            var massErrorCorrected = new List<double>();
-
-            _lcmsWarp.GetResiduals(ref net, ref mz, ref linearNet, ref customNet, ref linearCustomNet,
-                                    ref massError, ref massErrorCorrected);
-
-            var data = new ResidualData
-            {
-                Net = net,
-                Mz = mz,
-                LinearNet = linearNet,
-                CustomNet = customNet,
-                LinearCustomNet = linearCustomNet,
-                MassError = massError,
-                MassErrorCorrected = massErrorCorrected,
-                MzMassError = new List<double>(massError),
-                MzMassErrorCorrected = new List<double>(massErrorCorrected)
-            };
-
-            return data;
+            return _lcmsWarp.GetResiduals();
         }
        
         public ISpectraProvider BaselineSpectraProvider { get; set; }

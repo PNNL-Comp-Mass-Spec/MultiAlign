@@ -459,26 +459,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Updates the lists passed in with the residual data from the Warper
+        /// Gets the residual data from the Warper
         /// </summary>
-        /// <param name="net"></param>
-        /// <param name="mz"></param>
-        /// <param name="linearNet"></param>
-        /// <param name="customNet"></param>
-        /// <param name="linearCustomNet"></param>
-        /// <param name="massError"></param>
-        /// <param name="massErrorCorrected"></param>
-        public void GetResiduals(ref List<double> net, ref List<double> mz, ref List<double> linearNet, ref List<double> customNet,
-                                 ref List<double> linearCustomNet, ref List<double> massError, ref List<double> massErrorCorrected)
+        public ResidualData GetResiduals()
         {
             var count = FeatureMatches.Count;
-            net.Capacity = count;
-            mz.Capacity = count;
-            linearNet.Capacity = count;
-            customNet.Capacity = count;
-            linearCustomNet.Capacity = count;
-            massError.Capacity = count;
-            massErrorCorrected.Capacity = count;
+            var rd = new ResidualData();
+            rd.Net.Capacity = count;
+            rd.Mz.Capacity = count;
+            rd.LinearNet.Capacity = count;
+            rd.CustomNet.Capacity = count;
+            rd.LinearCustomNet.Capacity = count;
+            rd.MassError.Capacity = count;
+            rd.MassErrorCorrected.Capacity = count;
+            rd.MzMassError.Capacity = count;
+            rd.MzMassErrorCorrected.Capacity = count;
 
             
             foreach (var match in FeatureMatches)
@@ -489,21 +484,25 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var scanNumber = match.Net;
 
                 // NET
-                net.Add(scanNumber);
-                linearNet.Add(feature.NetAligned - predictedLinear);
-                customNet.Add(match.NetError);
-                linearCustomNet.Add(feature.NetAligned - predictedLinear);
+                rd.Net.Add(scanNumber);
+                rd.LinearNet.Add(feature.NetAligned - predictedLinear);
+                rd.CustomNet.Add(match.NetError);
+                rd.LinearCustomNet.Add(feature.NetAligned - predictedLinear);
 
                 var ppmShift = 0.0;
                 if (_useMass)
                 {
                     ppmShift = GetPpmShift(feature.Mz, scanNumber);
                 }
-                mz.Add(feature.Mz);
-                massError.Add(ppmMassError);
+                rd.Mz.Add(feature.Mz);
+                rd.MassError.Add(ppmMassError);
+                rd.MzMassError.Add(ppmMassError);
 
-                massErrorCorrected.Add(ppmMassError - ppmShift);
+                rd.MassErrorCorrected.Add(ppmMassError - ppmShift);
+                rd.MzMassErrorCorrected.Add(ppmMassError - ppmShift);
             }
+
+            return rd;
         }
 
         /// <summary>
@@ -697,58 +696,39 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Updates the data passed in with the appropriate calibrated mass, aligned NET and drift times
+        /// Returns UMCLight data with calibrated masses and aligned nets
         /// </summary>
-        /// <param name="umcIndices"></param>
-        /// <param name="umcCalibratedMass"></param>
-        /// <param name="umcAlignedNets"></param>
-        /// <param name="alignedDriftTimes"></param>
-        public void GetFeatureCalibratedMassesAndAlignedNets(ref List<int> umcIndices, ref List<double> umcCalibratedMass,
-                                                             ref List<double> umcAlignedNets,
-                                                             ref List<double> umcAlignedStartNets,
-                                                             ref List<double> umcAlignedEndNets,
-                                                             ref List<double> alignedDriftTimes)
+        public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets()
         {
-            foreach (var feature in _features)
+            return _features.Select(x => new UMCLight()
             {
-                umcIndices.Add(feature.Id);
-                umcCalibratedMass.Add(feature.MassMonoisotopicAligned);
-                umcAlignedNets.Add(feature.NetAligned);
-                umcAlignedStartNets.Add(feature.NetStart);
-                umcAlignedEndNets.Add(feature.NetEnd);
-                alignedDriftTimes.Add(feature.DriftTime);
-            }
+                Id = x.Id,
+                MassMonoisotopicAligned = x.MassMonoisotopicAligned,
+                NetAligned = x.NetAligned,
+                NetStart = x.NetStart,
+                NetEnd = x.NetEnd,
+                DriftTime = x.DriftTime,
+            });
         }
 
         /// <summary>
-        /// Updates the data passed in with the appropriate calibrated mass, aligned NET, drift times,
+        /// Returns UMCLight data with calibrated masses, aligned NETs, drift times,
         /// aligned scans based on the min and max scan numbers
         /// </summary>
-        /// <param name="umcIndices"></param>
-        /// <param name="umcCalibratedMasses"></param>
-        /// <param name="umcAlignedNets"></param>
-        /// <param name="umcAlignedScans"></param>
-        /// <param name="umcDriftTimes"></param>
         /// <param name="minScan"></param>
         /// <param name="maxScan"></param>
-        public void GetFeatureCalibratedMassesAndAlignedNets(ref List<int> umcIndices, ref List<double> umcCalibratedMasses,
-                                                             ref List<double> umcAlignedNets, ref List<double> umcStartNets,
-                                                             ref List<double> umcEndNets, ref List<int> umcAlignedScans,
-                                                             ref List<double> umcDriftTimes, int minScan, int maxScan)
+        public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets(int minScan, int maxScan)
         {
-            var numFeatures = _features.Count;
-            var sortedFeatures = _features.OrderBy(x => x.Id).ToList();
-            for (var featureNum = 0; featureNum < numFeatures; featureNum++)
+            return _features.OrderBy(x => x.Id).Select(x => new UMCLight()
             {
-                var feature = sortedFeatures[featureNum];
-                umcIndices.Add(feature.Id);
-                umcCalibratedMasses.Add(feature.MassMonoisotopicAligned);
-                umcAlignedNets.Add(feature.NetAligned);
-                umcStartNets.Add(feature.NetStart);
-                umcEndNets.Add(feature.NetEnd);
-                umcAlignedScans.Add(minScan + (int)(feature.NetAligned * (maxScan - minScan)));
-                umcDriftTimes.Add(feature.DriftTime);
-            }
+                Id = x.Id,
+                MassMonoisotopicAligned = x.MassMonoisotopicAligned,
+                NetAligned = x.NetAligned,
+                NetStart = x.NetStart,
+                NetEnd = x.NetEnd,
+                ScanAligned = minScan + (int)(x.NetAligned * (maxScan - minScan)),
+                DriftTime = x.DriftTime,
+            });
         }
 
         /// <summary>
