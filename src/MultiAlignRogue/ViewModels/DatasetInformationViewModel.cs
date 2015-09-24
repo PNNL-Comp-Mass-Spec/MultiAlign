@@ -137,11 +137,10 @@ namespace MultiAlignRogue.ViewModels
                         this.StateChanged(this, EventArgs.Empty);
                     }
 
-                    this.ShouldShowProgress = ((value == DatasetStates.FindingFeatures) ||
+                    this.ShouldShowProgress = (value == DatasetStates.FindingFeatures) ||
                                               (value == DatasetStates.PersistingFeatures) ||
                                               ((value == DatasetStates.Aligning) ||
-                                              (value == DatasetStates.PersistingAlignment)) && 
-                                              !this.Dataset.IsBaseline);
+                                              (value == DatasetStates.PersistingAlignment));
 
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("AligningLabelColor");

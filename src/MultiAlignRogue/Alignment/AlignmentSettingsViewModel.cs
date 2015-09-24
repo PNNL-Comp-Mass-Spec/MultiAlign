@@ -346,7 +346,9 @@
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
          
-            var selectedFiles = WorkFlowDatasets ?? this.Datasets.Where(file => file.IsSelected && !file.DoingWork && !file.IsBaseline).ToList();
+            var selectedFiles = WorkFlowDatasets ?? 
+                                this.Datasets.Where(file => file.IsSelected && !file.DoingWork && 
+                                                            (this.ShouldAlignToAMT || !file.IsBaseline)).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
