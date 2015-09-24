@@ -811,45 +811,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _lcmsWarp.GetResiduals(ref net, ref mz, ref linearNet, ref customNet, ref linearCustomNet,
                                     ref massError, ref massErrorCorrected);
 
-            var count = net.Count;
-
-            var scans = new double[count];
-            var mzs = new double[count];
-            var linearNets = new double[count];
-            var customNets = new double[count];
-            var linearCustomNets = new double[count];
-            var massErrors = new double[count];
-            var massErrorCorrecteds = new double[count];
-            var mzMassErrors = new double[count];
-            var mzMassErrorCorrecteds = new double[count];
-
-            //List<ResidualData> dataList = new List<ResidualData>();
-            for (var i = 0; i < count; i++)
-            {
-
-                scans[i] = net[i];
-                mzs[i] = mz[i];
-                linearNets[i] = linearNet[i];
-                customNets[i] = customNet[i];
-                linearCustomNets[i] = linearCustomNet[i];
-                massErrors[i] = massError[i];
-                massErrorCorrecteds[i] = massErrorCorrected[i];
-                mzMassErrors[i] = massError[i];
-                mzMassErrorCorrecteds[i] = massErrorCorrected[i];
-
-            }
-
             var data = new ResidualData
             {
-                Scan = scans,
-                Mz = mzs,
-                LinearNet = linearNets,
-                CustomNet = customNets,
-                LinearCustomNet = linearCustomNets,
-                MassError = massErrors,
-                MassErrorCorrected = massErrorCorrecteds,
-                MzMassError = mzMassErrors,
-                MzMassErrorCorrected = mzMassErrorCorrecteds
+                Scan = net,
+                Mz = mz,
+                LinearNet = linearNet,
+                CustomNet = customNet,
+                LinearCustomNet = linearCustomNet,
+                MassError = massError,
+                MassErrorCorrected = massErrorCorrected,
+                MzMassError = new List<double>(massError),
+                MzMassErrorCorrected = new List<double>(massErrorCorrected)
             };
 
             return data;
