@@ -12,22 +12,20 @@ namespace MultiAlignCore.Data.Alignment
     [Serializable]
     public class AlignmentData
     {
-        private ResidualData mobj_residualData;
-
         public int DatasetID { get; set; }
-        public LcmsWarpAlignmentFunction alignmentFunction;
+        public LcmsWarpAlignmentFunction AlignmentFunction { get; set; }
 
-        public string aligneeDataset;
-        public bool baselineIsAmtDB { get; set; }
+        public string AligneeDataset { get; set; }
+        public bool BaselineIsAmtDB { get; set; }
 
-        public double[,] heatScores;
-        public int minScanBaseline;
-        public int maxScanBaseline;
-        public float minMTDBNET;
-        public float maxMTDBNET;
-        public double[,] massErrorHistogram;
-        public double[,] netErrorHistogram;
-        public double[,] driftErrorHistogram;
+        public double[,] HeatScores { get; set; }
+        public int MinScanBaseline { get; set; }
+        public int MaxScanBaseline { get; set; }
+        public float MinMTDBNET { get; set; }
+        public float MaxMTDBNET { get; set; }
+        public double[,] MassErrorHistogram { get; set; }
+        public double[,] NetErrorHistogram { get; set; }
+        public double[,] DriftErrorHistogram { get; set; }
         public double NETRsquared { get; set; }
         public double NETSlope { get; set; }
         public double NETIntercept { get; set; }
@@ -38,7 +36,7 @@ namespace MultiAlignCore.Data.Alignment
 
 
         /// <summary>
-        ///     Gets or sets the anchor poitns defined by spectral matching if that algorithm was used.
+        ///     Gets or sets the anchor points defined by spectral matching if that algorithm was used.
         ///     This is a stop gap until I can port this all to better objects.
         /// </summary>
         public IEnumerable<SpectralAnchorPointMatch> Matches { get; set; }
@@ -46,11 +44,7 @@ namespace MultiAlignCore.Data.Alignment
         /// <summary>
         ///     Gets or sets the residual alignment data.
         /// </summary>
-        public ResidualData ResidualData
-        {
-            get { return mobj_residualData; }
-            set { mobj_residualData = value; }
-        }
+        public ResidualData ResidualData { get; set; }
 
         public double MassKurtosis
         {

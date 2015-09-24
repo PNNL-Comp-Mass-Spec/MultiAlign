@@ -153,7 +153,7 @@ namespace MultiAlignTestSuite.Drawing
                 FontSize = .2
             };
 
-            var scores = data.heatScores;
+            var scores = data.HeatScores;
             var width = scores.GetLength(0);
             var height = scores.GetLength(1);
 

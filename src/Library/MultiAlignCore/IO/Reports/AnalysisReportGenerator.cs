@@ -172,10 +172,10 @@ namespace MultiAlignCore.IO.Reports
                 return;
 
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
-            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores, alignmentData.baselineIsAmtDB);
+            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.HeatScores, alignmentData.BaselineIsAmtDB);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
-            var netHistogram    = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram   = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram    = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram   = HistogramFactory.CreateHistogram(alignmentData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,

@@ -135,8 +135,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 maxScanReference = Math.Max(maxScanReference, feature.Scan);
             }
 
-            alignmentData.maxMTDBNET = maxScanReference;
-            alignmentData.minMTDBNET = minScanReference;
+            alignmentData.MaxMTDBNET = maxScanReference;
+            alignmentData.MinMTDBNET = minScanReference;
 
             return alignmentData;
         }
@@ -250,13 +250,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             // Set all of the data now 
             var alignmentData = new AlignmentData
             {
-                massErrorHistogram = massErrorHistogram,
-                driftErrorHistogram = driftErrorHistogram,
-                netErrorHistogram = netErrorHistogram,
-                alignmentFunction = alignmentFunction,
-                heatScores = heatScore,
-                minScanBaseline = minScanBaseline,
-                maxScanBaseline = maxScanBaseline,
+                MassErrorHistogram = massErrorHistogram,
+                DriftErrorHistogram = driftErrorHistogram,
+                NetErrorHistogram = netErrorHistogram,
+                AlignmentFunction = alignmentFunction,
+                HeatScores = heatScore,
+                MinScanBaseline = minScanBaseline,
+                MaxScanBaseline = maxScanBaseline,
                 NETIntercept = alignmentProcessor.NetIntercept,
                 NETRsquared = alignmentProcessor.NetRsquared,
                 NETSlope = alignmentProcessor.NetSlope,
@@ -265,15 +265,15 @@ namespace MultiAlignCore.Algorithms.Alignment
                 MassStandardDeviation = alignmentProcessor.MassStd,
                 NETMean = alignmentProcessor.NetMu,
                 NETStandardDeviation = alignmentProcessor.NetStd,
-                baselineIsAmtDB = Options.AlignToMassTagDatabase
+                BaselineIsAmtDB = Options.AlignToMassTagDatabase
             };
 
             // Find out the max scan or NET value to use for the range depending on what 
             // type of baseline dataset it was (MTDB or dataset).                 
             if (alignmentOptions.AlignToMassTagDatabase)
             {
-                alignmentData.minMTDBNET = (float)minMtdbnet;
-                alignmentData.maxMTDBNET = (float)maxMtdbnet;
+                alignmentData.MinMTDBNET = (float)minMtdbnet;
+                alignmentData.MaxMTDBNET = (float)maxMtdbnet;
             }
 
             return alignmentData;

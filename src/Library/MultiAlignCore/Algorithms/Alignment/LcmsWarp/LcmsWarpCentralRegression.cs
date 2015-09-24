@@ -11,41 +11,41 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// </summary>
     public class LcmsWarpCentralRegression
     {
-        private int m_numYBins;
-        private int m_numJumps;
+        private int _numYBins;
+        private int _numJumps;
 
         // number of matches for each x section
-        private int m_numSectionMatches;
+        private int _numSectionMatches;
         // Minimum number of points to be present in a section
         // for it to be considered in computing function
-        private readonly int m_minSectionPts;
+        private readonly int _minSectionPts;
 
-        private readonly List<double> m_matchScores;
-        private readonly List<double> m_sectionMisMatchScore;
-        private readonly List<double> m_sectionTolerance;
-        private readonly List<double> m_alignmentScores;
-        private readonly List<int> m_bestPreviousIndex;
-        private readonly List<int> m_count;
+        private readonly List<double> _matchScores;
+        private readonly List<double> _sectionMisMatchScore;
+        private readonly List<double> _sectionTolerance;
+        private readonly List<double> _alignmentScores;
+        private readonly List<int> _bestPreviousIndex;
+        private readonly List<int> _count;
 
-        private readonly NormalUniformEm m_normUnifEm;
+        private readonly NormalUniformEm _normUnifEm;
 
-        private double m_minY;
-        private double m_maxY;
+        private double _minY;
+        private double _maxY;
         //the tolerance to apply
-        private double m_tolerance;
+        private double _tolerance;
         //outlier zscore
-        private double m_outlierZScore;
+        private double _outlierZScore;
 
         //Storage for standard deviations at each slice
-        private readonly List<double> m_stdY;
+        private readonly List<double> _stdY;
         //Storage for alignment
-        private readonly Dictionary<int, int> m_alignmentFunction;
+        private readonly Dictionary<int, int> _alignmentFunction;
 
-        private double m_minX;
-        private double m_maxX;
+        private double _minX;
+        private double _maxX;
 
-        private int m_numXBins;
-        private readonly List<RegressionPoint> m_pts;
+        private int _numXBins;
+        private readonly List<RegressionPoint> _pts;
 
         /// <summary>
         /// Default constructor the Central regression, sets parameters to default
@@ -53,27 +53,27 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpCentralRegression()
         {
-            m_numXBins = 100;
-            m_numYBins = 100;
-            m_numJumps = 30;
-            m_tolerance = 0.8; // 5 standard devs
-            m_outlierZScore = m_tolerance;
-            m_minSectionPts = 5;
-            m_matchScores = new List<double>();
-            m_sectionMisMatchScore = new List<double>();
-            m_sectionTolerance = new List<double>();
-            m_alignmentScores = new List<double>();
-            m_bestPreviousIndex = new List<int>();
-            m_count = new List<int>();
+            _numXBins = 100;
+            _numYBins = 100;
+            _numJumps = 30;
+            _tolerance = 0.8; // 5 standard devs
+            _outlierZScore = _tolerance;
+            _minSectionPts = 5;
+            _matchScores = new List<double>();
+            _sectionMisMatchScore = new List<double>();
+            _sectionTolerance = new List<double>();
+            _alignmentScores = new List<double>();
+            _bestPreviousIndex = new List<int>();
+            _count = new List<int>();
 
-            m_normUnifEm = new NormalUniformEm();
+            _normUnifEm = new NormalUniformEm();
 
-            m_stdY = new List<double>();
-            m_alignmentFunction = new Dictionary<int, int>();
+            _stdY = new List<double>();
+            _alignmentFunction = new Dictionary<int, int>();
 
-            m_pts = new List<RegressionPoint>();
+            _pts = new List<RegressionPoint>();
 
-            SetOptions(m_numXBins, m_numYBins, m_numJumps, m_outlierZScore);
+            SetOptions(_numXBins, _numYBins, _numJumps, _outlierZScore);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public List<RegressionPoint> Points
         {
-            get { return m_pts; }
+            get { return _pts; }
         }
 
         /// <summary>
@@ -94,17 +94,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="zTolerance"></param>
         public void SetOptions(int numXBins, int numYBins, int numJumps, double zTolerance)
         {
-            m_numXBins = numXBins;
-            m_numYBins = numYBins;
-            m_numJumps = numJumps;
-            m_tolerance = zTolerance;
-            m_outlierZScore = zTolerance;
+            _numXBins = numXBins;
+            _numYBins = numYBins;
+            _numJumps = numJumps;
+            _tolerance = zTolerance;
+            _outlierZScore = zTolerance;
 
-            m_numSectionMatches = m_numYBins * (2 * numJumps + 1);
+            _numSectionMatches = _numYBins * (2 * numJumps + 1);
 
-            m_matchScores.Clear();
-            m_alignmentScores.Clear();
-            m_bestPreviousIndex.Clear();
+            _matchScores.Clear();
+            _alignmentScores.Clear();
+            _bestPreviousIndex.Clear();
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="outlierZScore"></param>
         public void SetOutlierZScore(double outlierZScore)
         {
-            m_outlierZScore = outlierZScore;
+            _outlierZScore = outlierZScore;
         }
 
         /// <summary>
@@ -121,32 +121,32 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void CalculateMinMax()
         {
-            var numPts = m_pts.Count();
+            var numPts = _pts.Count();
 
-            m_minX = double.MaxValue;
-            m_maxX = double.MinValue;
+            _minX = double.MaxValue;
+            _maxX = double.MinValue;
 
-            m_minY = double.MaxValue;
-            m_maxY = double.MinValue;
+            _minY = double.MaxValue;
+            _maxY = double.MinValue;
 
             for (var i = 0; i < numPts; i++)
             {
-                var point = m_pts[i];
-                if (point.X < m_minX)
+                var point = _pts[i];
+                if (point.X < _minX)
                 {
-                    m_minX = point.X;
+                    _minX = point.X;
                 }
-                if (point.X > m_maxX)
+                if (point.X > _maxX)
                 {
-                    m_maxX = point.X;
+                    _maxX = point.X;
                 }
-                if (point.MassError < m_minY)
+                if (point.MassError < _minY)
                 {
-                    m_minY = point.MassError;
+                    _minY = point.MassError;
                 }
-                if (point.MassError > m_maxY)
+                if (point.MassError > _maxY)
                 {
-                    m_maxY = point.MassError;
+                    _maxY = point.MassError;
                 }
             }
         }
@@ -159,45 +159,45 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             var points = new List<double>();
 
-            var numPoints = m_pts.Count();
-            var xInterval = (m_maxX - m_minX) / m_numXBins;
+            var numPoints = _pts.Count();
+            var xInterval = (_maxX - _minX) / _numXBins;
 
             for (var ptNum = 0; ptNum < numPoints; ptNum++)
             {
-                var pt = m_pts[ptNum];
-                var sectionNum = Convert.ToInt32((pt.X - m_minX) / xInterval);
-                if (sectionNum == m_numXBins)
+                var pt = _pts[ptNum];
+                var sectionNum = Convert.ToInt32((pt.X - _minX) / xInterval);
+                if (sectionNum == _numXBins)
                 {
-                    sectionNum = m_numXBins - 1;
+                    sectionNum = _numXBins - 1;
                 }
                 if (intervalNum == sectionNum)
                 {
-                    m_count[sectionNum]++;
+                    _count[sectionNum]++;
                     points.Add(pt.MassError);
                 }
             }
 
-            if (m_count[intervalNum] > m_minSectionPts)
+            if (_count[intervalNum] > _minSectionPts)
             {
-                m_normUnifEm.CalculateDistributions(points);
-                m_stdY[intervalNum] = m_normUnifEm.StandDev;
-                if (Math.Abs(m_stdY[intervalNum]) > double.Epsilon)
+                _normUnifEm.CalculateDistributions(points);
+                _stdY[intervalNum] = _normUnifEm.StandDev;
+                if (Math.Abs(_stdY[intervalNum]) > double.Epsilon)
                 {
-                    var tolerance = m_stdY[intervalNum] * m_tolerance;
-                    m_sectionTolerance[intervalNum] = tolerance;
+                    var tolerance = _stdY[intervalNum] * _tolerance;
+                    _sectionTolerance[intervalNum] = tolerance;
 
-                    var misMatchScore = (tolerance * tolerance) / (m_stdY[intervalNum] * m_stdY[intervalNum]);
-                    m_sectionMisMatchScore[intervalNum] = misMatchScore;
+                    var misMatchScore = (tolerance * tolerance) / (_stdY[intervalNum] * _stdY[intervalNum]);
+                    _sectionMisMatchScore[intervalNum] = misMatchScore;
                 }
                 else
                 {
-                    m_sectionMisMatchScore[intervalNum] = m_tolerance * m_tolerance;
-                    m_sectionTolerance[intervalNum] = 0;
+                    _sectionMisMatchScore[intervalNum] = _tolerance * _tolerance;
+                    _sectionTolerance[intervalNum] = 0;
                 }
             }
             else
             {
-                m_stdY[intervalNum] = 0.1;
+                _stdY[intervalNum] = 0.1;
             }
         }
 
@@ -206,16 +206,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void CalculateSectionsStd()
         {
-            m_count.Capacity = m_numXBins;
-            m_stdY.Capacity = m_numXBins;
-            m_stdY.Clear();
+            _count.Capacity = _numXBins;
+            _stdY.Capacity = _numXBins;
+            _stdY.Clear();
 
-            for (var interval = 0; interval < m_numXBins; interval++)
+            for (var interval = 0; interval < _numXBins; interval++)
             {
-                m_stdY.Add(0);
-                m_count.Add(0);
-                m_sectionMisMatchScore.Add(0);
-                m_sectionTolerance.Add(0);
+                _stdY.Add(0);
+                _count.Add(0);
+                _sectionMisMatchScore.Add(0);
+                _sectionTolerance.Add(0);
                 CalculateSectionStdAndCount(interval);
             }
         }
@@ -225,15 +225,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void Clear()
         {
-            m_matchScores.Clear();
-            m_alignmentFunction.Clear();
-            m_alignmentScores.Clear();
-            m_bestPreviousIndex.Clear();
-            m_count.Clear();
-            m_pts.Clear();
-            m_stdY.Clear();
-            m_sectionMisMatchScore.Clear();
-            m_sectionTolerance.Clear();
+            _matchScores.Clear();
+            _alignmentFunction.Clear();
+            _alignmentScores.Clear();
+            _bestPreviousIndex.Clear();
+            _count.Clear();
+            _pts.Clear();
+            _stdY.Clear();
+            _sectionMisMatchScore.Clear();
+            _sectionTolerance.Clear();
         }
 
         private void SetUnmatchedScoreMatrix()
@@ -241,23 +241,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // Assigns each section's score to the minimum for that section
             // for each possible matching sections, the minimum score would correspond 
             // to the situation that all points in the section lie outside the tolerance
-            m_matchScores.Clear();
+            _matchScores.Clear();
 
             // At the moment, assumes that the tolerance is in zscore units
-            for (var xSection = 0; xSection < m_numXBins; xSection++)
+            for (var xSection = 0; xSection < _numXBins; xSection++)
             {
-                var sectionMismatchScore = m_sectionMisMatchScore[xSection] * m_count[xSection];
+                var sectionMismatchScore = _sectionMisMatchScore[xSection] * _count[xSection];
 
-                for (var sectionMatchNum = 0; sectionMatchNum < m_numSectionMatches; sectionMatchNum++)
+                for (var sectionMatchNum = 0; sectionMatchNum < _numSectionMatches; sectionMatchNum++)
                 {
-                    m_matchScores.Add(sectionMismatchScore);
+                    _matchScores.Add(sectionMismatchScore);
                 }
             }
         }
 
         private void CalculateScoreMatrix()
         {
-            m_matchScores.Capacity = m_numXBins * m_numSectionMatches;
+            _matchScores.Capacity = _numXBins * _numSectionMatches;
 
             // Neww to calculate the score matrix for all possible score blocks.
             // For every x section, all y secments between y_interest - m_num_jumps
@@ -266,44 +266,44 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // First set the unmatched score.
             SetUnmatchedScoreMatrix();
 
-            var yIntervalSize = (m_maxY - m_minY) / m_numYBins;
-            var xIntervalSize = (m_maxX - m_minX) / m_numXBins;
+            var yIntervalSize = (_maxY - _minY) / _numYBins;
+            var xIntervalSize = (_maxX - _minX) / _numXBins;
 
             // For each point that is seen, add the supporting score to the appropriate section.
-            var numPts = m_pts.Count();
+            var numPts = _pts.Count();
             if ((yIntervalSize > 0.000001) && (xIntervalSize > 0.000001))
             {
                 for (var pointNum = 0; pointNum < numPts; pointNum++)
                 {
-                    var point = m_pts[pointNum];
-                    var xSection = Convert.ToInt32((point.X - m_minX)/xIntervalSize);
-                    if (xSection == m_numXBins)
+                    var point = _pts[pointNum];
+                    var xSection = Convert.ToInt32((point.X - _minX)/xIntervalSize);
+                    if (xSection == _numXBins)
                     {
-                        xSection = m_numXBins - 1;
+                        xSection = _numXBins - 1;
                     }
 
                     // If the point belongs to a section where the num # of points is not met, ignore it
-                    if (m_count[xSection] < m_minSectionPts || Math.Abs(m_stdY[xSection]) < double.Epsilon)
+                    if (_count[xSection] < _minSectionPts || Math.Abs(_stdY[xSection]) < double.Epsilon)
                     {
                         continue;
                     }
 
-                    var yTolerance = m_sectionTolerance[xSection];
+                    var yTolerance = _sectionTolerance[xSection];
 
-                    var yInterval = Convert.ToInt32((0.0001 + (point.MassError - m_minY)/yIntervalSize));
+                    var yInterval = Convert.ToInt32((0.0001 + (point.MassError - _minY)/yIntervalSize));
 
-                    if (yInterval == m_numYBins)
+                    if (yInterval == _numYBins)
                     {
-                        yInterval = m_numYBins - 1;
+                        yInterval = _numYBins - 1;
                     }
 
                     // Matches to the section that the point would contribute to.
                     var minYStart = Convert.ToInt32(yInterval - yTolerance/yIntervalSize);
                     var maxYStart = Convert.ToInt32(yInterval + yTolerance/yIntervalSize);
 
-                    var sectionMismatchScore = m_sectionMisMatchScore[xSection];
+                    var sectionMismatchScore = _sectionMisMatchScore[xSection];
 
-                    var xFraction = (point.X - m_minX)/xIntervalSize - xSection;
+                    var xFraction = (point.X - _minX)/xIntervalSize - xSection;
 
                     for (var yFrom = minYStart; yFrom <= maxYStart; yFrom++)
                     {
@@ -311,23 +311,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         {
                             continue;
                         }
-                        if (yFrom >= m_numYBins)
+                        if (yFrom >= _numYBins)
                         {
                             break;
                         }
-                        for (var yTo = yFrom - m_numJumps; yTo <= yFrom + m_numJumps; yTo++)
+                        for (var yTo = yFrom - _numJumps; yTo <= yFrom + _numJumps; yTo++)
                         {
                             if (yTo < 0)
                             {
                                 continue;
                             }
-                            if (yTo >= m_numYBins)
+                            if (yTo >= _numYBins)
                             {
                                 break;
                             }
 
                             //Assumes linear piecewise transform to calculate the estimated y
-                            var yEstimated = (yFrom + (yTo - yFrom)*xFraction)*yIntervalSize + m_minY;
+                            var yEstimated = (yFrom + (yTo - yFrom)*xFraction)*yIntervalSize + _minY;
                             var yDelta = point.MassError - yEstimated;
 
                             //Make sure the point is in the linear range to effect the score
@@ -336,11 +336,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 continue;
                             }
 
-                            var matchScore = (yDelta*yDelta)/(m_stdY[xSection]*m_stdY[xSection]);
-                            var jump = yTo - yFrom + m_numJumps;
-                            var sectionIndex = xSection*m_numSectionMatches + yFrom*(2*m_numJumps + 1) + jump;
-                            var currentMatchScore = m_matchScores[sectionIndex];
-                            m_matchScores[sectionIndex] = currentMatchScore - sectionMismatchScore + matchScore;
+                            var matchScore = (yDelta*yDelta)/(_stdY[xSection]*_stdY[xSection]);
+                            var jump = yTo - yFrom + _numJumps;
+                            var sectionIndex = xSection*_numSectionMatches + yFrom*(2*_numJumps + 1) + jump;
+                            var currentMatchScore = _matchScores[sectionIndex];
+                            _matchScores[sectionIndex] = currentMatchScore - sectionMismatchScore + matchScore;
                         }
                     }
                 }
@@ -349,72 +349,72 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private void CalculateAlignmentMatrix()
         {
-            m_bestPreviousIndex.Clear();
-            m_alignmentScores.Clear();
-            m_alignmentScores.Capacity = (m_numXBins + 1) * m_numYBins;
-            m_bestPreviousIndex.Capacity = (m_numXBins + 1) * m_numYBins;
+            _bestPreviousIndex.Clear();
+            _alignmentScores.Clear();
+            _alignmentScores.Capacity = (_numXBins + 1) * _numYBins;
+            _bestPreviousIndex.Capacity = (_numXBins + 1) * _numYBins;
 
-            for (var ySection = 0; ySection < m_numYBins; ySection++)
+            for (var ySection = 0; ySection < _numYBins; ySection++)
             {
-                m_bestPreviousIndex.Add(-2);
-                m_alignmentScores.Add(0);
+                _bestPreviousIndex.Add(-2);
+                _alignmentScores.Add(0);
             }
 
-            for (var xSection = 1; xSection <= m_numXBins; xSection++)
+            for (var xSection = 1; xSection <= _numXBins; xSection++)
             {
-                for (var ySection = 0; ySection < m_numYBins; ySection++)
+                for (var ySection = 0; ySection < _numYBins; ySection++)
                 {
-                    m_bestPreviousIndex.Add(-1);
-                    m_alignmentScores.Add(double.MaxValue);
+                    _bestPreviousIndex.Add(-1);
+                    _alignmentScores.Add(double.MaxValue);
                 }
             }
 
-            for (var xSection = 1; xSection <= m_numXBins; xSection++)
+            for (var xSection = 1; xSection <= _numXBins; xSection++)
             {
-                for (var ySection = 0; ySection < m_numYBins; ySection++)
+                for (var ySection = 0; ySection < _numYBins; ySection++)
                 {
-                    var index = xSection * m_numYBins + ySection;
+                    var index = xSection * _numYBins + ySection;
                     var bestAlignmentScore = double.MaxValue;
 
-                    for (var jump = m_numJumps; jump < 2 * m_numJumps + 1; jump++)
+                    for (var jump = _numJumps; jump < 2 * _numJumps + 1; jump++)
                     {
-                        var ySectionFrom = ySection - jump + m_numJumps;
+                        var ySectionFrom = ySection - jump + _numJumps;
                         if (ySectionFrom < 0)
                         {
                             break;
                         }
-                        var previousAlignmentIndex = (xSection - 1) * m_numYBins + ySectionFrom;
-                        var previousMatchIndex = (xSection - 1) * m_numSectionMatches + ySectionFrom * (2 * m_numJumps + 1) + jump;
-                        var previousAlignmentScore = m_alignmentScores[previousAlignmentIndex];
-                        var previousMatchScore = m_matchScores[previousMatchIndex];
+                        var previousAlignmentIndex = (xSection - 1) * _numYBins + ySectionFrom;
+                        var previousMatchIndex = (xSection - 1) * _numSectionMatches + ySectionFrom * (2 * _numJumps + 1) + jump;
+                        var previousAlignmentScore = _alignmentScores[previousAlignmentIndex];
+                        var previousMatchScore = _matchScores[previousMatchIndex];
                         if (previousAlignmentScore + previousMatchScore < bestAlignmentScore)
                         {
                             bestAlignmentScore = previousMatchScore + previousAlignmentScore;
-                            m_bestPreviousIndex[index] = previousAlignmentIndex;
-                            m_alignmentScores[index] = bestAlignmentScore;
+                            _bestPreviousIndex[index] = previousAlignmentIndex;
+                            _alignmentScores[index] = bestAlignmentScore;
                         }
                     }
 
-                    for (var jump = 0; jump < m_numJumps; jump++)
+                    for (var jump = 0; jump < _numJumps; jump++)
                     {
-                        var ySectionFrom = ySection - jump + m_numJumps;
+                        var ySectionFrom = ySection - jump + _numJumps;
                         if (ySectionFrom < 0)
                         {
                             break;
                         }
-                        var previousAlignmentIndex = (xSection - 1) * m_numYBins + ySectionFrom;
-                        var previousMatchIndex = (xSection - 1) * m_numSectionMatches + ySectionFrom * (2 * m_numJumps + 1) + jump;
-                        if ((previousAlignmentIndex > m_alignmentScores.Count-1) || (previousMatchIndex > m_matchScores.Count-1))
+                        var previousAlignmentIndex = (xSection - 1) * _numYBins + ySectionFrom;
+                        var previousMatchIndex = (xSection - 1) * _numSectionMatches + ySectionFrom * (2 * _numJumps + 1) + jump;
+                        if ((previousAlignmentIndex > _alignmentScores.Count-1) || (previousMatchIndex > _matchScores.Count-1))
                         {
                             break;
                         }
-                        var previousAlignmentScore = m_alignmentScores[previousAlignmentIndex];
-                        var previousMatchScore = m_matchScores[previousMatchIndex];
+                        var previousAlignmentScore = _alignmentScores[previousAlignmentIndex];
+                        var previousMatchScore = _matchScores[previousMatchIndex];
                         if (previousAlignmentScore + previousMatchScore < bestAlignmentScore)
                         {
                             bestAlignmentScore = previousMatchScore + previousAlignmentScore;
-                            m_bestPreviousIndex[index] = previousAlignmentIndex;
-                            m_alignmentScores[index] = bestAlignmentScore;
+                            _bestPreviousIndex[index] = previousAlignmentIndex;
+                            _alignmentScores[index] = bestAlignmentScore;
                         }
                     }
                 }
@@ -423,26 +423,26 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private void CalculateRegressionFunction()
         {
-            m_alignmentFunction.Clear();
+            _alignmentFunction.Clear();
             //Start at the last section best score and trace backwards
             var bestScore = double.MaxValue;
             var bestPreviousIndex = 0;
-            var bestYShift = m_numYBins / 2;
-            var xSection = m_numXBins;
+            var bestYShift = _numYBins / 2;
+            var xSection = _numXBins;
 
             while (xSection >= 1)
             {
-                if (m_count[xSection - 1] >= m_minSectionPts)
+                if (_count[xSection - 1] >= _minSectionPts)
                 {
-                    for (var ySection = 0; ySection < m_numYBins; ySection++)
+                    for (var ySection = 0; ySection < _numYBins; ySection++)
                     {
-                        var index = xSection * m_numYBins + ySection;
-                        var ascore = m_alignmentScores[index];
+                        var index = xSection * _numYBins + ySection;
+                        var ascore = _alignmentScores[index];
                         if (ascore < bestScore)
                         {
                             bestScore = ascore;
                             bestYShift = ySection;
-                            bestPreviousIndex = m_bestPreviousIndex[index];
+                            bestPreviousIndex = _bestPreviousIndex[index];
                         }
                     }
                     break;
@@ -450,16 +450,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 xSection--;
             }
 
-            for (var i = xSection; i <= m_numXBins; i++)
+            for (var i = xSection; i <= _numXBins; i++)
             {
-                m_alignmentFunction.Add(i, bestYShift);
+                _alignmentFunction.Add(i, bestYShift);
             }
             while (xSection > 0)
             {
                 xSection--;
-                var yShift = bestPreviousIndex % m_numYBins;
-                m_alignmentFunction.Add(xSection, yShift);
-                bestPreviousIndex = m_bestPreviousIndex[bestPreviousIndex];
+                var yShift = bestPreviousIndex % _numYBins;
+                _alignmentFunction.Add(xSection, yShift);
+                bestPreviousIndex = _bestPreviousIndex[bestPreviousIndex];
             }
 
         }
@@ -473,18 +473,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             Clear();
             foreach (var point in calibMatches)
             {
-                m_pts.Add(point);
+                _pts.Add(point);
             }
 
             // First find the boundaries
             CalculateMinMax();
 
             // For if it's constant answer
-            if (Math.Abs(m_minY - m_maxY) < double.Epsilon)
+            if (Math.Abs(_minY - _maxY) < double.Epsilon)
             {
-                for (var xSection = 0; xSection < m_numXBins; xSection++)
+                for (var xSection = 0; xSection < _numXBins; xSection++)
                 {
-                    m_alignmentFunction.Add(xSection, 0);
+                    _alignmentFunction.Add(xSection, 0);
                 }
                 return;
             }
@@ -502,32 +502,32 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void RemoveRegressionOutliers()
         {
-            var xIntervalSize = (m_maxX - m_minX) / m_numXBins;
+            var xIntervalSize = (_maxX - _minX) / _numXBins;
             var tempPts = new List<RegressionPoint>();
-            var numPts = m_pts.Count;
+            var numPts = _pts.Count;
 
             for (var pointNum = 0; pointNum < numPts; pointNum++)
             {
-                var point  = m_pts[pointNum];
-                var intervalNum = Convert.ToInt32((point.X - m_minX) / xIntervalSize);
-                if (intervalNum == m_numXBins)
+                var point  = _pts[pointNum];
+                var intervalNum = Convert.ToInt32((point.X - _minX) / xIntervalSize);
+                if (intervalNum == _numXBins)
                 {
-                    intervalNum = m_numXBins - 1;
+                    intervalNum = _numXBins - 1;
                 }
-                var stdY = m_stdY[intervalNum];
+                var stdY = _stdY[intervalNum];
                 var val = GetPredictedValue(point.X);
                 var delta = (val - point.MassError) / stdY;
-                if (Math.Abs(delta) < m_outlierZScore)
+                if (Math.Abs(delta) < _outlierZScore)
                 {
                     tempPts.Add(point);
                 }
             }
 
-            m_pts.Clear();
+            _pts.Clear();
 
             foreach (var point in tempPts)
             {
-                m_pts.Add(point);
+                _pts.Add(point);
             }
         }
 
@@ -538,33 +538,33 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public double GetPredictedValue(double x)
         {
-            var yIntervalSize = (m_maxY - m_minY) / m_numYBins;
-            var xIntervalSize = (m_maxX - m_minX) / m_numXBins;
+            var yIntervalSize = (_maxY - _minY) / _numYBins;
+            var xIntervalSize = (_maxX - _minX) / _numXBins;
 
-            var xSection = Convert.ToInt32((x - m_minX) / xIntervalSize);
+            var xSection = Convert.ToInt32((x - _minX) / xIntervalSize);
             int ySectionFrom;
-            if (xSection >= m_numXBins)
+            if (xSection >= _numXBins)
             {
-                xSection = m_numXBins - 1;
+                xSection = _numXBins - 1;
             }
             if (xSection < 0)
             {
                 xSection = 0;
-                ySectionFrom = m_alignmentFunction.ElementAt(xSection).Value;
-                return m_minY + ySectionFrom * yIntervalSize;
+                ySectionFrom = _alignmentFunction.ElementAt(xSection).Value;
+                return _minY + ySectionFrom * yIntervalSize;
             }
 
-            var xFraction = (x - m_minX) / xIntervalSize - xSection;
-            ySectionFrom = m_alignmentFunction.ElementAt(xSection).Value;
+            var xFraction = (x - _minX) / xIntervalSize - xSection;
+            ySectionFrom = _alignmentFunction.ElementAt(xSection).Value;
             var ySectionTo = ySectionFrom;
 
-            if (xSection < m_numXBins - 1)
+            if (xSection < _numXBins - 1)
             {
-                ySectionTo = m_alignmentFunction.ElementAt(xSection + 1).Value;
+                ySectionTo = _alignmentFunction.ElementAt(xSection + 1).Value;
             }
 
             var yPred = xFraction * yIntervalSize * (ySectionTo - ySectionFrom)
-                            + ySectionFrom * yIntervalSize + m_minY;
+                            + ySectionFrom * yIntervalSize + _minY;
 
             return yPred;
         }

@@ -10,19 +10,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// </summary>
     public sealed class LcmsWarpAlignmentFunction
     {
-        readonly LcmsWarpCalibrationType m_calibrationType;
-        readonly AlignmentType m_alignmentType;
-
-        readonly List<double> m_netFuncTimeInput = new List<double>();
-        readonly List<double> m_netFuncNetOutput = new List<double>();
-
-        readonly List<double> m_netFuncTimeOutput = new List<double>();
-
-        readonly List<double> m_massFuncTimeInput = new List<double>();
-        readonly List<double> m_massFuncTimePpmOutput = new List<double>();
-
-        readonly List<double> m_massFuncMzInput = new List<double>();
-        readonly List<double> m_massFuncMzppmOutput = new List<double>();
+        private readonly LcmsWarpCalibrationType _calibrationType;
+        private readonly AlignmentType _alignmentType;
+        
+        private readonly List<double> _netFuncTimeInput = new List<double>();
+        private readonly List<double> _netFuncNetOutput = new List<double>();
+        
+        private readonly List<double> _netFuncTimeOutput = new List<double>();
+        
+        private readonly List<double> _massFuncTimeInput = new List<double>();
+        private readonly List<double> _massFuncTimePpmOutput = new List<double>();
+        
+        private readonly List<double> _massFuncMzInput = new List<double>();
+        private readonly List<double> _massFuncMzppmOutput = new List<double>();
 
                 
         /// <summary>
@@ -34,8 +34,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarpAlignmentFunction(LcmsWarpCalibrationType calibType,
                                  AlignmentType alignmentType)
         {
-            m_calibrationType = calibType;
-            m_alignmentType = alignmentType;
+            _calibrationType = calibType;
+            _alignmentType = alignmentType;
         }
 
         
@@ -54,30 +54,27 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 throw new ArgumentException("Input Mass Calibration Function with time has no ppm data.");
             }
 
-            if (m_alignmentType != AlignmentType.NET_MASS_WARP)
+            if (_alignmentType != AlignmentType.NET_MASS_WARP)
             {
                 throw new InvalidOperationException("Recalibration of mass not enabled with NET_WARP alignment type. PPM shift cannot be retrieved. Used NET_MASS_WARP as alignment type instead");
             }
 
-            if (m_calibrationType == LcmsWarpCalibrationType.ScanRegression)
+            if (_calibrationType == LcmsWarpCalibrationType.ScanRegression)
             {
                 throw new InvalidOperationException("Attempting to set MZ calibration of masses when option chosen was SCAN_CALIBRATION");
             }
 
             foreach (var value in mz)
             {
-                m_massFuncMzInput.Add(value);
+                _massFuncMzInput.Add(value);
             }
 
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var value in ppm)
             {
-                m_massFuncMzppmOutput.Add(value);
+                _massFuncMzppmOutput.Add(value);
             }
         }
-
-
-
 
         /// <summary>
         /// Sets up Net function using alignee times and reference times, function requires initialized lists
@@ -88,11 +85,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             foreach (var value in aligneeTimes)
             {
-                m_netFuncTimeInput.Add(value);
+                _netFuncTimeInput.Add(value);
             }
             foreach (var value in referenceNets)
             {
-                m_netFuncNetOutput.Add(value);
+                _netFuncNetOutput.Add(value);
             }
         }
 
@@ -110,15 +107,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             foreach (var value in aligneeTimes)
             {
-                m_netFuncTimeInput.Add(value);
+                _netFuncTimeInput.Add(value);
             }
             foreach (var value in referenceNets)
             {
-                m_netFuncNetOutput.Add(value);
+                _netFuncNetOutput.Add(value);
             }
             foreach (var value in referenceScans)
             {
-                m_netFuncTimeOutput.Add(value);
+                _netFuncTimeOutput.Add(value);
             }
         }
 
@@ -131,11 +128,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             foreach (var value in aligneeTimes)
             {
-                m_massFuncTimeInput.Add(value);
+                _massFuncTimeInput.Add(value);
             }
             foreach (var value in ppmShifts)
             {
-                m_massFuncTimePpmOutput.Add(value);
+                _massFuncTimePpmOutput.Add(value);
             }
         }
 

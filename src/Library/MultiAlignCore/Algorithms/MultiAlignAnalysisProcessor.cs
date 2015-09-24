@@ -504,7 +504,7 @@ namespace MultiAlignCore.Algorithms
 
             if (alignmentData != null)
             {
-                alignmentData.aligneeDataset = datasetInfo.DatasetName;
+                alignmentData.AligneeDataset = datasetInfo.DatasetName;
                 alignmentData.DatasetID = datasetInfo.DatasetId;
             }
 

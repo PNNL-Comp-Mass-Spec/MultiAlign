@@ -167,7 +167,7 @@ namespace MultiAlignTestSuite.Drawing
                 FontSize = .2
             };
 
-            var scores = alignmentResults.heatScores;
+            var scores = alignmentResults.HeatScores;
             var width = scores.GetLength(0);
             var height = scores.GetLength(1);
 
@@ -195,9 +195,9 @@ namespace MultiAlignTestSuite.Drawing
             bmp.Save(pngPath);
 
 
-            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.heatScores, false);
-            var netHistogram = HistogramFactory.CreateHistogram(alignmentResults.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.massErrorHistogram, "Mass Error", "Mass Error (ppm)");          
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.HeatScores, false);
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentResults.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");          
 
             var baseName = Path.Combine(didirectory.FullName, Path.GetFileNameWithoutExtension(fiOutput.Name));
 

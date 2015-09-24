@@ -403,13 +403,13 @@ namespace MultiAlignRogue.Alignment
                 {                 
                     // Aligning to a baseline dataset
                     alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures, datasetProgress);
-                    alignment.baselineIsAmtDB = false;
+                    alignment.BaselineIsAmtDB = false;
                 }
                 else
                 {
                     // Aligning to a database
                     alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase, datasetProgress);
-                    alignment.baselineIsAmtDB = true;
+                    alignment.BaselineIsAmtDB = true;
                 }
 
                 //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.

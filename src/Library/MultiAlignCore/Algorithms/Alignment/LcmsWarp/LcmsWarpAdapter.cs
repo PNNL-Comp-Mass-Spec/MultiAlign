@@ -18,7 +18,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
 
-        private readonly LcmsWarpAlignmentOptions m_options;
+        private readonly LcmsWarpAlignmentOptions _options;
 
         public LcmsWarpAdapter()
             : this(new LcmsWarpAlignmentOptions())
@@ -27,7 +27,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         public LcmsWarpAdapter(LcmsWarpAlignmentOptions options)
         {
-            m_options = options;
+            _options = options;
         }
 
         /// <summary>
@@ -48,8 +48,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
-
-            return AlignFeatures(baseline as List<UMCLight>, features as List<UMCLight>, m_options);
+            return AlignFeatures(baseline as List<UMCLight>, features as List<UMCLight>, _options);
         }
 
         /// <summary>
@@ -62,7 +61,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
-            return AlignFeatures(baseline as List<MassTagLight>, features as List<UMCLight>, m_options);
+            return AlignFeatures(baseline as List<MassTagLight>, features as List<UMCLight>, _options);
         }
     
         /// <summary>
@@ -86,7 +85,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 Options = options
             };
             alignmentProcessor.ApplyAlignmentOptions();
-            alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += AlignmentProcessor_Progress;
 
             var featureTest = aligneeFeatures.Find(x => x.DriftTime > 0);
             var massTagTest = massTags.Find(x => x.DriftTime > 0);
@@ -103,7 +102,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return data;
         }
 
-        void alignmentProcessor_Progress(object sender, ProgressNotifierArgs e)
+        private void AlignmentProcessor_Progress(object sender, ProgressNotifierArgs e)
         {
             OnProgress(e);
         }
@@ -141,7 +140,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 Options = options
             };
             alignmentProcessor.ApplyAlignmentOptions();
-            alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += AlignmentProcessor_Progress;
 
             var filteredBaselineFeatures = FilterFeaturesByAbundance(baseline, options) as List<UMCLight>;
 

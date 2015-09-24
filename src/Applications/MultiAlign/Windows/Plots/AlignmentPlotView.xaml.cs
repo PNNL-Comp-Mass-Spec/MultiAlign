@@ -168,10 +168,10 @@ namespace MultiAlign.Windows.Plots
             if (alignmentData == null)
                 return;
 
-            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores, alignmentData.baselineIsAmtDB);
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.HeatScores, alignmentData.BaselineIsAmtDB);
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
-            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var residuals = alignmentData.ResidualData;
             
