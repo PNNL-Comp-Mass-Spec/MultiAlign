@@ -621,15 +621,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 throw new ApplicationException("Error in Alignment heatmap scores. Total section is not as expected");
             }
 
-            outputScores = new double[numBaselineSections, numAligneeSections];
-
-            var i = 0;
+            outputScores = new double[numAligneeSections, numBaselineSections];
             for (var aligneeSection = 0; aligneeSection < numAligneeSections; aligneeSection++)
             {
                 for (var baselineSection = 0; baselineSection < numBaselineSections; baselineSection++)
                 {
-                    outputScores[baselineSection, aligneeSection] = alignmentScores[aligneeSection][baselineSection];
-                    i++;
+                    outputScores[aligneeSection, baselineSection] = alignmentScores[aligneeSection][baselineSection];
                 }
             }
 
