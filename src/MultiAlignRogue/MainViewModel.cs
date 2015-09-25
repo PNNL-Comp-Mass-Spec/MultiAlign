@@ -46,6 +46,8 @@ namespace MultiAlignRogue
 
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
 
+        private readonly Throttler serializerThrottler;
+
         private readonly AnalysisConfig m_config;
         private readonly FeatureLoader featureCache;
 
@@ -87,6 +89,8 @@ namespace MultiAlignRogue
             m_config.Analysis = Analysis;
 
             this.WindowTitle = "MultiAlign Rogue";
+
+            this.serializerThrottler = new Throttler(TimeSpan.FromSeconds(1));
 
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
             
@@ -437,7 +441,7 @@ namespace MultiAlignRogue
                     }
                 };
 
-                viewmodel.StateChanged += (s, e) => this.SaveProject();
+                viewmodel.StateChanged += (s, e) => this.serializerThrottler.Run(this.SaveProject);
                 Datasets.Add(viewmodel);
             }
         }
