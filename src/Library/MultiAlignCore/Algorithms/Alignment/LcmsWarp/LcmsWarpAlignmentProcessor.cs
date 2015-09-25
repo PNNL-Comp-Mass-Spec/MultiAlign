@@ -606,7 +606,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _lcmsWarp = new LcmsWarp();
             }
 
-            List<double> alignmentScores;
+            List<List<double>> alignmentScores;
             List<double> aligneeIntervals;
             List<double> baselineIntervals;
 
@@ -614,7 +614,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var numBaselineSections = baselineIntervals.Count;
             var numAligneeSections = aligneeIntervals.Count;
-            var numTotalSections = alignmentScores.Count;
+            var numTotalSections = alignmentScores.Sum(x => x.Count);
 
             if (numTotalSections != numBaselineSections * numAligneeSections)
             {
@@ -623,31 +623,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             outputScores = new double[numBaselineSections, numAligneeSections];
 
-            /*/
-            var aligneeSection = 0;
-            var baselineSection = 0;
-            for (var i = 0; i < numTotalSections; i++)
-            {
-                outputScores[baselineSection, aligneeSection] = alignmentScores[i];
-                baselineSection++;
-                if (baselineSection != numBaselineSections)
-                {
-                    continue;
-                }
-                baselineSection = 0;
-                aligneeSection++;
-            }
-            /*/
             var i = 0;
             for (var aligneeSection = 0; aligneeSection < numAligneeSections; aligneeSection++)
             {
                 for (var baselineSection = 0; baselineSection < numBaselineSections; baselineSection++)
                 {
-                    outputScores[baselineSection, aligneeSection] = alignmentScores[i];
+                    outputScores[baselineSection, aligneeSection] = alignmentScores[aligneeSection][baselineSection];
                     i++;
                 }
             }
-            /**/
 
             xIntervals = aligneeIntervals.ToArray();
             yIntervals = baselineIntervals.ToArray();
