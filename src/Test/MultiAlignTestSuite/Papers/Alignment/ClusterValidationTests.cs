@@ -50,7 +50,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
                 if (cluster.MsMsCount > minMsMsCount)
 
-                    cluster.ReconstructUMCCluster(providers, true, true);
+                    cluster.ReconstructUMCCluster(providers, true, false, true, true);
 
                 var hasIdentifications = false;
                 foreach (var umc in cluster.UmcList)
