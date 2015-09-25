@@ -66,6 +66,8 @@ namespace MultiAlignTestSuite.IO
             foreach (var cluster in clusters)
             {
                 cluster.ReconstructUMCCluster(providers,
+                    true,
+                    false,
                     shouldGetMsFeatures,
                     shouldGetMsMsFeatures);
 
