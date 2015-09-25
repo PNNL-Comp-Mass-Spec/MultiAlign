@@ -19,6 +19,11 @@ namespace MultiAlignRogue.Clustering
         private const string StandardLayoutFileName = "StandardLayout.xml";
 
         /// <summary>
+        /// The path of the default layout file to use.
+        /// </summary>
+        private string standardLayoutFilePath;
+
+        /// <summary>
         /// Indicates whether the docking manager has loaded yet.
         /// </summary>
         private bool isLoaded;
@@ -44,6 +49,13 @@ namespace MultiAlignRogue.Clustering
         public ClusterView()
         {
             this.InitializeComponent();
+
+            var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            if (!string.IsNullOrEmpty(assemblyPath))
+            {
+                this.standardLayoutFilePath = Path.Combine(assemblyPath, StandardLayoutFileName);   
+            }
 
             this.isLoaded = false;
             this.viewModel = this.DataContext as ClusterViewModel;
@@ -118,9 +130,9 @@ namespace MultiAlignRogue.Clustering
             var path = this.layoutFilePath;
 
             // If the layout file doesn't exist, use standard layout file.
-            if (!File.Exists(this.layoutFilePath) && File.Exists(StandardLayoutFileName))
+            if (!File.Exists(this.layoutFilePath) && File.Exists(this.standardLayoutFilePath))
             {
-                path = StandardLayoutFileName;
+                path = this.standardLayoutFilePath;
                 ////this.SaveLayout();
             }
 
