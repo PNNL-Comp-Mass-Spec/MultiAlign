@@ -194,7 +194,7 @@
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\ISpectralAnchorPointMatchValidator.cs" />
-    <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\SpectralAlignerWrapper.cs" />
     <Compile Include="Algorithms\Chromatograms\IChromatogramProvider.cs" />
     <Compile Include="Algorithms\Chromatograms\XicCreator.cs" />

@@ -430,9 +430,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 for (var knotNum = 0; knotNum < numXKnots; knotNum++)
                 {
                     var net = minAligneeNet + ((maxAligneeNet - minAligneeNet) * knotNum) / numXKnots;
-                    var ppm = _lcmsWarp.GetPpmShiftFromNet(net);
                     aligneeNetMassFunc.Add(net);
-                    aligneePpmShiftMassFunc.Add(ppm);
+                    aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromNet(net));
                 }
                 func.SetMassCalibrationFunctionWithTime(aligneeNetMassFunc, aligneePpmShiftMassFunc);
             }
@@ -445,9 +444,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     var net = knotNum * 1.0 / numXKnots;
                     var mz = _minAligneeDatasetMz + (int) ((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
-                    var ppm = _lcmsWarp.GetPpmShiftFromMz(mz);
                     aligneeMzMassFunc.Add(mz);
-                    aligneePpmShiftMassFunc.Add(ppm);
+                    aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromMz(mz));
                 }
                 func.SetMassCalibrationFunctionWithMz(aligneeMzMassFunc, aligneePpmShiftMassFunc);
             }
