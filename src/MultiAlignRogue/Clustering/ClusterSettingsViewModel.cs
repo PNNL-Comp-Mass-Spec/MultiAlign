@@ -366,7 +366,10 @@ namespace MultiAlignRogue.Clustering
             // reconstruct matches
             var matches = await Task.Run(() => this.ReconstructClusterMatches(clusters));
 
-            this.clusterViewFactory.CreateNewWindow(matches);
+            var rawProvider =
+                DatasetInformation.GetInformedProteomicsReader(
+                    this.Datasets.Where(ds => ds.IsClustered).Select(ds => ds.Dataset));
+            this.clusterViewFactory.CreateNewWindow(matches, rawProvider);
         }
 
         private List<ClusterMatch> ReconstructClusterMatches(IEnumerable<UMCClusterLight> clusters)

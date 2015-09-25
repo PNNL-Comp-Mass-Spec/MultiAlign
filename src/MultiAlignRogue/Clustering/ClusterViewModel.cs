@@ -19,6 +19,8 @@ namespace MultiAlignRogue.Clustering
 {
     using System.Text.RegularExpressions;
 
+    using MultiAlignCore.IO.RawData;
+
     /// <summary>
     /// The view model for the ClusterView.
     /// </summary>
@@ -43,6 +45,11 @@ namespace MultiAlignRogue.Clustering
         /// Factory for creating child windows.
         /// </summary>
         private readonly IClusterViewFactory viewFactory;
+
+        /// <summary>
+        /// Provider for LCMSRun for access to PBF files.
+        /// </summary>
+        private readonly InformedProteomicsReader rawProvider;
 
         /// <summary>
         /// The selected cluster.
@@ -73,18 +80,20 @@ namespace MultiAlignRogue.Clustering
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
         /// <param name="viewFactory">Factory for creating child windows.</param>
-        /// <param name="clusters">The clusters.</param>
+        /// <param name="matches">The clusters.</param>
         /// <param name="layoutFilePath">Path to layout file.</param>
-        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath)
+        /// <param name="rawProvider">Provider for LCMSRun for access to PBF files.</param>
+        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath, InformedProteomicsReader rawProvider)
         {
             this.viewFactory = viewFactory;
             this.providers = providers;
             this.dbLock = new object();
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(500));
-            this.XicPlotViewModel = new XicPlotViewModel();
+            this.XicPlotViewModel = new XicPlotViewModel(rawProvider);
             this.ClusterFeaturePlotViewModel = new ClusterFeaturePlotViewModel();
             this.Matches = new ObservableCollection<ClusterMatch>(matches ?? new List<ClusterMatch>());
             var clusters = this.Matches.Select(match => match.Cluster).ToList();
+            this.rawProvider = rawProvider;
 
             this.SettingsCommand = new RelayCommand(() => this.viewFactory.CreateSettingsWindow(this.ClusterPlotViewModel.ClusterViewerSettings));
 
@@ -228,6 +237,9 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
 
+        /// <summary>
+        /// Gets the view model for displaying cluster features.
+        /// </summary>
         public ClusterFeaturePlotViewModel ClusterFeaturePlotViewModel { get; private set; }
 
         /// <summary>

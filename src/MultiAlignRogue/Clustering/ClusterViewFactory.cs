@@ -11,6 +11,7 @@ namespace MultiAlignRogue.Clustering
     using System.Linq;
 
     using MultiAlignCore.Data;
+    using MultiAlignCore.IO.RawData;
 
     using MultiAlignRogue.Utils;
 
@@ -36,11 +37,11 @@ namespace MultiAlignRogue.Clustering
 
         public ClusterViewModel ClusterViewModel { get; private set; }
 
-        public void CreateNewWindow(List<ClusterMatch> matches)
+        public void CreateNewWindow(List<ClusterMatch> matches, InformedProteomicsReader provider)
         {
             if (this.ClusterViewModel == null)
             {
-                this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath);
+                this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath, provider);
                 this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
             }
 
