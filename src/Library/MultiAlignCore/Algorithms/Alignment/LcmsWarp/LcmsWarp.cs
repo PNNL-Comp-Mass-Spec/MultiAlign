@@ -1508,24 +1508,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeVals"></param>
         /// <param name="baselineVals"></param>
         /// <param name="standardize"></param>
-        public void GetSubsectionMatchScore(out List<List<double>> subsectionMatchScores, out List<double> aligneeVals,
-            out List<double> baselineVals, bool standardize)
+        public void GetSubsectionMatchScore(out double[,] subsectionMatchScores, out double[] aligneeVals,
+            out double[] baselineVals, bool standardize)
         {
-            subsectionMatchScores = new List<List<double>>();
-            aligneeVals = new List<double>();
-            baselineVals = new List<double>();
+            subsectionMatchScores = new double[NumSections, NumBaselineSections];
+            aligneeVals = new double[NumSections];
+            baselineVals = new double[NumBaselineSections];
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
             {
-                aligneeVals.Add(MinNet + (aligneeSection * (MaxNet - MinNet)) / NumSections);
+                aligneeVals[aligneeSection] = MinNet + (aligneeSection * (MaxNet - MinNet)) / NumSections;
             }
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
-                baselineVals.Add(MinBaselineNet + (baselineSection * (MaxBaselineNet - MinBaselineNet)) / NumBaselineSections);
+                baselineVals[baselineSection] = MinBaselineNet + (baselineSection * (MaxBaselineNet - MinBaselineNet)) / NumBaselineSections;
             }
 
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
             {
-                var matchScoreBlock = new List<double>();
                 for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
                 {
                     var maxScore = double.MinValue;
@@ -1542,9 +1541,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             maxScore = _subsectionMatchScores[matchIndex];
                         }
                     }
-                    matchScoreBlock.Add(maxScore);
+                    subsectionMatchScores[aligneeSection, baselineSection] = maxScore;
                 }
-                subsectionMatchScores.Add(matchScoreBlock);
             }
 
             if (standardize)
@@ -1557,18 +1555,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Standardizes the match scores of the subsection
         /// </summary>
         /// <param name="subsectionMatchScores"></param>
-        private void StandardizeSubsectionMatchScore(List<List<double>> subsectionMatchScores)
+        private void StandardizeSubsectionMatchScore(double[,] subsectionMatchScores)
         {
-            var index = 0;
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
             {
                 double sumX = 0, sumXx = 0;
-                var startIndex = index;
                 var realMinScore = double.MaxValue;
                 var numPoints = 0;
                 for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
                 {
-                    var score = subsectionMatchScores[aligneeSection][baselineSection];
+                    var score = subsectionMatchScores[aligneeSection, baselineSection];
                     if (Math.Abs(score - _minScore) > double.Epsilon)
                     {
                         if (score < realMinScore)
@@ -1579,7 +1575,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         sumXx = sumXx + (score * score);
                         numPoints++;
                     }
-                    index++;
                 }
                 double var = 0;
                 if (numPoints > 1)
@@ -1597,23 +1592,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     stDev = Math.Sqrt(var);
                 }
 
-                index = startIndex;
                 for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
                 {
-                    var score = subsectionMatchScores[aligneeSection][baselineSection];
+                    var score = subsectionMatchScores[aligneeSection, baselineSection];
                     if (Math.Abs(score - _minScore) < double.Epsilon)
                     {
                         score = realMinScore;
                     }
                     if (numPoints > 1)
                     {
-                        subsectionMatchScores[aligneeSection][baselineSection] = ((score - avg) / stDev);
+                        subsectionMatchScores[aligneeSection, baselineSection] = ((score - avg) / stDev);
                     }
                     else
                     {
-                        subsectionMatchScores[aligneeSection][baselineSection] = ((score - avg) / stDev);
+                        subsectionMatchScores[aligneeSection, baselineSection] = ((score - avg) / stDev);
                     }
-                    index++;
                 }
             }
         }

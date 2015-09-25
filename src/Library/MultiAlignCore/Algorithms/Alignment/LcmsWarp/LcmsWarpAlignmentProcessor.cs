@@ -606,32 +606,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _lcmsWarp = new LcmsWarp();
             }
 
-            List<List<double>> alignmentScores;
-            List<double> aligneeIntervals;
-            List<double> baselineIntervals;
-
-            _lcmsWarp.GetSubsectionMatchScore(out alignmentScores, out aligneeIntervals, out baselineIntervals, true);
-
-            var numBaselineSections = baselineIntervals.Count;
-            var numAligneeSections = aligneeIntervals.Count;
-            var numTotalSections = alignmentScores.Sum(x => x.Count);
-
-            if (numTotalSections != numBaselineSections * numAligneeSections)
-            {
-                throw new ApplicationException("Error in Alignment heatmap scores. Total section is not as expected");
-            }
-
-            outputScores = new double[numAligneeSections, numBaselineSections];
-            for (var aligneeSection = 0; aligneeSection < numAligneeSections; aligneeSection++)
-            {
-                for (var baselineSection = 0; baselineSection < numBaselineSections; baselineSection++)
-                {
-                    outputScores[aligneeSection, baselineSection] = alignmentScores[aligneeSection][baselineSection];
-                }
-            }
-
-            xIntervals = aligneeIntervals.ToArray();
-            yIntervals = baselineIntervals.ToArray();
+            // Alignment Scores, alignee intervals, baseline intervals
+            _lcmsWarp.GetSubsectionMatchScore(out outputScores, out xIntervals, out yIntervals, true);
         }
 
         /// <summary>
