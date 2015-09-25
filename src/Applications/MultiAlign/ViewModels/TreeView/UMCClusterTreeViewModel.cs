@@ -139,7 +139,7 @@ namespace MultiAlign.ViewModels.TreeView
 
             try
             {
-                m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
+                m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, false, true, true);
 
                 foreach (var treeModel in m_items)
                 {

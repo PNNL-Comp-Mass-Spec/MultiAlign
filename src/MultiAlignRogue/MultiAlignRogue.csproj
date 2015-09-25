@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="Feature Finding\MSFeatureViewFactory.cs" />
     <Compile Include="Feature Finding\MSFeatureViewModel.cs" />
+    <Compile Include="Utils\ClusterMatch.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="Utils\TaskBarProgressSingleton.cs" />
     <Compile Include="Utils\Throttler.cs" />

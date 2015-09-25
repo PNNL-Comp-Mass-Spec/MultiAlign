@@ -103,7 +103,7 @@ namespace MultiAlignCore.IO.Clusters
             var shouldLoadFeatureData = ShouldLoadMsFeatureData;
             foreach (var cluster in clusters)
             {
-                cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, shouldLoadFeatureData,
+                cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, false, shouldLoadFeatureData,
                     shouldLoadFeatureData);
             }
         }

@@ -25,6 +25,7 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data;
+    using MultiAlignCore.Data.MassTags;
     using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
 
@@ -76,7 +77,9 @@ namespace MultiAlignRogue.Clustering
             });
 
             this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures, () => this.Datasets.Any(ds => ds.FeaturesFound));
-            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures, () => this.Datasets.Any(ds => ds.IsClustered));
+            this.DisplayClustersCommand = new RelayCommand(
+                                                           async () => await this.DisplayFeatures(),
+                                                           () => this.Datasets.Any(ds => ds.IsClustered));
 
             this.DistanceMetrics = new ObservableCollection<DistanceMetric>();
             Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => this.DistanceMetrics.Add(x));
@@ -354,9 +357,54 @@ namespace MultiAlignRogue.Clustering
             this.ShouldShowProgress = false;
         }
 
-        public void DisplayFeatures()
+        public async Task DisplayFeatures()
         {
-            this.clusterViewFactory.CreateNewWindow(this.analysis.Clusters ?? this.analysis.DataProviders.ClusterCache.FindAll());
+            // get clusters
+            var clusters = this.analysis.Clusters ??
+                           await Task.Run(() => this.analysis.DataProviders.ClusterCache.FindAll());
+
+            // reconstruct matches
+            var matches = await Task.Run(() => this.ReconstructClusterMatches(clusters));
+
+            this.clusterViewFactory.CreateNewWindow(matches);
+        }
+
+        private List<ClusterMatch> ReconstructClusterMatches(IEnumerable<UMCClusterLight> clusters)
+        {
+            var matches = new List<ClusterMatch>();
+            var clusterMap = clusters.ToDictionary(cluster => cluster.Id);
+            var massTagMap = this.analysis.DataProviders.MassTags.FindAll().ToDictionary(massTag => massTag.Id);
+            var massTagMatches = this.analysis.DataProviders.MassTagMatches.FindAll();
+            
+            // Add cluster-mass tag matches
+            foreach (var match in massTagMatches)
+            {
+                var massTag = massTagMap[match.MassTagId];
+                var cluster = clusterMap[match.ClusterId];
+                matches.Add(new ClusterMatch
+                                {
+                                    Cluster = cluster,
+                                    MassTag = massTag,
+                                });
+            }
+
+            // Add clusters without mass tag matches
+            var usedClusters = new HashSet<int>();
+            usedClusters.UnionWith(matches.Select(match => match.Cluster.Id));
+            foreach (var cluster in clusters)
+            {
+                if (!usedClusters.Contains(cluster.Id))
+                {
+                    usedClusters.Add(cluster.Id);
+                    matches.Add(new ClusterMatch
+                                    {
+                                        Cluster = cluster,
+                                        MassTag = new MassTagLight()
+                                    });
+                }
+            }
+
+            return matches;
         }
     }
 }

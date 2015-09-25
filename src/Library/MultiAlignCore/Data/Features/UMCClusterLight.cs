@@ -5,7 +5,9 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.Features
 {
-	/// <summary>
+    using MultiAlignCore.Data.MassTags;
+
+    /// <summary>
 	/// Basic representation of a group of UMC's observed across datasets.
 	/// </summary>
     public class UMCClusterLight :  FeatureLight,
@@ -16,7 +18,8 @@ namespace MultiAlignCore.Data.Features
 		/// </summary>
 		public UMCClusterLight()	
 		{            
-            UmcList = new List<UMCLight>();         
+            UmcList = new List<UMCLight>();
+            this.MassTags = new List<MassTagLight>();
             MsMsCount = 0;
             IdentifiedSpectraCount = 0;
 		}
@@ -27,7 +30,8 @@ namespace MultiAlignCore.Data.Features
         [UsedImplicitly]
 	    public UMCClusterLight(UMCLight umc)
         {            
-            var umcs  = new List<UMCLight>();            
+            var umcs  = new List<UMCLight>();
+            this.MassTags = new List<MassTagLight>();
             
             UmcList				= umcs;
             umc.UmcCluster		= this;             
@@ -49,6 +53,7 @@ namespace MultiAlignCore.Data.Features
         public UMCClusterLight(UMCClusterLight cluster)
         {            
             var umcs     = new List<UMCLight>();
+            this.MassTags = new List<MassTagLight>();
             umcs.AddRange(cluster.UmcList);
             UmcList				    = umcs;            
             Abundance			    = cluster.Abundance;
@@ -61,6 +66,8 @@ namespace MultiAlignCore.Data.Features
             IdentifiedSpectraCount  = cluster.IdentifiedSpectraCount;
             MeanSpectralSimilarity  = cluster.MeanSpectralSimilarity;
         }
+
+        public List<MassTagLight> MassTags { get; private set; } 
 
         public double MeanSpectralSimilarity { get; set; }
 

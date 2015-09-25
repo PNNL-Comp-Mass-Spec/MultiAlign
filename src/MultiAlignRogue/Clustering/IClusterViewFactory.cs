@@ -8,13 +8,15 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignRogue.Clustering
 {
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Alignment;
 
-    
+    using MultiAlignRogue.Utils;
+
     public interface IClusterViewFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(List<UMCClusterLight> clusters);
+        void CreateNewWindow(List<ClusterMatch> clusters);
         void CreateChargeStateDistributionWindow(IEnumerable<UMCClusterLight> clusters, string title);
         void CreateDatasetHistogramWindow(IEnumerable<UMCClusterLight> clusters, string title);
         void CreateSettingsWindow(ClusterViewerSettings clusterViewerSettings);

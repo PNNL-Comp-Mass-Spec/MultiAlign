@@ -15,6 +15,8 @@ using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.Extensions
 {
+    using System.Linq;
+
     public static class ClusterExtensions
     {
         /// <summary>
@@ -24,7 +26,7 @@ namespace MultiAlignCore.Extensions
         /// <param name="providers"></param>
         public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
         {
-            cluster.ReconstructUMCCluster(providers, true, true);
+            cluster.ReconstructUMCCluster(providers, true, true, true, true);
         }
 
         /// <summary>
@@ -34,36 +36,52 @@ namespace MultiAlignCore.Extensions
         /// <param name="providers"></param>
         /// <param name="getMsMS"></param>
         public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers,
-            bool getMsFeature, bool getMsMs)
+            bool getUmcs, bool getMatches, bool getMsFeature, bool getMsMs)
         {
-            cluster.Features.Clear();
-
-            var features = providers.FeatureCache.FindByClusterID(cluster.Id);
-
-            var totalSpectra = 0;
-            var totalIdentified = 0;
-            foreach (var feature in features)
+            if (getUmcs)
             {
-                cluster.AddChildFeature(feature);
+                // Reconstruct UMCs
+                cluster.Features.Clear();
 
-                if (getMsFeature)
+                var features = providers.FeatureCache.FindByClusterID(cluster.Id);
+
+                var totalSpectra = 0;
+                var totalIdentified = 0;
+                foreach (var feature in features)
                 {
-                    feature.ReconstructUMC(providers, getMsMs);
+                    cluster.AddChildFeature(feature);
 
-                    foreach (var msFeature in feature.MsFeatures)
+                    if (getMsFeature)
                     {
-                        totalSpectra += msFeature.MSnSpectra.Count;
-                        foreach (var spectrum in msFeature.MSnSpectra)
+                        feature.ReconstructUMC(providers, getMsMs);
+
+                        foreach (var msFeature in feature.MsFeatures)
                         {
-                            if (spectrum.Peptides.Count > 0)
-                                totalIdentified++;
+                            totalSpectra += msFeature.MSnSpectra.Count;
+                            foreach (var spectrum in msFeature.MSnSpectra)
+                            {
+                                if (spectrum.Peptides.Count > 0)
+                                    totalIdentified++;
+                            }
                         }
                     }
                 }
+
+                cluster.IdentifiedSpectraCount = totalIdentified;
+                cluster.MsMsCount = totalSpectra;   
             }
 
-            cluster.IdentifiedSpectraCount = totalIdentified;
-            cluster.MsMsCount = totalSpectra;
+            if (getMatches)
+            {
+                // Reconstruct matches
+                cluster.MassTags.Clear();
+                var matches = providers.MassTagMatches.FindByClusterId(cluster.Id);
+                if (matches != null && matches.Any())
+                {
+                    var massTags = providers.MassTags.FindMassTags(matches.Select(match => match.MassTagId).ToList());
+                    cluster.MassTags.AddRange(massTags);
+                }   
+            }
         }
 
         /// <summary>

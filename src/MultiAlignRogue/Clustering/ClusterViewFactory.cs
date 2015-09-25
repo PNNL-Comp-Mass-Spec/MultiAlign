@@ -8,6 +8,11 @@ using MultiAlignCore.IO.Features;
 
 namespace MultiAlignRogue.Clustering
 {
+    using System.Linq;
+
+    using MultiAlignCore.Data;
+
+    using MultiAlignRogue.Utils;
 
     public class ClusterViewFactory : IClusterViewFactory
     {
@@ -31,11 +36,11 @@ namespace MultiAlignRogue.Clustering
 
         public ClusterViewModel ClusterViewModel { get; private set; }
 
-        public void CreateNewWindow(List<UMCClusterLight> clusters)
+        public void CreateNewWindow(List<ClusterMatch> matches)
         {
             if (this.ClusterViewModel == null)
             {
-                this.ClusterViewModel = new ClusterViewModel(this, clusters, providers, layoutFilePath);
+                this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath);
                 this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
             }
 
