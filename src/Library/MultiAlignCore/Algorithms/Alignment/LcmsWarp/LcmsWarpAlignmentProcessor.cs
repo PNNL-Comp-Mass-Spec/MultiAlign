@@ -6,7 +6,6 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {

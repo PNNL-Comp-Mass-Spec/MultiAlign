@@ -51,7 +51,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 AlignType = LcmsWarpAlignmentType.NET_MASS_WARP,
                 CalibrationType = LcmsWarpCalibrationType.Both
             };
-            var aligner         = new LcmsWarpAdapter(options); 
+            var aligner         = new LcmsWarpFeatureAligner(options); 
            
             var rawBaselineData = File.ReadAllLines(baselinePath);
             var rawFeaturesData = File.ReadAllLines(aligneePath);

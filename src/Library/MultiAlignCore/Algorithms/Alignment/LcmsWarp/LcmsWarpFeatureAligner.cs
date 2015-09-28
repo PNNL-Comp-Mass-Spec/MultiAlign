@@ -15,7 +15,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     public class LcmsWarpFeatureAligner :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
+        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, AlignmentData>
     {
         private readonly LcmsWarpAlignmentOptions _options;
 
@@ -42,6 +43,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
+        private void AlignmentProcessor_Progress(object sender, ProgressNotifierArgs e)
+        {
+            OnStatus(e);
+        }
+
         /// <summary>
         ///     Gets or sets the baseline spectra provider
         /// </summary>
@@ -53,8 +59,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public ISpectraProvider AligneeSpectraProvider { get; set; }
 
         /// <summary>
-        ///     Aligns a dataset to a mass tag database.
+        /// Aligns a dataset to a mass tag database
         /// </summary>
+        /// <param name="massTagDatabase"></param>
+        /// <param name="features"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
         public AlignmentData Align(MassTagDatabase massTagDatabase,
             IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
@@ -62,7 +72,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var progData = new ProgressData(progress);
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
-            alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += AlignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
@@ -89,8 +99,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        ///     Aligns a dataset to a dataset
+        /// Align a dataset to a baseline dataset
         /// </summary>
+        /// <param name="baselineFeatures">baseline dataset features</param>
+        /// <param name="features">alignee dataset features</param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
         public AlignmentData Align(IEnumerable<UMCLight> baselineFeatures,
             IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
@@ -98,7 +112,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var progData = new ProgressData(progress);
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
-            alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += AlignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>
             {
                 progData.Status = e.Message;
@@ -131,6 +145,37 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
+        /// Align a UMCLight Enumerable to a MassTagLight enumerable.
+        /// The MassTagLight Enumerable is used as the baseline to align the
+        /// UMCLight enumerable.
+        /// </summary>
+        /// <param name="baseline"></param>
+        /// <param name="features"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
+            IProgress<ProgressData> progress = null)
+        {
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
+            var baselineMassTags = baseline as List<MassTagLight> ?? baseline.ToList();
+            var aligneeFeatures = features as List<UMCLight> ?? features.ToList();
+
+            var featureTest = aligneeFeatures.Find(x => x.DriftTime > 0);
+            var massTagTest = baselineMassTags.Find(x => x.DriftTime > 0);
+
+            if (featureTest != null && massTagTest == null)
+            {
+                Console.WriteLine("Warning! Data has drift time info, but the mass tags do not.");
+            }
+
+            alignmentProcessor.SetReferenceDatasetFeatures(baselineMassTags);
+
+            var data = AlignFeatures(alignmentProcessor, aligneeFeatures, _options);
+
+            return data;
+        }
+
+        /// <summary>
         ///     Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
         private AlignmentData AlignFeatures(LcmsWarpAlignmentProcessor alignmentProcessor,
@@ -138,13 +183,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             LcmsWarpAlignmentOptions alignmentOptions)
         {
             OnStatus("Starting alignment of features.");
-            var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
-            var netErrorHistograms = new List<Dictionary<double, int>>();
-            var massErrorHistograms = new List<Dictionary<double, int>>();
-            var driftErrorHistograms = new List<Dictionary<double, int>>();
-            var heatScores = new List<double[,]>();
-            var xIntervals = new List<double[]>();
-            var yIntervals = new List<double[]>();
+            //var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
+            //var netErrorHistograms = new List<Dictionary<double, int>>();
+            //var massErrorHistograms = new List<Dictionary<double, int>>();
+            //var driftErrorHistograms = new List<Dictionary<double, int>>();
+            //var heatScores = new List<double[,]>();
+            //var xIntervals = new List<double[]>();
+            //var yIntervals = new List<double[]>();
 
             // Set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
             // The values will be updated later
@@ -153,7 +198,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var umcLights = features as List<UMCLight> ?? features.ToList();
 
-            var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), alignmentOptions);
+            var filteredFeatures = FilterFeaturesByAbundance(umcLights, alignmentOptions);
 
             // Convert the features, and make a map, so that we can re-adjust the aligned values later.                        
             var map = FeatureDataConverters.MapFeature(umcLights);
@@ -168,7 +213,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             // Extract alignment function
             var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
-            alignmentFunctions.Add(alignmentFunction);
+            //alignmentFunctions.Add(alignmentFunction);
 
             // Correct the features (updates MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
@@ -203,9 +248,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             OnStatus("Retrieving alignment data.");
             alignmentProcessor.GetAlignmentHeatMap(out heatScore, out xInterval, out yInterval);
 
-            xIntervals.Add(xInterval);
-            yIntervals.Add(yInterval);
-            heatScores.Add(heatScore);
+            //xIntervals.Add(xInterval);
+            //yIntervals.Add(yInterval);
+            //heatScores.Add(heatScore);
 
             // Mass and net error histograms!
             Dictionary<double, int> massErrorHistogram;
@@ -214,9 +259,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize, alignmentOptions.NetBinSize,
                 alignmentOptions.DriftTimeBinSize, out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);
-            massErrorHistograms.Add(massErrorHistogram);
-            netErrorHistograms.Add(netErrorHistogram);
-            driftErrorHistograms.Add(driftErrorHistogram);
+            //massErrorHistograms.Add(massErrorHistogram);
+            //netErrorHistograms.Add(netErrorHistogram);
+            //driftErrorHistograms.Add(driftErrorHistogram);
 
             // Get the residual data from the warp.
             var residualData = alignmentProcessor.GetResidualData();
@@ -253,14 +298,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return alignmentData;
         }
 
-        void alignmentProcessor_Progress(object sender, ProgressNotifierArgs e)
-        {
-            OnStatus(e);
-        }
-
         private static List<UMCLight> FilterFeaturesByAbundance(List<UMCLight> features,
             LcmsWarpAlignmentOptions alignmentOptions)
         {
+            // Sort by abundance to ease filtering process. Options look at the percentage of abundance
+            // so threshhold needs to be converted to what the abundance sum would be. 
             features.Sort((x, y) => x.AbundanceSum.CompareTo(y.AbundanceSum));
 
             if (alignmentOptions.TopFeatureAbundancePercent <= 0)
@@ -271,6 +313,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var percent = 1 - (alignmentOptions.TopFeatureAbundancePercent / 100);
             var total = features.Count - Convert.ToInt32(features.Count * percent);
             var threshold = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;
+
+            // Re-sort with regards to monoisotopic mass for accurate application of NET-Mass function
+            // to the dataset we need to align.
+            features.Sort((x, y) => x.MassMonoisotopic.CompareTo(y.MassMonoisotopic));
+
+            if (threshold <= 0)
+                return features;
 
             // Filters features below a certain threshold.
             var filteredFeatures = features.Where(feature => feature.AbundanceSum >= threshold);
