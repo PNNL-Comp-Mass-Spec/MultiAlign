@@ -89,19 +89,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             get { return _lcmsWarp.NetSlope; }
         }
 
-        /// <summary>
-        /// Options for the Alignment processor
-        /// </summary>
-        public LcmsWarpAlignmentOptions Options
-        {
-            get { return _options; }
-            set
-            {
-                _options = value;
-                ApplyAlignmentOptions();
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -109,10 +96,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Initializes a new LCMSWarp object using the LCMS Alignment options
         /// which were passed into the Processor
         /// </summary>
-        public LcmsWarpAlignmentProcessor()
+        public LcmsWarpAlignmentProcessor(LcmsWarpAlignmentOptions options)
         {
-            _lcmsWarp = new LcmsWarp();
-            Options = new LcmsWarpAlignmentOptions();
+            _options = options;
+            _lcmsWarp = new LcmsWarp(_options);
 
             _lcmsWarp.Progress += lcmsWarp_Progress;
 
@@ -134,14 +121,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _aligningToMassTagDb = false;
         }
 
-        // Applies the alignment options to the LCMSWarper, setting the Mass
-        // and NET Tolerances, the options for NET Alignment options for 
-        // Mass calibration, the Least Squares options and the calibration type
-        public void ApplyAlignmentOptions()
-        {
-            _lcmsWarp.ApplyAlignmentOptions(Options);
-        }
-
         /// <summary>
         /// Takes a List of UMCLight data and applies the NET/Mass Function to the dataset and
         /// aligns it to the baseline. Updates the data in place for the calibrated Masses and
@@ -150,11 +129,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="data"></param>
         public void ApplyNetMassFunctionToAligneeDatasetFeatures(List<UMCLight> data)
         {
-            if (_lcmsWarp == null)
-            {
-                _lcmsWarp = new LcmsWarp();
-            }
-
             IEnumerable<UMCLight> featureData;
 
             if (_aligningToMassTagDb)
@@ -353,7 +327,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public LcmsWarpAlignmentFunction GetAlignmentFunction()
         {
-            var func = new LcmsWarpAlignmentFunction(Options.CalibrationType, Options.AlignType);
+            var func = new LcmsWarpAlignmentFunction(_options.CalibrationType, _options.AlignType);
 
             List<double> aligneeNets;
             List<double> referenceNets;
@@ -370,7 +344,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 func.SetNetFunction(aligneeNets, referenceNets, referenceScans);
             }
 
-            if (Options.AlignType == LcmsWarpAlignmentType.NET_WARP)
+            if (_options.AlignType == LcmsWarpAlignmentType.NET_WARP)
             {
                 return func;
             }
@@ -379,13 +353,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var maxAligneeNet = _lcmsWarp.MaxNet;
 
             // Get the mass calibration function with time
-            var numXKnots = Options.MassCalibNumXSlices;
+            var numXKnots = _options.MassCalibNumXSlices;
             var aligneeMzMassFunc = new List<double>();
             var aligneeNetMassFunc = new List<double>();
             var aligneePpmShiftMassFunc = new List<double>();
 
-            if (Options.CalibrationType == LcmsWarpCalibrationType.ScanRegression ||
-                Options.CalibrationType == LcmsWarpCalibrationType.Both)
+            if (_options.CalibrationType == LcmsWarpCalibrationType.ScanRegression ||
+                _options.CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 // get the PPM for each knot
                 for (var knotNum = 0; knotNum < numXKnots; knotNum++)
@@ -397,8 +371,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 func.SetMassCalibrationFunctionWithTime(aligneeNetMassFunc, aligneePpmShiftMassFunc);
             }
 
-            if (Options.CalibrationType == LcmsWarpCalibrationType.MzRegression ||
-                Options.CalibrationType == LcmsWarpCalibrationType.Both)
+            if (_options.CalibrationType == LcmsWarpCalibrationType.MzRegression ||
+                _options.CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 // Get the ppm for each knot
                 for (var knotNum = 0; knotNum < numXKnots; knotNum++)
@@ -419,12 +393,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void PerformAlignmentToMsFeatures()
         {
-            if (Options == null)
+            if (_options == null)
             {
                 throw new NullReferenceException("Alignment Options were not set in AlignmentProcessor");
             }
 
-            if (Options.AlignType == LcmsWarpAlignmentType.NET_WARP)
+            if (_options.AlignType == LcmsWarpAlignmentType.NET_WARP)
             {
                 PerformNetWarp(0, 100);
             }
@@ -560,11 +534,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public void GetAlignmentHeatMap(out double[,] outputScores, out double[] xIntervals,
             out double[] yIntervals)
         {
-            if (_lcmsWarp == null)
-            {
-                _lcmsWarp = new LcmsWarp();
-            }
-
             // Alignment Scores, alignee intervals, baseline intervals
             _lcmsWarp.GetSubsectionMatchScore(out outputScores, out xIntervals, out yIntervals, true);
         }

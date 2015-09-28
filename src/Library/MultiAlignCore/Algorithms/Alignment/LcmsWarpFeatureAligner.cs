@@ -64,10 +64,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor
-            {
-                Options = Options
-            };
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(Options);
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>
@@ -103,10 +100,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor
-            {
-                Options = Options
-            };
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(Options);
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>

@@ -26,7 +26,6 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
             ConvertToUMCLight(referenceTimes, experimentalTimes, out experimentalTimesAsUmc, out referenceTimesAsUmc, multiplier);
 
             //3.  set up processor and options
-            var processor = new LcmsWarpAlignmentProcessor();
             var options = new LcmsWarpAlignmentOptions
             {
                 MassTolerance = 0.5,                // masses are exact so this does not matter in this test
@@ -38,10 +37,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
                 ContractionFactor = 1,              // setting this to 1 helped
                 AlignType = LcmsWarpAlignmentType.NET_WARP
             };
-        
-
-            processor.Options = options;
-            processor.ApplyAlignmentOptions();
+            var processor = new LcmsWarpAlignmentProcessor(options);
 
             //4.  Set references with processor setter
             processor.SetReferenceDatasetFeatures(referenceTimesAsUmc);

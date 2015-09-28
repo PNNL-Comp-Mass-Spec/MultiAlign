@@ -234,51 +234,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Public Constructor, doesn't take arguments, initializes memory space and sets it
         /// to default values
         /// </summary>
-        public LcmsWarp()
+        public LcmsWarp(LcmsWarpAlignmentOptions options)
         {
+            // Applies the alignment options to the LCMSWarper, setting the Mass
+            // and NET Tolerances, the options for NET Alignment options for 
+            // Mass calibration, the Least Squares options and the calibration type
             MzRecalibration = new LcmsWarpCombinedRegression();
             NetRecalibration = new LcmsWarpCombinedRegression();
 
-            MassCalibrationWindow = 50;
-            MassTolerance = 20; // ppm
-            NetTolerance = 0.02;
+            // Setting the calibration type
+            CalibrationType = options.CalibrationType;
 
-            MaxJump = 10;
-
-            KeepPromiscuousMatches = false;
-            MaxPromiscuousUmcMatches = 3;
-
-            CalibrationType = LcmsWarpCalibrationType.MzRegression;
-            MassCalNumDeltaBins = 100;
-            MassCalNumSlices = 12;
-            MassCalNumJump = 50;
-
-            const int ztolerance = 3;
-            const LcmsWarpRegressionType regType = LcmsWarpRegressionType.Central;
-
-            MzRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
-                ztolerance, regType);
-            NetRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
-                ztolerance, regType);
-
-            const double outlierZScore = 2.5;
-            const int numKnots = 12;
-            MzRecalibration.SetLsqOptions(numKnots, outlierZScore);
-            NetRecalibration.SetLsqOptions(numKnots, outlierZScore);
-        }
-
-        public void ApplyAlignmentOptions(LcmsWarpAlignmentOptions options)
-        {
             // Applying the Mass and NET Tolerances
             MassTolerance = options.MassTolerance;
             NetTolerance = options.NetTolerance;
-
-            // Applying options for NET Calibration
-            NumSections = options.NumTimeSections;
-            MaxJump = options.MaxTimeDistortion;
-            NumBaselineSections = options.NumTimeSections * options.ContractionFactor;
-            NumMatchesPerBaseline = options.ContractionFactor * options.ContractionFactor;
-            NumMatchesPerSection = NumBaselineSections * NumMatchesPerBaseline;
 
             KeepPromiscuousMatches = options.UsePromiscuousPoints;
             MaxPromiscuousUmcMatches = options.MaxPromiscuity;
@@ -294,12 +263,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             NetRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
                 options.MassCalibMaxZScore, options.RegressionType);
 
+            // Applying options for NET Calibration
+            NumSections = options.NumTimeSections;
+            MaxJump = options.MaxTimeDistortion;
+            NumBaselineSections = options.NumTimeSections * options.ContractionFactor;
+            NumMatchesPerBaseline = options.ContractionFactor * options.ContractionFactor;
+            NumMatchesPerSection = NumBaselineSections * NumMatchesPerBaseline;
+
             // Applying LSQ options
             MzRecalibration.SetLsqOptions(options.MassCalibLsqNumKnots, options.MassCalibLsqMaxZScore);
             NetRecalibration.SetLsqOptions(options.MassCalibLsqNumKnots, options.MassCalibLsqMaxZScore);
-
-            // Setting the calibration type
-            CalibrationType = options.CalibrationType;
         }
 
         /// <summary>

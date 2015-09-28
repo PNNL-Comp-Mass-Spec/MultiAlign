@@ -80,12 +80,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private LcmsWarpAlignmentData AlignFeatures(List<MassTagLight> massTags, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor
-            {
-                Options = options
-            };
-            alignmentProcessor.ApplyAlignmentOptions();
-            alignmentProcessor.Progress += AlignmentProcessor_Progress;
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(options);
 
             var featureTest = aligneeFeatures.Find(x => x.DriftTime > 0);
             var massTagTest = massTags.Find(x => x.DriftTime > 0);
@@ -136,11 +131,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private LcmsWarpAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor
-            {
-                Options = options
-            };
-            alignmentProcessor.ApplyAlignmentOptions();
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(options);
+
             alignmentProcessor.Progress += AlignmentProcessor_Progress;
 
             var filteredBaselineFeatures = FilterFeaturesByAbundance(baseline, options) as List<UMCLight>;
