@@ -1512,7 +1512,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     }
                     else
                     {
-                        subsectionMatchScores[aligneeSection, baselineSection] = ((score - avg) / stDev);
+                        subsectionMatchScores[aligneeSection, baselineSection] = 0;
                     }
                 }
             }
