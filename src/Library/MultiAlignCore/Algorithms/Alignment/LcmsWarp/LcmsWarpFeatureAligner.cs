@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using InformedProteomics.Backend.Utils;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
@@ -12,17 +11,19 @@ using MultiAlignCore.Data.MassTags;
 
 #endregion
 
-namespace MultiAlignCore.Algorithms.Alignment
+namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     public class LcmsWarpFeatureAligner :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
         IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
     {
+        private readonly LcmsWarpAlignmentOptions _options;
+
         public event EventHandler<ProgressNotifierArgs> Progress;
 
-        public LcmsWarpFeatureAligner()
+        public LcmsWarpFeatureAligner(LcmsWarpAlignmentOptions options)
         {
-            Options = new LcmsWarpAlignmentOptions();
+            _options = options;
         }
 
         private void OnStatus(string message)
@@ -52,11 +53,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         public ISpectraProvider AligneeSpectraProvider { get; set; }
 
         /// <summary>
-        ///     Gets or sets the alignment options
-        /// </summary>
-        public LcmsWarpAlignmentOptions Options { get; set; }
-
-        /// <summary>
         ///     Aligns a dataset to a mass tag database.
         /// </summary>
         public AlignmentData Align(MassTagDatabase massTagDatabase,
@@ -64,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor(Options);
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>
@@ -87,7 +83,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             alignmentProcessor.SetReferenceDatasetFeatures(massTagDatabase.MassTags);
             var data = AlignFeatures(alignmentProcessor,
                 umcLights,
-                Options);
+                _options);
 
             return data;
         }
@@ -100,7 +96,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
-            var alignmentProcessor = new LcmsWarpAlignmentProcessor(Options);
+            var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
             alignmentProcessor.Progress += (o, e) =>
@@ -113,12 +109,12 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             var umcLights = baselineFeatures as List<UMCLight> ?? baselineFeatures.ToList();
 
-            var filteredFeatures = FilterFeaturesByAbundance(umcLights, Options);
+            var filteredFeatures = FilterFeaturesByAbundance(umcLights, _options);
 
             alignmentProcessor.SetReferenceDatasetFeatures(filteredFeatures);
             var alignmentData = AlignFeatures(alignmentProcessor,
                 features,
-                Options);
+                _options);
 
             var minScanReference = int.MaxValue;
             var maxScanReference = int.MinValue;
@@ -155,9 +151,6 @@ namespace MultiAlignCore.Algorithms.Alignment
             var minMtdbNet = alignmentProcessor.MinReferenceNet;
             var maxMtdbNet = alignmentProcessor.MaxReferenceNet;
 
-            var minScanBaseline = int.MaxValue;
-            var maxScanBaseline = int.MinValue;
-
             var umcLights = features as List<UMCLight> ?? features.ToList();
 
             var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), alignmentOptions);
@@ -181,20 +174,18 @@ namespace MultiAlignCore.Algorithms.Alignment
             OnStatus("Applying alignment function to all features.");
             alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
 
-
             // Find min/max scan for meta-data
-            var tempMinScanBaseline = int.MaxValue;
-            var tempMaxScanBaseline = int.MinValue;
+            var minScanBaseline = int.MaxValue;
+            var maxScanBaseline = int.MinValue;
 
             foreach (var feature in umcLights)
             {
-                tempMaxScanBaseline = Math.Max(tempMaxScanBaseline, feature.Scan);
-                tempMinScanBaseline = Math.Min(tempMinScanBaseline, feature.Scan);
+                maxScanBaseline = Math.Max(maxScanBaseline, feature.Scan);
+                minScanBaseline = Math.Min(minScanBaseline, feature.Scan);
                 var featureId = feature.Id;
                 var isInMap = map.ContainsKey(featureId);
                 if (!isInMap)
                     continue;
-
 
                 map[featureId].MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
                 map[featureId].NetAligned = feature.NetAligned;
@@ -203,9 +194,6 @@ namespace MultiAlignCore.Algorithms.Alignment
                 map[featureId].NetEnd = feature.NetEnd;
                 map[featureId].ScanAligned = feature.ScanAligned;
             }
-
-            minScanBaseline = Math.Min(minScanBaseline, tempMinScanBaseline);
-            maxScanBaseline = Math.Max(maxScanBaseline, tempMaxScanBaseline);
 
             // Pull out the heat maps...
             double[,] heatScore;
@@ -251,7 +239,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 MassStandardDeviation = alignmentProcessor.MassStd,
                 NETMean = alignmentProcessor.NetMu,
                 NETStandardDeviation = alignmentProcessor.NetStd,
-                BaselineIsAmtDB = Options.AlignToMassTagDatabase
+                BaselineIsAmtDB = _options.AlignToMassTagDatabase
             };
 
             // Find out the max scan or NET value to use for the range depending on what 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Algorithms.Statistics;
@@ -75,9 +76,8 @@ namespace AlignmentPaperTestSuite.SSM
 
             Print("Aligning Features");
             // Align the features
-            var aligner = new LcmsWarpFeatureAligner();
             var alignmentOptions = new AlignmentOptions();
-            aligner.Options = alignmentOptions.LCMSWarpOptions;
+            var aligner = new LcmsWarpFeatureAligner(alignmentOptions.LCMSWarpOptions);
             aligner.Align(featuresX, featuresY);
 
             Print("");
@@ -125,9 +125,8 @@ namespace AlignmentPaperTestSuite.SSM
 
             Print("Aligning Features");
             // Align the features
-            var aligner = new LcmsWarpFeatureAligner();
             var alignmentOptions = new AlignmentOptions();
-            aligner.Options = alignmentOptions.LCMSWarpOptions;
+            var aligner = new LcmsWarpFeatureAligner(alignmentOptions.LCMSWarpOptions);
             aligner.Align(baselineFeatures, aligneeFeatures);
 
             PrintFeatureMsMsData(baselineFeatures);

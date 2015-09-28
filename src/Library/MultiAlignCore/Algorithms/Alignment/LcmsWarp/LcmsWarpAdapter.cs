@@ -19,11 +19,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private readonly LcmsWarpAlignmentOptions _options;
 
-        public LcmsWarpAdapter()
-            : this(new LcmsWarpAlignmentOptions())
-        {
-        }
-
         public LcmsWarpAdapter(LcmsWarpAlignmentOptions options)
         {
             _options = options;

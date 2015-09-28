@@ -6,6 +6,7 @@ using System.IO;
 using System.Xml;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Drawing;
@@ -114,7 +115,7 @@ namespace MultiAlignTestSuite.Drawing
             if (!didirectory.Exists)
                 didirectory.Create();
 
-            var aligner = new LcmsWarpFeatureAligner();
+            var aligner = new LcmsWarpFeatureAligner(new LcmsWarpAlignmentOptions());
 
             var baselineMs = UmcLoaderFactory.LoadMsFeatureData(path1);
             var aligneeMs = UmcLoaderFactory.LoadMsFeatureData(path2);
