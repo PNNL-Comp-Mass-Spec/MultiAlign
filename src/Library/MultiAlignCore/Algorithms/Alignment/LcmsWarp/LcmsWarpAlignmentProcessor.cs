@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
@@ -12,8 +14,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// Class which will use LCMSWarp to process alignment
     /// </summary>
     public sealed class LcmsWarpAlignmentProcessor :
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, LcmsWarpAlignmentData>
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
     {
         private enum CurrentLcmsWarpTask
         {
@@ -654,13 +656,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         #endregion region
 
-        public LcmsWarpAlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee,
+        public AlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee,
             IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee,
+        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee,
             IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();

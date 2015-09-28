@@ -156,7 +156,6 @@
     <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAdapter.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentData.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentOptions.cs" />

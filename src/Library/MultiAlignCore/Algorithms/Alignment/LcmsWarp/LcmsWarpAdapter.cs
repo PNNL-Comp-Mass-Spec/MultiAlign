@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
@@ -12,8 +14,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// Object which performs feature alignment through LCMSWarp
     /// </summary>
     public sealed class LcmsWarpAdapter :
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>,
-        IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, AlignmentData>
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
 
@@ -41,7 +43,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features,
+        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
             return AlignFeatures(baseline as List<UMCLight>, features as List<UMCLight>, _options);
@@ -55,7 +57,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
+        public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
             return AlignFeatures(baseline as List<MassTagLight>, features as List<UMCLight>, _options);
@@ -72,7 +74,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>        
         /// <returns></returns>
-        private LcmsWarpAlignmentData AlignFeatures(List<MassTagLight> massTags, List<UMCLight> aligneeFeatures,
+        private AlignmentData AlignFeatures(List<MassTagLight> massTags, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(options);
@@ -123,7 +125,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        private LcmsWarpAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures,
+        private AlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(options);
@@ -137,7 +139,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return AlignFeatures(alignmentProcessor, aligneeFeatures, options);
         }
 
-        private LcmsWarpAlignmentData AlignFeatures(LcmsWarpAlignmentProcessor processor, List<UMCLight> aligneeFeatures,
+        private AlignmentData AlignFeatures(LcmsWarpAlignmentProcessor processor, List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
             var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
@@ -185,21 +187,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // Get the residual data
             var residualData = processor.GetResidualData();
 
-            var data = new LcmsWarpAlignmentData
+            var data = new AlignmentData
             {
                 MassErrorHistogram = massErrorHistogram,
                 DriftErrorHistogram = driftErrorHistogram,
                 NetErrorHistogram = netErrorHistogram,
                 AlignmentFunction = alignmentFunction,
                 HeatScores = heatScore,
-                NetIntercept = processor.NetIntercept,
-                NetRsquared = processor.NetRsquared,
-                NetSlope = processor.NetSlope,
+                NETIntercept = processor.NetIntercept,
+                NETRsquared = processor.NetRsquared,
+                NETSlope = processor.NetSlope,
                 ResidualData = residualData,
                 MassMean = processor.MassMu,
                 MassStandardDeviation = processor.MassStd,
-                NetMean = processor.NetMu,
-                NetStandardDeviation = processor.NetStd
+                NETMean = processor.NetMu,
+                NETStandardDeviation = processor.NetStd
             };
 
             return data;
