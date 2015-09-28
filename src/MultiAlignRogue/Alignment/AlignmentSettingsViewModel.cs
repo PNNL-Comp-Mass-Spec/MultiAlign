@@ -3,6 +3,7 @@ using InformedProteomics.Backend.Utils;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.Viewers.Databases;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
@@ -67,7 +68,7 @@ namespace MultiAlignRogue.Alignment
             this.progress = progressReporter ?? new Progress<int>();
             this.aligner = new LCMSFeatureAligner();            
             this.builder = new AlgorithmBuilder();
-            this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
+            this.CalibrationOptions = new ObservableCollection<LcmsWarpAlignmentType>(Enum.GetValues(typeof(LcmsWarpAlignmentType)).Cast<LcmsWarpAlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
             this.alignmentInformation = new List<AlignmentData>();
@@ -107,7 +108,7 @@ namespace MultiAlignRogue.Alignment
 
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
-        public ObservableCollection<AlignmentType> CalibrationOptions { get; private set; }
+        public ObservableCollection<LcmsWarpAlignmentType> CalibrationOptions { get; private set; }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
@@ -233,7 +234,7 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        public AlignmentType SelectedCalibrationType
+        public LcmsWarpAlignmentType SelectedCalibrationType
         {
             get { return this.analysis.Options.AlignmentOptions.AlignmentType; }
             set

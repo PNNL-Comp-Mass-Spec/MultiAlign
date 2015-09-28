@@ -267,6 +267,41 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             NetRecalibration.SetLsqOptions(numKnots, outlierZScore);
         }
 
+        public void ApplyAlignmentOptions(LcmsWarpAlignmentOptions options)
+        {
+            // Applying the Mass and NET Tolerances
+            MassTolerance = options.MassTolerance;
+            NetTolerance = options.NetTolerance;
+
+            // Applying options for NET Calibration
+            NumSections = options.NumTimeSections;
+            MaxJump = options.MaxTimeDistortion;
+            NumBaselineSections = options.NumTimeSections * options.ContractionFactor;
+            NumMatchesPerBaseline = options.ContractionFactor * options.ContractionFactor;
+            NumMatchesPerSection = NumBaselineSections * NumMatchesPerBaseline;
+
+            KeepPromiscuousMatches = options.UsePromiscuousPoints;
+            MaxPromiscuousUmcMatches = options.MaxPromiscuity;
+
+            // Applying options for Mass Calibration
+            MassCalibrationWindow = options.MassCalibrationWindow;
+            MassCalNumDeltaBins = options.MassCalibNumYSlices;
+            MassCalNumSlices = options.MassCalibNumXSlices;
+            MassCalNumJump = options.MassCalibMaxJump;
+
+            MzRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
+                options.MassCalibMaxZScore, options.RegressionType);
+            NetRecalibration.SetCentralRegressionOptions(MassCalNumSlices, MassCalNumDeltaBins, MassCalNumJump,
+                options.MassCalibMaxZScore, options.RegressionType);
+
+            // Applying LSQ options
+            MzRecalibration.SetLsqOptions(options.MassCalibLsqNumKnots, options.MassCalibLsqMaxZScore);
+            NetRecalibration.SetLsqOptions(options.MassCalibLsqNumKnots, options.MassCalibLsqMaxZScore);
+
+            // Setting the calibration type
+            CalibrationType = options.CalibrationType;
+        }
+
         /// <summary>
         /// Method which calculates the Net slope, intercept and r squared as if
         /// a linear regression was performed
@@ -1518,7 +1553,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
-        public void GetErrorHistograms(double massBin, double netBin, double driftBin,
+        public void GetErrorHistograms(double massBinSize, double netBinSize, double driftBinSize,
             out Dictionary<double, int> massErrorHist,
             out Dictionary<double, int> netErrorHist, out Dictionary<double, int> driftErrorHist)
         {
@@ -1534,9 +1569,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 driftErrors.Add(match.DriftError);
             }
 
-            massErrorHist = Histogram.CreateHistogram(massErrors, massBin);
-            netErrorHist = Histogram.CreateHistogram(netErrors, netBin);
-            driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBin);
+            massErrorHist = Histogram.CreateHistogram(massErrors, massBinSize);
+            netErrorHist = Histogram.CreateHistogram(netErrors, netBinSize);
+            driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBinSize);
+            // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
+            //massErrorHist = new MathNet.Numerics.Statistics.Histogram(massErrors, massBinCount);
+            //netErrorHist = new MathNet.Numerics.Statistics.Histogram(netErrors, netBinCount);
+            //driftErrorHist = new MathNet.Numerics.Statistics.Histogram(driftErrors, driftBinCount);
         }
     }
 }

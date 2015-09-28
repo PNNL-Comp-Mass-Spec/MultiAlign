@@ -139,46 +139,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         // Mass calibration, the Least Squares options and the calibration type
         public void ApplyAlignmentOptions()
         {
-            // Applying the Mass and NET Tolerances
-            _lcmsWarp.MassTolerance = Options.MassTolerance;
-            _lcmsWarp.NetTolerance = Options.NetTolerance;
-
-            // Applying options for NET Calibration
-            _lcmsWarp.NumSections = Options.NumTimeSections;
-            _lcmsWarp.MaxJump = Options.MaxTimeDistortion;
-            _lcmsWarp.NumBaselineSections = Options.NumTimeSections * Options.ContractionFactor;
-            _lcmsWarp.NumMatchesPerBaseline = Options.ContractionFactor * Options.ContractionFactor;
-            _lcmsWarp.NumMatchesPerSection = _lcmsWarp.NumBaselineSections * _lcmsWarp.NumMatchesPerBaseline;
-
-            _lcmsWarp.KeepPromiscuousMatches = Options.UsePromiscuousPoints;
-            _lcmsWarp.MaxPromiscuousUmcMatches = Options.MaxPromiscuity;
-
-            // Applying options for Mass Calibration
-            _lcmsWarp.MassCalibrationWindow = Options.MassCalibrationWindow;
-            _lcmsWarp.MassCalNumDeltaBins = Options.MassCalibNumYSlices;
-            _lcmsWarp.MassCalNumSlices = Options.MassCalibNumXSlices;
-            _lcmsWarp.MassCalNumJump = Options.MassCalibMaxJump;
-
-            var regType = LcmsWarpRegressionType.Central;
-
-            if (Options.MassCalibUseLsq)
-            {
-                regType = LcmsWarpRegressionType.Hybrid;
-            }
-
-            _lcmsWarp.MzRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices,
-                _lcmsWarp.MassCalNumDeltaBins, _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
-                regType);
-            _lcmsWarp.NetRecalibration.SetCentralRegressionOptions(_lcmsWarp.MassCalNumSlices,
-                _lcmsWarp.MassCalNumDeltaBins, _lcmsWarp.MassCalNumJump, Options.MassCalibMaxZScore,
-                regType);
-
-            // Applying LSQ options
-            _lcmsWarp.MzRecalibration.SetLsqOptions(Options.MassCalibLsqNumKnots, Options.MassCalibLsqMaxZScore);
-            _lcmsWarp.NetRecalibration.SetLsqOptions(Options.MassCalibLsqNumKnots, Options.MassCalibLsqMaxZScore);
-
-            // Setting the calibration type
-            _lcmsWarp.CalibrationType = Options.CalibrationType;
+            _lcmsWarp.ApplyAlignmentOptions(Options);
         }
 
         /// <summary>
@@ -409,7 +370,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 func.SetNetFunction(aligneeNets, referenceNets, referenceScans);
             }
 
-            if (Options.AlignType == AlignmentType.NET_WARP)
+            if (Options.AlignType == LcmsWarpAlignmentType.NET_WARP)
             {
                 return func;
             }
@@ -463,7 +424,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 throw new NullReferenceException("Alignment Options were not set in AlignmentProcessor");
             }
 
-            if (Options.AlignType == AlignmentType.NET_WARP)
+            if (Options.AlignType == LcmsWarpAlignmentType.NET_WARP)
             {
                 PerformNetWarp(0, 100);
             }

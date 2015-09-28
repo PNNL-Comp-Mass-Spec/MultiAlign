@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// The type of alignment which will be performed; either Net warping or Net-Mass warping
         /// </summary>
-        public AlignmentType AlignType { get; set; }
+        public LcmsWarpAlignmentType AlignType { get; set; }
 
         /// <summary>
         /// The type of calibration which will be performed; Either MZ, Scan or hybrid 
@@ -169,6 +169,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         #endregion
 
         /// <summary>
+        /// The LCMSWarp regression type to use; based on MassCalibUseLsq
+        /// </summary>
+        public LcmsWarpRegressionType RegressionType
+        {
+            get
+            {
+                if (MassCalibUseLsq)
+                {
+                    return LcmsWarpRegressionType.Hybrid;
+                }
+                return LcmsWarpRegressionType.Central;
+            }
+        }
+
+        /// <summary>
         /// Default constructor, initializes every value to commonly used values and flags
         /// </summary>
         public LcmsWarpAlignmentOptions()
@@ -191,7 +206,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             MassTolerance = 10; //  10 in VIPER
             NetTolerance = 0.02; //   0.02 in VIPER
 
-            AlignType = AlignmentType.NET_MASS_WARP;
+            AlignType = LcmsWarpAlignmentType.NET_MASS_WARP;
             CalibrationType = LcmsWarpCalibrationType.Both;
 
             AlignToMassTagDatabase = false;
@@ -210,40 +225,5 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             StoreAlignmentFunction = false;
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
         }
-    }
-
-    /// <summary>
-    /// Enumerations of possible Feature aligner types
-    /// </summary>
-    public enum FeatureAlignmentType
-    {
-        /// <summary>
-        /// Uses LCMSWarp
-        /// </summary>
-        LCMS_WARP,
-
-        /// <summary>
-        /// Not Implemented.
-        /// </summary>
-        DIRECT_IMS_INFUSION,
-
-        SPECTRAL_ALIGNMENT
-    }
-
-    /// <summary>
-    /// Enumerations of possible Alignment Types
-    /// </summary>
-    public enum AlignmentType
-    {
-        /// <summary>
-        /// Alignment type that uses a single NET warp
-        /// </summary>
-        NET_WARP = 0,
-
-        /// <summary>
-        /// Alignment type that performs a NET warp, recalibrates with regards to Mass
-        /// and then performs warping again
-        /// </summary>
-        NET_MASS_WARP
     }
 }

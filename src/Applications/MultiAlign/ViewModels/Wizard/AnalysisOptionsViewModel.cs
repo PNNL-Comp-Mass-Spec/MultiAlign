@@ -9,6 +9,7 @@ using MultiAlign.Commands;
 using MultiAlign.Properties;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlign.Windows.Controls;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;

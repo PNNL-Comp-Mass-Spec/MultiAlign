@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
                 UsePromiscuousPoints = false,       // this does not do much but is likely needed when matching to a dense AMT tag databaase
                 AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP,
                 ContractionFactor = 1,              // setting this to 1 helped
-                AlignType = AlignmentType.NET_WARP
+                AlignType = LcmsWarpAlignmentType.NET_WARP
             };
         
 
