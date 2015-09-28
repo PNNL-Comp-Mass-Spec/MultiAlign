@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 using Ookii.Dialogs;
 using MultiAlign.Data;
@@ -65,6 +66,7 @@ namespace MultiAlignRogue
         private string outputDirectory;
 
         private int progressTracker;
+
         #endregion
 
         #region Constructor
@@ -626,11 +628,17 @@ namespace MultiAlignRogue
                 (alignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
             if (filesSelected && alignmentChosen)
             {
+                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.ProgressTracker = (int)pd.Percent);
+                var testProgData = new ProgressData(totalProgress);
+
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
-                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);                 //even if the user changes the selection while the workflow is running.
-                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
-                ClusterSettingsViewModel.ClusterFeatures();
+                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();  //Make copy of selected datasets at time of function call so all work is done on the same set of files
+                FeatureFindingSettingsViewModel.LoadFeatures(totalProgress, selectedDatasetsCopy); //even if the user changes the selection while the workflow is running.
+                testProgData.Report(100.0 / 3);
+                AlignmentSettingsViewModel.AlignToBaseline(totalProgress, selectedDatasetsCopy);
+                testProgData.Report((100.0 / 3) * 2);
+                ClusterSettingsViewModel.ClusterFeatures(totalProgress);
+                
             }
             else if (!filesSelected)
             {

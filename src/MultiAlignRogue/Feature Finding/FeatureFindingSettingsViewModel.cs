@@ -497,7 +497,7 @@ namespace MultiAlignRogue.Feature_Finding
             await Task.Run(() => this.LoadFeatures());
         }
 
-        internal void LoadFeatures(List<DatasetInformationViewModel> WorkFlowDatasets = null)
+        internal void LoadFeatures(IProgress<ProgressData> WorkflowProgress = null ,List<DatasetInformationViewModel> WorkFlowDatasets = null)
         {
             this.ShouldShowProgress = true;
             this.featureCache.Providers = this.analysis.DataProviders;
@@ -511,6 +511,9 @@ namespace MultiAlignRogue.Feature_Finding
 
             IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
             var totalProgressData = new ProgressData(totalProgressRpt);
+            IProgress<ProgressData> workflowProgress = WorkflowProgress ?? new Progress<ProgressData>();
+            var workflowPorgressData = new ProgressData(workflowProgress);
+            
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
@@ -520,12 +523,15 @@ namespace MultiAlignRogue.Feature_Finding
             {
                 // Set range based on file
                 totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
-                var progData = new ProgressData();
+                workflowPorgressData.StepRange((((i-1) * 100.0) / selectedFiles.Count) / 3);
+
+                var progData = new ProgressData();               
                 var progressRpt = new Progress<ProgressData>(pd =>
                 {
                     file.Progress = progData.UpdatePercent(pd.Percent).Percent;
                     // Report file progress
                     totalProgressData.Report(file.Progress);
+                    workflowPorgressData.Report(file.Progress);
                 });
 
                 progData.StepRange(30);
