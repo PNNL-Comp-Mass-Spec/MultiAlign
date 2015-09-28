@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+namespace MultiAlignCore.Data.Alignment
 {
     /// <summary>
     /// Class to hold the residual data from the alignment process

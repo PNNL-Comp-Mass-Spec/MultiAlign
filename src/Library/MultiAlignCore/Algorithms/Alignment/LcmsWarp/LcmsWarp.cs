@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Algorithms.Statistics;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Utilities;
 

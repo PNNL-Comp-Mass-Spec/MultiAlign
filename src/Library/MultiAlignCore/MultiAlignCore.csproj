@@ -166,7 +166,6 @@
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpRegressionType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\ResidualData.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointFinder.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointMatcher.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\AlignedFeatureData.cs" />
@@ -358,6 +357,7 @@
     <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
+    <Compile Include="Data\Alignment\ResidualData.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
     <Compile Include="Data\Factors\Factor.cs" />
