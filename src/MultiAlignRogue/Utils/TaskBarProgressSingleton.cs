@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Shell;
+using MultiAlign.Data;
 using MultiAlignRogue.Alignment;
 using MultiAlignRogue.Clustering;
 using MultiAlignRogue.Feature_Finding;
@@ -79,7 +80,7 @@ namespace MultiAlignRogue.Utils
         {
             if (!_singleton._disableStepProgress || ReferenceEquals(_singleton._controllingObject, callingObj))
             {
-                Application.Current.Dispatcher.Invoke((Action) (() =>
+                ThreadSafeDispatcher.Invoke((Action) (() =>
                 {
                     Application.Current.MainWindow.TaskbarItemInfo.ProgressValue = pct / 100.0;
                 }));
@@ -101,7 +102,7 @@ namespace MultiAlignRogue.Utils
                 }
                 if (ppct > 0.0)
                 {
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    ThreadSafeDispatcher.Invoke((Action)(() =>
                     {
                         Application.Current.MainWindow.TaskbarItemInfo.ProgressValue = ppct;
                     }));
@@ -115,14 +116,14 @@ namespace MultiAlignRogue.Utils
             {
                 if (doShow)
                 {
-                    Application.Current.Dispatcher.Invoke((Action) (() =>
+                    ThreadSafeDispatcher.Invoke((Action)(() =>
                     {
                         Application.Current.MainWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
                     }));
                 }
                 else
                 {
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    ThreadSafeDispatcher.Invoke((Action)(() =>
                     {
                         Application.Current.MainWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
                     }));
