@@ -23,7 +23,7 @@ namespace MultiAlignCore.Algorithms.Options
             DriftTimeTolerance = 50.0;
             ShiftAmount = 11;
             UsePriors = true;
-            UseEllipsoid = false;
+            UseEllipsoid = true;
             UseDriftTime = false;
             ShouldCalculateSTAC = true;
             IdentificationAlgorithm = PeakMatchingType.STAC;

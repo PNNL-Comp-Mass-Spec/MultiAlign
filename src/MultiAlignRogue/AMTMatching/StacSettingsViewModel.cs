@@ -1,4 +1,7 @@
-﻿namespace MultiAlignRogue.AMTMatching
+﻿using System.Windows;
+using MultiAlignCore.IO;
+
+namespace MultiAlignRogue.AMTMatching
 {
     using System;
     using System.Collections.Generic;
@@ -159,7 +162,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the bind width for the histograms.
+        /// Gets or sets the bin width for the histograms.
         /// </summary>
         public double HistogramBinWidth
         {
@@ -261,7 +264,7 @@
                     },
                     ChargeStateList = chargeStates,
                     UsePriors = false,
-                    ShouldCalculateSTAC = false,
+                    ShouldCalculateSTAC = true,
                     ShouldCalculateHistogramFDR = false,
                     ShouldCalculateShiftFDR = false,
                 },
@@ -285,8 +288,20 @@
             this.analysis.DataProviders.MassTagMatches.ClearAllMatches();
             this.analysis.DataProviders.MassTagMatches.AddAllStateless(clusterToMassTags, progress);
 
-            // Write to file
-            this.WriteClusterData("clustermatches.csv", matches, clusterIdMap, progress);
+            try
+            {
+                // Write to file
+                this.WriteClusterData("clustermatches.csv", matches, clusterIdMap, progress);
+            }
+            catch (Exception ex)
+            {
+                var errMsg = "Error writing results to text file: " + ex.Message;
+                Logger.PrintMessage(errMsg);
+
+                // Todo: Add this: if (!GlobalSettings.AutomatedAnalysisMode)
+                    MessageBox.Show(errMsg);
+            }
+            
             this.ShouldShowTotalProgress = false;
 
             datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Matched);
