@@ -1427,8 +1427,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeVals"></param>
         /// <param name="baselineVals"></param>
         /// <param name="standardize"></param>
-        public void GetSubsectionMatchScore(out double[,] subsectionMatchScores, out double[] aligneeVals,
-            out double[] baselineVals, bool standardize)
+        public void GetSubsectionMatchScore(out double[,] subsectionMatchScores, out double[] baselineVals, out double[] aligneeVals, bool standardize)
         {
             subsectionMatchScores = new double[NumSections, NumBaselineSections];
             aligneeVals = new double[NumSections];
