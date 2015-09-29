@@ -502,11 +502,11 @@ namespace MultiAlignRogue.Feature_Finding
             await Task.Run(() => this.LoadFeatures());
         }
 
-        internal void LoadFeatures(List<DatasetInformationViewModel> WorkFlowDatasets = null)
+        internal void LoadFeatures(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
         {
             this.ShouldShowProgress = true;
             this.featureCache.Providers = this.analysis.DataProviders;
-            var selectedFiles = WorkFlowDatasets ?? this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
+            var selectedFiles = workFlowDatasets ?? this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
@@ -515,10 +515,12 @@ namespace MultiAlignRogue.Feature_Finding
             }
 
             TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd =>
             {
                 this.TotalProgress = pd.Percent;
                 TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
+                workflowProgress.Report(pd);
             });
             var totalProgressData = new ProgressData(totalProgressRpt);
 

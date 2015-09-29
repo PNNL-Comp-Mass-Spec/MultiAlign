@@ -8,20 +8,31 @@ namespace MultiAlign.Data
     {
         public static void Invoke(Action action)
         {
-            if (Application.Current == null)
+#if !DEBUG
+            try
             {
-                return;
-            }
+#endif
+                if (Application.Current == null)
+                {
+                    return;
+                }
 
-            var dispatchObject = Application.Current.Dispatcher;
-            if (dispatchObject == null || dispatchObject.CheckAccess())
-            {
-                action();
+                var dispatchObject = Application.Current.Dispatcher;
+                if (dispatchObject == null || dispatchObject.CheckAccess())
+                {
+                    action();
+                }
+                else
+                {
+                    dispatchObject.Invoke(action);
+                }
+#if !DEBUG
             }
-            else
+            catch (Exception)
             {
-                dispatchObject.Invoke(action);
+                // suppress errors; generally only happens when closing during a task, when the UI thread becomes invalid.
             }
+#endif
         }
     }
 }

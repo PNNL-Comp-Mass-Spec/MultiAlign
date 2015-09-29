@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 using Ookii.Dialogs;
 using MultiAlign.Data;
@@ -74,6 +75,9 @@ namespace MultiAlignRogue
         private string outputDirectory;
 
         private int progressTracker;
+
+        private bool shouldShowProgress;
+
         #endregion
 
         #region Constructor
@@ -108,12 +112,13 @@ namespace MultiAlignRogue
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
-            taskBarProgressSingleton = new TaskBarProgressSingleton(null, null, null);
+            taskBarProgressSingleton = new TaskBarProgressSingleton();
 
             featureCache.Providers = Analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
+            ShouldShowProgress = false;
         }
         #endregion
 
@@ -186,6 +191,20 @@ namespace MultiAlignRogue
         }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+
+        public bool ShouldShowProgress 
+        {
+            get
+            { return shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public int ProgressTracker
         {
@@ -265,7 +284,6 @@ namespace MultiAlignRogue
             private set
             {
                 this.featureFindingSettingsViewModel = value;
-                TaskBarProgressSingleton.SetFeatureModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -276,7 +294,6 @@ namespace MultiAlignRogue
             set
             {
                 this.alignmentSettingsViewModel = value;
-                TaskBarProgressSingleton.SetAlignmentModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -287,7 +304,6 @@ namespace MultiAlignRogue
             set
             {
                 this.clusterSettingsViewModel = value;
-                TaskBarProgressSingleton.SetClusterModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -663,7 +679,8 @@ namespace MultiAlignRogue
 
         private void RunFullWorkflow()
         {
-            bool filesSelected = FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
+            ShouldShowProgress = true;
+            bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
             bool alignmentChosen = (AlignmentSettingsViewModel.ShouldAlignToBaseline && AlignmentSettingsViewModel.SelectedBaseline != null) || 
                 (AlignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
             if (filesSelected && alignmentChosen)
@@ -671,13 +688,24 @@ namespace MultiAlignRogue
                 TaskBarProgressSingleton.TakeTaskbarControl(this);
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
 
-                // Make copy of selected datasets at time of function call so all work is done on the same set of files
-                // even if the user changes the selection while the workflow is running.
+                var progData = new ProgressData();
+                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+                {
+                    var prog = progData.UpdatePercent(pd.Percent).Percent;
+                    this.ProgressTracker = (int) prog;
+                    TaskBarProgressSingleton.SetTaskBarProgress(this, prog);
+                });
+
+                progData.StepRange(50);
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();
-                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);
-                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
-                ClusterSettingsViewModel.ClusterFeatures();
+                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();  //Make copy of selected datasets at time of function call so all work is done on the same set of files
+                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy, totalProgress); //even if the user changes the selection while the workflow is running.
+                progData.StepRange(80);
+                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy, totalProgress);
+                progData.StepRange(100);
+                ClusterSettingsViewModel.ClusterFeatures(totalProgress);
+                ShouldShowProgress = false;
+
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
                 TaskBarProgressSingleton.ReleaseTaskbarControl(this);
             }
