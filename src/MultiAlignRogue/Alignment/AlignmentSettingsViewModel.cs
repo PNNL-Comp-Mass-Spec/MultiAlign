@@ -363,10 +363,13 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
             }
 
-            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
-            var totalProgressData = new ProgressData(totalProgress);
             IProgress<ProgressData> workflowProgress = WorkflowPorgress ?? new Progress<ProgressData>();
-            var workflowPorgressData = new ProgressData(workflowProgress);
+            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+            {
+                this.AlignmentProgress = pd.Percent;
+                workflowProgress.Report(pd);
+            });
+            var totalProgressData = new ProgressData(totalProgress);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
@@ -386,8 +389,6 @@ namespace MultiAlignRogue.Alignment
                 AlignmentData alignment;
 
                 totalProgressData.StepRange((100.0 * i++) / selectedFiles.Count);
-                workflowPorgressData.StepRange((((100.0 * (i-1)) / (selectedFiles.Count-1)) / 3) * 2);
-                workflowPorgressData.MinPercentage = 100.0 / 3;
 
                 var datasetProgress =
                     new Progress<ProgressData>(
@@ -395,7 +396,6 @@ namespace MultiAlignRogue.Alignment
                         {
                             file.Progress = pd.Percent;
                             totalProgressData.Report(pd.Percent);
-                            workflowPorgressData.Report(pd.Percent);
                         });
 
                 if (ShouldAlignToBaseline)

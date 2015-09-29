@@ -172,12 +172,14 @@ namespace MultiAlignRogue.Clustering
 
         internal void ClusterFeatures(IProgress<ProgressData> WorkflowProgress = null)
         {
+            IProgress<ProgressData> workflowProgress = WorkflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
             {
                 this.progress.Report((int)pd.Percent);
                 this.ProgressPercent = pd.Percent;
+                workflowProgress.Report(pd);
             });
-            IProgress<ProgressData> workflowProgress = WorkflowProgress ?? new Progress<ProgressData>();
+
 
             this.algorithms = this.builder.GetAlgorithmProvider(this.options);
             var clusterer = this.algorithms.Clusterer;
@@ -206,13 +208,10 @@ namespace MultiAlignRogue.Clustering
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
                 var progData = new ProgressData(internalProgress);
-                var workflowProgressData = new ProgressData(workflowProgress);
-                workflowProgressData.MinPercentage = (100.0/3)*2;
                 IProgress<ProgressData> clusterProgress =
                     new Progress<ProgressData>(pd =>
                     {
                         progData.Report(pd.Percent);
-                        workflowProgressData.Report(pd.Percent);
                     });
 
                 progData.StepRange(45);

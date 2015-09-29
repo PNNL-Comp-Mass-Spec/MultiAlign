@@ -67,6 +67,8 @@ namespace MultiAlignRogue
 
         private int progressTracker;
 
+        private bool shouldShowProgress;
+
         #endregion
 
         #region Constructor
@@ -103,6 +105,7 @@ namespace MultiAlignRogue
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
+            ShouldShowProgress = false;
         }
         #endregion
 
@@ -163,6 +166,20 @@ namespace MultiAlignRogue
         public MultiAlignAnalysis Analysis { get; private set; }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+
+        public bool ShouldShowProgress 
+        {
+            get
+            { return shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public int ProgressTracker
         {
@@ -623,22 +640,29 @@ namespace MultiAlignRogue
 
         private void RunFullWorkflow()
         {
+            ShouldShowProgress = true;
             bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
             bool alignmentChosen = (alignmentSettingsViewModel.ShouldAlignToBaseline && alignmentSettingsViewModel.SelectedBaseline != null) || 
                 (alignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
             if (filesSelected && alignmentChosen)
             {
-                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.ProgressTracker = (int)pd.Percent);
-                var testProgData = new ProgressData(totalProgress);
+                var testProgData = new ProgressData() { IsPartialRange = true, MaxPercentage = 33};
+                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+                {
+                    var prog = testProgData.UpdatePercent(pd.Percent).Percent;
+                    this.ProgressTracker = (int) prog;
+
+                });
+                
 
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
                     featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();  //Make copy of selected datasets at time of function call so all work is done on the same set of files
                 FeatureFindingSettingsViewModel.LoadFeatures(totalProgress, selectedDatasetsCopy); //even if the user changes the selection while the workflow is running.
-                testProgData.Report(100.0 / 3);
+                testProgData.StepRange(67);
                 AlignmentSettingsViewModel.AlignToBaseline(totalProgress, selectedDatasetsCopy);
-                testProgData.Report((100.0 / 3) * 2);
+                testProgData.StepRange(100);
                 ClusterSettingsViewModel.ClusterFeatures(totalProgress);
-                
+                ShouldShowProgress = false;
             }
             else if (!filesSelected)
             {
