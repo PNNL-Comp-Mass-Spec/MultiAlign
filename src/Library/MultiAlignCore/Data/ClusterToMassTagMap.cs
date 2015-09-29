@@ -1,5 +1,8 @@
 namespace MultiAlignCore.Data
 {
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Data.MassTags;
+
     public class ClusterToMassTagMap
     {
         private int m_clusterId;
@@ -19,9 +22,13 @@ namespace MultiAlignCore.Data
 
         public MassTagToCluster MassTag { get; set; }
 
+        public MassTagLight MassTagLight { get; set; }
+
+        public UMCClusterLight Cluster { get; set; }
+
         public override bool Equals(object obj)
         {
-            var clusterToMassTagMap = (ClusterToMassTagMap) obj;
+            var clusterToMassTagMap = (ClusterToMassTagMap)obj;
 
             if (clusterToMassTagMap == null)
             {
@@ -38,9 +45,9 @@ namespace MultiAlignCore.Data
         {
             var hash = 17;
 
-            hash = hash*23 + m_clusterId.GetHashCode();
-            hash = hash*23 + m_massTagId.GetHashCode();
-            hash = hash*23 + ConformerId.GetHashCode();
+            hash = hash * 23 + m_clusterId.GetHashCode();
+            hash = hash * 23 + m_massTagId.GetHashCode();
+            hash = hash * 23 + ConformerId.GetHashCode();
 
             return hash;
         }

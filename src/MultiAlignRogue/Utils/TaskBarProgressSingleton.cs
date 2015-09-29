@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Shell;
-using MultiAlignRogue.Alignment;
-using MultiAlignRogue.Clustering;
-using MultiAlignRogue.Feature_Finding;
+using MultiAlign.Data;
 
 namespace MultiAlignRogue.Utils
 {
@@ -14,46 +12,11 @@ namespace MultiAlignRogue.Utils
         private bool _disableStepProgress = false;
         private object _controllingObject;
 
-        private FeatureFindingSettingsViewModel _featureModel;
-        private AlignmentSettingsViewModel _alignmentModel;
-        private ClusterSettingsViewModel _clusterModel;
-
-        public TaskBarProgressSingleton(FeatureFindingSettingsViewModel featureModel,
-            AlignmentSettingsViewModel alignmentModel, ClusterSettingsViewModel clusterModel)
+        public TaskBarProgressSingleton()
         {
             if (_singleton == null)
             {
-                _featureModel = featureModel;
-                _alignmentModel = alignmentModel;
-                _clusterModel = clusterModel;
                 _singleton = this;
-            }
-        }
-
-        public static void SetFeatureModel(object callingObj, FeatureFindingSettingsViewModel featureModel)
-        {
-            if (_singleton._controllingObject == null ||
-                ReferenceEquals(_singleton._controllingObject, callingObj))
-            {
-                _singleton._featureModel = featureModel;
-            }
-        }
-
-        public static void SetAlignmentModel(object callingObj, AlignmentSettingsViewModel alignmentModel)
-        {
-            if (_singleton._controllingObject == null ||
-                ReferenceEquals(_singleton._controllingObject, callingObj))
-            {
-                _singleton._alignmentModel = alignmentModel;
-            }
-        }
-
-        public static void SetClusterModel(object callingObj, ClusterSettingsViewModel clusterModel)
-        {
-            if (_singleton._controllingObject == null ||
-                ReferenceEquals(_singleton._controllingObject, callingObj))
-            {
-                _singleton._clusterModel = clusterModel;
             }
         }
 
@@ -79,33 +42,10 @@ namespace MultiAlignRogue.Utils
         {
             if (!_singleton._disableStepProgress || ReferenceEquals(_singleton._controllingObject, callingObj))
             {
-                Application.Current.Dispatcher.Invoke((Action) (() =>
+                ThreadSafeDispatcher.Invoke((Action) (() =>
                 {
                     Application.Current.MainWindow.TaskbarItemInfo.ProgressValue = pct / 100.0;
                 }));
-            }
-            else
-            {
-                var ppct = -1D;
-                if (ReferenceEquals(callingObj, _singleton._featureModel))
-                {
-                    ppct = (pct / 100.0) * 0.4;
-                }
-                else if (ReferenceEquals(callingObj, _singleton._alignmentModel))
-                {
-                    ppct = (pct / 100.0) * 0.4 + 0.4;
-                }
-                else if (ReferenceEquals(callingObj, _singleton._clusterModel))
-                {
-                    ppct = (pct / 100.0) * 0.2 + 0.8;
-                }
-                if (ppct > 0.0)
-                {
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
-                    {
-                        Application.Current.MainWindow.TaskbarItemInfo.ProgressValue = ppct;
-                    }));
-                }
             }
         }
 
@@ -115,14 +55,14 @@ namespace MultiAlignRogue.Utils
             {
                 if (doShow)
                 {
-                    Application.Current.Dispatcher.Invoke((Action) (() =>
+                    ThreadSafeDispatcher.Invoke((Action)(() =>
                     {
                         Application.Current.MainWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
                     }));
                 }
                 else
                 {
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    ThreadSafeDispatcher.Invoke((Action)(() =>
                     {
                         Application.Current.MainWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
                     }));

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 using Ookii.Dialogs;
 using MultiAlign.Data;
@@ -33,6 +34,7 @@ namespace MultiAlignRogue
     using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.Alignment;
+    using MultiAlignRogue.AMTMatching;
     using MultiAlignRogue.Clustering;
     using MultiAlignRogue.Feature_Finding;
 
@@ -41,7 +43,11 @@ namespace MultiAlignRogue
     public class MainViewModel : ViewModelBase
     {
         #region Private Data Members
+        private MultiAlignAnalysis analysis;
+
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
+
+        private readonly Throttler serializerThrottler;
 
         private readonly AnalysisConfig m_config;
         private readonly FeatureLoader featureCache;
@@ -52,6 +58,7 @@ namespace MultiAlignRogue
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
+        private StacSettingsViewModel stacSettingsViewModel;
 
         private TaskBarProgressSingleton taskBarProgressSingleton;
 
@@ -68,6 +75,9 @@ namespace MultiAlignRogue
         private string outputDirectory;
 
         private int progressTracker;
+
+        private bool shouldShowProgress;
+
         #endregion
 
         #region Constructor
@@ -83,6 +93,8 @@ namespace MultiAlignRogue
             m_config.Analysis = Analysis;
 
             this.WindowTitle = "MultiAlign Rogue";
+
+            this.serializerThrottler = new Throttler(TimeSpan.FromSeconds(1));
 
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
             
@@ -100,12 +112,13 @@ namespace MultiAlignRogue
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
-            taskBarProgressSingleton = new TaskBarProgressSingleton(null, null, null);
+            taskBarProgressSingleton = new TaskBarProgressSingleton();
 
             featureCache.Providers = Analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
+            ShouldShowProgress = false;
         }
         #endregion
 
@@ -163,9 +176,35 @@ namespace MultiAlignRogue
         #endregion
 
         #region Public Properties
-        public MultiAlignAnalysis Analysis { get; private set; }
+
+        public MultiAlignAnalysis Analysis
+        {
+            get { return this.analysis; }
+            private set
+            {
+                if (this.analysis != value)
+                {
+                    this.analysis = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+
+        public bool ShouldShowProgress 
+        {
+            get
+            { return shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public int ProgressTracker
         {
@@ -245,7 +284,6 @@ namespace MultiAlignRogue
             private set
             {
                 this.featureFindingSettingsViewModel = value;
-                TaskBarProgressSingleton.SetFeatureModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -256,7 +294,6 @@ namespace MultiAlignRogue
             set
             {
                 this.alignmentSettingsViewModel = value;
-                TaskBarProgressSingleton.SetAlignmentModel(this, value);
                 this.RaisePropertyChanged();
             }
         }
@@ -267,7 +304,16 @@ namespace MultiAlignRogue
             set
             {
                 this.clusterSettingsViewModel = value;
-                TaskBarProgressSingleton.SetClusterModel(this, value);
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public StacSettingsViewModel StacSettingsViewModel
+        {
+            get { return this.stacSettingsViewModel; }
+            set
+            {
+                this.stacSettingsViewModel = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -411,7 +457,7 @@ namespace MultiAlignRogue
                     }
                 };
 
-                viewmodel.StateChanged += (s, e) => this.SaveProject();
+                viewmodel.StateChanged += (s, e) => this.serializerThrottler.Run(this.SaveProject);
                 Datasets.Add(viewmodel);
             }
         }
@@ -479,7 +525,6 @@ namespace MultiAlignRogue
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
                 this.outputDirectory = newProjectViewModel.OutputDirectory;
-                this.RaisePropertyChanged("Analysis");
             }
         }
 
@@ -493,20 +538,23 @@ namespace MultiAlignRogue
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
-            if(!isNewProject)this.Analysis.MetaData.BaselineDataset = (from x in this.Analysis.MetaData.Datasets where x.IsBaseline select x).First();
+
+            this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
+
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+            this.StacSettingsViewModel = new StacSettingsViewModel(this.Analysis, this.Datasets);
+            DatabaseSelectionViewModel.Instance.Analysis = this.Analysis;
             if (this.Analysis.Options.AlignmentOptions.InputDatabase != null)
             {
-                await this.AlignmentSettingsViewModel.LoadMassTagDatabase(this.Analysis.Options.AlignmentOptions.InputDatabase);
+                await DatabaseSelectionViewModel.Instance.LoadMassTagDatabase(this.Analysis.Options.AlignmentOptions.InputDatabase);
             }
 
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
-            this.RaisePropertyChanged("Analysis");
         }
 
         private void SaveProjectAs()
@@ -631,18 +679,33 @@ namespace MultiAlignRogue
 
         private void RunFullWorkflow()
         {
-            bool filesSelected = FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
+            ShouldShowProgress = true;
+            bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
             bool alignmentChosen = (AlignmentSettingsViewModel.ShouldAlignToBaseline && AlignmentSettingsViewModel.SelectedBaseline != null) || 
                 (AlignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
             if (filesSelected && alignmentChosen)
             {
                 TaskBarProgressSingleton.TakeTaskbarControl(this);
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+
+                var progData = new ProgressData();
+                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+                {
+                    var prog = progData.UpdatePercent(pd.Percent).Percent;
+                    this.ProgressTracker = (int) prog;
+                    TaskBarProgressSingleton.SetTaskBarProgress(this, prog);
+                });
+
+                progData.StepRange(50);
                 List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList(); //Make copy of selected datasets at time of function call so all work is done on the same set of files
-                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy);                 //even if the user changes the selection while the workflow is running.
-                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy);
-                ClusterSettingsViewModel.ClusterFeatures();
+                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();  //Make copy of selected datasets at time of function call so all work is done on the same set of files
+                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy, totalProgress); //even if the user changes the selection while the workflow is running.
+                progData.StepRange(80);
+                AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy, totalProgress);
+                progData.StepRange(100);
+                ClusterSettingsViewModel.ClusterFeatures(totalProgress);
+                ShouldShowProgress = false;
+
                 TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
                 TaskBarProgressSingleton.ReleaseTaskbarControl(this);
             }

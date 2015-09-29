@@ -21,6 +21,8 @@ using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
+    using MultiAlignCore.IO.RawData;
+
     public class XicPlotViewModel : PlotViewModelBase
     {
         /// <summary>
@@ -32,6 +34,11 @@ namespace MultiAlignRogue.Clustering
         /// For throttling Y-Axis scale adjustments.
         /// </summary>
         private readonly Throttler yaxisScaleThrottler;
+
+        /// <summary>
+        /// Provider for LCMSRun for access to PBF files.
+        /// </summary>
+        private InformedProteomicsReader rawProvider;
 
         /// <summary>
         /// The retention time axis.
@@ -67,8 +74,9 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
         /// </summary>
-        public XicPlotViewModel()
+        public XicPlotViewModel(InformedProteomicsReader rawProvider)
         {
+            this.rawProvider = rawProvider;
             this.plotBuilderthrottler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.yaxisScaleThrottler = new Throttler(TimeSpan.FromMilliseconds(20));
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
@@ -242,15 +250,12 @@ namespace MultiAlignRogue.Clustering
                     var msfeatures = chargeMap[charge];
 
                     // Get dataset info for mapping scan # -> retention time
-                    var dsinfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
-                    if (dsinfo == null)
-                    {
-                        continue;
-                    }
+                    var lcmsRun = this.rawProvider.GetReaderForGroup(feature.UMCLight.GroupId);
+                    var dsInfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
 
-                    foreach (var msfeature in msfeatures.Where(msf => dsinfo.ScanTimes.ContainsKey(msf.Scan)))
+                    foreach (var msfeature in msfeatures)
                     {
-                        var rt = dsinfo.ScanTimes[msfeature.Scan];
+                        var rt = lcmsRun.GetElutionTime(msfeature.Scan);
                         minX = Math.Min(minX, rt);
                         maxX = Math.Max(maxX, rt);
                         minY = Math.Min(minY, msfeature.Abundance);
@@ -267,7 +272,7 @@ namespace MultiAlignRogue.Clustering
                     var color = this.Colors[i++ % this.Colors.Count];
                     var series = new LineSeries
                     {
-                        Title = string.Format("{0}({1}+) ID({2})", dsinfo.DatasetName, charge, feature.UMCLight.Id),
+                        Title = string.Format("{0}({1}+) ID({2})", dsInfo.DatasetName, charge, feature.UMCLight.Id),
                         Color = color,
                         MarkerType = MarkerType.Circle,
                         MarkerSize = 3,
@@ -280,7 +285,7 @@ namespace MultiAlignRogue.Clustering
                     };
 
                     msfeatures.ForEach(point => series.Points.Add(new DataPoint(
-                                                     dsinfo.ScanTimes[point.Scan],
+                                                     lcmsRun.GetElutionTime(point.Scan),
                                                      point.Abundance)));
 
                     this.XicPlotModel.Series.Add(series);   
@@ -419,8 +424,8 @@ namespace MultiAlignRogue.Clustering
             }
 
             this.XicPlotModel.Annotations.Clear();
-            var dsinfo = SingletonDataProviders.GetDatasetInformation(this.SelectedMsFeature.GroupId);
-            var elutionTime = dsinfo.ScanTimes[this.SelectedMsFeature.Scan];
+            var lcmsRun = this.rawProvider.GetReaderForGroup(this.SelectedMsFeature.GroupId);
+            var elutionTime = lcmsRun.GetElutionTime(this.SelectedMsFeature.Scan);
             var annotation = new LineAnnotation
             {
                 X = elutionTime,

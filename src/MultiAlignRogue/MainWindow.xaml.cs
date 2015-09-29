@@ -28,5 +28,11 @@ namespace MultiAlignRogue
         {
             InitializeComponent();
         }
+
+        private void WorkflowProgressBar_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ProgressBar bar = sender as ProgressBar;
+            this.FileSelectionDataGrid.Margin = bar.IsVisible ? new Thickness(0, 0, 10, 29) : new Thickness(0, 0, 10, 0);
+        }
     }
 }

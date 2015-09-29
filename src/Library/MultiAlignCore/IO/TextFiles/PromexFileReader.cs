@@ -27,7 +27,7 @@ namespace MultiAlignCore.IO.TextFiles
         public IEnumerable<UMCLight> ReadFile(string fileLocation)
         {
             var features = LcMsFeatureAlignment.LoadProMexResult(this.datasetId, fileLocation,
-                this.reader.GetReaderForGroup(this.datasetId));
+                this.reader.GetReaderForGroup(0));
 
             var umcLights = new List<UMCLight> { Capacity = features.Count };
 
@@ -36,7 +36,8 @@ namespace MultiAlignCore.IO.TextFiles
             foreach (var feature in features)
             {
                 var chargeState = (feature.MinCharge + feature.MaxCharge) / 2;
-                var mz = (feature.Mass + (chargeState*Constants.Proton)) / chargeState;
+                var mz = (feature.Mass + (chargeState * Constants.Proton)) / chargeState;
+
                 // Parent feature
                 var umcLight = new UMCLight
                 {

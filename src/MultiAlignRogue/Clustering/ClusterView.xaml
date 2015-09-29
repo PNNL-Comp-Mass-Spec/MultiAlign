@@ -29,14 +29,15 @@
                     <xcad:LayoutAnchorablePaneGroup Orientation="Vertical">
                         <xcad:LayoutAnchorablePane IsMaximized="True">
                             <xcad:LayoutAnchorable Title="Cluster List" CanHide="False" CanClose="False">
-                                <DataGrid ItemsSource="{Binding Clusters}" SelectedItem="{Binding SelectedCluster}" AutoGenerateColumns="False" CanUserAddRows="False"
+                                <DataGrid ItemsSource="{Binding Matches}" SelectedItem="{Binding SelectedMatch}" AutoGenerateColumns="False" CanUserAddRows="False"
                                           Name="ClusterDataGrid">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
-                                        <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
-                                        <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net, Converter={StaticResource DoubleToString}}" />
-                                        <DataGridTextColumn Header="Abundance" Width="35*" Binding="{Binding Abundance}"/>
-                                        <DataGridTextColumn Header="#" Width="20*" Binding="{Binding MemberCount}" />
+                                        <DataGridTextColumn Header="ID" Width="7*" Binding="{Binding Cluster.Id}" />
+                                        <DataGridTextColumn Header="Mass" Width="10*" Binding="{Binding Cluster.MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="NET" Width="10*" Binding="{Binding Cluster.Net, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="Abundance" Width="14*" Binding="{Binding Cluster.Abundance}"/>
+                                        <DataGridTextColumn Header="#" Width="7*" Binding="{Binding Cluster.MemberCount}" />
+                                        <DataGridTextColumn Header="ID Sequence" Width="51*" Binding="{Binding MassTag.PeptideSequence}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>
@@ -49,10 +50,10 @@
                                     </DataGrid.Resources>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding UMCLight.Id}" />
-                                        <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding UMCLight.MassMonoisotopicAligned, Converter={StaticResource DoubleToString}}" />
-                                        <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding UMCLight.NetAligned, Converter={StaticResource DoubleToString}}" />
-                                        <DataGridTextColumn Header="Abundance" Width="35*" Binding="{Binding UMCLight.Abundance}"/>
-                                        <DataGridTextColumn Header="Dataset" Binding="{Binding DatasetInformation.DatasetName}" Width="40*" />
+                                        <DataGridTextColumn Header="Mass" Width="10*" Binding="{Binding UMCLight.MassMonoisotopicAligned, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="NET" Width="10*" Binding="{Binding UMCLight.NetAligned, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="Abundance" Width="14*" Binding="{Binding UMCLight.Abundance}"/>
+                                        <DataGridTextColumn Header="Dataset" Binding="{Binding DatasetInformation.DatasetName}" Width="76*" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>

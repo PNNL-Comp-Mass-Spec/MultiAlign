@@ -17,6 +17,9 @@ using MultiAlignRogue.ViewModels;
 
 namespace MultiAlignRogue.Clustering
 {
+    using System.Text.RegularExpressions;
+
+    using MultiAlignCore.IO.RawData;
 
     /// <summary>
     /// The view model for the ClusterView.
@@ -44,9 +47,14 @@ namespace MultiAlignRogue.Clustering
         private readonly IClusterViewFactory viewFactory;
 
         /// <summary>
+        /// Provider for LCMSRun for access to PBF files.
+        /// </summary>
+        private readonly InformedProteomicsReader rawProvider;
+
+        /// <summary>
         /// The selected cluster.
         /// </summary>
-        private UMCClusterLight selectedCluster;
+        private ClusterMatch selectedMatch;
 
         /// <summary>
         /// The selected feature.
@@ -72,21 +80,21 @@ namespace MultiAlignRogue.Clustering
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
         /// <param name="viewFactory">Factory for creating child windows.</param>
-        /// <param name="clusters">The clusters.</param>
+        /// <param name="matches">The clusters.</param>
         /// <param name="layoutFilePath">Path to layout file.</param>
-        public ClusterViewModel(IClusterViewFactory viewFactory, List<UMCClusterLight> clusters, FeatureDataAccessProviders providers, string layoutFilePath)
+        /// <param name="rawProvider">Provider for LCMSRun for access to PBF files.</param>
+        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath, InformedProteomicsReader rawProvider)
         {
             this.viewFactory = viewFactory;
             this.providers = providers;
             this.dbLock = new object();
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(500));
-            this.XicPlotViewModel = new XicPlotViewModel();
+            this.XicPlotViewModel = new XicPlotViewModel(rawProvider);
             this.ClusterFeaturePlotViewModel = new ClusterFeaturePlotViewModel();
-            this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
+            this.Matches = new ObservableCollection<ClusterMatch>(matches ?? new List<ClusterMatch>());
+            var clusters = this.Matches.Select(match => match.Cluster).ToList();
+            this.rawProvider = rawProvider;
 
-            //TODO: Clusters are showing up as having no features so the abundance for each cluster is always 0. Find where actual abudance values are stored.
-            this.ClusterAbundance = this.Clusters.Where(cluster => cluster.MemberCount > 0).ToDictionary(cluster => cluster, cluster => (from feature in cluster.Features select feature.Abundance).Sum() / cluster.MemberCount);
-            
             this.SettingsCommand = new RelayCommand(() => this.viewFactory.CreateSettingsWindow(this.ClusterPlotViewModel.ClusterViewerSettings));
 
             this.Features = new ObservableCollection<UMCLightViewModel>();
@@ -104,20 +112,20 @@ namespace MultiAlignRogue.Clustering
                 this,
                 args =>
             {
-                if (args.Sender == this.ClusterPlotViewModel && !this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedCluster))
+                if (args.Sender == this.ClusterPlotViewModel && !this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedMatch))
                 {
-                    this.SelectedCluster = this.ClusterPlotViewModel.SelectedCluster;
+                    this.SelectedMatch = this.Matches.FirstOrDefault(match => match.Cluster == this.ClusterPlotViewModel.SelectedCluster);
                 } 
             });
 
             // Listen for changes in selected cluster internally.
-            Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
+            Messenger.Default.Register<PropertyChangedMessage<ClusterMatch>>(
                 this,
                 arg =>
             {
                 if (arg.Sender == this)
                 {
-                    this.throttler.Run(() => this.ClusterSelected(arg));
+                    this.throttler.Run(() => this.MatchSelected(arg));
                 }
             });
 
@@ -141,9 +149,9 @@ namespace MultiAlignRogue.Clustering
                 }
             });
 
-            if (this.Clusters.Count > 0)
+            if (this.Matches.Count > 0)
             {
-                this.SelectedCluster = this.Clusters[0];
+                this.SelectedMatch = this.Matches[0];
             }
         }
 
@@ -165,7 +173,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the list of clusters.
         /// </summary>
-        public ObservableCollection<UMCClusterLight> Clusters { get; private set; }
+        public ObservableCollection<ClusterMatch> Matches { get; private set; }
 
         /// <summary>
         /// Gets the average abundance for features in a cluster.
@@ -229,6 +237,9 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
 
+        /// <summary>
+        /// Gets the view model for displaying cluster features.
+        /// </summary>
         public ClusterFeaturePlotViewModel ClusterFeaturePlotViewModel { get; private set; }
 
         /// <summary>
@@ -250,15 +261,15 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets or sets the selected cluster.
         /// </summary>
-        public UMCClusterLight SelectedCluster
+        public ClusterMatch SelectedMatch
         {
-            get { return this.selectedCluster; }
+            get { return this.selectedMatch; }
             set
             {
-                if (this.selectedCluster != value)
+                if (this.selectedMatch != value)
                 {
-                    this.selectedCluster = value;
-                    this.RaisePropertyChanged("SelectedCluster", null, value, true);
+                    this.selectedMatch = value;
+                    this.RaisePropertyChanged("SelectedMatch", null, value, true);
                 }
             }
         }
@@ -267,21 +278,22 @@ namespace MultiAlignRogue.Clustering
         /// Event handler for SelectedCluster changed.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        private async void ClusterSelected(PropertyChangedMessage<UMCClusterLight> args)
+        private async void MatchSelected(PropertyChangedMessage<ClusterMatch> args)
         {
-            var cluster = args.NewValue;
+            var match = args.NewValue;
+            var cluster = match.Cluster;
 
             this.Features.Clear();
 
             // Set feature list for this cluster.
-            if (this.selectedCluster != null)
+            if (this.selectedMatch != null)
             {
                 this.ClusterPlotViewModel.SelectedCluster = cluster;
                 await Task.Run(() =>
                 {
                     lock (this.dbLock)
                     {
-                        cluster.ReconstructUMCCluster(this.providers);
+                        cluster.ReconstructUMCCluster(this.providers, true, false, true, true);
                     }
                 });
                 cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
@@ -295,7 +307,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void ShowChargeStateDistributionImpl()
         {
-            this.viewFactory.CreateChargeStateDistributionWindow(this.Clusters, "Charge State Distribution");
+            this.viewFactory.CreateChargeStateDistributionWindow(this.Matches.Select(match => match.Cluster), "Charge State Distribution");
         }
 
         /// <summary>
@@ -303,7 +315,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void ShowDatasetHistogramImpl()
         {
-            this.viewFactory.CreateDatasetHistogramWindow(this.Clusters, "Dataset Distribution");
+            this.viewFactory.CreateDatasetHistogramWindow(this.Matches.Select(match => match.Cluster), "Dataset Distribution");
         }
     }
 }
