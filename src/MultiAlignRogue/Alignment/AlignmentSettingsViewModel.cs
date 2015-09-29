@@ -309,7 +309,7 @@
             }
         }
 
-        internal void AlignToBaseline(List<DatasetInformationViewModel> WorkFlowDatasets = null)
+        internal void AlignToBaseline(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
         {
 
             // Use Promiscuous points when aligning to an AMT tag database
@@ -346,7 +346,7 @@
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
          
-            var selectedFiles = WorkFlowDatasets ?? 
+            var selectedFiles = workFlowDatasets ?? 
                                 this.Datasets.Where(file => file.IsSelected && !file.DoingWork && 
                                                             (this.ShouldAlignToAMT || !file.IsBaseline)).ToList();
             foreach (var file in selectedFiles)
@@ -354,9 +354,11 @@
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
             }
 
+            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
             {
                 this.AlignmentProgress = pd.Percent;
+                workflowProgress.Report(pd);
                 TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
             });
             var totalProgressData = new ProgressData(totalProgress);

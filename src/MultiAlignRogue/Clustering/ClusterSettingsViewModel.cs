@@ -175,14 +175,16 @@ namespace MultiAlignRogue.Clustering
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
 
-        internal void ClusterFeatures()
+        internal void ClusterFeatures(IProgress<ProgressData> workflowProgress = null)
         {
             TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
             {
                 this.progress.Report((int)pd.Percent);
                 this.ProgressPercent = pd.Percent;
                 TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
+                workflowProgress.Report(pd);
             });
 
             this.algorithms = this.builder.GetAlgorithmProvider(this.options);
