@@ -11,14 +11,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     {
         #region Public properties
 
-        public double NetStart { get; set; }
-        public double NetStart2 { get; set; }
-        public double NetEnd { get; set; }
-        public double NetEnd2 { get; set; }
-        public int SectionStart { get; set; }
-        public int SectionStart2 { get; set; }
-        public int SectionEnd { get; set; }
-        public int SectionEnd2 { get; set; }
+        public double AligneeNetStart { get; set; }
+        public double AligneeNetEnd { get; set; }
+        public int AligneeSectionStart { get; set; }
+        public int AligneeSectionEnd { get; set; }
+
+        public double BaselineNetStart { get; set; }
+        public double BaselineNetEnd { get; set; }
+        public int BaselineSectionStart { get; set; }
+        public int BaselineSectionEnd { get; set; }
 
         /// <summary>
         /// Score of just the match between the two and their sections
@@ -36,15 +37,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             double netStartB, double netEndB, int sectStartB, int sectEndB,
             double alignScore, double matchScore)
         {
-            NetStart = netStartA;
-            NetEnd = netEndA;
-            NetStart2 = netStartB;
-            NetEnd2 = netEndB;
+            AligneeNetStart = netStartA;
+            AligneeNetEnd = netEndA;
+            BaselineNetStart = netStartB;
+            BaselineNetEnd = netEndB;
 
-            SectionStart = sectStartA;
-            SectionEnd = sectEndA;
-            SectionStart2 = sectStartB;
-            SectionEnd2 = sectEndB;
+            AligneeSectionStart = sectStartA;
+            AligneeSectionEnd = sectEndA;
+            BaselineSectionStart = sectStartB;
+            BaselineSectionEnd = sectEndB;
 
             AlignmentScore = alignScore;
             MatchScore = matchScore;
@@ -56,11 +57,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 return 1;
             }
-            if (SectionStart != compareFeature.SectionStart)
+            if (AligneeSectionStart != compareFeature.AligneeSectionStart)
             {
-                return SectionStart.CompareTo(compareFeature.SectionStart);
+                return AligneeSectionStart.CompareTo(compareFeature.AligneeSectionStart);
             }
-            return SectionStart2.CompareTo(compareFeature.SectionStart2);
+            return BaselineSectionStart.CompareTo(compareFeature.BaselineSectionStart);
         }
     }
 }

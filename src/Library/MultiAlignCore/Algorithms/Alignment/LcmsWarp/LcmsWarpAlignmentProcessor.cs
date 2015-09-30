@@ -369,7 +369,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     aligneeNetMassFunc.Add(net);
                     aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromNet(net));
                 }
-                func.SetMassCalibrationFunctionWithTime(aligneeNetMassFunc, aligneePpmShiftMassFunc);
+                func.SetMassCalibrationFunctionWithNet(aligneeNetMassFunc, aligneePpmShiftMassFunc);
             }
 
             if (_options.CalibrationType == LcmsWarpCalibrationType.MzRegression ||
@@ -540,6 +540,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
+        /// Method to return the heatmap of the alignment (as a 2D array of doubles) based on
+        /// the output scores 
+        /// </summary>
+        /// <returns></returns>
+        public double[,] GetAlignmentHeatMap()
+        {
+            return _lcmsWarp.GetSubsectionMatchScore(true);
+        }
+
+        /// <summary>
         /// Minimum baseline/reference NET
         /// </summary>
         public double MinReferenceNet
@@ -607,6 +617,36 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, out massHistogram, out netHistogram,
                 out driftHistogram);
+        }
+
+        /// <summary>
+        /// Get the mass error histogram from the LCMS Warping
+        /// </summary>
+        /// <param name="massBinSize"></param>
+        /// <returns></returns>
+        public Dictionary<double, int> GetMassErrorHistogram(double massBinSize)
+        {
+            return _lcmsWarp.GetMassErrorHistogram(massBinSize);
+        }
+
+        /// <summary>
+        /// Get the net error histogram from the LCMS Warping
+        /// </summary>
+        /// <param name="netBinSize"></param>
+        /// <returns></returns>
+        public Dictionary<double, int> GetNetErrorHistogram(double netBinSize)
+        {
+            return _lcmsWarp.GetNetErrorHistogram(netBinSize);
+        }
+
+        /// <summary>
+        /// Get the drift error histogram from the LCMS Warping
+        /// </summary>
+        /// <param name="driftBinSize"></param>
+        /// <returns></returns>
+        public Dictionary<double, int> GetDriftErrorHistogram(double driftBinSize)
+        {
+            return _lcmsWarp.GetMassErrorHistogram(driftBinSize);
         }
 
         /// <summary>

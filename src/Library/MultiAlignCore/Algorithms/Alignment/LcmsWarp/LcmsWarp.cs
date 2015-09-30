@@ -482,7 +482,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             foreach (var match in FeatureMatches)
             {
                 var feature = _features[match.FeatureIndex];
-                var predictedLinear = (NetSlope * match.Net2) + NetIntercept;
+                var predictedLinear = (NetSlope * match.BaselineNet) + NetIntercept;
                 var ppmMassError = match.PpmMassError;
                 var scanNumber = match.Net;
 
@@ -516,13 +516,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="referenceNet"></param>
         public void AlignmentFunction(out List<double> aligneeNet, out List<double> referenceNet)
         {
-            aligneeNet = new List<double>();
-            referenceNet = new List<double>();
-            var numPieces = _alignmentFunc.Count;
-            for (var pieceNum = 0; pieceNum < numPieces; pieceNum++)
+            aligneeNet = new List<double>(_alignmentFunc.Count);
+            referenceNet = new List<double>(_alignmentFunc.Count);
+            foreach (var piece in _alignmentFunc)
             {
-                aligneeNet.Add(_alignmentFunc[pieceNum].NetStart);
-                referenceNet.Add(_alignmentFunc[pieceNum].NetStart2);
+                aligneeNet.Add(piece.AligneeNetStart);
+                referenceNet.Add(piece.BaselineNetStart);
             }
         }
 
@@ -534,15 +533,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var dicSectionToIndex = new Dictionary<int, int>();
             for (var i = 0; i < _alignmentFunc.Count; i++)
             {
-                dicSectionToIndex.Add(_alignmentFunc[i].SectionStart, i);
+                dicSectionToIndex.Add(_alignmentFunc[i].AligneeSectionStart, i);
             }
 
-            for (int featureIndex = 0; featureIndex < _features.Count; featureIndex++)
+            foreach (var feature in _features)
             {
-                var feature = _features[featureIndex];
-                _features[featureIndex].NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
-                _features[featureIndex].NetStart = GetTransformedNet(feature.NetStart, dicSectionToIndex);
-                _features[featureIndex].NetEnd = GetTransformedNet(feature.NetEnd, dicSectionToIndex);
+                feature.NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
+                feature.NetStart = GetTransformedNet(feature.NetStart, dicSectionToIndex);
+                feature.NetEnd = GetTransformedNet(feature.NetEnd, dicSectionToIndex);
             }
         }
 
@@ -554,48 +552,32 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns>Transformed NET.</returns>
         private double GetTransformedNet(double aligneeNet, Dictionary<int, int> dicSectionToIndex)
         {
-            var alignmentFuncLength = _alignmentFunc.Count;
-            double netStart;
-            double netEndBaseline;
-            double netEnd;
-            double netStartBaseline;
-            if (aligneeNet < _alignmentFunc[0].NetStart)
+            var msSectionIndex = 0;
+            if (aligneeNet < _alignmentFunc[0].AligneeNetStart)
             {
-                netStart = _alignmentFunc[0].NetStart;
-                netStartBaseline = _alignmentFunc[0].NetStart2;
-                netEnd = _alignmentFunc[0].NetEnd;
-                netEndBaseline = _alignmentFunc[0].NetEnd2;
-
-                return ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) /
-                                       (netEnd - netStart) + netStartBaseline;
+                msSectionIndex = 0;
             }
-            if (aligneeNet > _alignmentFunc[alignmentFuncLength - 1].NetEnd)
+            else if (aligneeNet > _alignmentFunc[_alignmentFunc.Count - 1].AligneeNetEnd)
             {
-                netStart = _alignmentFunc[alignmentFuncLength - 1].NetStart;
-                netStartBaseline = _alignmentFunc[alignmentFuncLength - 1].NetStart2;
-                netEnd = _alignmentFunc[alignmentFuncLength - 1].NetEnd;
-                netEndBaseline = _alignmentFunc[alignmentFuncLength - 1].NetEnd2;
+                msSectionIndex = _alignmentFunc.Count - 1;
+            }
+            else
+            {
+                var msSection1 = Convert.ToInt32(((aligneeNet - MinNet) * NumSections) / (MaxNet - MinNet));
+                if (msSection1 >= NumSections)
+                {
+                    msSection1 = NumSections - 1;
+                }
 
-                return ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) +
-                                 netStartBaseline;
+                msSectionIndex = dicSectionToIndex[msSection1];
             }
 
-            var msSection1 = Convert.ToInt32(((aligneeNet - MinNet) * NumSections) / (MaxNet - MinNet));
-            if (msSection1 >= NumSections)
-            {
-                msSection1 = NumSections - 1;
-            }
+            var netStart = _alignmentFunc[msSectionIndex].AligneeNetStart;
+            var netEnd = _alignmentFunc[msSectionIndex].AligneeNetEnd;
+            var netStartBaseline = _alignmentFunc[msSectionIndex].BaselineNetStart;
+            var netEndBaseline = _alignmentFunc[msSectionIndex].BaselineNetEnd;
 
-            var msSectionIndex = dicSectionToIndex[msSection1];
-
-            netStart = _alignmentFunc[msSectionIndex].NetStart;
-            netEnd = _alignmentFunc[msSectionIndex].NetEnd;
-
-            netStartBaseline = _alignmentFunc[msSectionIndex].NetStart2;
-            netEndBaseline = _alignmentFunc[msSectionIndex].NetEnd2;
-
-            return ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) +
-                             netStartBaseline;
+            return ((aligneeNet - netStart) * (netEndBaseline - netStartBaseline)) / (netEnd - netStart) + netStartBaseline;
         }
 
         /// <summary>
@@ -656,12 +638,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             bestMatchFeature = new LcmsWarpFeatureMatch
                             {
                                 FeatureIndex = featureIndex,
-                                FeatureIndex2 = baselineFeatureIndex,
+                                BaselineFeatureIndex = baselineFeatureIndex,
                                 Net = feature.Net,
                                 NetError = netDiff,
                                 PpmMassError = massDiff,
                                 DriftError = driftDiff,
-                                Net2 = _baselineFeatures[baselineFeatureIndex].Net
+                                BaselineNet = _baselineFeatures[baselineFeatureIndex].Net
                             };
                         }
                     }
@@ -795,9 +777,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var matchToAdd = new LcmsWarpFeatureMatch
                         {
                             FeatureIndex = featureIndex,
-                            FeatureIndex2 = baselineFeatureIndex,
+                            BaselineFeatureIndex = baselineFeatureIndex,
                             Net = feature.Net,
-                            Net2 = baselineFeature.Net
+                            BaselineNet = baselineFeature.Net
                         };
 
                         FeatureMatches.Add(matchToAdd);
@@ -814,7 +796,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (var matchIndex = 0; matchIndex < FeatureMatches.Count; matchIndex++)
             {
                 var featureMatch = FeatureMatches[matchIndex];
-                var baselineIndex = featureMatch.FeatureIndex2;
+                var baselineIndex = featureMatch.BaselineFeatureIndex;
                 if (!massTagToMatches.ContainsKey(baselineIndex))
                 {
                     massTagToMatches.Add(baselineIndex, new List<int>());
@@ -910,7 +892,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var match = FeatureMatches[matchNum];
                 var feature = _features[match.FeatureIndex];
-                var baselineFeature = _baselineFeatures[match.FeatureIndex2];
+                var baselineFeature = _baselineFeatures[match.BaselineFeatureIndex];
                 massDeltas.Add(((baselineFeature.MassMonoisotopic - feature.MassMonoisotopic) * 1000000) /
                                        feature.MassMonoisotopic);
                 netDeltas.Add(baselineFeature.Net - feature.NetAligned);
@@ -941,10 +923,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var match = FeatureMatches[matchNum];
                 var feature = _features[match.FeatureIndex];
-                var baselineFeature = _baselineFeatures[match.FeatureIndex2];
-                var ppm = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) /
-                          baselineFeature.MassMonoisotopic * 1000000;
-                    //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
+                var baselineFeature = _baselineFeatures[match.BaselineFeatureIndex];
+                var ppm = FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
                 var netDiff = baselineFeature.Net - feature.NetAligned;
 
                 calibrations.Add(new RegressionPoint(feature.Mz, 0, netDiff, ppm));
@@ -973,10 +953,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var match = FeatureMatches[matchNum];
                 var feature = _features[match.FeatureIndex];
-                var baselineFeature = _baselineFeatures[match.FeatureIndex2];
-                var ppm = (feature.MassMonoisotopic - baselineFeature.MassMonoisotopic) /
-                          baselineFeature.MassMonoisotopic * 1000000;
-                    //FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
+                var baselineFeature = _baselineFeatures[match.BaselineFeatureIndex];
+                var ppm = FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
                 var netDiff = baselineFeature.Net - feature.NetAligned;
 
                 calibrations.Add(new RegressionPoint(feature.Net, 0, netDiff, ppm));
@@ -1136,9 +1114,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             var section = NumSections - 1;
 
-            var bestPreviousAlignmentIndex = -1;
             var bestScore = double.MinValue;
-            var bestAlignedBaselineSection = -1;
             var bestAlignmentIndex = -1;
 
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
@@ -1150,54 +1126,42 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                          sectionWidth;
                     var alignmentScore = _alignmentScore[alignmentIndex];
 
-                    if (!(alignmentScore > bestScore))
+                    if (alignmentScore <= bestScore)
                         continue;
 
                     bestScore = alignmentScore;
-                    bestPreviousAlignmentIndex = _bestPreviousIndex[alignmentIndex];
-                    bestAlignedBaselineSection = baselineSection;
                     bestAlignmentIndex = alignmentIndex;
                 }
             }
 
             var msmsSectionWidth = (MaxBaselineNet - MinBaselineNet) / NumBaselineSections;
 
-            var netStart = MinNet + (section * (MaxNet - MinNet)) / NumSections;
-            var netEnd = MinNet + ((section + 1) * (MaxNet - MinNet)) / NumSections;
-            var baselineSectionStart = bestAlignedBaselineSection;
-            var baselineSectionEnd = baselineSectionStart + bestAlignmentIndex % NumMatchesPerBaseline + 1;
-            var baselineStartNet = baselineSectionStart * msmsSectionWidth + MinBaselineNet;
-            var baselineEndNet = baselineSectionEnd * msmsSectionWidth + MinBaselineNet;
-
-            var match = new LcmsWarpAlignmentMatch();
-            match.Set(netStart, netEnd, section, NumSections, baselineStartNet, baselineEndNet, baselineSectionStart,
-                baselineSectionEnd, bestScore, _subsectionMatchScores[bestAlignmentIndex]);
             _alignmentFunc.Clear();
-            _alignmentFunc.Add(match);
-
-            while (bestPreviousAlignmentIndex >= 0)
+            for (var alignIndex = bestAlignmentIndex; alignIndex >= 0; alignIndex = _bestPreviousIndex[alignIndex])
             {
-                var sectionStart = (bestPreviousAlignmentIndex / NumMatchesPerSection); // should be current - 1
-                var sectionEnd = sectionStart + 1;
-
-                var nextNetStart = MinNet + (sectionStart * (MaxNet - MinNet)) / NumSections;
-                var nextNetEnd = MinNet + (sectionEnd * (MaxNet - MinNet)) / NumSections;
-
-                var nextBaselineSectionStart = (bestPreviousAlignmentIndex - (sectionStart * NumMatchesPerSection)) /
-                                               NumMatchesPerBaseline;
-                var nextBaselineSectionEnd = nextBaselineSectionStart +
-                                             (bestPreviousAlignmentIndex % NumMatchesPerBaseline) + 1;
-                var nextBaselineStartNet = (nextBaselineSectionStart * msmsSectionWidth) + MinBaselineNet;
-                var nextBaselineEndNet = nextBaselineSectionEnd * msmsSectionWidth + MinBaselineNet;
-                match = new LcmsWarpAlignmentMatch();
-                match.Set(nextNetStart, nextNetEnd, sectionStart, sectionEnd, nextBaselineStartNet, nextBaselineEndNet,
-                    nextBaselineSectionStart, nextBaselineSectionEnd, _alignmentScore[bestPreviousAlignmentIndex],
-                    _subsectionMatchScores[bestPreviousAlignmentIndex]);
-
-                bestPreviousAlignmentIndex = _bestPreviousIndex[bestPreviousAlignmentIndex];
-                _alignmentFunc.Add(match);
+                _alignmentFunc.Add(CreateMatch(alignIndex, msmsSectionWidth));
             }
             _alignmentFunc.Sort();
+        }
+
+        public LcmsWarpAlignmentMatch CreateMatch(int alignmentIndex, double msmsSectionWidth)
+        {
+            var lwam = new LcmsWarpAlignmentMatch
+            {
+                AlignmentScore = _alignmentScore[alignmentIndex],
+                MatchScore = _subsectionMatchScores[alignmentIndex]
+            };
+
+            lwam.AligneeSectionStart = (alignmentIndex / NumMatchesPerSection); // should be current - 1
+            lwam.AligneeSectionEnd = lwam.AligneeSectionStart + 1;
+            lwam.AligneeNetStart = MinNet + (lwam.AligneeSectionStart * (MaxNet - MinNet)) / NumSections;
+            lwam.AligneeNetEnd = MinNet + (lwam.AligneeSectionEnd * (MaxNet - MinNet)) / NumSections;
+            lwam.BaselineSectionStart = (alignmentIndex - (lwam.AligneeSectionStart * NumMatchesPerSection)) / NumMatchesPerBaseline;
+            lwam.BaselineSectionEnd = lwam.BaselineSectionStart + alignmentIndex % NumMatchesPerBaseline + 1;
+            lwam.BaselineNetStart = lwam.BaselineSectionStart * msmsSectionWidth + MinBaselineNet;
+            lwam.BaselineNetEnd = lwam.BaselineSectionEnd * msmsSectionWidth + MinBaselineNet;
+
+            return lwam;
         }
 
         /// <summary>
@@ -1371,12 +1335,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var transformNet = (featureNet - minNet) * (baselineEndNet - baselineStartNet);
                         transformNet = transformNet / (maxNet - minNet) + baselineStartNet;
 
-                        var deltaMatch = transformNet - match.Net2;
+                        var deltaMatch = transformNet - match.BaselineNet;
                         if (!(Math.Abs(deltaMatch) < Math.Abs(_tempFeatureBestDelta[msFeatureIndex])))
                             continue;
 
                         _tempFeatureBestDelta[msFeatureIndex] = deltaMatch;
-                        _tempFeatureBestIndex[msFeatureIndex] = match.FeatureIndex2;
+                        _tempFeatureBestIndex[msFeatureIndex] = match.BaselineFeatureIndex;
                     }
 
                     _subsectionMatchScores[sectionIndex] = CurrentlyStoredSectionMatchScore(numUniqueFeatures);
@@ -1429,7 +1393,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="standardize"></param>
         public void GetSubsectionMatchScore(out double[,] subsectionMatchScores, out double[] baselineVals, out double[] aligneeVals, bool standardize)
         {
-            subsectionMatchScores = new double[NumSections, NumBaselineSections];
             aligneeVals = new double[NumSections];
             baselineVals = new double[NumBaselineSections];
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
@@ -1440,6 +1403,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 baselineVals[baselineSection] = MinBaselineNet + (baselineSection * (MaxBaselineNet - MinBaselineNet)) / NumBaselineSections;
             }
+
+            subsectionMatchScores = GetSubsectionMatchScore(standardize);
+        }
+
+        /// <summary>
+        /// Calculates and returns the match score of the subsection
+        /// </summary>
+        /// <param name="standardize"></param>
+        public double[,] GetSubsectionMatchScore(bool standardize)
+        {
+            var subsectionMatchScores = new double[NumSections, NumBaselineSections];
 
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
             {
@@ -1467,6 +1441,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 StandardizeSubsectionMatchScore(subsectionMatchScores);
             }
+            return subsectionMatchScores;
         }
 
         /// <summary>
@@ -1536,20 +1511,108 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var netErrors = new List<double> {Capacity = numMatches};
             var driftErrors = new List<double> {Capacity = numMatches};
 
+            //var minMassVal = double.MaxValue;
+            //var maxMassVal = double.MinValue;
+            //var minNetVal = double.MaxValue;
+            //var maxNetVal = double.MinValue;
+            //var minDriftVal = double.MaxValue;
+            //var maxDriftVal = double.MinValue;
+
             foreach (var match in FeatureMatches)
             {
                 massErrors.Add(match.PpmMassError);
                 netErrors.Add(match.NetError);
                 driftErrors.Add(match.DriftError);
+
+                //minMassVal = Math.Min(minMassVal, match.PpmMassError);
+                //maxMassVal = Math.Min(maxMassVal, match.PpmMassError);
+                //minNetVal = Math.Min(minNetVal, match.NetError);
+                //maxNetVal = Math.Min(maxNetVal, match.NetError);
+                //minDriftVal = Math.Min(minDriftVal, match.DriftError);
+                //maxDriftVal = Math.Min(maxDriftVal, match.DriftError);
             }
 
             massErrorHist = Histogram.CreateHistogram(massErrors, massBinSize);
             netErrorHist = Histogram.CreateHistogram(netErrors, netBinSize);
             driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBinSize);
+
             // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
-            //massErrorHist = new MathNet.Numerics.Statistics.Histogram(massErrors, massBinCount);
-            //netErrorHist = new MathNet.Numerics.Statistics.Histogram(netErrors, netBinCount);
-            //driftErrorHist = new MathNet.Numerics.Statistics.Histogram(driftErrors, driftBinCount);
+            //var numMassBins = Math.Max((int)Math.Floor((maxMassVal - minMassVal) / massBinSize), 1);
+            //var numNetBins = Math.Max((int)Math.Floor((maxNetVal - minNetVal) / netBinSize), 1);
+            //var numDriftBins = Math.Max((int)Math.Floor((maxDriftVal - minDriftVal) / driftBinSize), 1);
+
+            //massErrorHist = new MathNet.Numerics.Statistics.Histogram(massErrors, numMassBins);
+            //netErrorHist = new MathNet.Numerics.Statistics.Histogram(netErrors, numNetBins);
+            //driftErrorHist = new MathNet.Numerics.Statistics.Histogram(driftErrors, numDriftBins);
+        }
+
+        public Dictionary<double, int> GetMassErrorHistogram(double massBinSize)
+        {
+            var massErrors = new List<double>(FeatureMatches.Count);
+
+            //var minMassVal = double.MaxValue;
+            //var maxMassVal = double.MinValue;
+
+            foreach (var match in FeatureMatches)
+            {
+                massErrors.Add(match.PpmMassError);
+
+                //minMassVal = Math.Min(minMassVal, match.PpmMassError);
+                //maxMassVal = Math.Min(maxMassVal, match.PpmMassError);
+            }
+
+            return Histogram.CreateHistogram(massErrors, massBinSize);
+
+            // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
+            //var numMassBins = Math.Max((int)Math.Floor((maxMassVal - minMassVal) / massBinSize), 1);
+
+            //return new MathNet.Numerics.Statistics.Histogram(massErrors, numMassBins);
+        }
+
+        public Dictionary<double, int> GetNetErrorHistogram(double netBinSize)
+        {
+            var netErrors = new List<double>(FeatureMatches.Count);
+
+            //var minNetVal = double.MaxValue;
+            //var maxNetVal = double.MinValue;
+
+            foreach (var match in FeatureMatches)
+            {
+                netErrors.Add(match.NetError);
+
+                //minNetVal = Math.Min(minNetVal, match.NetError);
+                //maxNetVal = Math.Min(maxNetVal, match.NetError);
+            }
+
+            return Histogram.CreateHistogram(netErrors, netBinSize);
+
+            // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
+            //var numNetBins = Math.Max((int)Math.Floor((maxNetVal - minNetVal) / netBinSize), 1);
+
+            //return new MathNet.Numerics.Statistics.Histogram(netErrors, numNetBins);
+        }
+
+        public Dictionary<double, int> GetDriftErrorHistogram(double driftBinSize)
+        {
+            var driftErrors = new List<double>(FeatureMatches.Count);
+
+            //var minDriftVal = double.MaxValue;
+            //var maxDriftVal = double.MinValue;
+
+            foreach (var match in FeatureMatches)
+            {
+                driftErrors.Add(match.DriftError);
+
+                //minDriftVal = Math.Min(minDriftVal, match.DriftError);
+                //maxDriftVal = Math.Min(maxDriftVal, match.DriftError);
+            }
+
+            return Histogram.CreateHistogram(driftErrors, driftBinSize);
+
+            // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
+            //var numDriftBins = Math.Max((int)Math.Floor((maxDriftVal - minDriftVal) / driftBinSize), 1);
+
+            //return new MathNet.Numerics.Statistics.Histogram(driftErrors, numDriftBins);
         }
     }
 }

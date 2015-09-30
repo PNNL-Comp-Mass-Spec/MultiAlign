@@ -10,19 +10,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// </summary>
     public sealed class LcmsWarpAlignmentFunction
     {
+        // TODO: What accessibility do these need, and are the names really accurate?
         private readonly LcmsWarpCalibrationType _calibrationType;
         private readonly LcmsWarpAlignmentType _alignmentType;
 
-        private readonly List<double> _netFuncTimeInput = new List<double>();
+        private readonly List<double> _netFuncNetInput = new List<double>();
         private readonly List<double> _netFuncNetOutput = new List<double>();
 
-        private readonly List<double> _netFuncTimeOutput = new List<double>();
+        private readonly List<double> _netFuncEstScanOutput = new List<double>();
 
-        private readonly List<double> _massFuncTimeInput = new List<double>();
-        private readonly List<double> _massFuncTimePpmOutput = new List<double>();
+        private readonly List<double> _massFuncNetInput = new List<double>();
+        private readonly List<double> _massFuncNetPpmOutput = new List<double>();
 
         private readonly List<double> _massFuncMzInput = new List<double>();
-        private readonly List<double> _massFuncMzppmOutput = new List<double>();
+        private readonly List<double> _massFuncMzPpmOutput = new List<double>();
 
         /// <summary>
         /// Constructs the Alignment function data members, used when there isn't a specified name for the
@@ -67,17 +68,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _massFuncMzInput.AddRange(mz);
 
             // ReSharper disable once PossibleMultipleEnumeration
-            _massFuncMzppmOutput.AddRange(ppm);
+            _massFuncMzPpmOutput.AddRange(ppm);
         }
 
         /// <summary>
         /// Sets up Net function using alignee times and reference times, function requires initialized lists
         /// </summary>
-        /// <param name="aligneeTimes"></param>
+        /// <param name="aligneeNets"></param>
         /// <param name="referenceNets"></param>
-        public void SetNetFunction(IEnumerable<double> aligneeTimes, IEnumerable<double> referenceNets)
+        public void SetNetFunction(IEnumerable<double> aligneeNets, IEnumerable<double> referenceNets)
         {
-            _netFuncTimeInput.AddRange(aligneeTimes);
+            _netFuncNetInput.AddRange(aligneeNets);
             _netFuncNetOutput.AddRange(referenceNets);
         }
 
@@ -85,28 +86,28 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Sets up Net function using alignee times and reference times as well as the reference scans in the 
         /// time output, function requires initialized lists
         /// </summary>
-        /// <param name="aligneeTimes"></param>
+        /// <param name="aligneeNets"></param>
         /// <param name="referenceNets"></param>
         /// <param name="referenceScans"></param>
         public void SetNetFunction(
-            IEnumerable<double> aligneeTimes,
+            IEnumerable<double> aligneeNets,
             IEnumerable<double> referenceNets,
             IEnumerable<double> referenceScans)
         {
-            _netFuncTimeInput.AddRange(aligneeTimes);
+            _netFuncNetInput.AddRange(aligneeNets);
             _netFuncNetOutput.AddRange(referenceNets);
-            _netFuncTimeOutput.AddRange(referenceScans);
+            _netFuncEstScanOutput.AddRange(referenceScans);
         }
 
         /// <summary>
         /// Sets up Mass Calibration with respect to time, function requires initialized lists
         /// </summary>
-        /// <param name="aligneeTimes"></param>
+        /// <param name="aligneeNets"></param>
         /// <param name="ppmShifts"></param>
-        public void SetMassCalibrationFunctionWithTime(IEnumerable<double> aligneeTimes, IEnumerable<double> ppmShifts)
+        public void SetMassCalibrationFunctionWithNet(IEnumerable<double> aligneeNets, IEnumerable<double> ppmShifts)
         {
-            _massFuncTimeInput.AddRange(aligneeTimes);
-            _massFuncTimePpmOutput.AddRange(ppmShifts);
+            _massFuncNetInput.AddRange(aligneeNets);
+            _massFuncNetPpmOutput.AddRange(ppmShifts);
         }
 
         /// <summary>

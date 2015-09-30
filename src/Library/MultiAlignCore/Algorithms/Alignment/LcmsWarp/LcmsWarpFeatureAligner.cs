@@ -182,6 +182,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             IEnumerable<UMCLight> features,
             LcmsWarpAlignmentOptions alignmentOptions)
         {
+            var alignmentData = new AlignmentData();
             OnStatus("Starting alignment of features.");
             //var alignmentFunctions = new List<LcmsWarpAlignmentFunction>();
             //var netErrorHistograms = new List<Dictionary<double, int>>();
@@ -193,8 +194,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             // Set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
             // The values will be updated later
-            var minMtdbNet = alignmentProcessor.MinReferenceNet;
-            var maxMtdbNet = alignmentProcessor.MaxReferenceNet;
+            //var minMtdbNet = alignmentProcessor.MinReferenceNet;
+            //var maxMtdbNet = alignmentProcessor.MaxReferenceNet;
+
+            // Find out the max scan or NET value to use for the range depending on what 
+            // type of baseline dataset it was (MTDB or dataset).                 
+            if (alignmentOptions.AlignToMassTagDatabase)
+            {
+                alignmentData.MinMTDBNET = (float)alignmentProcessor.MinReferenceNet;
+                alignmentData.MaxMTDBNET = (float)alignmentProcessor.MaxReferenceNet;
+            }
 
             var umcLights = features as List<UMCLight> ?? features.ToList();
 
@@ -212,8 +221,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             alignmentProcessor.PerformAlignmentToMsFeatures();
 
             // Extract alignment function
-            var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
+            //var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
             //alignmentFunctions.Add(alignmentFunction);
+            alignmentData.AlignmentFunction = alignmentProcessor.GetAlignmentFunction();
 
             // Correct the features (updates MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
@@ -240,60 +250,78 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 map[featureId].ScanAligned = feature.ScanAligned;
             }
 
+            alignmentData.MinScanBaseline = minScanBaseline;
+            alignmentData.MaxScanBaseline = maxScanBaseline;
+
             // Pull out the heat maps...
-            double[,] heatScore;
-            double[] xInterval;
-            double[] yInterval;
+            //double[,] heatScore;
+            //double[] xInterval;
+            //double[] yInterval;
 
             OnStatus("Retrieving alignment data.");
-            alignmentProcessor.GetAlignmentHeatMap(out heatScore, out xInterval, out yInterval);
+            //alignmentProcessor.GetAlignmentHeatMap(out heatScore, out xInterval, out yInterval);
+
+            alignmentData.HeatScores = alignmentProcessor.GetAlignmentHeatMap();
 
             //xIntervals.Add(xInterval);
             //yIntervals.Add(yInterval);
             //heatScores.Add(heatScore);
 
             // Mass and net error histograms!
-            Dictionary<double, int> massErrorHistogram;
-            Dictionary<double, int> netErrorHistogram;
-            Dictionary<double, int> driftErrorHistogram;
+            //Dictionary<double, int> massErrorHistogram;
+            //Dictionary<double, int> netErrorHistogram;
+            //Dictionary<double, int> driftErrorHistogram;
 
-            alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize, alignmentOptions.NetBinSize,
-                alignmentOptions.DriftTimeBinSize, out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);
+            //alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize, alignmentOptions.NetBinSize,
+            //    alignmentOptions.DriftTimeBinSize, out massErrorHistogram, out netErrorHistogram, out driftErrorHistogram);
             //massErrorHistograms.Add(massErrorHistogram);
             //netErrorHistograms.Add(netErrorHistogram);
             //driftErrorHistograms.Add(driftErrorHistogram);
+            alignmentData.MassErrorHistogram = alignmentProcessor.GetMassErrorHistogram(alignmentOptions.MassBinSize);
+            alignmentData.NetErrorHistogram = alignmentProcessor.GetNetErrorHistogram(alignmentOptions.NetBinSize);
+            alignmentData.DriftErrorHistogram = alignmentProcessor.GetDriftErrorHistogram(alignmentOptions.DriftTimeBinSize);
 
             // Get the residual data from the warp.
-            var residualData = alignmentProcessor.GetResidualData();
+            //var residualData = alignmentProcessor.GetResidualData();
+            alignmentData.ResidualData = alignmentProcessor.GetResidualData();
 
-            // Set all of the data now 
-            var alignmentData = new AlignmentData
-            {
-                MassErrorHistogram = massErrorHistogram,
-                DriftErrorHistogram = driftErrorHistogram,
-                NetErrorHistogram = netErrorHistogram,
-                AlignmentFunction = alignmentFunction,
-                HeatScores = heatScore,
-                MinScanBaseline = minScanBaseline,
-                MaxScanBaseline = maxScanBaseline,
-                NETIntercept = alignmentProcessor.NetIntercept,
-                NETRsquared = alignmentProcessor.NetRsquared,
-                NETSlope = alignmentProcessor.NetSlope,
-                ResidualData = residualData,
-                MassMean = alignmentProcessor.MassMu,
-                MassStandardDeviation = alignmentProcessor.MassStd,
-                NETMean = alignmentProcessor.NetMu,
-                NETStandardDeviation = alignmentProcessor.NetStd,
-                BaselineIsAmtDB = _options.AlignToMassTagDatabase
-            };
+            alignmentData.NETIntercept = alignmentProcessor.NetIntercept;
+            alignmentData.NETRsquared = alignmentProcessor.NetRsquared;
+            alignmentData.NETSlope = alignmentProcessor.NetSlope;
+            alignmentData.MassMean = alignmentProcessor.MassMu;
+            alignmentData.MassStandardDeviation = alignmentProcessor.MassStd;
+            alignmentData.NETMean = alignmentProcessor.NetMu;
+            alignmentData.NETStandardDeviation = alignmentProcessor.NetStd;
+            alignmentData.BaselineIsAmtDB = _options.AlignToMassTagDatabase;
+
+            // Set all of the data now
+            //var alignmentData = new AlignmentData
+            //{
+            //    MassErrorHistogram = massErrorHistogram,
+            //    DriftErrorHistogram = driftErrorHistogram,
+            //    NetErrorHistogram = netErrorHistogram,
+            //    AlignmentFunction = alignmentFunction,
+            //    HeatScores = heatScore,
+            //    MinScanBaseline = minScanBaseline,
+            //    MaxScanBaseline = maxScanBaseline,
+            //    NETIntercept = alignmentProcessor.NetIntercept,
+            //    NETRsquared = alignmentProcessor.NetRsquared,
+            //    NETSlope = alignmentProcessor.NetSlope,
+            //    ResidualData = residualData,
+            //    MassMean = alignmentProcessor.MassMu,
+            //    MassStandardDeviation = alignmentProcessor.MassStd,
+            //    NETMean = alignmentProcessor.NetMu,
+            //    NETStandardDeviation = alignmentProcessor.NetStd,
+            //    BaselineIsAmtDB = _options.AlignToMassTagDatabase
+            //};
 
             // Find out the max scan or NET value to use for the range depending on what 
             // type of baseline dataset it was (MTDB or dataset).                 
-            if (alignmentOptions.AlignToMassTagDatabase)
-            {
-                alignmentData.MinMTDBNET = (float)minMtdbNet;
-                alignmentData.MaxMTDBNET = (float)maxMtdbNet;
-            }
+            //if (alignmentOptions.AlignToMassTagDatabase)
+            //{
+            //    alignmentData.MinMTDBNET = (float)minMtdbNet;
+            //    alignmentData.MaxMTDBNET = (float)maxMtdbNet;
+            //}
 
             return alignmentData;
         }

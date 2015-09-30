@@ -65,8 +65,7 @@ namespace MultiAlignCore.Drawing
         {
             var doubleGram = histogram.Keys.ToDictionary<int, double, int>(key => key, key => histogram[key]);
 
-            var model           =  new HistogramPlot(doubleGram, label, axisLabel);            
-            return model;
+            return new HistogramPlot(doubleGram, label, axisLabel);
         }
 
         /// <summary>
@@ -74,6 +73,7 @@ namespace MultiAlignCore.Drawing
         /// </summary>
         /// <param name="histogram"></param>
         /// <param name="label"></param>
+        /// <param name="axisLabel"></param>
         /// <returns></returns>
         public static PlotBase CreateHistogram(Dictionary<double, int> histogram, string label, string axisLabel)
         {
