@@ -526,17 +526,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Method to return the heatmap of the alignment (as a 2D array of doubles) based on
-        /// the output scores 
+        /// The alignee values of the SubsectionMatchScore, which correspond to the second (y in [x,y]) axis of the heat map
         /// </summary>
-        /// <param name="outputScores"></param>
-        /// <param name="xIntervals"></param>
-        /// <param name="yIntervals"></param>
-        public void GetAlignmentHeatMap(out double[,] outputScores, out double[] xIntervals,
-            out double[] yIntervals)
+        /// <returns></returns>
+        public double[] GetAlignmentHeatMapYAxisVals()
         {
-            // Alignment Scores, alignee intervals, baseline intervals
-            _lcmsWarp.GetSubsectionMatchScore(out outputScores, out xIntervals, out yIntervals, true);
+            return _lcmsWarp.GetSubsectionAligneeVals();
+        }
+
+        /// <summary>
+        /// The baseline values of the SubsectionMatchScore, which correspond to the first (x in [x,y]) axis of the heat map
+        /// </summary>
+        /// <returns></returns>
+        public double[] GetAlignmentHeatMapXAxisVals()
+        {
+            return _lcmsWarp.GetSubsectionBaselineVals();
         }
 
         /// <summary>
@@ -601,24 +605,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         #endregion
 
-        //TODO: Redesign this so that when we say "align(x,y)" we get this in an object separate from everything
-        /// <summary>
-        /// Copies the histograms from the LCMS Warping and returns them through the Histogram parameters passed in
-        /// </summary>
-        /// <param name="massBin"></param>
-        /// <param name="netBin"></param>
-        /// <param name="driftBin"></param>
-        /// <param name="massHistogram"></param>
-        /// <param name="netHistogram"></param>
-        /// <param name="driftHistogram"></param>
-        public void GetErrorHistograms(double massBin, double netBin, double driftBin,
-            out Dictionary<double, int> massHistogram, out Dictionary<double, int> netHistogram,
-            out Dictionary<double, int> driftHistogram)
-        {
-            _lcmsWarp.GetErrorHistograms(massBin, netBin, driftBin, out massHistogram, out netHistogram,
-                out driftHistogram);
-        }
-
         /// <summary>
         /// Get the mass error histogram from the LCMS Warping
         /// </summary>
@@ -646,7 +632,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public Dictionary<double, int> GetDriftErrorHistogram(double driftBinSize)
         {
-            return _lcmsWarp.GetMassErrorHistogram(driftBinSize);
+            return _lcmsWarp.GetDriftErrorHistogram(driftBinSize);
         }
 
         /// <summary>

@@ -322,10 +322,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     {
                         var alignmentIndex = (section * NumMatchesPerSection) +
                                              (baselineSection * NumMatchesPerBaseline) + sectionWidth;
-
+                        
                         if (!(_subsectionMatchScores[alignmentIndex] > maxScore))
                             continue;
-
+                        
                         maxScore = _subsectionMatchScores[alignmentIndex];
                         y = baselineSection;
                     }
@@ -1064,7 +1064,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var numSectionMatches = NumSections * NumMatchesPerSection;
             _subsectionMatchScores.Clear();
             _subsectionMatchScores.Capacity = numSectionMatches;
-
+            
             for (var i = 0; i < numSectionMatches; i++)
             {
                 _subsectionMatchScores.Add(MinScore);
@@ -1125,10 +1125,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     var alignmentIndex = (section * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) +
                                          sectionWidth;
                     var alignmentScore = _alignmentScore[alignmentIndex];
-
+                    
                     if (alignmentScore <= bestScore)
                         continue;
-
+                    
                     bestScore = alignmentScore;
                     bestAlignmentIndex = alignmentIndex;
                 }
@@ -1151,7 +1151,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 AlignmentScore = _alignmentScore[alignmentIndex],
                 MatchScore = _subsectionMatchScores[alignmentIndex]
             };
-
+        
             lwam.AligneeSectionStart = (alignmentIndex / NumMatchesPerSection); // should be current - 1
             lwam.AligneeSectionEnd = lwam.AligneeSectionStart + 1;
             lwam.AligneeNetStart = MinNet + (lwam.AligneeSectionStart * (MaxNet - MinNet)) / NumSections;
@@ -1199,16 +1199,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 unmatchedScore *= 2;
             }
 
+            // TODO: This only sets all values in the first section to 0; should other sections be set to 0?
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
                 //Assume everything that was matched was past 3 standard devs in net.
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
-                    //no need to mulitply with msSection because its 0
+                    //no need to multiply with msSection because its 0
                     _alignmentScore[baselineSection * NumMatchesPerBaseline + sectionWidth] = 0;
                 }
             }
 
+            // TODO: This only sets the values for the first baseline section for each section. Should others be affected? (appears they are filled in by the following code)
             var numUnmatchedMsFeatures = 0;
             for (var section = 0; section < NumSections; section++)
             {
@@ -1383,32 +1385,39 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Calculates the match score of the subsection, saving
-        /// the match scores to the first parameter and the alignee and
-        /// reference values to the second and third parameters.
+        /// The alignee values of the SubsectionMatchScore, which correspond to the second (y in [x,y]) axis of the heat map
         /// </summary>
-        /// <param name="subsectionMatchScores"></param>
-        /// <param name="aligneeVals"></param>
-        /// <param name="baselineVals"></param>
-        /// <param name="standardize"></param>
-        public void GetSubsectionMatchScore(out double[,] subsectionMatchScores, out double[] baselineVals, out double[] aligneeVals, bool standardize)
+        /// <returns></returns>
+        public double[] GetSubsectionAligneeVals()
         {
-            aligneeVals = new double[NumSections];
-            baselineVals = new double[NumBaselineSections];
+            var aligneeVals = new double[NumSections];
+
             for (var aligneeSection = 0; aligneeSection < NumSections; aligneeSection++)
             {
                 aligneeVals[aligneeSection] = MinNet + (aligneeSection * (MaxNet - MinNet)) / NumSections;
             }
+
+            return aligneeVals;
+        }
+
+        /// <summary>
+        /// The baseline values of the SubsectionMatchScore, which correspond to the first (x in [x,y]) axis of the heat map
+        /// </summary>
+        /// <returns></returns>
+        public double[] GetSubsectionBaselineVals()
+        {
+            var baselineVals = new double[NumBaselineSections];
+
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
                 baselineVals[baselineSection] = MinBaselineNet + (baselineSection * (MaxBaselineNet - MinBaselineNet)) / NumBaselineSections;
             }
 
-            subsectionMatchScores = GetSubsectionMatchScore(standardize);
+            return baselineVals;
         }
 
         /// <summary>
-        /// Calculates and returns the match score of the subsection
+        /// Calculates and returns the match score of the subsection; output is configured for input to an OxyPlot heatmap
         /// </summary>
         /// <param name="standardize"></param>
         public double[,] GetSubsectionMatchScore(bool standardize)
@@ -1500,50 +1509,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     }
                 }
             }
-        }
-
-        public void GetErrorHistograms(double massBinSize, double netBinSize, double driftBinSize,
-            out Dictionary<double, int> massErrorHist,
-            out Dictionary<double, int> netErrorHist, out Dictionary<double, int> driftErrorHist)
-        {
-            var numMatches = FeatureMatches.Count;
-            var massErrors = new List<double> {Capacity = numMatches};
-            var netErrors = new List<double> {Capacity = numMatches};
-            var driftErrors = new List<double> {Capacity = numMatches};
-
-            //var minMassVal = double.MaxValue;
-            //var maxMassVal = double.MinValue;
-            //var minNetVal = double.MaxValue;
-            //var maxNetVal = double.MinValue;
-            //var minDriftVal = double.MaxValue;
-            //var maxDriftVal = double.MinValue;
-
-            foreach (var match in FeatureMatches)
-            {
-                massErrors.Add(match.PpmMassError);
-                netErrors.Add(match.NetError);
-                driftErrors.Add(match.DriftError);
-
-                //minMassVal = Math.Min(minMassVal, match.PpmMassError);
-                //maxMassVal = Math.Min(maxMassVal, match.PpmMassError);
-                //minNetVal = Math.Min(minNetVal, match.NetError);
-                //maxNetVal = Math.Min(maxNetVal, match.NetError);
-                //minDriftVal = Math.Min(minDriftVal, match.DriftError);
-                //maxDriftVal = Math.Min(maxDriftVal, match.DriftError);
-            }
-
-            massErrorHist = Histogram.CreateHistogram(massErrors, massBinSize);
-            netErrorHist = Histogram.CreateHistogram(netErrors, netBinSize);
-            driftErrorHist = Histogram.CreateHistogram(driftErrors, driftBinSize);
-
-            // TODO: Change to use MathNet.Numerics.Statistics.Histogram; but, must calculate number of bins/buckets first.
-            //var numMassBins = Math.Max((int)Math.Floor((maxMassVal - minMassVal) / massBinSize), 1);
-            //var numNetBins = Math.Max((int)Math.Floor((maxNetVal - minNetVal) / netBinSize), 1);
-            //var numDriftBins = Math.Max((int)Math.Floor((maxDriftVal - minDriftVal) / driftBinSize), 1);
-
-            //massErrorHist = new MathNet.Numerics.Statistics.Histogram(massErrors, numMassBins);
-            //netErrorHist = new MathNet.Numerics.Statistics.Histogram(netErrors, numNetBins);
-            //driftErrorHist = new MathNet.Numerics.Statistics.Histogram(driftErrors, numDriftBins);
         }
 
         public Dictionary<double, int> GetMassErrorHistogram(double massBinSize)

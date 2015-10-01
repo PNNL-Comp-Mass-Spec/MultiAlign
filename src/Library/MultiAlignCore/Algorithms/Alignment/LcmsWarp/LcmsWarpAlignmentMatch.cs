@@ -33,6 +33,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         #endregion
 
+        /// <summary>
+        /// Set match data - Those ending in 'A' are alignee, those ending in 'B' are baseline
+        /// </summary>
+        /// <param name="netStartA"></param>
+        /// <param name="netEndA"></param>
+        /// <param name="sectStartA"></param>
+        /// <param name="sectEndA"></param>
+        /// <param name="netStartB"></param>
+        /// <param name="netEndB"></param>
+        /// <param name="sectStartB"></param>
+        /// <param name="sectEndB"></param>
+        /// <param name="alignScore"></param>
+        /// <param name="matchScore"></param>
         public void Set(double netStartA, double netEndA, int sectStartA, int sectEndA,
             double netStartB, double netEndB, int sectStartB, int sectEndB,
             double alignScore, double matchScore)

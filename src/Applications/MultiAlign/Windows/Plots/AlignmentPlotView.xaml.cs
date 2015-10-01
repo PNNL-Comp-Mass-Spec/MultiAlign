@@ -160,13 +160,10 @@ namespace MultiAlign.Windows.Plots
 
         private void CreatePlots()
         {
-            if (AlignmentData == null)
+            if (AlignmentData == null || AlignmentData.AlignmentData == null)
                 return;
 
             var alignmentData = AlignmentData.AlignmentData;
-
-            if (alignmentData == null)
-                return;
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.HeatScores, alignmentData.BaselineIsAmtDB);
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
