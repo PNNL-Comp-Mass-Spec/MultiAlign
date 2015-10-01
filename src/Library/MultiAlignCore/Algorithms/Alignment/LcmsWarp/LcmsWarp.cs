@@ -24,8 +24,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private readonly List<int> _numFeaturesInBaselineSections = new List<int>();
 
         //Interpolation m_interpolation;
-        private double[] _alignmentScore = null;
-        private int[] _bestPreviousIndex = null;
+        private double[,,] _alignmentScore = null;
+        private Index3D[, ,] _bestPreviousIndex = null;
 
         private const double MIN_MASS_NET_LIKELIHOOD = 1e-4;
         private const int REQUIRED_MATCHES = 6;
@@ -54,7 +54,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         public List<LcmsWarpFeatureMatch> FeatureMatches = new List<LcmsWarpFeatureMatch>();
 
-        private readonly List<double> _subsectionMatchScores = new List<double>();
+        private double[,,] _subsectionMatchScores = null;
         // Slope and intercept calculated using likelihood score in m_subsectionMatchScores.
         // Range of scans used is the range which covers the start scan of the Q2 and the end
         // scan of the Q3 of the nets of the matched features.
@@ -320,13 +320,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                     {
-                        var alignmentIndex = (section * NumMatchesPerSection) +
-                                             (baselineSection * NumMatchesPerBaseline) + sectionWidth;
-                        
-                        if (!(_subsectionMatchScores[alignmentIndex] > maxScore))
+                        if (!(_subsectionMatchScores[section, baselineSection, sectionWidth] > maxScore))
                             continue;
-                        
-                        maxScore = _subsectionMatchScores[alignmentIndex];
+
+                        maxScore = _subsectionMatchScores[section, baselineSection, sectionWidth];
                         y = baselineSection;
                     }
                 }
@@ -735,7 +732,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _numFeaturesInBaselineSections.Clear();
             _alignmentFunc.Clear();
             FeatureMatches.Clear();
-            _subsectionMatchScores.Clear();
+            _subsectionMatchScores = null;
             _tempFeatureBestDelta.Clear();
             _tempFeatureBestIndex.Clear();
 
@@ -1061,13 +1058,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var sectionFeatures = new List<LcmsWarpFeatureMatch>();
 
-            var numSectionMatches = NumSections * NumMatchesPerSection;
-            _subsectionMatchScores.Clear();
-            _subsectionMatchScores.Capacity = numSectionMatches;
-            
-            for (var i = 0; i < numSectionMatches; i++)
+            _subsectionMatchScores = new double[NumSections, NumBaselineSections, NumMatchesPerBaseline];
+            for (var i = 0; i < NumSections; i++)
             {
-                _subsectionMatchScores.Add(MinScore);
+                for (var j = 0; j < NumBaselineSections; j++)
+                {
+                    for (var k = 0; k < NumMatchesPerBaseline; k++)
+                    {
+                        _subsectionMatchScores[i, j, k] = MinScore;
+                    }
+                }
             }
 
             if (numMatches == 0)
@@ -1115,49 +1115,53 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var section = NumSections - 1;
 
             var bestScore = double.MinValue;
-            var bestAlignmentIndex = -1;
+            var bestAlignmentIndex = new Index3D();
 
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
                 // Everything past this section would have remained unmatched.
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
-                    var alignmentIndex = (section * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) +
-                                         sectionWidth;
-                    var alignmentScore = _alignmentScore[alignmentIndex];
-                    
+                    var alignmentScore = _alignmentScore[section, baselineSection, sectionWidth];
+
                     if (alignmentScore <= bestScore)
                         continue;
-                    
+
                     bestScore = alignmentScore;
-                    bestAlignmentIndex = alignmentIndex;
+                    bestAlignmentIndex.Set(section, baselineSection, sectionWidth);
                 }
             }
 
             var msmsSectionWidth = (MaxBaselineNet - MinBaselineNet) / NumBaselineSections;
 
             _alignmentFunc.Clear();
-            for (var alignIndex = bestAlignmentIndex; alignIndex >= 0; alignIndex = _bestPreviousIndex[alignIndex])
+            for (var alignIndex = bestAlignmentIndex;
+                alignIndex.IsValid(_bestPreviousIndex);
+                alignIndex = _bestPreviousIndex[alignIndex.X, alignIndex.Y, alignIndex.Z])
             {
                 _alignmentFunc.Add(CreateMatch(alignIndex, msmsSectionWidth));
             }
             _alignmentFunc.Sort();
         }
 
-        public LcmsWarpAlignmentMatch CreateMatch(int alignmentIndex, double msmsSectionWidth)
+        public LcmsWarpAlignmentMatch CreateMatch(Index3D index, double msmsSectionWidth)
         {
+            var section = index.X;
+            var baselineSection = index.Y;
+            var sectionWidth = index.Z;
+
             var lwam = new LcmsWarpAlignmentMatch
             {
-                AlignmentScore = _alignmentScore[alignmentIndex],
-                MatchScore = _subsectionMatchScores[alignmentIndex]
+                AlignmentScore = _alignmentScore[section, baselineSection, sectionWidth],
+                MatchScore = _subsectionMatchScores[section, baselineSection, sectionWidth]
             };
-        
-            lwam.AligneeSectionStart = (alignmentIndex / NumMatchesPerSection); // should be current - 1
+
+            lwam.AligneeSectionStart = section; // should be current - 1
             lwam.AligneeSectionEnd = lwam.AligneeSectionStart + 1;
             lwam.AligneeNetStart = MinNet + (lwam.AligneeSectionStart * (MaxNet - MinNet)) / NumSections;
             lwam.AligneeNetEnd = MinNet + (lwam.AligneeSectionEnd * (MaxNet - MinNet)) / NumSections;
-            lwam.BaselineSectionStart = (alignmentIndex - (lwam.AligneeSectionStart * NumMatchesPerSection)) / NumMatchesPerBaseline;
-            lwam.BaselineSectionEnd = lwam.BaselineSectionStart + alignmentIndex % NumMatchesPerBaseline + 1;
+            lwam.BaselineSectionStart = baselineSection;
+            lwam.BaselineSectionEnd = lwam.BaselineSectionStart + sectionWidth + 1;
             lwam.BaselineNetStart = lwam.BaselineSectionStart * msmsSectionWidth + MinBaselineNet;
             lwam.BaselineNetEnd = lwam.BaselineSectionEnd * msmsSectionWidth + MinBaselineNet;
 
@@ -1171,16 +1175,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public void CalculateAlignmentMatrix()
         {
-            var numPossibleAlignments = NumSections * NumBaselineSections * NumMatchesPerBaseline;
-
-            _alignmentScore = new double[numPossibleAlignments];
-            _bestPreviousIndex = new int[numPossibleAlignments];
+            _alignmentScore = new double[NumSections, NumBaselineSections, NumMatchesPerBaseline];
+            _bestPreviousIndex = new Index3D[NumSections, NumBaselineSections, NumMatchesPerBaseline];
 
             // Initialize scores to - inf, best previous index to -1
-            for (var i = 0; i < numPossibleAlignments; i++)
+            for (var i = 0; i < NumSections; i++)
             {
-                _alignmentScore[i] = double.MinValue;
-                _bestPreviousIndex[i] = -1;
+                for (var j = 0; j < NumBaselineSections; j++)
+                {
+                    for (var k = 0; k < NumMatchesPerBaseline; k++)
+                    {
+                        _alignmentScore[i, j, k] = Double.MinValue;
+                        _bestPreviousIndex[i, j, k] = new Index3D();
+                    }
+                }
             }
             var log2PiStdNetStdNet = Math.Log(2 * Math.PI * _netStd * _netStd);
 
@@ -1206,7 +1214,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
                     //no need to multiply with msSection because its 0
-                    _alignmentScore[baselineSection * NumMatchesPerBaseline + sectionWidth] = 0;
+                    _alignmentScore[0, baselineSection, sectionWidth] = 0;
                 }
             }
 
@@ -1216,9 +1224,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
-                    var alignmentIndex = section * NumMatchesPerSection + sectionWidth;
-                    _alignmentScore[alignmentIndex] = _subsectionMatchScores[alignmentIndex] +
-                                                      unmatchedScore * numUnmatchedMsFeatures;
+                    _alignmentScore[section, 0, sectionWidth] = _subsectionMatchScores[section, 0, sectionWidth] +
+                                                                   unmatchedScore * numUnmatchedMsFeatures;
                 }
                 numUnmatchedMsFeatures += _numFeaturesInSections[section];
             }
@@ -1233,7 +1240,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                              sectionWidth;
 
                         var currentBestScore = double.MinValue;
-                        var bestPreviousAlignmentIndex = 0;
+                        var bestPreviousAlignmentIndex = new Index3D();
 
                         for (var previousBaselineSection = baselineSection - 1;
                             previousBaselineSection >= baselineSection - NumMatchesPerBaseline - MaxJump;
@@ -1249,23 +1256,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 maxWidth = NumMatchesPerBaseline;
                             }
                             var previousBaselineSectionWidth = maxWidth;
-                            var previousAlignmentIndex = (section - 1) * NumMatchesPerSection +
-                                                         previousBaselineSection * NumMatchesPerBaseline +
-                                                         previousBaselineSectionWidth - 1;
-                            if (!(_alignmentScore[previousAlignmentIndex] > currentBestScore))
+
+                            if (!(_alignmentScore[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1] > currentBestScore))
                                 continue;
 
-                            currentBestScore = _alignmentScore[previousAlignmentIndex];
-                            bestPreviousAlignmentIndex = previousAlignmentIndex;
+                            currentBestScore = _alignmentScore[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1];
+                            bestPreviousAlignmentIndex.Set(section - 1, previousBaselineSection, previousBaselineSectionWidth - 1);
                         }
                         if (Math.Abs(currentBestScore - double.MinValue) > double.Epsilon)
                         {
-                            _alignmentScore[alignmentIndex] = currentBestScore + _subsectionMatchScores[alignmentIndex];
-                            _bestPreviousIndex[alignmentIndex] = bestPreviousAlignmentIndex;
+                            _alignmentScore[section, baselineSection, sectionWidth] = currentBestScore + _subsectionMatchScores[section, baselineSection, sectionWidth];
+                            _bestPreviousIndex[section, baselineSection, sectionWidth].Set(bestPreviousAlignmentIndex);
                         }
                         else
                         {
-                            _alignmentScore[alignmentIndex] = double.MinValue;
+                            _alignmentScore[section, baselineSection, sectionWidth] = double.MinValue;
                         }
                     }
                 }
@@ -1345,7 +1350,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         _tempFeatureBestIndex[msFeatureIndex] = match.BaselineFeatureIndex;
                     }
 
-                    _subsectionMatchScores[sectionIndex] = CurrentlyStoredSectionMatchScore(numUniqueFeatures);
+                    _subsectionMatchScores[msSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = CurrentlyStoredSectionMatchScore(numUniqueFeatures);
                 }
             }
         }
@@ -1435,11 +1440,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         {
                             continue;
                         }
-                        var matchIndex = (aligneeSection * NumMatchesPerSection) + (baselineSection * NumMatchesPerBaseline) +
-                                         baselineSectionWidth;
-                        if (_subsectionMatchScores[matchIndex] > maxScore)
+                        if (_subsectionMatchScores[aligneeSection, baselineSection, baselineSectionWidth] > maxScore)
                         {
-                            maxScore = _subsectionMatchScores[matchIndex];
+                            maxScore = _subsectionMatchScores[aligneeSection, baselineSection, baselineSectionWidth];
                         }
                     }
                     subsectionMatchScores[aligneeSection, baselineSection] = maxScore;

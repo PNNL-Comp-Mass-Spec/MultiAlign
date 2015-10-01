@@ -356,6 +356,7 @@
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
+    <Compile Include="Data\Index3D.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
     <Compile Include="Data\Alignment\ResidualData.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
