@@ -485,6 +485,7 @@
     <Compile Include="IO\Features\IUmcClusterDAO.cs" />
     <Compile Include="IO\Features\IUmcDAO.cs" />
     <Compile Include="IO\Features\LCMSFeatureFileReader.cs" />
+    <Compile Include="IO\Features\MassTagFileReader.cs" />
     <Compile Include="IO\Features\UmcAdoDAO.cs" />
     <Compile Include="IO\Features\UMCLoaderFactory.cs" />
     <Compile Include="IO\Features\UmcLoadingEventArgs.cs" />

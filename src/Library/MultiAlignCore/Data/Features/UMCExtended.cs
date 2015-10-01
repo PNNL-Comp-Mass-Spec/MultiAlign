@@ -2,8 +2,11 @@
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>
-    /// Extends the UMCLight class to include some extra fields tracked in a UMC csv file (from VIPER perhaps)
+    /// Extends the UMCLight class to include some extra fields tracked in a UMC csv file
     /// </summary>
+    /// <remarks>
+    /// This is used by STACConsole when processing VIPER results
+    /// </remarks>
     public class UMCExtended : UMCLight
     {
         public UMCExtended()
@@ -21,5 +24,7 @@ namespace MultiAlignCore.Data.Features
         public double MZForCharge { get; set; }
         
         public double DriftTimeUncorrected { get; set; }
+
+
     }
 }

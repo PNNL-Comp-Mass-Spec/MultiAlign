@@ -12,10 +12,12 @@
     <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition Height="85" Name="AmtTagDatabaseRow" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="85" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="185" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="85" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="115" />
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
@@ -65,7 +67,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Mass Tolerance -->
-                <Label Content="Mass Tolerance" Grid.Column="0" HorizontalAlignment="Center" />
+                <Label Content="Mass Tolerance (ppm)" Grid.Column="0" HorizontalAlignment="Center" />
                 <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="0" Increment="1.0"
                                    Value="{Binding Path=DatabaseSelectionViewModel.MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -78,7 +80,7 @@
         </GroupBox>
 
         <!-- Stac Options -->
-        <!--<GroupBox Grid.Row="4">
+        <GroupBox Grid.Row="4">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">STAC Options</TextBlock>
             </GroupBox.Header>
@@ -88,6 +90,35 @@
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="50*" />
+                </Grid.ColumnDefinitions>
+
+                <!--Peak matching type-->
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCalculateStac, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate STAC</CheckBox>
+                
+                 <!--Calculate SliC--> 
+                <CheckBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                          IsChecked="{Binding ShouldUseSlic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate SLiC</CheckBox>
+                
+                <!--Use Prior Probabilities-->
+                <CheckBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding UsePriors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Prior Probabilities</CheckBox>
+                
+                 <!--Use Ellipsoid--> 
+                <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                          IsChecked="{Binding ShouldUseEllipsoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Ellipsoid</CheckBox>
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Grid.Row="6">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Histogram</TextBlock>
+            </GroupBox.Header>
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
@@ -96,35 +127,24 @@
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
 
-                --><!-- Peak matching type --><!--
-                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="18,0,0,0">Peak Matching Type</TextBlock>
-                <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
-                          ItemsSource="{Binding PeakMatchingTypes}" SelectedItem="{Binding SelectedPeakMatchingType}" />
-                
-                --><!-- Calculate SliC --><!--
-                <CheckBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
-                          IsChecked="{Binding ShouldUseSlic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate SLiC</CheckBox>
-                
-                --><!-- Use Ellipsoid --><!--
-                <CheckBox Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
-                          IsChecked="{Binding ShouldUseEllipsoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Ellipsoid</CheckBox>
-                
-                --><!-- Histogram bin width --><!--
-                <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="18,0,0,0">Histogram Bin Width</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
+                <!--Histogram bin width-->
+                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Histogram Bin Width</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
                                    Minimum="0" Value="{Binding HistogramBinWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                
-                --><!-- Histogram multiplier --><!--
-                <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="18,0,0,0">Histogram Multiplier</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
-                                   Minimum="0" Value="{Binding HistogramMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
-        </GroupBox>-->
 
-        <ProgressBar Grid.Row="6" Grid.Column="0" Value="{Binding AlignmentProgress}" Height="25"
+                <!--Histogram multiplier-->
+                <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Histogram Multiplier</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
+                                   Minimum="0" Value="{Binding HistogramMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CalculateHistogramFdr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate Histogram FDR</CheckBox>
+            </Grid>
+        </GroupBox>
+
+        <ProgressBar Grid.Row="8" Grid.Column="0" Value="{Binding AlignmentProgress}" Height="25"
                              Visibility="{Binding ShouldShowTotalProgress, Converter={StaticResource BoolToVis}}" />
         <!-- Buttons -->
-        <Button Content="Run Matching" HorizontalAlignment="Right" Height="25" Width="125" Command="{Binding PerformMatchingCommand}" Grid.Row="7" />
+        <Button Content="Run Matching" HorizontalAlignment="Right" Height="25" Width="125" Command="{Binding PerformMatchingCommand}" Grid.Row="9" />
         <!--<Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Height="25" Width="125" Grid.Row="7" />-->
     </Grid>
 </UserControl>

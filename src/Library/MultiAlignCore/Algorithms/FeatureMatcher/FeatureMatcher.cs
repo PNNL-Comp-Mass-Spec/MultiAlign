@@ -487,7 +487,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             //stacInformation.PerformStac(m_matchList, m_matchParameters.UserTolerances, m_matchParameters.UseDriftTime, m_matchParameters.UsePriors);                        
             stacInformation.PerformStac(MatchList,
                                         m_matchParameters.UserTolerances,
-                                        m_matchParameters.UseDriftTime);            
+                                        m_matchParameters.UseDriftTime,
+                                        m_matchParameters.UsePriors);            
         }
 
         #endregion
