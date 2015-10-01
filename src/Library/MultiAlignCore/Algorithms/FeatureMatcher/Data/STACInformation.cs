@@ -124,8 +124,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Trains the STAC parameters using the passed data.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to train parameters on.</param>
         /// <param name="uniformTolerances">User provided tolerances.</param>
         /// <param name="useDriftTime">Whether to train the data on the drift time dimension.</param>        
@@ -134,23 +134,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where T  : FeatureLight, new()
             where TU : FeatureLight, new()
         {
-            Clear();
-
-            // Calculate the density of the uniform density given the tolerances.
-            var toleranceMatrix = uniformTolerances.AsVector(useDriftTime);
-            var uniformDensity = 1.0;
-            for (var i = 0; i < toleranceMatrix.RowCount; i++)
-            {
-                uniformDensity /= (2 * toleranceMatrix[i, 0]);
-            }
-
-            // Train the EM parameters on the data.            
-            return TrainWithoutPrior(featureMatchList, uniformDensity, useDriftTime);                        
+            return TrainStac(featureMatchList, uniformTolerances, useDriftTime, usePrior:false);
+                           
         }
 
-        private void TrainStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
+        private bool TrainStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
             where T : FeatureLight, new()
-            where TU : MassTagLight, new()
+            where TU : FeatureLight, new()
         {
             Clear();
 
@@ -163,26 +153,47 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             }
 
             // Train the EM parameters on the data.
-            if (!usePrior)
+
+            if (!usePrior || typeof (TU) != typeof (MassTagLight))
             {
-                TrainWithoutPrior(featureMatchList, uniformDensity, useDriftTime);
-                return;
+                return TrainWithoutPrior(featureMatchList, uniformDensity, useDriftTime);                
             }
 
-            TrainWithPrior(featureMatchList, uniformDensity, useDriftTime);            
+            var newFeatureMatchList = ConvertFeatureMatchListToMassTagLightList(featureMatchList);
+
+            return TrainWithPrior(newFeatureMatchList, uniformDensity, useDriftTime);
+            
         }
 
         /// <summary>
         /// Function to calculate STAC score.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to calculate scores for.</param>
         /// <param name="uniformTolerances"></param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
         /// <returns>The STAC score corresponding to featureMatch.</returns>
         private void SetStacScores<T, TU>(IEnumerable<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime)
             where T  : FeatureLight, new()
+            where TU : FeatureLight, new()
+        {
+            SetStacScores(featureMatchList, uniformTolerances, useDriftTime, usePrior:false);
+
+        }
+
+        /// <summary>
+        /// Function to calculate STAC score.
+        /// </summary>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
+        /// <param name="featureMatchList">List of FeatureMatches to calculate scores for.</param>
+        /// <param name="uniformTolerances"></param>
+        /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
+        /// <param name="usePrior">Whether to use prior probabilities in the calculation of the STAC score.</param>
+        /// <returns>The STAC score corresponding to featureMatch.</returns>
+        private void SetStacScores<T, TU>(IEnumerable<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
+            where T : FeatureLight, new()
             where TU : FeatureLight, new()
         {
             // Calculate the density of the uniform density given the tolerances.
@@ -193,45 +204,31 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 uniformDensity /= (2 * toleranceMatrix[i, 0]);
             }
 
-			foreach (var match in featureMatchList)
-			{
-				match.STACScore = ComputeStacFeature(match, uniformDensity);
-			}
-        }
-        /// <summary>
-        /// Function to calculate STAC score.
-        /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
-        /// <param name="featureMatchList">List of FeatureMatches to calculate scores for.</param>
-        /// <param name="uniformTolerances"></param>
-        /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
-        /// <param name="usePrior">Whether to use prior probabilities in the calculation of the STAC score.</param>
-        /// <returns>The STAC score corresponding to featureMatch.</returns>
-        private void SetStacScores<T, TU>(IEnumerable<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
-            where T : FeatureLight, new()
-            where TU : MassTagLight, new()
-        {
-            // Calculate the density of the uniform density given the tolerances.
-            var toleranceMatrix = uniformTolerances.AsVector(useDriftTime);
-            var uniformDensity = 1.0;
-            for (var i = 0; i < toleranceMatrix.RowCount; i++)
+            if (typeof (TU) != typeof (MassTagLight))
             {
-                uniformDensity /= (2 * toleranceMatrix[i, 0]);
+                foreach (var match in featureMatchList)
+                {
+                    match.STACScore = ComputeStacFeature(match, uniformDensity);
+                }
+                return;
             }
-           
-            var newFeatureMatchList = featureMatchList as List<FeatureMatch<T, MassTagLight>>;
-            foreach (var match in newFeatureMatchList)
+
+            foreach (var match in featureMatchList)
             {
-                match.STACScore = ComputeStacMassTag(match, uniformDensity, usePrior);
-            }
+                var newMatch = match as FeatureMatch<T, MassTagLight>;
+                
+                if (newMatch != null)
+                    newMatch.STACScore = ComputeStacMassTag(newMatch, uniformDensity, usePrior);
+                
+            }                     
            
         }
+
         /// <summary>
         /// Set the STAC Specificity scores for a list of matches.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to calculate Specificities for.</param>
         public void SetStacSpecificitiesFeature<T, TU>(List<FeatureMatch<T, TU>> featureMatchList)
             where T : FeatureLight, new()
@@ -265,17 +262,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Set the STAC Specificity scores for a list of matches.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to calculate Specificities for.</param>
-        public void SetSTACSpecificitiesMassTag<T, U>(List<FeatureMatch<T, U>> featureMatchList)
+        public void SetSTACSpecificitiesMassTag<T, TU>(List<FeatureMatch<T, TU>> featureMatchList)
             where T : FeatureLight, new()
-            where U : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
-            featureMatchList.Sort(FeatureMatch<T, U>.FeatureComparison);
+            featureMatchList.Sort(FeatureMatch<T, TU>.FeatureComparison);
             var matchIndex = 0;
             var endIndex = matchIndex;
 
-			// If only 1 match, tyhe Specificity score should be 1
+			// If only 1 match, the Specificity score should be 1
 			if (featureMatchList.Count == 1)
 			{
 				featureMatchList[0].STACSpecificity = 1;
@@ -311,8 +309,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Function to train STAC parameters and to set STAC scores and Specificities.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to perform STAC on.</param>
         /// <param name="uniformTolerances"></param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
@@ -322,36 +320,52 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         {
 			ReportMessage("Training STAC");
             TrainStac(featureMatchList, uniformTolerances, useDriftTime);
+
 			ReportMessage("Calculating final STAC Scores");
             SetStacScores(featureMatchList, uniformTolerances, useDriftTime);
-			ReportMessage("Calculating STAC_UP Scores");            
-			SetStacSpecificitiesFeature(featureMatchList);			
+
+			ReportMessage("Calculating STAC_UP Scores");
+            SetStacSpecificitiesFeature(featureMatchList);
         }
 
         /// <summary>
         /// Function to train STAC parameters and to set STAC scores and Specificities.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to perform STAC on.</param>
         /// <param name="uniformTolerances"></param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
         /// <param name="usePrior">Whether to use prior probabilities in the calculation of the STAC score.</param>
         public void PerformStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
             where T : FeatureLight, new()
-            where TU : MassTagLight, new()           
+            where TU : FeatureLight, new()           
         {
             ReportMessage("Training STAC");
             TrainStac(featureMatchList, uniformTolerances, useDriftTime, usePrior);
+
             ReportMessage("Calculating final STAC Scores");
             SetStacScores(featureMatchList, uniformTolerances, useDriftTime, usePrior);
-            ReportMessage("Calculating STAC_UP Scores");            
-            SetSTACSpecificitiesMassTag(featureMatchList);
-            
+
+            ReportMessage("Calculating STAC_UP Scores");
+
+            if (typeof (TU) != typeof (MassTagLight))
+            {
+                SetStacSpecificitiesFeature(featureMatchList);
+            }
+            else
+            {
+                var newFeatureMatchList = ConvertFeatureMatchListToMassTagLightList(featureMatchList);
+
+                SetSTACSpecificitiesMassTag(newFeatureMatchList);
+            }
+
+
         }
         #endregion
 
         #region Private functions
+        
         /// <summary>
         /// Overload Clear function to reset number of iterations.
         /// </summary>
@@ -364,16 +378,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Function to calculate STAC parameters using prior probabilities.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to train data on.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
         /// <returns>A boolean flag indicating the convergence state of the algorithm.</returns>
-        private void TrainWithPrior<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity, bool useDriftTime)
+        private bool TrainWithPrior<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity, bool useDriftTime)
             where T : FeatureLight, new()
-			where U : MassTagLight, new()
+			where TU : MassTagLight, new()
         {
-            Clear();            
+            Clear();
+            var converges = false;
 
             var dataList = new List<DenseMatrix>();
             var priorList = new List<double>();
@@ -391,7 +407,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             while (m_iteration <= MAX_ITERATIONS)
             {
                 // Update the parameters in the following order: mixture parameters, mean, covariance.
-                m_mixtureProportion = UpdateNNUMixtureParameter<T, U>(alphaList);
+                m_mixtureProportion = UpdateNNUMixtureParameter<T, TU>(alphaList);
                 m_meanVectorT = ExpectationMaximization.UpdateNormalMeanVector(dataList, alphaList, priorList, false);
                 m_meanVectorF = ExpectationMaximization.UpdateNormalMeanVector(dataList, alphaList, priorList, true);
                 m_covarianceMatrixT = ExpectationMaximization.UpdateNormalCovarianceMatrix(dataList, m_meanVectorT, alphaList, priorList, false, false);
@@ -409,6 +425,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 // Set the convergence flag and exit the while loop if the convergence criteria is met.
 				if (m_iteration > 10 && Math.Abs(nextLogLikelihood - m_logLikelihood) < EPSILON)
                 {
+                    converges = true;
                     break;
                 }
 
@@ -416,26 +433,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 m_logLikelihood = nextLogLikelihood;
             }
 
-			// Find the refined tolerances
-			var massPpmStDev = Math.Sqrt(m_covarianceMatrixT[0, 0]);
-			var netStDev = Math.Sqrt(m_covarianceMatrixT[1, 1]);
-			double driftTimeStDev = 0;
-			if (useDriftTime)
-			{
-				driftTimeStDev = Math.Sqrt(m_covarianceMatrixT[2, 2]);
-			}
+            // Find the refined tolerances
+            ComputeRefinedTolerances(m_covarianceMatrixT, useDriftTime);
 
-			m_refinedTolerances = new FeatureMatcherTolerances((2.5 * massPpmStDev), (2.5 * netStDev), (float)(2.5 * driftTimeStDev))
-			{
-			    Refined = true
-			};            
+            // Return the convergence flag, which is still false unless changed to true above.
+            return converges;
         }
 
         /// <summary>
         /// Train the STAC parameters without using prior probabilities.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
-        /// <typeparam name="TU">The type of the target feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">The type of the target feature. Derived from Feature.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to train data on.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
@@ -455,7 +464,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 
             m_logLikelihood = CalculateNuLogLikelihood(featureMatchList, uniformDensity, useDriftTime);
 
-            var alphaList = new List<double>(dataList.Count);
+            var alphaList = ExpectationMaximization.GetAlphaListNoPriors(dataList, m_mixtureProportion);
 
             // Step through the EM algorithm up to m_maxIterations time.
             while (m_iteration <= MAX_ITERATIONS)
@@ -488,6 +497,9 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 m_logLikelihood = nextLogLikelihood;
             }
 
+            // Find the refined tolerances
+            ComputeRefinedTolerances(m_covarianceMatrixT, useDriftTime);
+
             // Return the convergence flag, which is still false unless changed to true above.
             return converges;
         }
@@ -495,15 +507,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Calculate the loglikelihood for a match with the current parameters.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
-        /// <typeparam name="U">The type of the target feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">The type of the target feature. Derived from Feature.</typeparam>
         /// <param name="featureMatch">FeatureMatch to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="stacScore"></param>
         /// <returns>The value of the loglikelihood evaluated at featureMatch.</returns>
-        private double CalculateNuLogLikelihood<T, U>(FeatureMatch<T, U> featureMatch, double uniformDensity, ref double stacScore)
+        private double CalculateNuLogLikelihood<T, TU>(FeatureMatch<T, TU> featureMatch, double uniformDensity, ref double stacScore)
             where T : FeatureLight, new()
-            where U : FeatureLight, new()
+            where TU : FeatureLight, new()
         {
             if (featureMatch.UseDriftTimePredicted)
             {
@@ -515,14 +527,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Calculate the loglikelihood for matches with the current parameters.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
-        /// <typeparam name="U">The type of the target feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">The type of the target feature. Derived from Feature.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <returns>The value of the loglikelihood evaluated over featureMatchList.</returns>
-        private double CalculateNuLogLikelihood<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity)
+        private double CalculateNuLogLikelihood<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity)
             where T : FeatureLight, new()
-            where U : FeatureLight, new()
+            where TU : FeatureLight, new()
         {
             var loglikelihood = 0.0;
 			var stacScore = 0.0;
@@ -536,15 +548,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Calculate the loglikelihood for matches with the current parameters.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
-        /// <typeparam name="U">The type of the target feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">The type of the target feature. Derived from Feature.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
         /// <returns>The value of the loglikelihood evaluated over featureMatchList.</returns>
-        private double CalculateNuLogLikelihood<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity, bool useDriftTime)
+        private double CalculateNuLogLikelihood<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity, bool useDriftTime)
             where T : FeatureLight, new()
-            where U : FeatureLight, new()
+            where TU : FeatureLight, new()
         {
             double logLikelihood;
             if (useDriftTime)
@@ -562,18 +574,19 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             }
             return logLikelihood;
         }
+
         /// <summary>
         /// Update the mixture proportion for the normal-uniform mixture model.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
-        /// <typeparam name="U">The type of the target feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">The type of the target feature. Derived from Feature.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="alphaList">List to be filled with individual mixture values.</param>
         /// <returns>The updated mixture proportion.</returns>
-        private double UpdateNUMixtureParameter<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity, ref List<double> alphaList)
+        private double UpdateNUMixtureParameter<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity, ref List<double> alphaList)
             where T : FeatureLight, new()
-            where U : FeatureLight, new()
+            where TU : FeatureLight, new()
         {
 			var alphaSum = 0.0;
 			foreach (var alpha in alphaList)
@@ -586,31 +599,53 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Calculate the loglikelihood for a match with the current parameters.
         /// </summary>
-        /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="T">The type of the observed feature. Derived from Feature.</typeparam>
+        /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatch">FeatureMatch to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
+        /// <param name="stacScore">STAC Score (output)</param>
         /// <returns>The value of the loglikelihood evaluated at featureMatch.</returns>
-        private double CalculateNnuLogLikelihood<T, U>(FeatureMatch<T, U> featureMatch, double uniformDensity, ref double stacScore)
+        private double CalculateNnuLogLikelihood<T, TU>(FeatureMatch<T, TU> featureMatch, double uniformDensity, ref double stacScore)
             where T : FeatureLight, new()
-            where U : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
             if (featureMatch.UseDriftTimePredicted)
             {
-				return ExpectationMaximization.NormalNormalUniformLogLikelihood(featureMatch.ReducedDifferenceVector, featureMatch.TargetFeature.PriorProbability, MatrixUtilities.RemoveRow(m_meanVectorT, 3), MatrixUtilities.ReduceMatrix(m_covarianceMatrixT, 3), MatrixUtilities.RemoveRow(m_meanVectorF, 3), MatrixUtilities.ReduceMatrix(m_covarianceMatrixF, 3), uniformDensity, m_mixtureProportion, ref stacScore);
+				return ExpectationMaximization.NormalNormalUniformLogLikelihood(
+                    featureMatch.ReducedDifferenceVector, 
+                    featureMatch.TargetFeature.PriorProbability, 
+                    MatrixUtilities.RemoveRow(m_meanVectorT, 3), 
+                    MatrixUtilities.ReduceMatrix(m_covarianceMatrixT, 3),
+                    MatrixUtilities.RemoveRow(m_meanVectorF, 3), 
+                    MatrixUtilities.ReduceMatrix(m_covarianceMatrixF, 3), 
+                    uniformDensity, 
+                    m_mixtureProportion, 
+                    ref stacScore);
             }
-            return ExpectationMaximization.NormalNormalUniformLogLikelihood(featureMatch.ReducedDifferenceVector, featureMatch.TargetFeature.PriorProbability, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion, ref stacScore);
+
+            return ExpectationMaximization.NormalNormalUniformLogLikelihood(
+                featureMatch.ReducedDifferenceVector, 
+                featureMatch.TargetFeature.PriorProbability, 
+                m_meanVectorT, 
+                m_covarianceMatrixT, 
+                m_meanVectorF, 
+                m_covarianceMatrixF, 
+                uniformDensity, 
+                m_mixtureProportion, 
+                ref stacScore);
         }
 
         /// <summary>
         /// Calculate the loglikelihood for matches with the current parameters.
         /// </summary>
         /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
+        /// /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <returns>The value of the loglikelihood evaluated over featureMatchList.</returns>
-        private double CalculateNnuLogLikelihood<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity)
+        private double CalculateNnuLogLikelihood<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity)
             where T : FeatureLight, new()
-            where U : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
             var loglikelihood = 0.0;
 			var stacScore = 0.0;
@@ -621,17 +656,20 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             }
             return loglikelihood;
         }
+
         /// <summary>
         /// Calculate the loglikelihood for matches with the current parameters.
         /// </summary>
         /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to evaluate at.</param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <param name="useDriftTime">Whether to use drift times in the calculations.</param>
+        /// <param name="alphaList">List of mixture estimates corresponding to differences.</param>
         /// <returns>The value of the loglikelihood evaluated over featureMatchList.</returns>
-        private double CalculateNnuLogLikelihood<T, U>(List<FeatureMatch<T, U>> featureMatchList, double uniformDensity, bool useDriftTime, ref List<double> alphaList)
+        private double CalculateNnuLogLikelihood<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity, bool useDriftTime, ref List<double> alphaList)
             where T : FeatureLight, new()
-            where U : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
             var dataList = new List<DenseMatrix>();
             var priorList = new List<double>();
@@ -640,7 +678,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 dataList.Add(match.DifferenceVector);
                 priorList.Add(match.TargetFeature.PriorProbability);
             }
-            double logLikelihood = ExpectationMaximization.NormalNormalUniformLogLikelihood(dataList, priorList, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion);
+
+            var logLikelihood = ExpectationMaximization.NormalNormalUniformLogLikelihood(dataList, priorList, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion);
 
 			// Get new values for alpha list
 			alphaList.Clear();
@@ -648,16 +687,39 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 			
             return logLikelihood;
         }
+        
+        /// <summary>
+        /// Use the covariance matrix to compute the refined tolerances
+        /// </summary>
+        /// <param name="covarianceMatrixT">Covariance matrix</param>
+        /// <param name="useDriftTime"></param>
+        private void ComputeRefinedTolerances(DenseMatrix covarianceMatrixT, bool useDriftTime)
+        {
+
+            var massPpmStDev = Math.Sqrt(covarianceMatrixT[0, 0]);
+            var netStDev = Math.Sqrt(covarianceMatrixT[1, 1]);
+            double driftTimeStDev = 0;
+            if (useDriftTime)
+            {
+                driftTimeStDev = Math.Sqrt(covarianceMatrixT[2, 2]);
+            }
+
+            m_refinedTolerances = new FeatureMatcherTolerances((2.5 * massPpmStDev), (2.5 * netStDev), (float)(2.5 * driftTimeStDev))
+            {
+                Refined = true
+            };
+        }
 
         /// <summary>
         /// Update the mixture proportion for the normal-normal-uniform mixture model.
         /// </summary>
         /// <typeparam name="T">The type of the observed feature.  Derived from Feature.</typeparam>
+        /// <typeparam name="TU">Matched feature. Usually AMTTag.</typeparam>
         /// <param name="alphaList">List to be filled with individual mixture values.</param>
         /// <returns>The updated mixture proportion.</returns>
-        private double UpdateNNUMixtureParameter<T, U>(List<double> alphaList)
+        private double UpdateNNUMixtureParameter<T, TU>(List<double> alphaList)
             where T : FeatureLight, new()
-            where U : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
 			var alphaSum = alphaList.Sum();
 
@@ -691,8 +753,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <summary>
         /// Function to calculate STAC score.
         /// </summary>
-        /// <typeparam name="T">Observed feature to be matched.  Derived from Feature.  Usually UMC or UMCCluster.</typeparam>
-        /// <typeparam name="TU">Feature to be matched to.  Derived from Feature.  Usually AMTTag.</typeparam>
+        /// <typeparam name="T">Observed feature to be matched. Derived from Feature. Usually UMC or UMCCluster.</typeparam>
+        /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatch"></param>
         /// <param name="uniformDensity">Density of uniform distribution.</param>
         /// <returns>The STAC score corresponding to featureMatch.</returns>
@@ -703,6 +765,20 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 			var stacScore = 0.0;
             CalculateNuLogLikelihood(featureMatch, uniformDensity, ref stacScore);
 			return stacScore;
+        }
+
+        private List<FeatureMatch<T, MassTagLight>> ConvertFeatureMatchListToMassTagLightList<T, TU>(IEnumerable<FeatureMatch<T, TU>> featureMatchList)
+            where T : FeatureLight, new()
+            where TU : FeatureLight, new()
+        {
+            var newFeatureMatchList = new List<FeatureMatch<T, MassTagLight>>();
+
+            foreach (var match in featureMatchList)
+            {
+                newFeatureMatchList.Add(match as FeatureMatch<T, MassTagLight>);
+            }
+
+            return newFeatureMatchList;
         }
 
         /// <summary>
