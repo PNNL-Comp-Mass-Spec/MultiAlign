@@ -80,7 +80,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Mass Tolerance -->
-                <Label Content="Mass Tolerance" Grid.Column="0" HorizontalAlignment="Center" />
+                <Label Content="Mass Tolerance (ppm)" Grid.Column="0" HorizontalAlignment="Center" />
                 <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="0" Increment="1.0"
                                    Value="{Binding Path=DatabaseSelectionViewModel.MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
 

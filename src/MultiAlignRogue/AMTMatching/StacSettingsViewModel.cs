@@ -130,6 +130,38 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the matcher should calculate the STAC score.
+        /// </summary>
+        public bool ShouldCalculateStac
+        {
+            get { return this.analysis.Options.StacOptions.ShouldCalculateSTAC; }
+            set
+            {
+                if (this.analysis.Options.StacOptions.ShouldCalculateSTAC != value)
+                {
+                    this.analysis.Options.StacOptions.ShouldCalculateSTAC = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether prior probabilities for mass tags should be used.
+        /// </summary>
+        public bool UsePriors
+        {
+            get { return this.analysis.Options.StacOptions.UsePriors; }
+            set
+            {
+                if (this.analysis.Options.StacOptions.UsePriors)
+                {
+                    this.analysis.Options.StacOptions.UsePriors = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the matcher should calculate the SLiC score.
         /// </summary>
         public bool ShouldCalculateSlic
@@ -188,6 +220,22 @@ namespace MultiAlignRogue.AMTMatching
                 if (this.analysis.Options.StacOptions.HistogramMultiplier != value)
                 {
                     this.analysis.Options.StacOptions.HistogramMultiplier = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the histogram FDR should be calculated.
+        /// </summary>
+        public bool CalcualteHistogramFdr
+        {
+            get { return this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR; }
+            set
+            {
+                if (this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR != value)
+                {
+                    this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR = value;
                     this.RaisePropertyChanged();
                 }
             }
@@ -263,9 +311,9 @@ namespace MultiAlignRogue.AMTMatching
                         NETTolerance = this.DatabaseSelectionViewModel.NetTolerance
                     },
                     ChargeStateList = chargeStates,
-                    UsePriors = false,
-                    ShouldCalculateSTAC = true,
-                    ShouldCalculateHistogramFDR = false,
+                    UsePriors = this.UsePriors,
+                    ShouldCalculateSTAC = this.ShouldCalculateStac,
+                    ShouldCalculateHistogramFDR = this.CalcualteHistogramFdr,
                     ShouldCalculateShiftFDR = false,
                 },
             };
@@ -291,7 +339,7 @@ namespace MultiAlignRogue.AMTMatching
             try
             {
                 // Write to file
-                this.WriteClusterData("clustermatches.csv", matches, clusterIdMap, progress);
+                this.WriteClusterData("clustermatches.tsv", matches, clusterIdMap, progress);
             }
             catch (Exception ex)
             {
@@ -326,12 +374,12 @@ namespace MultiAlignRogue.AMTMatching
             using (var writer = File.CreateText(path))
             {
                 writer.WriteLine(
-                    "Cluster Id,Dataset Member Count,Total Member Count,Cluster Mass,Cluster NET,Abundance,Mass Tag Id,Peptide Sequence,Mass Tag Mono Mass,Mass Tag NET"); ////,STAC,STAC-UP");
+                    "Cluster Id\tDataset Member Count\tTotal Member Count\tCluster Mass\tCluster NET\tAbundance\tMass Tag Id\tPeptide Sequence\tMod count\tMod description\tMass Tag Mono Mass\tMass Tag NET\tPMT Quality Score\tMS-GF+ Spec Prob\tSTAC"); ////\tSTAC-UP");
                 foreach (var match in matches)
                 {
                     var cluster = clusterIdMap[match.Observed.Id];
                     writer.WriteLine(
-                        "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
+                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
                         cluster.Id,
                         cluster.DatasetMemberCount,
                         cluster.MemberCount,
@@ -340,10 +388,14 @@ namespace MultiAlignRogue.AMTMatching
                         cluster.Abundance,
                         match.Target.Id,
                         match.Target.PeptideSequence,
+                        match.Target.ModificationCount,
+                        match.Target.Modifications,
                         match.Target.MassMonoisotopic,
-                        match.Target.Net);
-                        ////match.Confidence,
-                        ////match.Uniqueness);
+                        match.Target.Net,
+                        match.Target.QualityScore,
+                        match.Target.MsgfSpecProbMax,
+                        match.Confidence);
+                        //match.Uniqueness);
 
                     progData.Report(i++, matches.Count);
                 }

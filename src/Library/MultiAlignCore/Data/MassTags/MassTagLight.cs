@@ -26,6 +26,11 @@ namespace MultiAlignCore.Data.MassTags
         {
             get;set;
         }
+
+        public string ProteinName
+        {
+            get; set;
+        }
         /// <summary>
         /// Gets or sets the peptide sequence. Breaking the model!
         /// </summary>
