@@ -413,7 +413,7 @@ namespace MultiAlignCore.Data.Features
 
         #endregion
 
-        # region IChihldFeature<UMCLight> Members
+        # region IChildFeature<UMCLight> Members
         public void SetParentFeature(UMCLight parentFeature)
         {
             ParentUMC = parentFeature;

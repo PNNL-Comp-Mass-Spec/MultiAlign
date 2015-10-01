@@ -27,7 +27,9 @@ namespace MultiAlignCore.IO.TextFiles
 	    /// <summary>
         /// Gets or sets the file reading delimiter.
         /// </summary>
-        [Obsolete("Old spelling; use Delimiter")]
+		/// <remarks>
+		/// The setter only uses the first character of the string
+		/// </remarks>
         public string Delimeter
         {
 	        get { return Delimiter.ToString(); }

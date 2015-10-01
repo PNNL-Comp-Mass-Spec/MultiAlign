@@ -39,7 +39,7 @@ namespace MultiAlignCore.IO.Features
         #region Private Methods
 
         /// <summary>
-        ///     Saves the data from a UMC csv file to an array of clsUMC Objects.
+        /// Saves the data from a UMC csv file to an array of UMCExtended Objects.
         /// </summary>
         protected override sealed List<UMCExtended> SaveDataToUmcList()
         {
