@@ -327,7 +327,7 @@ namespace MultiAlignCore.IO.MTDB
                                     proteinId = Convert.ToInt32(reader["Protein_ID"]);
 
                                 var protein = new Protein();
-                                protein.Sequence = refName;
+                                protein.Name = refName;
                                 protein.RefId = refID;
                                 protein.ProteinId = proteinId;
 
