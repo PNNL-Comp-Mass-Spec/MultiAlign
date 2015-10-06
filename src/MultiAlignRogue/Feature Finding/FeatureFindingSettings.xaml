@@ -171,7 +171,7 @@
                         <Grid IsEnabled="{Binding ShouldPerformSecondPassClustering, UpdateSourceTrigger=PropertyChanged}">
                             <TextBlock VerticalAlignment="Center">Clusterer</TextBlock>
                             <ComboBox HorizontalAlignment="Right" Width="150" Height="25" 
-                                      ItemsSource="{Binding MsFeatureClusterers}" SelectedItem="{Binding SecondPassClusterer}" />
+                                      ItemsSource="{Binding LcmsFeatureClusterers}" SelectedItem="{Binding SecondPassClusterer}" />
                         </Grid>
                     </GroupBox>
                 </Grid>
