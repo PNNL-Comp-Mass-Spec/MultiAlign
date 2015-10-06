@@ -209,6 +209,8 @@ namespace MultiAlignCore.IO.MTDB
                                     if (reader["Mod_Description"] != DBNull.Value)
                                         modDescription = reader["Mod_Description"].ToString();
 
+                                    // Note: for AMT tags from MSGF+ identifications, this value is actually 1 minus MSGFPlus_PValue
+                                    // In other words, if the PValue reported by MSGF+ is 2.469814E-07 the Peptide_Prophet_Probability is 0.9999998
                                     if (reader["High_Peptide_Prophet_Probability"] != DBNull.Value)
                                         highPeptideProphetProbability = Convert.ToSingle(reader["High_Peptide_Prophet_Probability"]);
 
