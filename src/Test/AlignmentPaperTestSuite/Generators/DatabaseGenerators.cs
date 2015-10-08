@@ -122,7 +122,7 @@ namespace AlignmentPaperTestSuite.Generators
                                                     MsFeatureFilteringOptions   msFilterOptions,
                                                     LcmsFeatureFilteringOptions lcmsFilterOptions,
                                                     SpectralOptions             peptideOptions,
-                                                    MultiAlignCore.Algorithms.FeatureFinding.IFeatureFinder              featureFinder)
+                                                    MultiAlignCore.Algorithms.FeatureFinding.IFeatureFinder featureFinder)
                                                
         {
             UpdateStatus("Loading baseline features.");

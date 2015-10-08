@@ -339,6 +339,19 @@ namespace MultiAlignCore.IO.RawData
 
             return ipbReader;
         }
+
+        public Dictionary<int, double> GetScanTimesForGroup(int groupId)
+        {
+            var run = GetReaderForGroup(groupId);
+            var scanTimeDict = new Dictionary<int, double>();
+
+            for (var i = run.MinLcScan; i < run.MaxLcScan; i++)
+            {
+                scanTimeDict.Add(i, run.GetElutionTime(i));
+            }
+            return scanTimeDict;
+        }
+
         #endregion
 
         #region Private functions

@@ -173,7 +173,7 @@ namespace MultiAlignCore.IO
 
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
             finder.Progress += (sender, args) => UpdateStatus(args.Message);
-            var features = finder.FindFeatures(msFeatures, options, provider, information, progress);
+            var features = finder.FindFeatures(msFeatures, options, provider, progress);
 
             UpdateStatus("Filtering features.");
             List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, information.ScanTimes);
