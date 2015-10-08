@@ -108,6 +108,7 @@ namespace MultiAlignRogue.Clustering
                 {
                     this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
                     this.RaisePropertyChanged("SelectedLcmsFeatureClusteringAlgorithm");
+                    this.RaisePropertyChanged("ShouldEnableClustererSettings");
                 }
             }
         }
@@ -165,6 +166,14 @@ namespace MultiAlignRogue.Clustering
                     this.progressPercent = value;
                     this.RaisePropertyChanged();
                 }
+            }
+        }
+
+        public bool ShouldEnableClustererSettings
+        {
+            get
+            {
+                return this.SelectedLcmsFeatureClusteringAlgorithm != LcmsFeatureClusteringAlgorithmType.Promex;
             }
         }
 

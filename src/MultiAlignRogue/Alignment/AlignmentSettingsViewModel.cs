@@ -298,6 +298,19 @@ namespace MultiAlignRogue.Alignment
                 }
             }
         }
+
+        public int MinObservationCount
+        {
+            get { return this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter; }
+            set
+            {
+                if (this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter != value)
+                {
+                    this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
         
         public async void AsyncAlign()
         {

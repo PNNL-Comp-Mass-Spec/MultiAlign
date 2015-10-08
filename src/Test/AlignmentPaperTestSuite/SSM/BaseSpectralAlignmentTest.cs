@@ -120,6 +120,7 @@ namespace AlignmentPaperTestSuite.SSM
                 // Load and create features
                 var msFeatures = UmcLoaderFactory.LoadMsFeatureData(info.Features.Path);
                 var provider = RawLoaderFactory.CreateFileReader(rawFile);
+                provider.AddDataFile(rawFile, 0);
                 features = finder.FindFeatures(msFeatures, options, provider);
             }
             return features;

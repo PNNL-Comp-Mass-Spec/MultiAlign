@@ -8,7 +8,9 @@ namespace MultiAlignRogue.AMTMatching
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using System.Windows.Media.Animation;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -23,6 +25,7 @@ namespace MultiAlignRogue.AMTMatching
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MassTags;
+    using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.ViewModels;
 
@@ -373,13 +376,52 @@ namespace MultiAlignRogue.AMTMatching
 
             using (var writer = File.CreateText(path))
             {
-                writer.WriteLine(
-                    "Cluster Id\tDataset Member Count\tTotal Member Count\tCluster Mass\tCluster NET\tAbundance\tMass Tag Id\tPeptide Sequence\tMod count\tMod description\tMass Tag Mono Mass\tMass Tag NET\tPMT Quality Score\tMS-GF+ Spec Prob\tSTAC"); ////\tSTAC-UP");
+                writer.Write(
+                    "Cluster Id\tDataset Member Count\tTotal Member Count\tCluster Mass\tCluster NET\tAbundance\tMass Tag Id\tProtein\tPeptide Sequence\tMod count\tMod description\tMass Tag Mono Mass\tMass Tag NET\tPMT Quality Score\tMS-GF+ Spec Prob\tSTAC\t"); ////STAC-UP\t");
+
+                var datasetHash = new HashSet<int>();
+
+                // reconstruct clusters
                 foreach (var match in matches)
                 {
+                    var cluster = match.Observed;
+                    cluster.ReconstructUMCCluster(this.analysis.DataProviders, true, false, false, false);
+                    foreach (var umc in cluster.UmcList)
+                    {
+                        if (!datasetHash.Contains(umc.GroupId))
+                        {
+                            datasetHash.Add(umc.GroupId);
+                        }
+                    }
+
+                    progData.Report(i++, matches.Count);
+                }
+
+                // Write dataset headers
+                foreach (var dataset in datasetHash)
+                {
+                    writer.Write("Dataset {0} Abundance\t", dataset);
+                }
+
+                writer.WriteLine();
+
+                foreach (var match in matches)
+                {
+                    var proteins = this.analysis.MassTagDatabase.Proteins[match.Target.Id];
+                    var proteinStr = string.Empty;
+                    foreach (var protein in proteins)
+                    {
+                        proteinStr += protein.Name;
+                        if (protein != proteins.Last())
+                        {
+                            proteinStr += ",";
+                        }
+                    }
+
+                    // Write cluster information
                     var cluster = clusterIdMap[match.Observed.Id];
-                    writer.WriteLine(
-                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
+                    writer.Write(
+                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t",
                         cluster.Id,
                         cluster.DatasetMemberCount,
                         cluster.MemberCount,
@@ -387,6 +429,7 @@ namespace MultiAlignRogue.AMTMatching
                         cluster.Net,
                         cluster.Abundance,
                         match.Target.Id,
+                        proteinStr,
                         match.Target.PeptideSequence,
                         match.Target.ModificationCount,
                         match.Target.Modifications,
@@ -395,9 +438,16 @@ namespace MultiAlignRogue.AMTMatching
                         match.Target.QualityScore,
                         match.Target.MsgfSpecProbMax,
                         match.Confidence);
-                        //match.Uniqueness);
+                    ////match.Uniqueness);      
 
-                    progData.Report(i++, matches.Count);
+                    foreach (var dataset in datasetHash)
+                    {
+                        var datasetAbundance =
+                            match.Observed.UmcList.Where(umc => umc.GroupId == dataset).Sum(umc => umc.AbundanceSum);
+                        writer.Write("{0}\t", datasetAbundance);
+                    }
+
+                    writer.WriteLine();
                 }
             }
         }

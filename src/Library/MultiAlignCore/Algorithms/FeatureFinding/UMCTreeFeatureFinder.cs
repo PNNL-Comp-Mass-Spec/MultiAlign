@@ -41,10 +41,14 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindFeatures(List<MSFeatureLight> msFeatures,
-            LcmsFeatureFindingOptions options,
-            ISpectraProvider provider, DatasetInformation information,
+            LcmsFeatureFindingOptions options, ISpectraProvider provider, 
             IProgress<ProgressData> progress = null)
         {
+            if (provider == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var tolerances = new FeatureTolerances
             {
                 Mass = options.InstrumentTolerances.Mass,
@@ -82,15 +86,16 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 maxScan = Math.Max(feature.Scan, maxScan);
             }
 
-            var scanTimes = information.ScanTimes;
+            var minScanTime = provider.GetScanSummary(minScan, 0).Time;
+            var maxScanTime = provider.GetScanSummary(maxScan, 0).Time;
             var id = 0;
             var newFeatures = new List<UMCLight>();
             foreach (var feature in features)
             {
                 if (feature.MsFeatures.Count < 1)
                     continue;
-                feature.Net = Convert.ToDouble(scanTimes[feature.Scan] - scanTimes[minScan])/
-                              Convert.ToDouble(scanTimes[maxScan] - scanTimes[minScan]);
+                feature.Net = (provider.GetScanSummary(feature.Scan, 0).Time - minScanTime) /
+                              (maxScanTime - minScanTime);
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
                 feature.Id = id++;
                 newFeatures.Add(feature);

@@ -17,16 +17,8 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// Finds features from the file of MS Features.
         /// </summary>
         List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
-                                    LcmsFeatureFindingOptions   options,
-                                    ISpectraProvider provider, DatasetInformation information,
-                                    IProgress<ProgressData> progress = null);
-
-        /// <summary>
-        /// Finds features from the file of MS Features.
-        /// </summary>
-        [Obsolete("Does not provide means to properly determine elution time")]
-        List<UMCLight> FindFeatures(List<MSFeatureLight> features,
                                     LcmsFeatureFindingOptions options,
-                                    ISpectraProvider provider);
+                                    ISpectraProvider provider,
+                                    IProgress<ProgressData> progress = null);
     }
 }

@@ -153,14 +153,17 @@
 
                         <!-- Distance Function -->
                         <TextBlock Grid.Row="0" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center">Distance Function</TextBlock>
-                        <ComboBox Grid.Row="1" Grid.Column="2" SelectedItem="{Binding SelectedDistanceFunction}" ItemsSource="{Binding DistanceMetrics}" />
+                        <ComboBox Grid.Row="1" Grid.Column="2" SelectedItem="{Binding SelectedDistanceFunction}" ItemsSource="{Binding DistanceMetrics}"
+                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
 
                         <!-- Centroid Representation -->
                         <TextBlock Grid.Row="3" Grid.Column="0"  FontWeight="Bold" HorizontalAlignment="Center">Centroid Representation</TextBlock>
-                        <ComboBox Grid.Row="4" Grid.Column="0" SelectedItem="{Binding SelectedCentroidMethod}" ItemsSource="{Binding CentroidRepresentations}" />
+                        <ComboBox Grid.Row="4" Grid.Column="0" SelectedItem="{Binding SelectedCentroidMethod}" ItemsSource="{Binding CentroidRepresentations}"
+                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
 
                         <CheckBox Grid.Row="4" Grid.Column="2" Content="Separate by Charge" FontWeight="Bold" HorizontalAlignment="Center"
-                                  VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                  VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
 
                         <ProgressBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Value="{Binding ProgressPercent}"
                                      Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
