@@ -18,6 +18,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private readonly List<double> _netFuncNetOutput = new List<double>();
 
         private readonly List<double> _netFuncEstScanOutput = new List<double>();
+        private readonly List<double> _netFuncTimeOutput = new List<double>();
 
         private readonly List<double> _massFuncNetInput = new List<double>();
         private readonly List<double> _massFuncNetPpmOutput = new List<double>();
@@ -59,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     "Recalibration of mass not enabled with NET_WARP alignment type. PPM shift cannot be retrieved. Used NET_MASS_WARP as alignment type instead");
             }
 
-            if (_calibrationType == LcmsWarpCalibrationType.ScanRegression)
+            if (_calibrationType == LcmsWarpCalibrationType.NetRegression)
             {
                 throw new InvalidOperationException(
                     "Attempting to set MZ calibration of masses when option chosen was SCAN_CALIBRATION");
@@ -89,14 +90,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="aligneeNets"></param>
         /// <param name="referenceNets"></param>
         /// <param name="referenceScans"></param>
-        public void SetNetFunction(
-            IEnumerable<double> aligneeNets,
-            IEnumerable<double> referenceNets,
-            IEnumerable<double> referenceScans)
+        /// <param name="referenceTimes"></param>
+        public void SetNetFunction(IEnumerable<double> aligneeNets, IEnumerable<double> referenceNets,
+            IEnumerable<double> referenceScans, IEnumerable<double> referenceTimes)
         {
             _netFuncNetInput.AddRange(aligneeNets);
             _netFuncNetOutput.AddRange(referenceNets);
             _netFuncEstScanOutput.AddRange(referenceScans);
+            _netFuncTimeOutput.AddRange(referenceTimes);
         }
 
         /// <summary>

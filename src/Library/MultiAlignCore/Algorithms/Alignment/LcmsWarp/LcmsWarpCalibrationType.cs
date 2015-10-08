@@ -11,9 +11,9 @@
         MzRegression = 0,
 
         /// <summary>
-        /// Performs Regression based on the Scan of the features
+        /// Performs Regression based on the NET of the features
         /// </summary>
-        ScanRegression,
+        NetRegression,
 
         /// <summary>
         /// Performs a hybrid regression, performing MZ regression and then

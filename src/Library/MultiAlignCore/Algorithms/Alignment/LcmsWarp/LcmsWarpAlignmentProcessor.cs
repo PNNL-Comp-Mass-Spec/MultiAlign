@@ -12,9 +12,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// <summary>
     /// Class which will use LCMSWarp to process alignment
     /// </summary>
-    public sealed class LcmsWarpAlignmentProcessor :
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
+    public sealed class LcmsWarpAlignmentProcessor
     {
         private enum CurrentLcmsWarpTask
         {
@@ -33,9 +31,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         // are scaled to between 0 and 1. These will scale it back to actual scan numbers
         private int _minReferenceDatasetScan;
         private int _maxReferenceDatasetScan;
+        private double _minReferenceDatasetTime;
+        private double _maxReferenceDatasetTime;
 
         private int _minAligneeDatasetScan;
         private int _maxAligneeDatasetScan;
+        private double _minAligneeDatasetTime;
+        private double _maxAligneeDatasetTime;
         private double _minAligneeDatasetMz;
         private double _maxAligneeDatasetMz;
 
@@ -139,7 +141,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             else
             {
                 featureData = _lcmsWarp.GetFeatureCalibratedMassesAndAlignedNets(_minReferenceDatasetScan,
-                    _maxReferenceDatasetScan);
+                    _maxReferenceDatasetScan, _minReferenceDatasetTime, _maxReferenceDatasetTime);
             }
 
             var i = 0;
@@ -154,9 +156,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     data[i].NetStart = point.NetStart;
                     data[i].NetEnd = point.NetEnd;
                     data[i].DriftTime = point.DriftTime;
-                    if (_aligningToMassTagDb)
+                    if (!_aligningToMassTagDb)
                     {
                         data[i].ScanAligned = point.ScanAligned;
+                        data[i].DriftTimeAligned = point.DriftTimeAligned;
                     }
                 }
                 else
@@ -177,6 +180,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             _minAligneeDatasetScan = int.MaxValue;
             _maxAligneeDatasetScan = int.MinValue;
+            _minAligneeDatasetTime = double.MaxValue;
+            _maxAligneeDatasetTime = double.MinValue;
             _minAligneeDatasetMz = double.MaxValue;
             _maxAligneeDatasetMz = double.MinValue;
 
@@ -209,6 +214,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 _maxAligneeDatasetScan = Math.Max(_maxAligneeDatasetScan, feature.Scan);
                 _minAligneeDatasetScan = Math.Min(_minAligneeDatasetScan, feature.Scan);
+                _maxAligneeDatasetTime = Math.Max(_maxAligneeDatasetTime, feature.DriftTime);
+                _minAligneeDatasetTime = Math.Min(_minAligneeDatasetTime, feature.DriftTime);
                 _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, feature.Mz);
                 _minAligneeDatasetMz = Math.Min(_minAligneeDatasetMz, feature.Mz);
                 //}
@@ -228,8 +235,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             _minAligneeDatasetScan = int.MaxValue;
             _maxAligneeDatasetScan = int.MinValue;
+            _minAligneeDatasetTime = double.MaxValue;
+            _maxAligneeDatasetTime = double.MinValue;
             _minReferenceDatasetScan = int.MaxValue;
             _maxReferenceDatasetScan = int.MinValue;
+            _minReferenceDatasetTime = double.MaxValue;
+            _maxReferenceDatasetTime = double.MinValue;
             _minAligneeDatasetMz = int.MaxValue;
             _maxAligneeDatasetMz = int.MinValue;
 
@@ -248,6 +259,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     Id = data.Id,
                 });
 
+                _maxReferenceDatasetTime = Math.Max(_maxReferenceDatasetTime, data.DriftTime);
+                _minReferenceDatasetTime = Math.Min(_minReferenceDatasetTime, data.DriftTime);
                 _maxReferenceDatasetScan = Math.Max(_maxReferenceDatasetScan, data.Scan);
                 _minReferenceDatasetScan = Math.Min(_minReferenceDatasetScan, data.Scan);
                 _maxAligneeDatasetMz = Math.Max(_maxAligneeDatasetMz, data.Mz);
@@ -341,8 +354,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             else
             {
                 var referenceScans = referenceNets.Select(rNet => _minReferenceDatasetScan +
-                                             rNet * (_maxReferenceDatasetScan - _minReferenceDatasetScan)).ToList();
-                func.SetNetFunction(aligneeNets, referenceNets, referenceScans);
+                                             rNet * (_maxReferenceDatasetScan - _minReferenceDatasetScan));
+                var referenceTimes = referenceNets.Select(rNet => _minReferenceDatasetTime +
+                                             rNet * (_maxReferenceDatasetTime - _minReferenceDatasetTime));
+                func.SetNetFunction(aligneeNets, referenceNets, referenceScans, referenceTimes);
             }
 
             if (_options.AlignType == LcmsWarpAlignmentType.NET_WARP)
@@ -359,7 +374,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var aligneeNetMassFunc = new List<double>();
             var aligneePpmShiftMassFunc = new List<double>();
 
-            if (_options.CalibrationType == LcmsWarpCalibrationType.ScanRegression ||
+            if (_options.CalibrationType == LcmsWarpCalibrationType.NetRegression ||
                 _options.CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 // get the PPM for each knot
@@ -680,17 +695,5 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         #endregion region
-
-        public AlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee,
-            IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee,
-            IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -448,7 +448,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 case LcmsWarpCalibrationType.MzRegression:
                     ppmShift = MzRecalibration.GetPredictedValue(mz);
                     break;
-                case LcmsWarpCalibrationType.ScanRegression:
+                case LcmsWarpCalibrationType.NetRegression:
                     ppmShift = NetRecalibration.GetPredictedValue(net);
                     break;
                 case LcmsWarpCalibrationType.Both:
@@ -689,7 +689,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         /// <param name="minScan"></param>
         /// <param name="maxScan"></param>
-        public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets(int minScan, int maxScan)
+        /// <param name="minTime"></param>
+        /// <param name="maxTime"></param>
+        public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets(int minScan, int maxScan, double minTime, double maxTime)
         {
             return _features.OrderBy(x => x.Id).Select(x => new UMCLight
             {
@@ -699,7 +701,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 NetStart = x.NetStart,
                 NetEnd = x.NetEnd,
                 ScanAligned = minScan + (int) (x.NetAligned * (maxScan - minScan)),
-                DriftTime = x.DriftTime
+                DriftTime = x.DriftTime,
+                DriftTimeAligned = minTime + (x.NetAligned * (maxTime - minTime)),
             });
         }
 
@@ -861,7 +864,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 case LcmsWarpCalibrationType.MzRegression:
                     PerformMzMassErrorRegression();
                     break;
-                case LcmsWarpCalibrationType.ScanRegression:
+                case LcmsWarpCalibrationType.NetRegression:
                     PerformScanMassErrorRegression();
                     break;
                 case LcmsWarpCalibrationType.Both:
@@ -1236,9 +1239,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                     {
-                        var alignmentIndex = section * NumMatchesPerSection + baselineSection * NumMatchesPerBaseline +
-                                             sectionWidth;
-
                         var currentBestScore = double.MinValue;
                         var bestPreviousAlignmentIndex = new Index3D();
 
@@ -1374,14 +1374,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Given an NET value, return the appropriate ppm shift
-        /// Note: Requires LCMSWarp to be calibrating based on Scan Regression or
+        /// Note: Requires LCMSWarp to be calibrating based on Net Regression or
         /// Hybrid regression to process.
         /// </summary>
         /// <param name="net"></param>
         /// <returns></returns>
         public double GetPpmShiftFromNet(double net)
         {
-            if (CalibrationType == LcmsWarpCalibrationType.ScanRegression ||
+            if (CalibrationType == LcmsWarpCalibrationType.NetRegression ||
                 CalibrationType == LcmsWarpCalibrationType.Both)
             {
                 return NetRecalibration.GetPredictedValue(net);
