@@ -119,11 +119,11 @@ namespace AlignmentPaperTestSuite.Figures
                 var baselineDataset     = datasets[i];
 
                 // Load the baseline reference set
-                using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
+                using (var rawProviderX = new InformedProteomicsReader())
                 {
                     rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
                     // Load the baseline reference set
-                    using (var rawProviderY = RawLoaderFactory.CreateFileReader(aligneeDataset.RawPath))
+                    using (var rawProviderY = new InformedProteomicsReader())
                     {
                         rawProviderY.AddDataFile(aligneeDataset.RawPath, 0);
 

@@ -284,8 +284,7 @@ namespace MultiAlignTestSuite.Algorithms
                 var starTime = DateTime.Now;
                 foreach (var scan in scanData.Keys)
                 {
-                    ScanSummary summary;
-                    provider.GetRawSpectra(scan, 0, 1, out summary);
+                    provider.GetScanSummary(scan, 0);
                 }
                 var endTime = DateTime.Now;
 
@@ -305,7 +304,7 @@ namespace MultiAlignTestSuite.Algorithms
             {
                 provider.AddDataFile(path, 0);
                 ScanSummary summary;
-                provider.GetRawSpectra(10000000, 0, 1, out summary);
+                provider.GetScanSummary(10000000, 0);
             }
         }
 

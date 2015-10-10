@@ -326,7 +326,7 @@ namespace MultiAlignCore.Extensions
                                 continue;
 
                             // Here we create a data file reader for the file we want to access.
-                            var provider = RawLoaderFactory.CreateFileReader(singleInfo.RawPath);
+                            var provider = new InformedProteomicsReader();
                             // Then we make sure we key it to the provider.  
                             provider.AddDataFile(singleInfo.RawPath, feature.GroupId);
                             // Then make sure we map it for a dataset, so when we sort through a cluster

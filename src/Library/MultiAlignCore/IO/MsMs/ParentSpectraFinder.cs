@@ -89,7 +89,7 @@ namespace MultiAlignCore.IO.MsMs
             ISpectraProvider provider;
             if (!mRawDataProviders.TryGetValue(path, out provider))
             {
-                provider = RawLoaderFactory.CreateFileReader(path);
+                provider = new InformedProteomicsReader();
                 mRawDataProviders.Add(path, provider);
 
                 provider.AddDataFile(path, 0);

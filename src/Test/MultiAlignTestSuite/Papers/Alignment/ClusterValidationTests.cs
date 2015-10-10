@@ -448,7 +448,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilterOptions);
 
             // Load the baseline reference set
-            using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
+            using (var rawProviderX = new InformedProteomicsReader())
             {
                 rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
                 UpdateStatus("Creating Baseline LCMS Features.");
@@ -465,7 +465,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 {
                     var aligneeMsFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
                     aligneeMsFeatures = LcmsFeatureFilters.FilterMsFeatures(aligneeMsFeatures, msFilterOptions);
-                    using (var rawProviderY = RawLoaderFactory.CreateFileReader(dataset.RawPath))
+                    using (var rawProviderY = new InformedProteomicsReader())
                     {
                         rawProviderY.AddDataFile(dataset.RawPath, 0);
 

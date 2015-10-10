@@ -1,6 +1,8 @@
 ﻿#region
 
 using System.IO;
+using System.Linq;
+using InformedProteomics.Backend.MassSpecData;
 using MultiAlignCore.Data;
 
 #endregion
@@ -16,43 +18,31 @@ namespace MultiAlignCore.IO.RawData
         ///     Constructs a raw data file reader for reading the instrument (or equivalent) mass spectra.
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="register"></param>
         /// <returns></returns>
-        public static InformedProteomicsReader CreateFileReader(string name)
+        public static IScanSummaryProvider CreateFileReader(string name)
         {
             if (name == null)
                 return null;
 
-            // Just use InformedProteomics...
-            return new InformedProteomicsReader();
+            if (name.ToLower().EndsWith("_scans.csv"))
+            {
+                // DeconTools Scans file
+                return new ScanSummaryProvider();
+            }
 
-            //ISpectraProvider reader = null;
-            //var extension = Path.GetExtension(name);
-            //
-            //// Otherwise create a new one.
-            //switch (extension.ToLower())
-            //{
-            //    case ".raw":
-            //        reader = new ThermoRawDataFileReader();
-            //        break;
-            //    case ".mzxml":
-            //        reader = new MzXMLReader();
-            //        break;
-            //    case ".mzml":
-            //        reader = new InformedProteomicsReader();
-            //        break;
-            //    case ".gz":
-            //        if (name.ToLower().EndsWith(".mzml.gz"))
-            //        {
-            //            reader = new InformedProteomicsReader();
-            //        }
-            //        break;
-            //    default:
-            //        reader = new InformedProteomicsReader();
-            //        break;
-            //}
-            //
-            //return reader;
+            if (name.ToLower().Equals("analysis.db3"))
+            {
+                // Load from the database
+                return new ScanSummaryProvider();
+            }
+
+            // Just use InformedProteomics...
+            if (MassSpecDataReaderFactory.MassSpecDataTypeFilterList.Any(ext => name.ToLower().EndsWith(ext)))
+            {
+                return new InformedProteomicsReader();
+            }
+
+            return null;
         }
     }
 }

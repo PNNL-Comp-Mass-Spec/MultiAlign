@@ -77,7 +77,7 @@ namespace AlignmentPaperTestSuite.Figures
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
                 // create a raw file reader for the datasets
-                using (var readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
+                using (var readerX = new InformedProteomicsReader())
                 {
                     // wrap it in the cached object so we can load scan meta-data
                     var cacheReaderX = new RawLoaderCache(readerX);
@@ -95,7 +95,7 @@ namespace AlignmentPaperTestSuite.Figures
                         var datasetY = new AlignmentDataset(rawPathY, "", cachey.Msgf);
 
                         // create a raw file reader for the datasets
-                        using (var readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
+                        using (var readerY = new InformedProteomicsReader())
                         {
                             // Then the writer for creating a report
                             var writer =
