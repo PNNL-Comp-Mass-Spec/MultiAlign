@@ -19,6 +19,7 @@ namespace MultiAlignCore.IO.RawData
 
         private readonly Dictionary<int, string> m_dataFiles = new Dictionary<int, string>();
         private readonly Dictionary<int, bool> m_opened = new Dictionary<int, bool>();
+        private readonly Dictionary<int, Dictionary<int, ScanSummary>> m_summaries = new Dictionary<int, Dictionary<int, ScanSummary>>();
 
         /// <summary>
         ///     Gets or sets the map
@@ -30,7 +31,7 @@ namespace MultiAlignCore.IO.RawData
             
         }
 
-        #region ISpectraProvider and IRawDataFileReader
+        #region IScanSummaryProvider, ISpectraProvider and IRawDataFileReader
 
         /// <summary>
         /// Adds a dataset file to the reader map so when in use the application
@@ -64,7 +65,7 @@ namespace MultiAlignCore.IO.RawData
         }
 
         #endregion
-        #region ISpectraProvider
+        #region IScanSummaryProvider
 
         public int GetMinScan(int groupId)
         {
@@ -75,6 +76,60 @@ namespace MultiAlignCore.IO.RawData
         {
             return GetReaderForGroup(groupId).MaxLcScan;
         }
+
+        /// <summary>
+        ///     Retrieves a dictionary of scan data
+        /// </summary>
+        /// <param name="groupId">Group ID for dataset</param>
+        /// <returns>Map between </returns>
+        public Dictionary<int, ScanSummary> GetScanData(int groupId)
+        {
+            if (m_datasetMetaData.ContainsKey(groupId))
+            {
+                return m_datasetMetaData[groupId].ScanMetaData;
+            }
+
+            // Get the RawFileReader for this group
+            var ipbReader = GetReaderForGroup(groupId);
+
+            var datasetSummary = new DatasetSummary();
+            var scanMap = new Dictionary<int, ScanSummary>();
+            var numberOfScans = ipbReader.NumSpectra;
+            for (var i = 1; i <= numberOfScans; i++)
+            {
+                var summary = GetScanSummary(i, ipbReader, groupId);
+
+                scanMap.Add(i, summary);
+            }
+
+            datasetSummary.ScanMetaData = scanMap;
+
+            m_datasetMetaData.Add(groupId, datasetSummary);
+            return datasetSummary.ScanMetaData;
+        }
+
+        /// <summary>
+        /// Gets the scan header information for the specified scan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="groupId"></param>
+        public ScanSummary GetScanSummary(int scan, int groupId)
+        {
+            ScanSummary summary;
+            GetScanSummaryAndReader(scan, groupId, out summary);
+            return summary;
+        }
+
+        public int GetTotalScans(int groupId)
+        {
+            // Get the ILcMsRun for this group
+            var reader = GetReaderForGroup(groupId);
+
+            return reader.NumSpectra;
+        }
+
+        #endregion
+        #region ISpectraProvider
 
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the Raw file
@@ -111,7 +166,7 @@ namespace MultiAlignCore.IO.RawData
                     continue;
                 }
 
-                var summary = GetScanSummary(i, ipbReader);
+                var summary = GetScanSummary(i, ipbReader, groupId);
 
                 if (summary.MsLevel > 1)
                 {
@@ -181,61 +236,6 @@ namespace MultiAlignCore.IO.RawData
             return GetMSMSSpectra(groupId, new Dictionary<int, int>(), true);
         }
 
-        /// <summary>
-        ///     Retrieves a dictionary of scan data
-        /// </summary>
-        /// <param name="groupId">Group ID for dataset</param>
-        /// <returns>Map between </returns>
-        public Dictionary<int, ScanSummary> GetScanData(int groupId)
-        {
-            if (m_datasetMetaData.ContainsKey(groupId))
-            {
-                return m_datasetMetaData[groupId].ScanMetaData;
-            }
-
-            // Get the RawFileReader for this group
-            var ipbReader = GetReaderForGroup(groupId);
-
-            var datasetSummary = new DatasetSummary();
-            var scanMap = new Dictionary<int, ScanSummary>();
-            var numberOfScans = ipbReader.NumSpectra;
-            for (var i = 1; i <= numberOfScans; i++)
-            {
-                var summary = GetScanSummary(i, ipbReader);
-
-                scanMap.Add(i, summary);
-            }
-
-            datasetSummary.ScanMetaData = scanMap;
-
-            m_datasetMetaData.Add(groupId, datasetSummary);
-            return datasetSummary.ScanMetaData;
-        }
-
-        /// <summary>
-        /// Gets the scan header information for the specified scan
-        /// </summary>
-        /// <param name="scan"></param>
-        /// <param name="groupId"></param>
-        public ScanSummary GetScanSummary(int scan, int groupId)
-        {
-            ScanSummary summary;
-            GetScanSummaryAndReader(scan, groupId, out summary);
-            return summary;
-        }
-
-        private LcMsRun GetScanSummaryAndReader(int scan, int groupId, out ScanSummary summary)
-        {
-            // Get the RawFileReader for this group
-            var ipbReader = GetReaderForGroup(groupId);
-
-            scan = ValidateScanNumber(scan, ipbReader);
-
-            summary = GetScanSummary(scan, ipbReader);
-
-            return ipbReader;
-        }
-
         public MSSpectra GetSpectrum(int scan, int groupId, int scanLevel, out ScanSummary summary, bool loadPeaks)
         {
             // Get the RawFileReader for this group
@@ -243,7 +243,7 @@ namespace MultiAlignCore.IO.RawData
 
             scan = ValidateScanNumber(scan, ipbReader);
 
-            summary = GetScanSummary(scan, ipbReader);
+            summary = GetScanSummary(scan, ipbReader, groupId);
 
             var spectrum = new MSSpectra
             {
@@ -280,14 +280,6 @@ namespace MultiAlignCore.IO.RawData
             return spec.Peaks.Select(peak => new XYData(peak.Mz, peak.Intensity)).ToList();
         }
 
-        public int GetTotalScans(int groupId)
-        {
-            // Get the ILcMsRun for this group
-            var reader = GetReaderForGroup(groupId);
-
-            return reader.NumSpectra;
-        }
-
         public void Dispose()
         {
             //foreach (var key in m_readers.Keys)
@@ -315,6 +307,19 @@ namespace MultiAlignCore.IO.RawData
         #endregion
 
         #region New public functions
+
+        private LcMsRun GetScanSummaryAndReader(int scan, int groupId, out ScanSummary summary)
+        {
+            // Get the RawFileReader for this group
+            var ipbReader = GetReaderForGroup(groupId);
+
+            scan = ValidateScanNumber(scan, ipbReader);
+
+            summary = GetScanSummary(scan, ipbReader, groupId);
+
+            return ipbReader;
+        }
+
         public LcMsRun GetReaderForGroup(int groupId)
         {
             if (!m_dataFiles.ContainsKey(groupId))
@@ -356,8 +361,16 @@ namespace MultiAlignCore.IO.RawData
 
         #region Private functions
 
-        private ScanSummary GetScanSummary(int scan, LcMsRun ipbReader)
+        private ScanSummary GetScanSummary(int scan, LcMsRun ipbReader, int groupId)
         {
+            if (!m_summaries.ContainsKey(groupId))
+            {
+                m_summaries.Add(groupId, new Dictionary<int, ScanSummary>());
+            }
+            if (m_summaries[groupId].ContainsKey(scan))
+            {
+                return m_summaries[groupId][scan];
+            }
             // Peaks needed to calculate Total ion current
             var spec = ipbReader.GetSpectrum(scan, true);
 
@@ -398,6 +411,7 @@ namespace MultiAlignCore.IO.RawData
                         break;
                 }
             }
+            m_summaries[groupId].Add(scan, summary);
             return summary;
         }
 

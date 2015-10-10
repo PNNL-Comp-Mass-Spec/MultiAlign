@@ -160,7 +160,7 @@ namespace MultiAlignCore.IO
             List<MSFeatureLight> msFeatures,
             LcmsFeatureFindingOptions options,
             LcmsFeatureFilteringOptions filterOptions,
-            InformedProteomicsReader provider,
+            IScanSummaryProvider provider,
             IProgress<ProgressData> progress = null)
         {
             // Make features
@@ -224,7 +224,7 @@ namespace MultiAlignCore.IO
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
-            InformedProteomicsReader provider = null;
+            IScanSummaryProvider provider = null;
             if (dataset.RawPath != null && !string.IsNullOrWhiteSpace(dataset.RawPath))
             {
                 UpdateStatus("Using raw data to create better features.");
@@ -253,7 +253,7 @@ namespace MultiAlignCore.IO
             progData.Status = "Loading scan summaries.";
             ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             ////dataset.BuildScanTimes(scansInfo);
-            dataset.BuildScanTimes(provider.GetReaderForGroup(0));
+            dataset.BuildScanTimes(provider, 0);
             
             progData.StepRange(100);
 

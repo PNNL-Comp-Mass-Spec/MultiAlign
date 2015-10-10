@@ -6,7 +6,7 @@ namespace MultiAlignCore.Data
     /// <summary>
     /// Interface for objects that have access to raw data.
     /// </summary>
-    public interface ISpectraProvider: IDisposable
+    public interface ISpectraProvider: IScanSummaryProvider, IDisposable
     {
         /// <summary>
         /// Retrieves the scan from the underlying stream.
@@ -56,45 +56,5 @@ namespace MultiAlignCore.Data
         /// <param name="loadPeaks"></param>
         /// <returns></returns>
         List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks);
-
-        /// <summary>
-        /// Adds a file ID to the path for multi-file support.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="groupId"></param>
-        void AddDataFile(string path, int groupId);  
-    
-        /// <summary>
-        /// Retrieves the scan data for the given dataset ID (i.e. group ID)
-        /// </summary>
-        /// <param name="groupId">Group identifier</param>
-        /// <returns>Mapped scan header data based on scan ID</returns>
-        Dictionary<int, ScanSummary> GetScanData(int groupId);
-
-        /// <summary>
-        /// Retrieves the scan header from the underlying stream.
-        /// </summary>
-        ScanSummary GetScanSummary(int scan, int group);
-
-        /// <summary>
-        /// Gets the total number of scans
-        /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Total scans for that dataset.</returns>
-        int GetTotalScans(int group);
-
-        /// <summary>
-        /// Gets the lowest scan number
-        /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Lowest scan number for that dataset</returns>
-        int GetMinScan(int group);
-
-        /// <summary>
-        /// Gets the highest scan number
-        /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Highest scan number for that dataset</returns>
-        int GetMaxScan(int group);
     }
 }

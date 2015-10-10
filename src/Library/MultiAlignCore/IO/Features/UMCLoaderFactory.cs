@@ -42,7 +42,7 @@ namespace MultiAlignCore.IO.Features
         ///     Loads feature data from the files provided.
         /// </summary>
         /// <returns></returns>
-        public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset, IUmcDAO featureCache, InformedProteomicsReader provider = null)
+        public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset, IUmcDAO featureCache, IScanSummaryProvider provider = null)
         {
             var features = new List<UMCLight>();
             var extension = Path.GetExtension(dataset.Features.Path);
@@ -59,9 +59,9 @@ namespace MultiAlignCore.IO.Features
                     features = featureCache.FindByDatasetId(dataset.DatasetId);
                     break;
                 case ".MS1FT":
-                    if (provider != null)
+                    if (provider != null && provider is InformedProteomicsReader)
                     {
-                        var promexReader = new PromexFileReader(provider, dataset.DatasetId);
+                        var promexReader = new PromexFileReader(provider as InformedProteomicsReader, dataset.DatasetId);
                         features = promexReader.ReadFile(dataset.Features.Path).ToList();   
                     }
                     break;

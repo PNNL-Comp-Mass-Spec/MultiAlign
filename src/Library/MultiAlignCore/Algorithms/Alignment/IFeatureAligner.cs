@@ -17,10 +17,10 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the baseline spectra provider
         /// </summary>
-        ISpectraProvider BaselineSpectraProvider { get; set; }
+        IScanSummaryProvider BaselineSpectraProvider { get; set; }
         /// <summary>
         /// Gets or sets the alignee spectra provider.
         /// </summary>
-        ISpectraProvider AligneeSpectraProvider { get; set; }
+        IScanSummaryProvider AligneeSpectraProvider { get; set; }
     }
 }

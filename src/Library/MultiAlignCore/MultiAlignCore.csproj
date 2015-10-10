@@ -381,6 +381,7 @@
     <Compile Include="Data\Features\UMCClusterLightMatched.cs" />
     <Compile Include="Data\Features\UMCExtended.cs" />
     <Compile Include="Data\Features\UMCLight.cs" />
+    <Compile Include="Data\IScanSummaryProvider.cs" />
     <Compile Include="Data\MassTags\CleavageState.cs" />
     <Compile Include="Data\MassTags\FeatureMatchLight.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />

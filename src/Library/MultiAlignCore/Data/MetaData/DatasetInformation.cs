@@ -316,7 +316,17 @@ namespace MultiAlignCore.Data.MetaData
                 scanTimeMap.Add(scan.Scan, scan.Time);
             }
             this.ScanTimes = scanTimeMap;
-        } 
+        }
+
+        public void BuildScanTimes(IScanSummaryProvider provider, int groupId)
+        {
+            Dictionary<int, double> scanTimeMap = new Dictionary<int, double>();
+            foreach (var scan in provider.GetScanData(groupId))
+            {
+                scanTimeMap.Add(scan.Key, scan.Value.Time);
+            }
+            this.ScanTimes = scanTimeMap;
+        }
 
         public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)
         {

@@ -22,12 +22,12 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         ///     Gets or sets the baseline spectra provider
         /// </summary>
-        public ISpectraProvider BaselineSpectraProvider { get; set; }
+        public IScanSummaryProvider BaselineSpectraProvider { get; set; }
 
         /// <summary>
         ///     Gets or sets the alignee spectra provider.
         /// </summary>
-        public ISpectraProvider AligneeSpectraProvider { get; set; }
+        public IScanSummaryProvider AligneeSpectraProvider { get; set; }
 
         private void OnStatus(string message)
         {

@@ -14,6 +14,6 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
                                     LcmsFeatureFindingOptions   options,                                     
-                                    ISpectraProvider provider);
+                                    IScanSummaryProvider provider);
     }
 }

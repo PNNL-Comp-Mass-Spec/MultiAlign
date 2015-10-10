@@ -90,11 +90,6 @@ namespace MultiAlignCore.Algorithms.Clustering
         [UsedImplicitly]
         public int ScanTolerance { get; set; }
 
-        /// <summary>
-        /// Gets or sets the object that can be used to go back to the raw data to grab XIC's
-        /// </summary>
-        public InformedProteomicsReader SpectraProvider { get; set; }
-
         public List<TParentFeature> Cluster(List<TChildFeature> data, List<TParentFeature> clusters, IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();

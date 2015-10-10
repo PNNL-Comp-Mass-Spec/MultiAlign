@@ -41,7 +41,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
 
         public Dictionary<int, int> LinkMSFeaturesToMSn(List<MSFeatureLight> features,
             List<MSSpectra> fragmentSpectra,
-            ISpectraProvider provider)
+            IScanSummaryProvider provider)
         {
             return LinkMSFeaturesToMSn(features, fragmentSpectra);
         }

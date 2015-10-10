@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Chromatograms;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.RawData;
@@ -20,7 +21,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Spectra provider for extracting XICs and MS/MS spectra data.
         /// </summary>
-        private readonly InformedProteomicsReader provider;
+        private readonly IScanSummaryProvider provider;
 
         /// <summary>
         /// Clusterer for first pass clustering.
@@ -37,7 +38,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         private readonly LcmsFeatureFindingOptions options;
         
-        public MsToLcmsFeatures(InformedProteomicsReader provider, LcmsFeatureFindingOptions options = null)
+        public MsToLcmsFeatures(IScanSummaryProvider provider, LcmsFeatureFindingOptions options = null)
         {
             if (provider == null)
             {
@@ -117,7 +118,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
 
                 // Step 2
-                if (this.options.FindXics)
+                if (this.options.FindXics && this.provider is InformedProteomicsReader)
                 {
                     stopWatch.Restart();
                     progressData.Status = "Creating Xics";
@@ -149,11 +150,10 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="rawFeatures">The raw features to set nets for.</param>
         private void SetNets(List<MSFeatureLight> rawFeatures)
         {
-            var reader = this.provider.GetReaderForGroup(0);
-            var max = reader.GetElutionTime(reader.MaxLcScan);
-            var min = reader.GetElutionTime(reader.MinLcScan);
+            var max = this.provider.GetScanSummary(this.provider.GetMaxScan(0), 0).Time;
+            var min = this.provider.GetScanSummary(this.provider.GetMinScan(0), 0).Time;
             var diff = max - min;
-            rawFeatures.ForEach(feat => feat.Net = (reader.GetElutionTime(feat.Scan) - min) / diff);
+            rawFeatures.ForEach(feat => feat.Net = (this.provider.GetScanSummary(feat.Scan, 0).Time - min) / diff);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             return xicCreator.CreateXicNew(
                             umcLights,
                             this.options.InstrumentTolerances.Mass,
-                            provider,
+                            provider as InformedProteomicsReader,
                             this.options.RefineXics,
                             progress).ToList();
         }

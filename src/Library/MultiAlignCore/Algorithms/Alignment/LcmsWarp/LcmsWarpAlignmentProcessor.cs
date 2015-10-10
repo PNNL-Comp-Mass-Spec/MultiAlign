@@ -880,8 +880,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return data;
         }
        
-        public ISpectraProvider BaselineSpectraProvider { get; set; }
-        public ISpectraProvider AligneeSpectraProvider  { get; set; }
+        public IScanSummaryProvider BaselineSpectraProvider { get; set; }
+        public IScanSummaryProvider AligneeSpectraProvider  { get; set; }
 
         #region ProgressReporting
 

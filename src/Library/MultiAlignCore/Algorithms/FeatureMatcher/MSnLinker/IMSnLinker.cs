@@ -25,7 +25,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
         /// <param name="fragmentSpectra">Fragmentation spectra to link</param>
         /// <param name="rawSpectraProvider">Provider that provides access to raw scans if more data is required.</param>
         /// <returns>The number of a times a MSn spectra was mapped to a feature using the spectrum ID as a key.</returns>
-        Dictionary<int, int> LinkMSFeaturesToMSn(List<MSFeatureLight> features, List<MSSpectra> fragmentSpectra, ISpectraProvider rawSpectraProvider);
+        Dictionary<int, int> LinkMSFeaturesToMSn(List<MSFeatureLight> features, List<MSSpectra> fragmentSpectra, IScanSummaryProvider rawSpectraProvider);
         /// <summary>
         /// Links MS Features to MSMS Spectra.
         /// </summary>

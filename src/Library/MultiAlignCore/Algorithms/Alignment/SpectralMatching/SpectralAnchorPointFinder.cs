@@ -197,6 +197,10 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                                                                         SpectralOptions    options,
                                                                         bool               skipComparison = false)
         {
+            if (readerX == null || readerY == null)
+            {
+                throw new ArgumentNullException();
+            }
             var matches = new List<SpectralAnchorPointMatch>();
             var scanDataX  = readerX.GetScanData(0);
             var scanDataY  = readerY.GetScanData(0);

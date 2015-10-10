@@ -18,7 +18,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// </summary>
         List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
                                     LcmsFeatureFindingOptions options,
-                                    ISpectraProvider provider,
+                                    IScanSummaryProvider provider,
                                     IProgress<ProgressData> progress = null);
     }
 }

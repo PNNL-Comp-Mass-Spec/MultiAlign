@@ -33,11 +33,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Gets or sets the baseline spectra provider
         /// </summary>
-        public ISpectraProvider BaselineSpectraProvider { get; set; }
+        public IScanSummaryProvider BaselineSpectraProvider { get; set; }
         /// <summary>
         /// Gets or sets the alignee spectra provider.
         /// </summary>
-        public ISpectraProvider AligneeSpectraProvider { get; set; }
+        public IScanSummaryProvider AligneeSpectraProvider { get; set; }
 
         /// <summary>
         /// Method to align two UMCLight Enumerables, the first parameter

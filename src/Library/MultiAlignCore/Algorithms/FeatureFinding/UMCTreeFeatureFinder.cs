@@ -41,7 +41,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindFeatures(List<MSFeatureLight> msFeatures,
-            LcmsFeatureFindingOptions options, ISpectraProvider provider, 
+            LcmsFeatureFindingOptions options, IScanSummaryProvider provider, 
             IProgress<ProgressData> progress = null)
         {
             if (provider == null)
@@ -55,7 +55,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 Net = options.MaximumNetRange
             };
 
-            var clusterer = new MsToLcmsFeatures((InformedProteomicsReader) provider, options);
+            var clusterer = new MsToLcmsFeatures(provider, options);
 
             // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
             //var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
@@ -96,86 +96,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     continue;
                 feature.Net = (provider.GetScanSummary(feature.Scan, 0).Time - minScanTime) /
                               (maxScanTime - minScanTime);
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
-                feature.Id = id++;
-                newFeatures.Add(feature);
-                //Sets the width of the feature to be the width of the peak, not the width of the tails
-                var maxAbundance = double.MinValue;
-                var maxAbundanceIndex = 0;
-                for (var msFeatureIndex = 0; msFeatureIndex < feature.MsFeatures.Count - 1; msFeatureIndex++)
-                {
-                    var msFeature = feature.MsFeatures[msFeatureIndex];
-                    if (msFeature.Abundance > maxAbundance)
-                    {
-                        maxAbundance = msFeature.Abundance;
-                        maxAbundanceIndex = msFeatureIndex;
-                    }
-                }
-                for (var msFeatureIndex = maxAbundanceIndex; msFeatureIndex > 0; msFeatureIndex--)
-                {
-                    if (feature.MsFeatures[msFeatureIndex].Abundance / maxAbundance <= 0.05)
-                    {
-                        feature.ScanStart = feature.MsFeatures[msFeatureIndex].Scan;
-                        break;
-                    }
-                }
-                for (var msFeatureIndex = maxAbundanceIndex; msFeatureIndex < feature.MsFeatures.Count - 1; msFeatureIndex++)
-                {
-                    if (feature.MsFeatures[msFeatureIndex].Abundance / maxAbundance <= 0.05)
-                    {
-                        feature.ScanEnd = feature.MsFeatures[msFeatureIndex].Scan;
-                        break;
-                    }
-                }
-            }
-            return features;
-        }
-
-        /// <summary>
-        ///     Finds features
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Does not provide means to properly determine elution time")]
-        public List<UMCLight> FindFeatures(List<MSFeatureLight> msFeatures,
-            LcmsFeatureFindingOptions options,
-            ISpectraProvider provider)
-        {
-            // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-            var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
-            {
-                Tolerances =
-                    new FeatureTolerances
-                    {
-                        Mass = options.InstrumentTolerances.Mass,
-                        Net = options.MaximumNetRange
-                    },
-                ScanTolerance = options.MaximumScanRange,
-                SpectraProvider = (InformedProteomicsReader)provider
-                //TODO: Make sure we have a mass range for XIC's too....
-            };
-
-            clusterer.SpectraProvider = (InformedProteomicsReader)provider;
-
-            OnStatus("Starting cluster definition");
-            clusterer.Progress += (sender, args) => OnStatus(args.Message);
-
-            var features = clusterer.Cluster(msFeatures);
-
-            var minScan = int.MaxValue;
-            var maxScan = int.MinValue;
-            foreach (var feature in msFeatures)
-            {
-                minScan = Math.Min(feature.Scan, minScan);
-                maxScan = Math.Max(feature.Scan, maxScan);
-            }
-
-            var id = 0;
-            var newFeatures = new List<UMCLight>();
-            foreach (var feature in features)
-            {
-                if (feature.MsFeatures.Count < 1)
-                    continue;
-                feature.Net = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
                 feature.Id = id++;
                 newFeatures.Add(feature);
