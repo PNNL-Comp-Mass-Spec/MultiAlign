@@ -130,7 +130,7 @@
                     <GroupBox Grid.Row="1">
                         <GroupBox.Header>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCreateXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCreateXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanCreateXics, UpdateSourceTrigger=PropertyChanged}">
                                     Extracted Ion Chromatograms
                                 </CheckBox>
                             </StackPanel>

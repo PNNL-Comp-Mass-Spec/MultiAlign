@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using InformedProteomics.Backend.Utils;
@@ -6,6 +7,7 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Hibernate;
+using MultiAlignCore.IO.RawData;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
@@ -106,6 +108,16 @@ namespace MultiAlignRogue.Feature_Finding
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
                                         () => this.Datasets.Any(ds => ds.IsAligned));
+
+            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawPath))
+                    .Any(reader => reader != null && reader is ISpectraProvider);
+            // Add an event listener to update CanCreateXics whenever the Datasets collection changes
+            Datasets.CollectionChanged += (sender, args) =>
+            {
+                this.CanCreateXics = datasets.Select(
+                    dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawPath))
+                    .Any(reader => reader != null && reader is ISpectraProvider);
+            };
         }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
@@ -157,6 +169,21 @@ namespace MultiAlignRogue.Feature_Finding
                 this.RaisePropertyChanged();
             }
         }
+
+        public bool CanCreateXics
+        {
+            get { return this.canCreateXics; }
+            set
+            {
+                if (this.canCreateXics != value)
+                {
+                    this.canCreateXics = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool canCreateXics = false;
 
         public double MinimumFeatureLength
         {
@@ -369,12 +396,12 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldCreateXics
         {
-            get { return this.analysis.Options.LcmsFindingOptions.FindXics; }
+            get { return this.analysis.Options.LcmsFindingOptions.FindXics && this.CanCreateXics; }
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.FindXics != value)
                 {
-                    this.analysis.Options.LcmsFindingOptions.FindXics = value;
+                    this.analysis.Options.LcmsFindingOptions.FindXics = value && this.CanCreateXics;
                     this.RaisePropertyChanged();
                 }
             }
@@ -382,12 +409,12 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldRefineXics
         {
-            get { return this.analysis.Options.LcmsFindingOptions.RefineXics; }
+            get { return this.analysis.Options.LcmsFindingOptions.RefineXics && this.CanCreateXics; }
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.RefineXics != value)
                 {
-                    this.analysis.Options.LcmsFindingOptions.RefineXics = value;
+                    this.analysis.Options.LcmsFindingOptions.RefineXics = value && this.CanCreateXics;
                     this.RaisePropertyChanged();
                 }
             }
