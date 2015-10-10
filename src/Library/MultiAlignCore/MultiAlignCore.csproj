@@ -506,6 +506,7 @@
     <Compile Include="IO\Hibernate\MSnFeatureToMSFeatureDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\NHibernateUtil.cs" />
     <Compile Include="IO\Hibernate\ProteinDAO.cs" />
+    <Compile Include="IO\Hibernate\ScanSummaryDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\STACDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\UmcClusterDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\UmcDAOHibernate.cs" />
@@ -547,11 +548,9 @@
     <Compile Include="IO\Proteins\PeptideScanWriter.cs" />
     <Compile Include="IO\RawData\CachedFeatureSpectraProvider.cs" />
     <Compile Include="IO\RawData\InformedProteomicsReader.cs" />
-    <Compile Include="IO\RawData\IRawDataFileReader.cs" />
-    <Compile Include="IO\RawData\MzXMLReader.cs" />
     <Compile Include="IO\RawData\RawLoaderFactory.cs" />
     <Compile Include="IO\RawData\ScanOutOfRangeException.cs" />
-    <Compile Include="IO\RawData\ThermoRawDataFileReader.cs" />
+    <Compile Include="IO\RawData\ScanSummaryProvider.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\Reports\AnalysisReportGenerator.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
@@ -597,6 +596,7 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="IO\Hibernate\Mappings\ScanSummary.hbm.xml" />
     <EmbeddedResource Include="IO\Hibernate\Mappings\AlignmentData.hbm.xml" />
     <EmbeddedResource Include="IO\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
     <EmbeddedResource Include="IO\Hibernate\Mappings\Dataset.hbm.xml" />

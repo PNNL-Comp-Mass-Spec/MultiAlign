@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InformedProteomics.Backend;
 using InformedProteomics.Backend.Data.Spectrometry;
 using InformedProteomics.Backend.MassSpecData;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.RawData
 {
-    public class InformedProteomicsReader : ISpectraProvider, IRawDataFileReader
+    public class InformedProteomicsReader : ISpectraProvider
     {
         /// <summary>
         ///     Readers for each dataset.
@@ -19,19 +16,17 @@ namespace MultiAlignCore.IO.RawData
 
         private readonly Dictionary<int, string> m_dataFiles = new Dictionary<int, string>();
         private readonly Dictionary<int, bool> m_opened = new Dictionary<int, bool>();
-        private readonly Dictionary<int, Dictionary<int, ScanSummary>> m_summaries = new Dictionary<int, Dictionary<int, ScanSummary>>();
-
         /// <summary>
-        ///     Gets or sets the map
+        ///     Internal map of scan summaries, to avoid reading the scan summary data from the file each time.
         /// </summary>
-        private readonly Dictionary<int, DatasetSummary> m_datasetMetaData = new Dictionary<int, DatasetSummary>();
+        private readonly Dictionary<int, DatasetSummary> m_summaries = new Dictionary<int, DatasetSummary>();
 
         public InformedProteomicsReader()
         {
             
         }
 
-        #region IScanSummaryProvider, ISpectraProvider and IRawDataFileReader
+        #region IScanSummaryProvider, ISpectraProvider
 
         /// <summary>
         /// Adds a dataset file to the reader map so when in use the application
@@ -84,15 +79,9 @@ namespace MultiAlignCore.IO.RawData
         /// <returns>Map between </returns>
         public Dictionary<int, ScanSummary> GetScanData(int groupId)
         {
-            if (m_datasetMetaData.ContainsKey(groupId))
-            {
-                return m_datasetMetaData[groupId].ScanMetaData;
-            }
-
             // Get the RawFileReader for this group
             var ipbReader = GetReaderForGroup(groupId);
 
-            var datasetSummary = new DatasetSummary();
             var scanMap = new Dictionary<int, ScanSummary>();
             var numberOfScans = ipbReader.NumSpectra;
             for (var i = 1; i <= numberOfScans; i++)
@@ -102,10 +91,7 @@ namespace MultiAlignCore.IO.RawData
                 scanMap.Add(i, summary);
             }
 
-            datasetSummary.ScanMetaData = scanMap;
-
-            m_datasetMetaData.Add(groupId, datasetSummary);
-            return datasetSummary.ScanMetaData;
+            return scanMap;
         }
 
         /// <summary>
@@ -297,14 +283,6 @@ namespace MultiAlignCore.IO.RawData
         }
 
         #endregion
-        #region IRawDataFileReader
-
-        public List<MSSpectra> ReadMSMSSpectra(string file)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
 
         #region New public functions
 
@@ -365,11 +343,14 @@ namespace MultiAlignCore.IO.RawData
         {
             if (!m_summaries.ContainsKey(groupId))
             {
-                m_summaries.Add(groupId, new Dictionary<int, ScanSummary>());
+                m_summaries.Add(groupId, new DatasetSummary
+                {
+                    ScanMetaData = new Dictionary<int, ScanSummary>()
+                });
             }
-            if (m_summaries[groupId].ContainsKey(scan))
+            if (m_summaries[groupId].ScanMetaData.ContainsKey(scan))
             {
-                return m_summaries[groupId][scan];
+                return m_summaries[groupId].ScanMetaData[scan];
             }
             // Peaks needed to calculate Total ion current
             var spec = ipbReader.GetSpectrum(scan, true);
@@ -382,6 +363,7 @@ namespace MultiAlignCore.IO.RawData
                 TotalIonCurrent = Convert.ToInt64(spec.TotalIonCurrent), // Only used in MultiAlignCore.Algorithms.Chromatograms.XicCreator.CreateXic(...)
                 PrecursorMz = 0,
                 CollisionType = CollisionType.Other,
+                DatasetId = groupId,
             };
 
             if (spec is ProductSpectrum)
@@ -411,7 +393,7 @@ namespace MultiAlignCore.IO.RawData
                         break;
                 }
             }
-            m_summaries[groupId].Add(scan, summary);
+            m_summaries[groupId].ScanMetaData.Add(scan, summary);
             return summary;
         }
 

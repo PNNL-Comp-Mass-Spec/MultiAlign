@@ -1,7 +1,9 @@
 #region
 
+using MultiAlignCore.Data;
 using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.Datasets;
+using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.MassTags;
 using MultiAlignCore.IO.MsMs;
 using MultiAlignCore.IO.SequenceData;
@@ -118,5 +120,7 @@ namespace MultiAlignCore.IO.Features
         ///     Gets or sets the data acces object to MS features.
         /// </summary>
         public IMSnFeatureDAO MSnFeatureCache { get; set; }
+
+        public ScanSummaryDAOHibernate ScanSummaryCache { get; set; }
     }
 }

@@ -253,6 +253,10 @@ namespace MultiAlignCore.IO
             progData.Status = "Loading scan summaries.";
             ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             ////dataset.BuildScanTimes(scansInfo);
+            var ssDao = Providers.ScanSummaryCache;
+            ssDao.DeleteByDatasetId(dataset.DatasetId);
+            // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
+            ssDao.AddAllStateless(provider.GetScanData(0).Values.Select(summ => { summ.DatasetId = datasetId; return summ; }).ToList());
             dataset.BuildScanTimes(provider, 0);
             
             progData.StepRange(100);

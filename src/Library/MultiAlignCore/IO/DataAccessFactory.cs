@@ -65,7 +65,10 @@ namespace MultiAlignCore.IO
                     new DatasetToFactorDAOHibernate(),
                     new MSMSClusterMapClusterDAOHibernate(),
                     new DatabaseSearchSequenceDAOHibernate(),
-                    sequenceMap);
+                    sequenceMap)
+                {
+                    ScanSummaryCache = new ScanSummaryDAOHibernate(),
+                };
 
             return providers;
         }
