@@ -824,7 +824,8 @@ namespace MultiAlignCore.Algorithms
             // Create dataset information.
             Logger.PrintMessage("Creating dataset and other input information.");
 
-            var datasets = DatasetInformation.CreateDatasetsFromInputFile(analysisSetupInformation.Files);
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(analysisSetupInformation.Files, false);
             analysis.MetaData.Datasets.AddRange(datasets);
 
             if (insertIntoDatabase)

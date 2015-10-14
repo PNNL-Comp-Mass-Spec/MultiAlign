@@ -12,6 +12,8 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.Data.MetaData
 {
+    using MultiAlignCore.Extensions;
+
     /// <summary>
     ///     Class that holds meta-data information about the analysis.
     /// </summary>
@@ -131,72 +133,9 @@ namespace MultiAlignCore.Data.MetaData
         /// <returns>A list of added datasets</returns>
         public List<DatasetInformation> AddInputFiles(List<InputFile> inputFiles)
         {
-            var addedSets = new List<DatasetInformation>();
-            var datasetMap = new Dictionary<string, DatasetInformation>();
-
-            foreach (var x in Datasets)
-            {
-                datasetMap.Add(x.DatasetName, x);
-            }
-
-            var inputMap = new Dictionary<string, List<InputFile>>();
-
-            foreach (var file in inputFiles)
-            {
-                var name = Path.GetFileName(file.Path);
-                var datasetName = DatasetInformation.ExtractDatasetName(name);
-                var isEntryMade = inputMap.ContainsKey(datasetName);
-                if (!isEntryMade)
-                {
-                    inputMap.Add(datasetName, new List<InputFile>());
-                }
-
-                inputMap[datasetName].Add(file);
-            }
-
-            var i = 0;
-            foreach (var datasetName in inputMap.Keys)
-            {
-                var files = inputMap[datasetName];
-                var datasetInformation = new DatasetInformation();
-                datasetInformation.DatasetId = i++;
-                datasetInformation.DatasetName = datasetName;
-
-                var doesDatasetExist = datasetMap.ContainsKey(datasetName);
-
-                // Here we map the old dataset if it existed already.
-                if (datasetMap.ContainsKey(datasetName))
-                {
-                    datasetInformation = datasetMap[datasetName];
-                }
-
-                foreach (var file in files)
-                {
-                    switch (file.FileType)
-                    {
-                        case InputFileType.Features:
-                            datasetInformation.Features = file;
-                            datasetInformation.Path = file.Path;
-                            break;
-                        case InputFileType.Scans:
-                            datasetInformation.Scans = file;
-                            break;
-                        case InputFileType.Raw:
-                            datasetInformation.Raw = file;
-                            break;
-                        case InputFileType.Sequence:
-                            datasetInformation.Sequence = file;
-                            break;
-                    }
-                }
-
-                /// Add the dataset
-                if (!doesDatasetExist)
-                {
-                    addedSets.Add(datasetInformation);
-                    Datasets.Add(datasetInformation);
-                }
-            }
+            var datasetLoader = new DatasetLoader();
+            var addedSets = datasetLoader.GetValidDatasets(inputFiles, false);
+            this.Datasets.AddRange(addedSets);
 
             // Reformat their Id's
             var id = 0;

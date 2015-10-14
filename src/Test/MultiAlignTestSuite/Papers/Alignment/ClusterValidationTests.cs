@@ -148,15 +148,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
             string matchPath)
         {
             // Loads the supported MultiAlign types 
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
             // Find our datasets
-            var inputFiles = DatasetSearcher.FindDatasets(directory,
-                extensions,
-                SearchOption.TopDirectoryOnly);
-            var datasets = DatasetInformation.ConvertInputFilesIntoDatasets(inputFiles);
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(directory, extensions, SearchOption.TopDirectoryOnly);
 
             // Options setup
             var instrumentOptions = InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap);
@@ -205,15 +203,15 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var features = new List<MSFeatureLight>();
 
             // Load the baseline reference set
-            using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
+            using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawFile.Path))
             {
-                rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
+                rawProviderX.AddDataFile(baselineDataset.RawFile.Path, 0);
                 UpdateStatus("Creating Baseline LCMS Features.");
                 var baselineFeatures = finderFinder.FindFeatures(msFeatures,
                     featureFindingOptions,
                     rawProviderX);
 
-                LinkPeptidesToFeatures(baselineDataset.SequencePath,
+                LinkPeptidesToFeatures(baselineDataset.Sequence.Path,
                     baselineFeatures,
                     peptideOptions.Fdr,
                     peptideOptions.IdScore);
@@ -341,15 +339,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var errorPath = string.Format("{0}-errors.txt", outputPath);
 
             // Loads the supported MultiAlign types 
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
             // Find our datasets
-            var inputFiles = DatasetSearcher.FindDatasets(directory,
-                extensions,
-                SearchOption.TopDirectoryOnly);
-            var datasets = DatasetInformation.ConvertInputFilesIntoDatasets(inputFiles);
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(directory, extensions, SearchOption.TopDirectoryOnly);
 
             // Setup our alignment options
             var alignmentOptions = new AlignmentOptions();
@@ -450,12 +446,12 @@ namespace MultiAlignTestSuite.Papers.Alignment
             // Load the baseline reference set
             using (var rawProviderX = new InformedProteomicsReader())
             {
-                rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
+                rawProviderX.AddDataFile(baselineDataset.RawFile.Path, 0);
                 UpdateStatus("Creating Baseline LCMS Features.");
                 var baselineFeatures = featureFinder.FindFeatures(msFeatures,
                     featureFindingOptions,
                     rawProviderX);
-                LinkPeptidesToFeatures(baselineDataset.SequencePath, baselineFeatures, peptideOptions.Fdr,
+                LinkPeptidesToFeatures(baselineDataset.Sequence.Path, baselineFeatures, peptideOptions.Fdr,
                     peptideOptions.IdScore);
 
                 var providerX = new CachedFeatureSpectraProvider(rawProviderX, baselineFeatures);
@@ -467,13 +463,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     aligneeMsFeatures = LcmsFeatureFilters.FilterMsFeatures(aligneeMsFeatures, msFilterOptions);
                     using (var rawProviderY = new InformedProteomicsReader())
                     {
-                        rawProviderY.AddDataFile(dataset.RawPath, 0);
+                        rawProviderY.AddDataFile(dataset.RawFile.Path, 0);
 
                         UpdateStatus("Finding alignee features");
                         var aligneeFeatures = featureFinder.FindFeatures(aligneeMsFeatures,
                             featureFindingOptions,
                             rawProviderY);
-                        LinkPeptidesToFeatures(dataset.SequencePath, aligneeFeatures, peptideOptions.Fdr,
+                        LinkPeptidesToFeatures(dataset.Sequence.Path, aligneeFeatures, peptideOptions.Fdr,
                             peptideOptions.IdScore);
 
                         var providerY = new CachedFeatureSpectraProvider(rawProviderY, aligneeFeatures);

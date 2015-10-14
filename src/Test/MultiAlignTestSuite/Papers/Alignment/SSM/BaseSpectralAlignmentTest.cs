@@ -106,8 +106,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 raw.AddDataFile(rawFile, 0);
 
                 var info = new DatasetInformation();
-                info.Features = new InputFile();
-                info.Features.Path = featureFile;
+
+                info.InputFiles.Add(new InputFile { Path = featureFile, FileType = InputFileType.Features });
 
                 var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
 

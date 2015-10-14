@@ -106,19 +106,21 @@ namespace MultiAlignTestSuite.Algorithms
             var baselineInfo = new DatasetInformation
             {
                 DatasetId = 0,
-                Features = new InputFile {Path = baseline},
-                Raw = new InputFile {Path = baselineRaw},
-                Sequence = new InputFile {Path = sequencePath}
             };
+
+            baselineInfo.InputFiles.Add(new InputFile { Path = baseline, FileType = InputFileType.Features });
+            baselineInfo.InputFiles.Add(new InputFile { Path = baselineRaw, FileType = InputFileType.Raw });
+            baselineInfo.InputFiles.Add(new InputFile { Path = sequencePath, FileType = InputFileType.Sequence });
 
             Console.WriteLine("Create Alignee Information");
             var aligneeInfo = new DatasetInformation
             {
                 DatasetId = 1,
-                Features = new InputFile {Path = features},
-                Raw = new InputFile {Path = featuresRaw},
-                Sequence = new InputFile {Path = sequencePath}
             };
+
+            aligneeInfo.InputFiles.Add(new InputFile { Path = features, FileType = InputFileType.Features });
+            aligneeInfo.InputFiles.Add(new InputFile { Path = featuresRaw, FileType = InputFileType.Raw });
+            aligneeInfo.InputFiles.Add(new InputFile { Path = sequencePath, FileType = InputFileType.Sequence });
 
             var reader = new MsFeatureLightFileReader();
 
@@ -168,8 +170,8 @@ namespace MultiAlignTestSuite.Algorithms
             List<MsmsCluster> clusters = null;
             using (var rawReader = new InformedProteomicsReader())
             {
-                rawReader.AddDataFile(baselineInfo.Raw.Path, baselineInfo.DatasetId);
-                rawReader.AddDataFile(aligneeInfo.Raw.Path, aligneeInfo.DatasetId);
+                rawReader.AddDataFile(baselineInfo.RawFile.Path, baselineInfo.DatasetId);
+                rawReader.AddDataFile(aligneeInfo.RawFile.Path, aligneeInfo.DatasetId);
 
                 clusters = clusterer.Cluster(allFeatures, rawReader);
                 Console.WriteLine("Found {0} Total Clusters", clusters.Count);

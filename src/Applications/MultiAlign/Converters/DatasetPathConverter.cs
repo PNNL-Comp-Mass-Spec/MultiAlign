@@ -5,6 +5,8 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.Converters
 {
+    using MultiAlignCore.Data;
+
     public class DatasetPathConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -17,7 +19,7 @@ namespace MultiAlign.Converters
             }
 
             var data = value.ToString();
-            return DatasetInformation.ExtractDatasetName(data);
+            return DatasetLoader.ExtractDatasetName(data);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

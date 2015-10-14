@@ -16,6 +16,8 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.ViewModels.Wizard
 {
+    using MultiAlignCore.Extensions;
+
     public class AnalysisDatasetSelectionViewModel : ViewModelBase
     {
         private readonly string m_featureFileFilter;
@@ -144,7 +146,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         public void AddFolderDelegate()
         {
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
 
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
@@ -162,7 +164,8 @@ namespace MultiAlign.ViewModels.Wizard
                 return;
             }
 
-            var files = DatasetSearcher.FindDatasets(DataFolderPath,
+            var datasetLoader = new DatasetLoader();
+            var files = datasetLoader.GetValidDatasets(DataFolderPath,
                 extensions,
                 option);
             AddDatasets(files);
@@ -179,8 +182,9 @@ namespace MultiAlign.ViewModels.Wizard
                 // Read input files
                 try
                 {
+                    var datasetLoader = new DatasetLoader();
                     var info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
-                    AddDatasets(info.Files);
+                    AddDatasets(datasetLoader.GetValidDatasets(info.Files, false));
                 }
                 catch
                 {
@@ -202,24 +206,8 @@ namespace MultiAlign.ViewModels.Wizard
 
             if (fileExists)
             {
-                var type = DatasetInformation.GetInputFileType(SingleFilePath);
-
-                if (type == InputFileType.NotRecognized)
-                {
-                    ApplicationStatusMediator.SetStatus("The input file was not recognized.");
-                    return;
-                }
-                if (type == InputFileType.Scans)
-                {
-                    ApplicationStatusMediator.SetStatus("The input file was not recognized.");
-                    return;
-                }
-
-                var file = new InputFile {Path = SingleFilePath, FileType = type};
-
-                var inputs = new List<InputFile> {file};
-
-                AddDatasets(inputs);
+                var datasetLoader = new DatasetLoader();
+                AddDatasets(datasetLoader.GetValidDatasets(new List<string> { SingleFilePath }));
             }
             else
             {
@@ -373,9 +361,14 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         ///     Adds the list of input files into the analysis configuration.
         /// </summary>
-        public void AddDatasets(List<InputFile> information)
+        public List<DatasetInformation> AddDatasets(List<DatasetInformation> datasets)
         {
-            var datasets = Analysis.MetaData.AddInputFiles(information);
+            Analysis.MetaData.Datasets.AddRange(datasets);
+            for (int i = 0; i < Analysis.MetaData.Datasets.Count; i++)
+            {
+                Analysis.MetaData.Datasets[i].DatasetId = i;
+            }
+
             foreach (
                 var infoViewModel in
                     datasets.Select(info => new DatasetInformationViewModel(info)))
@@ -383,6 +376,8 @@ namespace MultiAlign.ViewModels.Wizard
                 infoViewModel.Selected += info_Selected;
                 Datasets.Add(infoViewModel);
             }
+
+            return datasets;
         }
     }
 }

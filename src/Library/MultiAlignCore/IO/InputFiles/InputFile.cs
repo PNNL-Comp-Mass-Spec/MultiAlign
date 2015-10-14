@@ -51,6 +51,11 @@ namespace MultiAlignCore.IO.InputFiles
         /// </summary>
         public InputFileType FileType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the extension for the input file.
+        /// </summary>
+        public string Extension { get; set; }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

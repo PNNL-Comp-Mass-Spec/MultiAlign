@@ -67,7 +67,7 @@
                         </DataGridTemplateColumn>
 
                         <DataGridTextColumn Header="Dataset Name" Width="25*" Binding="{Binding Dataset.Alias}" />
-                        <DataGridTextColumn Header="Dataset Path" Width="75*" Binding="{Binding Dataset.RawPath}" />
+                        <DataGridTextColumn Header="Dataset Path" Width="75*" Binding="{Binding Dataset.FeaturePath}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

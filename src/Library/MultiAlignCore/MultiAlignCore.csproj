@@ -358,6 +358,7 @@
     <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
+    <Compile Include="Data\DatasetLoader.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
     <Compile Include="Data\Factors\Factor.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="Data\MetaData\DatasetInformation.cs" />
     <Compile Include="Data\MetaData\DatasetPlotInformation.cs" />
     <Compile Include="Data\MetaData\DMSServerInformation.cs" />
+    <Compile Include="Data\MetaData\SupportedDatasetCombination.cs" />
     <Compile Include="Data\MetaData\SupportedDatasetType.cs" />
     <Compile Include="Data\Peaks\Peak.cs" />
     <Compile Include="Data\Peaks\ProcessedPeak.cs" />

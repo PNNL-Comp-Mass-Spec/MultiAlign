@@ -20,9 +20,9 @@ namespace MultiAlign.IO
         {
             var peaks = new List<XYData>();
             var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
-            if (info != null && info.Raw != null && info.RawPath != null)
+            if (info != null && info.RawFile != null && info.RawFile.Path != null)
             {
-                peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawPath, spectrum.Scan);
+                peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawFile.Path, spectrum.Scan);
             }
             return peaks;
         }

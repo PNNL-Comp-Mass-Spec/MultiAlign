@@ -483,7 +483,7 @@ namespace MultiAlign.ViewModels.Viewers
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
             var info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupId);
-            if (info == null || info.Raw == null || info.RawPath == null)
+            if (info == null || info.RawFile.Path == null || info.RawFile.Path == null)
                 return;
 
 
@@ -493,7 +493,7 @@ namespace MultiAlign.ViewModels.Viewers
             var lowMz = mz - spacing * 3;
             var highMz = mz + spacing * (NumberOfIsotopes + 1);
 
-            var spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
+            var spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawFile.Path,
                 msFeature.Scan,
                 lowMz,
                 highMz);

@@ -91,32 +91,6 @@ namespace MultiAlign.ViewModels.Datasets
             }
         }
 
-        public bool ScansBool
-        {
-            get { return this.Dataset.ScansBool; }
-            set
-            {
-                if (this.Dataset.ScansBool != value)
-                {
-                    this.Dataset.ScansBool = value;
-                    this.OnPropertyChanged("ScansBool");
-                }
-            }
-        }
-
-        public bool RawBool
-        {
-            get { return this.Dataset.RawBool; }
-            set
-            {
-                if (this.Dataset.RawBool != value)
-                {
-                    this.Dataset.RawBool = value;
-                    this.OnPropertyChanged("RawBool");
-                }
-            }
-        }
-
         private DatasetStates datasetState;
         public DatasetStates DatasetState
         {

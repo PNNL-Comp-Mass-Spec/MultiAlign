@@ -41,15 +41,13 @@ namespace AlignmentPaperTestSuite.Generators
             databasePath   = GetPath(databasePath);
             
             // Loads the supported MultiAlign types 
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
             // Find our datasets
-            var inputFiles = DatasetSearcher.FindDatasets(directory,
-                extensions,
-                SearchOption.TopDirectoryOnly);
-            var datasets = DatasetInformation.ConvertInputFilesIntoDatasets(inputFiles);
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(directory, extensions, SearchOption.TopDirectoryOnly);
 
             // Options setup
             var instrumentOptions = InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap);
@@ -130,9 +128,9 @@ namespace AlignmentPaperTestSuite.Generators
             msFeatures      = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilterOptions);
 
             // Load the baseline reference set
-            using (var rawProviderX  = RawLoaderFactory.CreateFileReader(information.RawPath))
+            using (var rawProviderX  = RawLoaderFactory.CreateFileReader(information.RawFile.Path))
             {
-                rawProviderX.AddDataFile(information.RawPath, 0);
+                rawProviderX.AddDataFile(information.RawFile.Path, 0);
                 UpdateStatus("Creating LCMS Features.");
                 var features    = featureFinder.FindFeatures(msFeatures,
                                                              featureFindingOptions,
@@ -166,7 +164,7 @@ namespace AlignmentPaperTestSuite.Generators
                     feature.MsFeatures.AddRange(lightEntry);
                 }
 
-                LinkPeptidesToFeatures(information.SequencePath,
+                LinkPeptidesToFeatures(information.SequenceFile.Path,
                                         features, 
                                         peptideOptions.Fdr,
                                         peptideOptions.IdScore);

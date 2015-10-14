@@ -9,6 +9,8 @@ namespace MultiAlignRogue
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Text;
+    using System.Windows.Navigation;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -16,6 +18,7 @@ namespace MultiAlignRogue
     using MultiAlign.Data;
 
     using MultiAlignCore.Algorithms.Options;
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.InputFiles;
 
@@ -183,25 +186,14 @@ namespace MultiAlignRogue
             {
                 Multiselect = true,
                 DefaultExt = ".raw|.pbf|.csv|.ms1ft",
-                Filter = @"Supported Files|*.raw;*.pbf;*.csv;*.ms1ft;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv|Promex Files (*.ms1ft)|*.ms1ft;"
+                Filter = DatasetLoader.SupportedFileFilter
             };
 
             var result = openFileDialog.ShowDialog();
             if (result != null && result.Value)
             {
                 var filePaths = openFileDialog.FileNames;
-                var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw") || file.EndsWith(".pbf")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft"));
-                if (!allFilesSelected)
-                {
-                    var statusMessage =
-                        "MultiAlign Rogue requires at least a .pbf file.";
-                    ApplicationStatusMediator.SetStatus(statusMessage);
-                    MessageBox.Show(statusMessage);
-                    return;
-                }
-
-                var datasets = DatasetInformation.ConvertInputFilesIntoDatasets(this.GetInputFilesFromPath(filePaths));
+                var datasets = this.GetAndValidateDatasets(filePaths);
                 foreach (var dataset in datasets)
                 {
                     var datasetInformationViewModel = new DatasetInformationViewModel(dataset);
@@ -224,19 +216,17 @@ namespace MultiAlignRogue
             }
         }
 
-        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
+        private List<DatasetInformation> GetAndValidateDatasets(IEnumerable<string> filePaths)
         {
-            var files = new List<InputFile>();
-            foreach (var filePath in filePaths)
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(filePaths);
+
+            if (!string.IsNullOrEmpty(datasetLoader.ErrorMessage))
             {
-                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
-                if (type != null)
-                {
-                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
-                }
+                MessageBox.Show(datasetLoader.ErrorMessage);
             }
 
-            return files;
-        }
+            return datasets;
+        } 
     }
 }

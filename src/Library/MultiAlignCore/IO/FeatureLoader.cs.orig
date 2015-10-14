@@ -224,8 +224,13 @@ namespace MultiAlignCore.IO
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
+<<<<<<< Updated upstream
             IScanSummaryProvider provider = null;
+            if (dataset.RawPath != null && !string.IsNullOrWhiteSpace(dataset.RawPath))
+=======
+            InformedProteomicsReader provider = null;
             if (dataset.RawFile.Path != null && !string.IsNullOrWhiteSpace(dataset.RawFile.Path))
+>>>>>>> Stashed changes
             {
                 UpdateStatus("Using raw data to create better features.");
                 provider = RawLoaderFactory.CreateFileReader(dataset.RawFile.Path);
@@ -334,9 +339,9 @@ namespace MultiAlignCore.IO
 
             // Process the MS/MS data with peptides
             UpdateStatus("Reading List of Peptides");
-            if (dataset.SequenceFile != null && !string.IsNullOrEmpty(dataset.SequenceFile.Path))
+            var sequenceProvider = PeptideReaderFactory.CreateReader(dataset.SequenceFile.Path);
+            if (sequenceProvider != null)
             {
-                var sequenceProvider = PeptideReaderFactory.CreateReader(dataset.SequenceFile.Path);
                 UpdateStatus("Reading List of Peptides");
                 var peptides = sequenceProvider.Read(dataset.SequenceFile.Path);
                 var count = 0;

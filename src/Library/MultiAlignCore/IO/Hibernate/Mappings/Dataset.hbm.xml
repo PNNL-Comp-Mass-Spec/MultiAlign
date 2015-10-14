@@ -10,11 +10,11 @@
     <property name="DMSDatasetID"       column="DMS_Dataset_ID" type="int" />
 		<property name="JobID"              column="Job"            type="int"      not-null="false" />
 		<property name="DatasetName"        column="File_Name"      type="string"   not-null="false" />
-		<property name="ParameterFile"      column="Parameter_File" type="string"   not-null="false" />
-    <property name="Path"               column="Directory_Path" type="string"   not-null="false" />
+		<!--<property name="ParameterFile"      column="Parameter_File" type="string"   not-null="false" />
+    <property name="Path"               column="Directory_Path" type="string"   not-null="false" /> -->
     <property name="Alias"              column="Alias"          type="string"   not-null="false" />
-    <property name="RawPath"            column="Raw_Path"       type="string"   not-null="false" />
-    <property name="SequencePath"       column="Sequence_Path"  type="string"   not-null="false" />
+    <!--<property name="RawPath"            column="Raw_Path"       type="string"   not-null="false" />
+    <property name="SequencePath"       column="Sequence_Path"  type="string"   not-null="false" /> -->
     <property name="IsBaseline"         column="Is_Baseline"    type="Boolean"  not-null="false" />
   </class>
 </hibernate-mapping>

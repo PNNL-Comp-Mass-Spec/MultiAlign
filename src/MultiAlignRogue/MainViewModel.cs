@@ -11,7 +11,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
-using Ookii.Dialogs;
+
 using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Wizard;
@@ -26,6 +26,7 @@ using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue
 {
+    using System.Text;
     using System.Windows;
 
     using DMS;
@@ -325,26 +326,15 @@ namespace MultiAlignRogue
             var openFileDialog = new OpenFileDialog
             {
                 Multiselect = true,
-                DefaultExt = ".raw|.csv",
-                Filter = @"Supported Files|*.raw;*.csv;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv|Promex Files (*.ms1ft)|*.ms1ft;"
+                DefaultExt = ".csv",
+                Filter = DatasetLoader.SupportedFileFilter
             };
 
             var result = openFileDialog.ShowDialog();
             if (result != null && result.Value)
             {
                 var filePaths = openFileDialog.FileNames;
-                var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
-                                       filePaths.Any(file => file.EndsWith("_isos.csv") || file.EndsWith(".ms1ft"));
-                if (!allFilesSelected)
-                {
-                    var statusMessage =
-                        "MultiAlign Rogue requires at least a .raw file, an feature (isos or ms1ft) file, and a scans file.";
-                    ApplicationStatusMediator.SetStatus(statusMessage);
-                    MessageBox.Show(statusMessage);
-                    return;
-                }
-
-                this.AddDatasets(this.GetInputFilesFromPath(filePaths));
+                this.AddDatasets(filePaths);
             }
         }
 
@@ -363,11 +353,6 @@ namespace MultiAlignRogue
 
         public void AddFolderDelegate()
         {
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
-            var extensions = new List<string>();
-
-            supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
-
             if (string.IsNullOrEmpty(InputFilePath))
             {
                 ApplicationStatusMediator.SetStatus("Select a folder path first. File -> Select Files");
@@ -382,25 +367,7 @@ namespace MultiAlignRogue
                 return;
             }
 
-            var files = DatasetSearcher.FindDatasets(InputFilePath,
-                extensions,
-                SearchOption.TopDirectoryOnly);
-            this.AddDatasets(files);
-        }
-
-        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
-        {
-            var files = new List<InputFile>();
-            foreach (var filePath in filePaths)
-            {
-                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
-                if (type != null)
-                {
-                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
-                }
-            }
-
-            return files;
+            this.AddDatasets(InputFilePath);
         }
 
         private void SearchDms()
@@ -426,7 +393,7 @@ namespace MultiAlignRogue
                     var filePaths = dataset.GetAvailableFiles();
                     if (filePaths.Count > 0)
                     {
-                        this.AddDatasets(this.GetInputFilesFromPath(filePaths));
+                        this.AddDatasets(filePaths);
                     }
                 }
             }
@@ -435,8 +402,10 @@ namespace MultiAlignRogue
         public void UpdateDatasets()
         {
             Datasets.Clear();
+            int i = 0;
             foreach (var info in Analysis.MetaData.Datasets)
             {
+                info.DatasetId = i++;
                 SingletonDataProviders.AddDataset(info);
                 var viewmodel = new DatasetInformationViewModel(info);
                 viewmodel.RemovalRequested += (s, e) =>
@@ -460,14 +429,44 @@ namespace MultiAlignRogue
                 viewmodel.StateChanged += (s, e) => this.serializerThrottler.Run(this.SaveProject);
                 Datasets.Add(viewmodel);
             }
-        }
 
-        private void AddDatasets(List<InputFile> files)
-        {
-            DataSelectionViewModel.AddDatasets(files);
-            UpdateDatasets();
             this.RaisePropertyChanged("m_config");
         }
+
+        private void AddDatasets(string folderPath)
+        {
+            var supportedTypes = DatasetLoader.SupportedFileTypes;
+            var extensions = new List<string>();
+
+            supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
+
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(folderPath, extensions, SearchOption.TopDirectoryOnly);
+            if (!string.IsNullOrEmpty(datasetLoader.ErrorMessage))
+            {
+                MessageBox.Show(datasetLoader.ErrorMessage);
+            }
+
+            // Add valid datasets.
+            this.Analysis.MetaData.Datasets.AddRange(datasets);
+            this.UpdateDatasets();
+        }
+
+        private void AddDatasets(IEnumerable<string> files)
+        {
+            var datasetLoader = new DatasetLoader();
+            var datasets = datasetLoader.GetValidDatasets(files);
+
+            if (!string.IsNullOrEmpty(datasetLoader.ErrorMessage))
+            {
+                MessageBox.Show(datasetLoader.ErrorMessage);
+            }
+
+            // Add valid datasets.
+            this.Analysis.MetaData.Datasets.AddRange(datasets);
+            this.UpdateDatasets();
+        }
+
         #endregion
 
         #region Data Providers
@@ -628,7 +627,7 @@ namespace MultiAlignRogue
 
             var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
 
-            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings))
+            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings)) 
             {
                 rogueProjectSerializer.WriteObject(writer, rogueProject);
             }

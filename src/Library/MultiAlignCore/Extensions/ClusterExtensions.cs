@@ -319,16 +319,16 @@ namespace MultiAlignCore.Extensions
                     {
                         var singleInfo = information[feature.GroupId];
 
-                        if (singleInfo.Raw != null && singleInfo.RawPath != null)
+                        if (singleInfo.RawFile != null && singleInfo.RawFile.Path != null)
                         {
                             // Make sure that we have a file.
-                            if (!File.Exists(singleInfo.RawPath))
+                            if (!File.Exists(singleInfo.RawFile.Path))
                                 continue;
 
                             // Here we create a data file reader for the file we want to access.
                             var provider = new InformedProteomicsReader();
                             // Then we make sure we key it to the provider.  
-                            provider.AddDataFile(singleInfo.RawPath, feature.GroupId);
+                            provider.AddDataFile(singleInfo.RawFile.Path, feature.GroupId);
                             // Then make sure we map it for a dataset, so when we sort through a cluster
                             // we make sure that we can access in O(1) time.
                             readers.Add(feature.GroupId, provider);

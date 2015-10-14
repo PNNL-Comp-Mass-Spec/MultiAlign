@@ -109,13 +109,13 @@ namespace MultiAlignRogue.Feature_Finding
                                         async () => await this.PlotMSFeatures(true),
                                         () => this.Datasets.Any(ds => ds.IsAligned));
 
-            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawPath))
+            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
                     .Any(reader => reader != null && reader is ISpectraProvider);
             // Add an event listener to update CanCreateXics whenever the Datasets collection changes
             Datasets.CollectionChanged += (sender, args) =>
             {
                 this.CanCreateXics = datasets.Select(
-                    dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawPath))
+                    dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
                     .Any(reader => reader != null && reader is ISpectraProvider);
             };
         }

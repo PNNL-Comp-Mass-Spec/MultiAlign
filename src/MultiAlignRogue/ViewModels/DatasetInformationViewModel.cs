@@ -83,32 +83,6 @@ namespace MultiAlignRogue.ViewModels
 
         public BaseCommand RequestRemovalCommand { get; private set; }
 
-        public bool ScansBool
-        {
-            get { return this.Dataset.ScansBool; }
-            set
-            {
-                if (this.Dataset.ScansBool != value)
-                {
-                    this.Dataset.ScansBool = value;
-                    this.RaisePropertyChanged("ScansBool");
-                }
-            }
-        }
-
-        public bool RawBool
-        {
-            get { return this.Dataset.RawBool; }
-            set
-            {
-                if (this.Dataset.RawBool != value)
-                {
-                    this.Dataset.RawBool = value;
-                    this.RaisePropertyChanged("RawBool");
-                }
-            }
-        }
-
         private DatasetStates datasetState;
         public DatasetStates DatasetState
         {

@@ -99,11 +99,11 @@ namespace MultiAlign.ViewModels.Datasets
             var newPaths = new List<DatasetResolveMatchViewModel>();
             foreach (var dataset in Datasets)
             {
-                if (dataset.Dataset.RawPath == null)
+                if (dataset.Dataset.RawFile.Path == null)
                     continue;
 
 
-                var filename = Path.GetFileName(dataset.Dataset.RawPath);
+                var filename = Path.GetFileName(dataset.Dataset.RawFile.Path);
                 if (nameMap.ContainsKey(filename))
                 {
                     var newPath = nameMap[filename];
@@ -126,7 +126,7 @@ namespace MultiAlign.ViewModels.Datasets
                     {
                         if (match.IsSelected)
                         {
-                            match.Dataset.Dataset.RawPath = match.NewPath;
+                            match.Dataset.Dataset.RawFile.Path = match.NewPath;
                         }
                     }
                 }
