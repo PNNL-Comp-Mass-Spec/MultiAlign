@@ -122,9 +122,9 @@ namespace MultiAlignCore.Data.MetaData
         public bool DoingWork { get; set; }
 
         /// <summary>
-        /// Gets the list of input files for this dataset.
+        /// Gets or sets the list of input files for this dataset.
         /// </summary>
-        public List<InputFile> InputFiles { get; private set; }
+        public List<InputFile> InputFiles { get; set; }
 
         /// <summary>
         ///     Gets the raw file info.
@@ -132,7 +132,11 @@ namespace MultiAlignCore.Data.MetaData
         [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public InputFile RawFile
         {
-            get { return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Raw); }
+            get
+            {
+                return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Raw) ??
+                       this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Scans);
+            }
         }
 
         /// <summary>

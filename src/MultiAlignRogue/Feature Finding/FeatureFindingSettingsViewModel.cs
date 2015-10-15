@@ -69,16 +69,11 @@ namespace MultiAlignRogue.Feature_Finding
             this.LcmsFeatureClusterers = new ObservableCollection<GenericClusteringAlgorithmType>(
                            Enum.GetValues(typeof(GenericClusteringAlgorithmType)).Cast<GenericClusteringAlgorithmType>());
 
+            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
+                                        .Any(reader => reader != null && reader is ISpectraProvider);
+
             // When dataset is selected/unselected, update can executes.
-            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
-            {
-                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
-                {
-                    this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
-                    this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
-                    this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();   
-                }
-            });
+            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, this.UpdateDatasetSelection);
 
             // When dataset state changes, update can executes.
             this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(this, args =>
@@ -89,7 +84,7 @@ namespace MultiAlignRogue.Feature_Finding
                     {
                         this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
                         this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
-                        this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged(); 
+                        this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
                     });
                 }
             });
@@ -108,16 +103,6 @@ namespace MultiAlignRogue.Feature_Finding
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
                                         () => this.Datasets.Any(ds => ds.IsAligned));
-
-            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
-                    .Any(reader => reader != null && reader is ISpectraProvider);
-            // Add an event listener to update CanCreateXics whenever the Datasets collection changes
-            Datasets.CollectionChanged += (sender, args) =>
-            {
-                this.CanCreateXics = datasets.Select(
-                    dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
-                    .Any(reader => reader != null && reader is ISpectraProvider);
-            };
         }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
@@ -656,6 +641,27 @@ namespace MultiAlignRogue.Feature_Finding
             }
 
             return datasetFeatures;
+        }
+
+        /// <summary>
+        /// Event handler for dataset IsSelected property changed.
+        /// When dataset is selected/unselected, update can executes.
+        /// </summary>
+        /// <param name="args">The message changed arguments, containing the new value.</param>
+        private void UpdateDatasetSelection(PropertyChangedMessage<bool> args)
+        {
+            if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
+            {   // Make sure that this message is for DatasetInformationViewModel.IsSelected
+                this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
+
+                // Add an event listener to update CanCreateXics whenever the Datasets collection changes
+                this.CanCreateXics = this.Datasets
+                        .Where(dataset => dataset.IsSelected)
+                        .Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
+                        .Any(reader => reader != null && reader is ISpectraProvider);
+            }
         }
     }
 }
