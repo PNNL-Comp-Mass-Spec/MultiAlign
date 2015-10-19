@@ -569,6 +569,7 @@
     <Compile Include="IO\TextFiles\IMsMsSpectraWriter.cs" />
     <Compile Include="IO\TextFiles\IPeptideFileReader.cs" />
     <Compile Include="IO\TextFiles\ITextFileReader.cs" />
+    <Compile Include="IO\TextFiles\LcImsFeatureFileReader.cs" />
     <Compile Include="IO\TextFiles\MgfFileReader.cs" />
     <Compile Include="IO\TextFiles\MgfFileWriter.cs" />
     <Compile Include="IO\TextFiles\MSFeatureFileReader.cs" />

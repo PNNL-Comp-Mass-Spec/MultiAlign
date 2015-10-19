@@ -34,7 +34,6 @@ namespace MultiAlignCore.Data.Features
             Scan        = -1;
             ScanEnd     = Scan;
             ScanStart   = Scan;
-            Tightness   = double.NaN;
             MsMsCount   = 0;
 
             if (MsFeatures == null)
@@ -79,7 +78,6 @@ namespace MultiAlignCore.Data.Features
             ScanStart                          = feature.ScanStart;
             Score                              = feature.Score;
             SpectralCount                      = feature.SpectralCount;
-            Tightness                          = feature.Tightness;
             // UmcCluster                      = feature.UmcCluster;
             
             // Charge state and Isotopic Chromatograms
@@ -95,123 +93,69 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Gets or sets the list of MS features for the given UMC.
         /// </summary>
-        /// 
         public List<MSFeatureLight> MsFeatures { get; private set; }
+
         /// <summary>
         /// Gets or sets the first scan number the feature was seen in.
         /// </summary>
-        /// 
-        public int ScanStart
-        {
-            get;
-            set;
-        }
-
-        public double NetStart { get; set; }
+        public int ScanStart { get; set; }
 
         /// <summary>
         /// Gets or sets the last scan number the feature was seen in.
         /// </summary>
-        public int ScanEnd
-        {
-            get;
-            set;
-        }
+        public int ScanEnd { get; set; }
 
+        /// <summary>
+        /// Gets or sets the earliest normalized elution time for the feature.
+        /// </summary>
+        public double NetStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the latest normalized elution time for the feature.
+        /// </summary>
         public double NetEnd { get; set; }
 
-        public int ScanAligned
-        {
-            get;
-            set;
-        }
+        /// <summary>
+        /// Gets or sets the predicted scan number after alignment.
+        /// </summary>
+        public int ScanAligned { get; set; }
 
         /// <summary>
         /// Gets or sets the sum of abundances from all MS features
         /// </summary>
-        public double AbundanceSum
-        {
-            get;
-            set;
-        }
+        public double AbundanceSum { get; set; }
 
-        public int SpectralCount
-        {
-            get;
-            set;
-        }
+        public int SpectralCount { get; set; }
 
-        public double Tightness
-        {
-            get;
-            set;
-        }
         /// <summary>
         /// Gets or sets the chromatograms based on charge state.
         /// </summary>
-        public Dictionary<int, Chromatogram> ChargeStateChromatograms
-        {
-            get;
-            set;
-        }
+        public Dictionary<int, Chromatogram> ChargeStateChromatograms { get; set; }
 
         /// <summary>
         /// Gets or sets the chromatograms for each isotope for a given charge state.
         /// </summary>
-        public Dictionary<int, List<Chromatogram>> IsotopeChromatograms
-        {
-            get;
-            set;
-        }
+        public Dictionary<int, List<Chromatogram>> IsotopeChromatograms { get; set; }
 
-        public double MeanIsotopicRsquared
-        {
-            get;
-            set;
-        }
+        public double MeanIsotopicRsquared { get; set; }
 
-        public double MeanChargeStateRsquared
-        {
-            get;
-            set;
-        }
+        public double MeanChargeStateRsquared { get; set; }
 
         public UMCLight ParentUMC { get; private set; }
-        
 
         #region IMS Data Members
-        public double AverageInterferenceScore
-        {
-            get;
-            set;
-        }
-        public double ConformationFitScore
-        {
-            get;
-            set;
-        }
-        public double AverageDeconFitScore
-        {
-            get;
-            set;
-        }
-        public int SaturatedMemberCount
-        {
-            get;
-            set;
-        }
-        public int ClusterId
-        {
-            get;
-            set;
-        }
-        public int ConformationId
-        {
-            get;
-            set;
-        }
+        public double AverageInterferenceScore { get; set; }
+
+        public double ConformationFitScore { get; set; }
+
+        public double AverageDeconFitScore { get; set; }
+
+        public int SaturatedMemberCount { get; set; }
+
+        public int ConformationId { get; set; }
         #endregion
 
+        public int ClusterId { get; set; }
 
         #region Overriden Base Methods
         /// <summary>
@@ -371,7 +315,6 @@ namespace MultiAlignCore.Data.Features
             if (centroid == ClusterCentroidRepresentation.Mean)
             {
                 Score = Convert.ToSingle(distanceSum / MsFeatures.Count);
-                Tightness = Score;
             }
             else
             {
@@ -379,7 +322,6 @@ namespace MultiAlignCore.Data.Features
 
                 distances.Sort();
                 Score       = Convert.ToSingle(distances[mid]);
-                Tightness   = Score;
             }
             Mz = representativeMz;
         }

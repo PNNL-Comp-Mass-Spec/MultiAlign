@@ -25,6 +25,11 @@
         public CollisionType CollisionType { get; set; }
 
         /// <summary>
+        /// Gets or sets the NET value for this scan.
+        /// </summary>
+        public double Net { get; set; }
+
+        /// <summary>
         /// Gets or sets the scan time in seconds.
         /// </summary>
         public double Time { get; set; }

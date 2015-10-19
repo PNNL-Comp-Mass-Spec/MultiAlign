@@ -10,6 +10,8 @@ namespace MultiAlignCore.IO.TextFiles
         #region Column constants
         private const string SCAN_NUMBER = "scan";
         private const string SCAN_TIME = "scanTime";
+        private const string FRAME_NUM = "frame";
+        private const string FRAME_TIME = "frameTime";
         private const string TYPE = "abundance";
         private const string BPI = "fit";
         private const string BPI_MZ = "bpimz";
@@ -48,8 +50,14 @@ namespace MultiAlignCore.IO.TextFiles
                     case "scan_num":
                         columnMap.Add(SCAN_NUMBER, i);
                         break;
+                    case "frame_num":
+                        columnMap.Add(FRAME_NUM, i);
+                        break;
                     case "scan_time":
                         columnMap.Add(SCAN_TIME, i);
+                        break;
+                    case "frame_time":
+                        columnMap.Add(FRAME_TIME, i);
                         break;
                     case "type":
                         columnMap.Add(TYPE, i);
@@ -93,7 +101,11 @@ namespace MultiAlignCore.IO.TextFiles
                 var scan = new ScanSummary();
 
                 if (columnMapping.ContainsKey(SCAN_NUMBER)) scan.Scan = int.Parse(columns[columnMapping[SCAN_NUMBER]]);
+                else if (columnMapping.ContainsKey(FRAME_NUM)) scan.Scan = int.Parse(columns[columnMapping[FRAME_NUM]]);
+
                 if (columnMapping.ContainsKey(SCAN_TIME)) scan.Time = double.Parse(columns[columnMapping[SCAN_TIME]]);
+                else if (columnMapping.ContainsKey(FRAME_TIME)) scan.Time = double.Parse(columns[columnMapping[FRAME_TIME]]);
+
                 if (columnMapping.ContainsKey(TYPE)) scan.MsLevel = int.Parse(columns[columnMapping[TYPE]]);
                 if (columnMapping.ContainsKey(BPI)) scan.Bpi = double.Parse(columns[columnMapping[BPI]]);
                 if (columnMapping.ContainsKey(BPI_MZ)) scan.BpiMz = double.Parse(columns[columnMapping[BPI_MZ]]);

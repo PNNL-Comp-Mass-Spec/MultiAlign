@@ -112,6 +112,26 @@ namespace MultiAlignCore.Data.Features
         public double NetAligned { get; set; }
 
         /// <summary>
+        /// Gets or sets the first IMS scan this feature was seen in.
+        /// </summary>
+        public double ImsScanStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the first IMS scan this feature was seen in.
+        /// </summary>
+        public double ImsScanEnd { get; set; }
+
+        /// <summary>
+        /// Gets or sets the start drift time for this feature.
+        /// </summary>
+        public double DriftTimeStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end drift time for this feature.
+        /// </summary>
+        public double DriftTimeEnd { get; set; }
+
+        /// <summary>
         /// Gets or sets the drift time of a feature.
         /// </summary>
         public double DriftTime { get; set; }

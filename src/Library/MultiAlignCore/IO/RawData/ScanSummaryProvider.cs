@@ -121,6 +121,7 @@ namespace MultiAlignCore.IO.RawData
             _minScans[groupId] = minScan;
             _maxScans[groupId] = maxScan;
             _scanCounts[groupId] = maxScan - minScan; // Not truly the total number present; Scans file contains only MS1 scans
+            SetNets(groupId);
         }
 
         public void LoadFromDatabase()
@@ -160,6 +161,19 @@ namespace MultiAlignCore.IO.RawData
             foreach (var groupId in idsSeen.Keys)
             {
                 _scanCounts[groupId] = _maxScans[groupId] - _minScans[groupId];
+            }
+        }
+
+        private void SetNets(int group)
+        {
+            var datasetSummary = this._summaries[group];
+            var minScanSum = this.GetScanSummary(this.GetMinScan(group), group);
+            var maxScanSum = this.GetScanSummary(this.GetMaxScan(group), group);
+            var timeDiff = maxScanSum.Time - minScanSum.Time;
+
+            foreach (var summary in datasetSummary.ScanMetaData.Values)
+            {
+                summary.Net = (summary.Time - minScanSum.Time) / timeDiff;
             }
         }
     }

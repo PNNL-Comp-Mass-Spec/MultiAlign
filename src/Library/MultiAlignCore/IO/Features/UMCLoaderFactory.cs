@@ -52,8 +52,16 @@ namespace MultiAlignCore.IO.Features
             switch (extension)
             {
                 case ".TXT":
-                    var umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
-                    features = umcReader.GetUmcList();
+                    if (dataset.Features.Path.EndsWith("_LCMSFeatures.txt"))
+                    {
+                        var reader = new LcImsFeatureFileReader(provider, dataset.DatasetId);
+                        features = reader.ReadFile(dataset.Features.Path).ToList();
+                    }
+                    else
+                    {
+                        var umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
+                        features = umcReader.GetUmcList();
+                    }
                     break;
                 case ".DB3":
                     features = featureCache.FindByDatasetId(dataset.DatasetId);
@@ -66,7 +74,7 @@ namespace MultiAlignCore.IO.Features
                     }
                     break;
                 default: //Was reconstructing features from scratch even when they were already cached because the file extention was ".csv" not ".db3"
-                    features = featureCache.FindByDatasetId(dataset.DatasetId);
+                        features = featureCache.FindByDatasetId(dataset.DatasetId);
                     break;
             }
             return features;

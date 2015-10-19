@@ -11,7 +11,7 @@
 		<property name="ClusterId"                  column="Cluster_ID"                 type="int" not-null="false"/>
 		<property name="ConformationId"             column="Conformation_ID"            type="int" not-null="false" />
 		<property name="MassMonoisotopic"           column="Mass"                       type="double" not-null="false" />
-		<property name="MassMonoisotopicAligned"    column="Mass_Aligned"            type="double" not-null="false" />
+		<property name="MassMonoisotopicAligned"    column="Mass_Aligned"               type="double" not-null="false" />
 		<property name="Net"                        column="NET"                        type="double" not-null="false" />
     <property name="NetAligned"                 column="NET_Aligned"                type="double" not-null="false" />
     <property name="NetStart"                   column="NET_Start"                  type="double" not-null="false" />
@@ -24,6 +24,8 @@
 		<property name="Abundance"                  column="Abundance_Max"              type="double" not-null="false" />
 		<property name="AbundanceSum"               column="Abundance_Sum"              type="double" not-null="false" />
 		<property name="DriftTime"                  column="Drift_Time"                 type="double" not-null="false" />
+    <property name="DriftTimeStart"             column="Drift_Time_Start"           type="double" not-null="false" />
+    <property name="DriftTimeEnd"               column="Drift_Time_End"             type="double" not-null="false" />
 		<property name="AverageInterferenceScore"   column="Average_Interference_Score" type="double" not-null="false" />
     <property name="AverageDeconFitScore"       column="Average_Decon_Fit_Score"    type="double" not-null="false" />
     <property name="SpectralCount"              column="UMC_Member_Count"           type="int" not-null="false" />

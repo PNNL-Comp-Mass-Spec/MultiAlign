@@ -355,9 +355,14 @@ namespace MultiAlignCore.IO.RawData
             // Peaks needed to calculate Total ion current
             var spec = ipbReader.GetSpectrum(scan, true);
 
+            var minEt = ipbReader.GetElutionTime(ipbReader.MinLcScan);
+            var maxEt = ipbReader.GetElutionTime(ipbReader.MaxLcScan);
+            var timeDiff = maxEt - minEt;
+
             var summary = new ScanSummary
             {
                 MsLevel = spec.MsLevel,
+                Net = (spec.ElutionTime - minEt) / timeDiff,
                 Time = spec.ElutionTime,
                 Scan = spec.ScanNum,
                 TotalIonCurrent = Convert.ToInt64(spec.TotalIonCurrent), // Only used in MultiAlignCore.Algorithms.Chromatograms.XicCreator.CreateXic(...)
