@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.ComponentModel;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.Parameters;
@@ -94,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Options
         [ParameterFile("AlignmentType", "Alignment")]
         [Category("General Calibration")]
         [Description("Determines if NET only, or Mass and NET alignment should be performed.")]
-        public AlignmentType AlignmentType { get { return LCMSWarpOptions.AlignType; } set { LCMSWarpOptions.AlignType = value; } }
+        public LcmsWarpAlignmentType AlignmentType { get { return LCMSWarpOptions.AlignType; } set { LCMSWarpOptions.AlignType = value; } }
 
         [ParameterFile("RecalibrationType", "Alignment")]
         [Category("General Calibration")]

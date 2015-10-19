@@ -153,19 +153,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LCMSWarp.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAdapter.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentData.cs" />
+    <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentProcessor.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpCalibrationType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpCentralRegression.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpCombinedRegression.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpRegressionType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\ResidualData.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointFinder.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointMatcher.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\AlignedFeatureData.cs" />
@@ -194,7 +194,6 @@
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\ISpectralAnchorPointMatchValidator.cs" />
-    <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\SpectralAlignerWrapper.cs" />
     <Compile Include="Algorithms\Chromatograms\IChromatogramProvider.cs" />
     <Compile Include="Algorithms\Chromatograms\XicCreator.cs" />
@@ -357,7 +356,9 @@
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
+    <Compile Include="Data\Index3D.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
+    <Compile Include="Data\Alignment\ResidualData.cs" />
     <Compile Include="Data\DatasetLoader.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />

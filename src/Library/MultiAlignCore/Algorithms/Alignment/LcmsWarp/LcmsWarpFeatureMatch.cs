@@ -7,7 +7,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     /// Contains the feature index, baseline index, feature normalized elution time,
     /// baseline normalized elution time and the error for the mass, the net and the drift time
     /// </summary>
-    public class LcmsWarpFeatureMatch: IComparable<LcmsWarpFeatureMatch>
+    public class LcmsWarpFeatureMatch : IComparable<LcmsWarpFeatureMatch>
     {
         /// <summary>
         /// Constructor, initializes the testing values to -1 to ensure ability to see
@@ -16,10 +16,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarpFeatureMatch()
         {
             FeatureIndex = -1;
-            FeatureIndex2 = -1;
+            BaselineFeatureIndex = -1;
             Net = -1;
-            Net2 = -1;
-
+            BaselineNet = -1;
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// this feature matches to.
         /// Auto property
         /// </summary>
-        public double Net2 { get; set; }
+        public double BaselineNet { get; set; }
 
         //TODO: probably just point to the reference of the feature
         /// <summary>
@@ -61,12 +60,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Auto property - 
         /// </summary>
         public int FeatureIndex { get; set; }
+
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the baseline feature that this match corresponds to
         /// Auto property
         /// </summary>
-        public int FeatureIndex2 { get; set; }
+        public int BaselineFeatureIndex { get; set; }
 
         /// <summary>
         /// Compares two feature matches based on the Normalized elution time
@@ -79,12 +79,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 return 1;
             }
-            return Net.CompareTo(compareFeature.Net);    
+            return Net.CompareTo(compareFeature.Net);
         }
-        
+
         public override string ToString()
         {
-        	return "Index=" + FeatureIndex + "; Index2=" + FeatureIndex2 + "; NET=" + Net.ToString("0.000") + "; NET2=" + Net2.ToString("0.000");
+            return "Index=" + FeatureIndex + "; Index2=" + BaselineFeatureIndex + "; NET=" + Net.ToString("0.000") + "; NET2=" +
+                   BaselineNet.ToString("0.000");
         }
     }
 }

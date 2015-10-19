@@ -30,7 +30,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             switch (type)
             {
                 case FeatureAlignmentType.LCMS_WARP:
-                    aligner = new LcmsWarpFeatureAligner {Options = options};
+                    aligner = new LcmsWarpFeatureAligner(options);
                     break;
                 case FeatureAlignmentType.DIRECT_IMS_INFUSION:
                     aligner = new DummyAlignment();
@@ -53,7 +53,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             switch (type)
             {
                 case FeatureAlignmentType.LCMS_WARP:
-                    aligner = new LcmsWarpFeatureAligner { Options = options };
+                    aligner = new LcmsWarpFeatureAligner(options);
                     break;
                 case FeatureAlignmentType.DIRECT_IMS_INFUSION:
                     aligner = new DummyAlignment();

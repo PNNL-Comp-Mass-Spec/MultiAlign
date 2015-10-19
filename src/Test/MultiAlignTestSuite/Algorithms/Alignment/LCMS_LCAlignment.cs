@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
 using NUnit.Framework;
@@ -25,7 +26,6 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
             ConvertToUMCLight(referenceTimes, experimentalTimes, out experimentalTimesAsUmc, out referenceTimesAsUmc, multiplier);
 
             //3.  set up processor and options
-            var processor = new LcmsWarpAlignmentProcessor();
             var options = new LcmsWarpAlignmentOptions
             {
                 MassTolerance = 0.5,                // masses are exact so this does not matter in this test
@@ -35,12 +35,9 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
                 UsePromiscuousPoints = false,       // this does not do much but is likely needed when matching to a dense AMT tag databaase
                 AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP,
                 ContractionFactor = 1,              // setting this to 1 helped
-                AlignType = AlignmentType.NET_WARP
+                AlignType = LcmsWarpAlignmentType.NET_WARP
             };
-        
-
-            processor.Options = options;
-            processor.ApplyAlignmentOptions();
+            var processor = new LcmsWarpAlignmentProcessor(options);
 
             //4.  Set references with processor setter
             processor.SetReferenceDatasetFeatures(referenceTimesAsUmc);
@@ -50,10 +47,10 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
             processor.PerformAlignmentToMsFeatures();
 
             //6.  apply alignment to data
-            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(ref experimentalTimesAsUmc);
+            processor.ApplyNetMassFunctionToAligneeDatasetFeatures(experimentalTimesAsUmc);
             
             //7.  test alignment
-            Console.WriteLine("index" + "," + "ReferecneNet" + "," + "ExperimentalNet" + "," + "AlignedNet");
+            Console.WriteLine("index" + "," + "ReferenceNet" + "," + "ExperimentalNet" + "," + "AlignedNet");
             double sum = 0;
             for (int i = 0; i < experimentalTimes.Count; i++)
             {

@@ -160,28 +160,25 @@ namespace MultiAlign.Windows.Plots
 
         private void CreatePlots()
         {
-            if (AlignmentData == null)
+            if (AlignmentData == null || AlignmentData.AlignmentData == null)
                 return;
 
             var alignmentData = AlignmentData.AlignmentData;
 
-            if (alignmentData == null)
-                return;
-
-            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores, alignmentData.baselineIsAmtDB);
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.HeatScores, alignmentData.BaselineIsAmtDB);
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
-            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var residuals = alignmentData.ResidualData;
             
-            var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+            var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                 residuals.LinearNet, "NET Residuals", "Scans", "NET");
             
             var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
             
-            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 
             NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));

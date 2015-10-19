@@ -172,18 +172,18 @@ namespace MultiAlignCore.IO.Reports
                 return;
 
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
-            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores, alignmentData.baselineIsAmtDB);
+            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.HeatScores, alignmentData.BaselineIsAmtDB);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
-            var netHistogram    = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram   = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram    = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram   = HistogramFactory.CreateHistogram(alignmentData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
-            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                 residuals.LinearNet, "NET Residuals", "Scans", "NET");
             var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
 
-            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
             
             var report = Config.Report;
