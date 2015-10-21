@@ -37,7 +37,7 @@ namespace MultiAlignRogue.Clustering
 
         public ClusterViewModel ClusterViewModel { get; private set; }
 
-        public void CreateNewWindow(List<ClusterMatch> matches, InformedProteomicsReader provider)
+        public void CreateNewWindow(List<ClusterMatch> matches, ScanSummaryProviderCache provider)
         {
             if (this.ClusterViewModel == null)
             {

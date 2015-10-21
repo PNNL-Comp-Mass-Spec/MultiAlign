@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Retrieves the scan from the underlying stream.
         /// </summary>
-        List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary);
+        List<XYData> GetRawSpectra(int scan, out ScanSummary summary);
 
         /// <summary>
         /// Gets a list of all raw spectra
@@ -19,9 +19,9 @@ namespace MultiAlignCore.Data
         /// <param name="scan"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        List<MSSpectra> GetRawSpectra(int group);
+        List<MSSpectra> GetRawSpectra();
 
-        MSSpectra       GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks);
+        MSSpectra       GetSpectrum(int scan, int scanLevel, out ScanSummary summary, bool loadPeaks);
 
         /// <summary>
         /// Retrieves the scan from the underlying stream including the scan summary
@@ -31,14 +31,14 @@ namespace MultiAlignCore.Data
         /// <param name="scanLevel"></param>
         /// <param name="summary"></param>
         /// <returns></returns>
-        List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary);
+        List<XYData> GetRawSpectra(int scan, int scanLevel, out ScanSummary summary);
 
         /// <summary>
         /// Retrieves a list of MS/MS spectra from the given group.
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        List<MSSpectra> GetMSMSSpectra(int group);
+        List<MSSpectra> GetMSMSSpectra();
 
         /// <summary>
         /// Get a list of MS/MS spectra, but exclude if it exists in the dictionary of provided scans.
@@ -46,7 +46,7 @@ namespace MultiAlignCore.Data
         /// <param name="group"></param>
         /// <param name="excludeMap"></param>
         /// <returns></returns>
-        List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap);
+        List<MSSpectra> GetMSMSSpectra(Dictionary<int, int> excludeMap);
 
         /// <summary>
         /// 
@@ -55,6 +55,6 @@ namespace MultiAlignCore.Data
         /// <param name="excludeMap"></param>
         /// <param name="loadPeaks"></param>
         /// <returns></returns>
-        List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks);
+        List<MSSpectra> GetMSMSSpectra(Dictionary<int, int> excludeMap, bool loadPeaks);
     }
 }

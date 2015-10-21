@@ -16,10 +16,21 @@ namespace MultiAlignCore.Algorithms.Clustering
     {
         private Dictionary<Tuple<int, int>, UMCLight> featureMap; 
 
-        public InformedProteomicsReader Reader { get; set; }
+        public ScanSummaryProviderCache Readers { get; set; }
 
+        /// <summary>
+        /// The progress event.
+        /// </summary>
+        [Obsolete("Never triggered. Use IProgress parameter instead.")]
         public event EventHandler<ProgressNotifierArgs> Progress;
+
+        /// <summary>
+        /// Gets the clusterer paramaters.
+        /// These are not actually used by the Promex clusterer right now.
+        /// </summary>
         public FeatureClusterParameters<UMCLight> Parameters { get; set; }
+
+
         public List<UMCClusterLight> Cluster(List<UMCLight> data, List<UMCClusterLight> clusters, IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
@@ -53,7 +64,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             foreach (var ds in idToFeatures)
             {
                 var lcmsFeatures = new List<LcMsFeature>(ds.Value.Select(this.GetLcMsFeature));
-                lcmsFeatureAligner.AddDataSet(ds.Key, lcmsFeatures, this.Reader.GetReaderForGroup(ds.Key));
+                lcmsFeatureAligner.AddDataSet(ds.Key, lcmsFeatures, this.GetLcMsRun(ds.Key));
             }
 
             // Perform clustering
@@ -102,7 +113,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         private LcMsFeature GetLcMsFeature(UMCLight umcLight)
         {
-            var lcmsRun = this.Reader.GetReaderForGroup(umcLight.GroupId);
+            var lcmsRun = this.GetLcMsRun(umcLight.GroupId);
             return new LcMsFeature(
                                     umcLight.MassMonoisotopic,
                                     umcLight.ChargeState,
@@ -128,6 +139,22 @@ namespace MultiAlignCore.Algorithms.Clustering
             var key = new Tuple<int, int>(lcmsFeature.DataSetId, lcmsFeature.FeatureId);
             var umc = this.featureMap[key];
             return umc;
+        }
+
+        /// <summary>
+        /// Get the <see cref="LcMsRun" /> for the specified dataset.
+        /// </summary>
+        /// <param name="groupId">The dataset ID.</param>
+        /// <returns>The loaded LcMsRun.</returns>
+        private LcMsRun GetLcMsRun(int groupId)
+        {
+            var ipr = this.Readers.GetScanSummaryProvider(groupId) as InformedProteomicsReader;
+            if (ipr == null)
+            {
+                throw new ArgumentException(string.Format("No valid LcMsRun available for dataset {0}", groupId));
+            }
+
+            return ipr.LcMsRun;
         }
     }
 }

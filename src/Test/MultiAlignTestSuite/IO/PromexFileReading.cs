@@ -30,8 +30,7 @@ namespace MultiAlignTestSuite.IO
         public void TestPromexFileReading()
         {
             const int datasetId = 0;
-            var reader = new InformedProteomicsReader();
-            reader.AddDataFile(pbf1, datasetId);
+            var reader = new InformedProteomicsReader(datasetId, pbf1);
             var promexFileReader = new PromexFileReader(reader, datasetId);
             var features =
                 promexFileReader.ReadFile(ms1ft1);
@@ -41,20 +40,20 @@ namespace MultiAlignTestSuite.IO
         [Test]
         public void TestPromexClustering()
         {
-            var reader = new InformedProteomicsReader();
-            reader.AddDataFile(pbf1, 0);
-            reader.AddDataFile(pbf2, 1);
-            reader.AddDataFile(pbf3, 2);
+            var provider = new ScanSummaryProviderCache();
+            var reader1 = provider.GetScanSummaryProvider(pbf1, 0) as InformedProteomicsReader;
+            var reader2 = provider.GetScanSummaryProvider(pbf2, 1) as InformedProteomicsReader;
+            var reader3 = provider.GetScanSummaryProvider(pbf3, 2) as InformedProteomicsReader;
 
-            var promexFileReader1 = new PromexFileReader(reader, 0);
+            var promexFileReader1 = new PromexFileReader(reader1, 0);
             var features1 =
                 promexFileReader1.ReadFile(ms1ft1);
 
-            var promexFileReader2 = new PromexFileReader(reader, 1);
+            var promexFileReader2 = new PromexFileReader(reader2, 1);
             var features2 =
                 promexFileReader2.ReadFile(ms1ft2);
 
-            var promexFileReader3 = new PromexFileReader(reader, 2);
+            var promexFileReader3 = new PromexFileReader(reader3, 2);
             var features3 =
                 promexFileReader3.ReadFile(ms1ft3);
 
@@ -63,9 +62,9 @@ namespace MultiAlignTestSuite.IO
             features.AddRange(features2);
             features.AddRange(features3);
 
-            var clusterer = new PromexClusterer()
+            var clusterer = new PromexClusterer
             {
-                Reader =  reader,
+                Readers =  provider,
             };
             var clusters = clusterer.Cluster(features);
 
@@ -76,9 +75,9 @@ namespace MultiAlignTestSuite.IO
         public void CompareFileReading()
         {
             // Read using MultiAlign to Promex adapters
-            var reader = new InformedProteomicsReader();
-            reader.AddDataFile(pbf1, 0);
-            var promexFileReader = new PromexFileReader(reader, 0);
+            var provider = new ScanSummaryProviderCache();
+            var reader1 = provider.GetScanSummaryProvider(pbf1, 0) as InformedProteomicsReader;
+            var promexFileReader = new PromexFileReader(reader1, 0);
             var features = promexFileReader.ReadFile(ms1ft1).ToList();
 
             var lcmsRun = PbfLcMsRun.GetLcMsRun(pbf1);
@@ -101,13 +100,13 @@ namespace MultiAlignTestSuite.IO
         public void CompareClustering()
         {
             // Cluster using MultiAlign to Promex adapters
-            var reader = new InformedProteomicsReader();
-            reader.AddDataFile(pbf1, 0);
-            reader.AddDataFile(pbf2, 1);
-            var promexFileReader1 = new PromexFileReader(reader, 0);
+            var provider = new ScanSummaryProviderCache();
+            var reader1 = provider.GetScanSummaryProvider(pbf1, 0) as InformedProteomicsReader;
+            var reader2 = provider.GetScanSummaryProvider(pbf2, 1) as InformedProteomicsReader;
+            var promexFileReader1 = new PromexFileReader(reader1, 0);
             var features1 = promexFileReader1.ReadFile(ms1ft1);
 
-            var promexFileReader2 = new PromexFileReader(reader, 1);
+            var promexFileReader2 = new PromexFileReader(reader2, 1);
             var features2 =
                 promexFileReader2.ReadFile(ms1ft2);
 
@@ -115,9 +114,9 @@ namespace MultiAlignTestSuite.IO
             features.AddRange(features1);
             features.AddRange(features2);
 
-            var clusterer = new PromexClusterer()
+            var clusterer = new PromexClusterer
             {
-                Reader = reader,
+                Readers = provider,
             };
             var clusters = clusterer.Cluster(features);
             var clusterCount = clusters.Count(c => c.UmcList.Count > 1);

@@ -9,43 +9,38 @@ namespace MultiAlignCore.Data
     public interface IScanSummaryProvider : IDisposable
     {
         /// <summary>
-        /// Retrieves the scan data for the given dataset ID (i.e. group ID)
+        /// Gets the group ID for the dataset this scan summary provider is for.
         /// </summary>
-        /// <param name="groupId">Group identifier</param>
-        /// <returns>Mapped scan header data based on scan ID</returns>
-        Dictionary<int, ScanSummary> GetScanData(int groupId);
+        int GroupId { get; }
 
         /// <summary>
         /// Retrieves the scan header from the underlying stream.
         /// </summary>
-        ScanSummary GetScanSummary(int scan, int group);
+        ScanSummary GetScanSummary(int scan);
 
         /// <summary>
-        /// Adds a file ID to the path for multi-file support.
+        /// Get scan summaries for a particular ms level.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="groupId"></param>
-        void AddDataFile(string path, int groupId);
+        /// <param name="msLevel">
+        /// The mslevel to get scan summaries for.
+        /// 0 = MS1 and MS2
+        /// </param>
+        /// <returns>All scan summaries.</returns>
+        List<ScanSummary> GetScanSummaries(int msLevel = 0);  
 
         /// <summary>
         /// Gets the total number of scans
         /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Total scans for that dataset.</returns>
-        int GetTotalScans(int group);
+        int TotalScans { get; }
 
         /// <summary>
         /// Gets the lowest scan number
         /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Lowest scan number for that dataset</returns>
-        int GetMinScan(int group);
+        int MinScan { get; }
 
         /// <summary>
         /// Gets the highest scan number
         /// </summary>
-        /// <param name="group">Group (or dataset) provider</param>
-        /// <returns>Highest scan number for that dataset</returns>
-        int GetMaxScan(int group);
+        int MaxScan { get; }
     }
 }

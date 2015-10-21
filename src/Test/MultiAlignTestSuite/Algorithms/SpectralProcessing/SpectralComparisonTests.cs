@@ -31,15 +31,14 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
         private MSSpectra GetSpectrum(string path, int scan)
         {
-            ISpectraProvider reader = new InformedProteomicsReader();
-            reader.AddDataFile(path, 0);
+            ISpectraProvider reader = new InformedProteomicsReader(0, path);
             return GetSpectrum(reader, scan, 0);
         }
 
         private MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
             var summary = new ScanSummary();
-            var peaks = reader.GetRawSpectra(scan, group, 2, out summary);
+            var peaks = reader.GetRawSpectra(scan, 2, out summary);
             var spectrum = new MSSpectra();
             spectrum.Peaks = peaks;
 

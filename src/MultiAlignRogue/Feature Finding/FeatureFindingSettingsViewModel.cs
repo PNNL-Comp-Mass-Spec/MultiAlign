@@ -69,7 +69,7 @@ namespace MultiAlignRogue.Feature_Finding
             this.LcmsFeatureClusterers = new ObservableCollection<GenericClusteringAlgorithmType>(
                            Enum.GetValues(typeof(GenericClusteringAlgorithmType)).Cast<GenericClusteringAlgorithmType>());
 
-            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
+            this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path, dataset.DatasetId))
                                         .Any(reader => reader != null && reader is ISpectraProvider);
 
             // When dataset is selected/unselected, update can executes.
@@ -559,6 +559,7 @@ namespace MultiAlignRogue.Feature_Finding
                                                     this.analysis.Options.MsFilteringOptions,
                                                     this.analysis.Options.LcmsFindingOptions,
                                                     this.analysis.Options.LcmsFilteringOptions,
+                                                    analysis.DataProviders.ScanSummaryProviderCache,
                                                     progressRpt);
 
                 if (!this.features.ContainsKey(file.Dataset))
@@ -659,7 +660,7 @@ namespace MultiAlignRogue.Feature_Finding
                 // Add an event listener to update CanCreateXics whenever the Datasets collection changes
                 this.CanCreateXics = this.Datasets
                         .Where(dataset => dataset.IsSelected)
-                        .Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path))
+                        .Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path, dataset.DatasetId))
                         .Any(reader => reader != null && reader is ISpectraProvider);
             }
         }

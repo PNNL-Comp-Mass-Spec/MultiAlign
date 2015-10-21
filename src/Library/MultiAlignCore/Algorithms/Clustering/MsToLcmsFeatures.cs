@@ -150,10 +150,10 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="rawFeatures">The raw features to set nets for.</param>
         private void SetNets(List<MSFeatureLight> rawFeatures)
         {
-            var max = this.provider.GetScanSummary(this.provider.GetMaxScan(0), 0).Time;
-            var min = this.provider.GetScanSummary(this.provider.GetMinScan(0), 0).Time;
+            var max = this.provider.GetScanSummary(this.provider.MaxScan).Time;
+            var min = this.provider.GetScanSummary(this.provider.MinScan).Time;
             var diff = max - min;
-            rawFeatures.ForEach(feat => feat.Net = (this.provider.GetScanSummary(feat.Scan, 0).Time - min) / diff);
+            rawFeatures.ForEach(feat => feat.Net = (this.provider.GetScanSummary(feat.Scan).Time - min) / diff);
         }
 
         /// <summary>

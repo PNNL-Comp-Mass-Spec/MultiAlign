@@ -21,6 +21,7 @@ using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
+    using MultiAlignCore.Data;
     using MultiAlignCore.IO.RawData;
 
     public class XicPlotViewModel : PlotViewModelBase
@@ -38,7 +39,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Provider for LCMSRun for access to PBF files.
         /// </summary>
-        private InformedProteomicsReader rawProvider;
+        private ScanSummaryProviderCache rawProvider;
 
         /// <summary>
         /// The retention time axis.
@@ -74,7 +75,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
         /// </summary>
-        public XicPlotViewModel(InformedProteomicsReader rawProvider)
+        public XicPlotViewModel(ScanSummaryProviderCache rawProvider)
         {
             this.rawProvider = rawProvider;
             this.plotBuilderthrottler = new Throttler(TimeSpan.FromMilliseconds(100));
@@ -246,16 +247,16 @@ namespace MultiAlignRogue.Clustering
 
                 foreach (var charge in chargeMap.Keys)
                 {
-
+                    var scanDataProvider = this.rawProvider.GetScanSummaryProvider(feature.UMCLight.GroupId);
                     var msfeatures = chargeMap[charge];
 
                     // Get dataset info for mapping scan # -> retention time
-                    var lcmsRun = this.rawProvider.GetReaderForGroup(feature.UMCLight.GroupId);
                     var dsInfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
 
                     foreach (var msfeature in msfeatures)
                     {
-                        var rt = lcmsRun.GetElutionTime(msfeature.Scan);
+                        var scanSum = scanDataProvider.GetScanSummary(msfeature.Scan);
+                        var rt = scanSum.Time;
                         minX = Math.Min(minX, rt);
                         maxX = Math.Max(maxX, rt);
                         minY = Math.Min(minY, msfeature.Abundance);
@@ -285,7 +286,7 @@ namespace MultiAlignRogue.Clustering
                     };
 
                     msfeatures.ForEach(point => series.Points.Add(new DataPoint(
-                                                     lcmsRun.GetElutionTime(point.Scan),
+                                                     scanDataProvider.GetScanSummary(point.Scan).Time,
                                                      point.Abundance)));
 
                     this.XicPlotModel.Series.Add(series);   
@@ -424,8 +425,8 @@ namespace MultiAlignRogue.Clustering
             }
 
             this.XicPlotModel.Annotations.Clear();
-            var lcmsRun = this.rawProvider.GetReaderForGroup(this.SelectedMsFeature.GroupId);
-            var elutionTime = lcmsRun.GetElutionTime(this.SelectedMsFeature.Scan);
+            var scanDataProvider = this.rawProvider.GetScanSummaryProvider(this.SelectedMsFeature.GroupId);
+            var elutionTime = scanDataProvider.GetScanSummary(this.SelectedMsFeature.Scan).Time;
             var annotation = new LineAnnotation
             {
                 X = elutionTime,

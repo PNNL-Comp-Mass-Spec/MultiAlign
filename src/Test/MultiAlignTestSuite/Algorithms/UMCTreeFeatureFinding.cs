@@ -80,8 +80,7 @@ namespace MultiAlignTestSuite.Algorithms
             };
 
 
-            var provider = RawLoaderFactory.CreateFileReader(rawPath);
-            provider.AddDataFile(rawPath, 0);
+            var provider = RawLoaderFactory.CreateFileReader(rawPath, 0);
 
             var start = DateTime.Now;
             IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
@@ -156,8 +155,7 @@ namespace MultiAlignTestSuite.Algorithms
                 MaximumScanRange = 50
             };
             
-            var provider = RawLoaderFactory.CreateFileReader(rawPath);
-            provider.AddDataFile(rawPath, 0);
+            var provider = RawLoaderFactory.CreateFileReader(rawPath, 0);
 
             var start = DateTime.Now;
             IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
@@ -276,16 +274,11 @@ namespace MultiAlignTestSuite.Algorithms
             // Get the absolute path
             var path = GetPath(relativePath);
 
-            using (var provider = RawLoaderFactory.CreateFileReader(path))
+            using (var provider = RawLoaderFactory.CreateFileReader(path, 0))
             {
-                provider.AddDataFile(path, 0);
-                var scanData = provider.GetScanData(0);
 
                 var starTime = DateTime.Now;
-                foreach (var scan in scanData.Keys)
-                {
-                    provider.GetScanSummary(scan, 0);
-                }
+                var scanData = provider.GetScanSummaries();
                 var endTime = DateTime.Now;
 
                 Console.WriteLine(endTime.Subtract(starTime).TotalSeconds);
@@ -300,11 +293,10 @@ namespace MultiAlignTestSuite.Algorithms
             // Get the absolute path
             var path = GetPath(relativePath);
 
-            using (var provider = RawLoaderFactory.CreateFileReader(path))
+            using (var provider = RawLoaderFactory.CreateFileReader(path, 0))
             {
-                provider.AddDataFile(path, 0);
                 ScanSummary summary;
-                provider.GetScanSummary(10000000, 0);
+                provider.GetScanSummary(10000000);
             }
         }
 

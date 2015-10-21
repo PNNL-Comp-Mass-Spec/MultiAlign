@@ -86,15 +86,17 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 maxScan = Math.Max(feature.Scan, maxScan);
             }
 
-            var minScanTime = provider.GetScanSummary(minScan, 0).Time;
-            var maxScanTime = provider.GetScanSummary(maxScan, 0).Time;
+
+
+            var minScanTime = provider.GetScanSummary(minScan).Time;
+            var maxScanTime = provider.GetScanSummary(maxScan).Time;
             var id = 0;
             var newFeatures = new List<UMCLight>();
             foreach (var feature in features)
             {
                 if (feature.MsFeatures.Count < 1)
                     continue;
-                feature.Net = (provider.GetScanSummary(feature.Scan, 0).Time - minScanTime) /
+                feature.Net = (provider.GetScanSummary(feature.Scan).Time - minScanTime) /
                               (maxScanTime - minScanTime);
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
                 feature.Id = id++;

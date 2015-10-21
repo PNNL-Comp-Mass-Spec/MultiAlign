@@ -221,6 +221,7 @@ namespace MultiAlignCore.IO
             MsFeatureFilteringOptions msFilteringOptions,
             LcmsFeatureFindingOptions lcmsFindingOptions,
             LcmsFeatureFilteringOptions lcmsFilteringOptions,
+            ScanSummaryProviderCache providerCache,
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
@@ -228,8 +229,7 @@ namespace MultiAlignCore.IO
             if (dataset.RawFile.Path != null && !string.IsNullOrWhiteSpace(dataset.RawFile.Path))
             {
                 UpdateStatus("Using raw data to create better features.");
-                provider = RawLoaderFactory.CreateFileReader(dataset.RawFile.Path);
-                provider.AddDataFile(dataset.RawFile.Path, 0);
+                provider = providerCache.GetScanSummaryProvider(dataset.RawFile.Path, dataset.DatasetId);
             }
 
             progData.StepRange(1);
@@ -253,11 +253,12 @@ namespace MultiAlignCore.IO
             progData.Status = "Loading scan summaries.";
             ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             ////dataset.BuildScanTimes(scansInfo);
-            var ssDao = Providers.ScanSummaryCache;
+            var ssDao = Providers.ScanSummaryDao;
             ssDao.DeleteByDatasetId(dataset.DatasetId);
+
+            var scanSumProvider = Providers.ScanSummaryProviderCache.GetScanSummaryProvider(dataset.DatasetId);
             // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
-            ssDao.AddAllStateless(provider.GetScanData(0).Values.Select(summ => { summ.DatasetId = datasetId; return summ; }).ToList());
-            dataset.BuildScanTimes(provider, 0);
+            ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ => { summ.DatasetId = datasetId; return summ; }).ToList());
             
             progData.StepRange(100);
 
@@ -268,7 +269,7 @@ namespace MultiAlignCore.IO
             if (features.Count < 1)
             {
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
-                msFeatures = Filter(msFeatures, ref dataset);
+                msFeatures = Filter(msFeatures, provider, ref dataset);
 
                 progData.Status = "Creating LCMS features.";
                 features = CreateLcmsFeatures(dataset,
@@ -357,7 +358,7 @@ namespace MultiAlignCore.IO
         /// <summary>
         ///     Filters the list of MS Features that may be from MS/MS deisotoped data.
         /// </summary>
-        public List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, ref DatasetInformation dataset)
+        public List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, IScanSummaryProvider provider, ref DatasetInformation dataset)
         {
             string rawPath = dataset.RawFile.Path;
             if (rawPath == null || string.IsNullOrWhiteSpace(rawPath))
@@ -376,30 +377,25 @@ namespace MultiAlignCore.IO
             // Then parse each to figure out if this is true.
             var fullScans = new Dictionary<int, bool>();
             var scanTimes = dataset.ScanTimes;
-            using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
+            if (provider == null)
             {
-                if (provider == null)
-                {
-                    UpdateStatus(string.Format("Warning: Raw file not found ({0}); scan times are not available!", System.IO.Path.GetFileName(rawPath)));
-                }
-                else
-                {
-                    UpdateStatus(string.Format("Reading scan info from {0}", System.IO.Path.GetFileName(rawPath)));
-
-                    provider.AddDataFile(rawPath, 0);
-                    foreach (var scan in scanMap.Keys)
-                    {
-                        ScanSummary summary = provider.GetScanSummary(scan, 0);
-
-                        if (summary == null) { continue;}
-                        if (summary.MsLevel == 1) { fullScans.Add(scan, true); }         
-                        if (scanTimes.ContainsKey(scan)){ scanTimes[scan] = summary.Time; }
-                        else { scanTimes.Add(scan, summary.Time); }                    
-                    }
-                    dataset.ScanTimes = scanTimes;
-                }
+                UpdateStatus(string.Format("Warning: Raw file not found ({0}); scan times are not available!", System.IO.Path.GetFileName(rawPath)));
             }
+            else
+            {
+                UpdateStatus(string.Format("Reading scan info from {0}", System.IO.Path.GetFileName(rawPath)));
 
+                foreach (var scan in scanMap.Keys)
+                {
+                    ScanSummary summary = provider.GetScanSummary(scan);
+
+                    if (summary == null) { continue; }
+                    if (summary.MsLevel == 1) { fullScans.Add(scan, true); }
+                    if (scanTimes.ContainsKey(scan)) { scanTimes[scan] = summary.Time; }
+                    else { scanTimes.Add(scan, summary.Time); }
+                }
+                dataset.ScanTimes = scanTimes;
+            }
             return msFeatures.Where(x => fullScans.ContainsKey(x.Scan)).ToList();
         }
     }

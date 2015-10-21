@@ -51,10 +51,10 @@ namespace MultiAlignCore.IO.TextFiles
                 var maxNet = 0.0;
                 if (this.provider != null)
                 {
-                    var minScanSum = provider.GetScanSummary(minLcScan, 0);
+                    var minScanSum = provider.GetScanSummary(minLcScan);
                     minNet = minScanSum.Net;
 
-                    var maxScanSum = provider.GetScanSummary(maxLcScan, 0);
+                    var maxScanSum = provider.GetScanSummary(maxLcScan);
                     maxNet = maxScanSum.Net;
                 }
 

@@ -8,7 +8,7 @@ using MultiAlignCore.Data;
 
 namespace AlignmentPaperTestSuite.IO
 {
-    public class RawLoaderCache : ISpectraProvider
+    public class RawLoaderCache
     {
         private readonly Dictionary<int, Dictionary<int, ScanSummary>> m_summaryMap;
         private readonly ISpectraProvider m_provider;

@@ -7,174 +7,253 @@ using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.IO.RawData
 {
+    using System.IO;
+    using System.Linq;
+
     public class ScanSummaryProvider: IScanSummaryProvider
     {
-        private readonly Dictionary<int, DatasetSummary> _summaries = new Dictionary<int, DatasetSummary>();
-        private readonly Dictionary<int, int> _minScans = new Dictionary<int, int>();
-        private readonly Dictionary<int, int> _maxScans = new Dictionary<int, int>();
-        private readonly Dictionary<int, int> _scanCounts = new Dictionary<int, int>();
+        private DatasetSummary _summary;
 
-        public Dictionary<int, ScanSummary> GetScanData(int groupId)
+        /// <summary>
+        /// The total number of scans.
+        /// </summary>
+        private int _totalScans;
+
+        /// <summary>
+        /// The lowest scan number.
+        /// </summary>
+        private int _minScan;
+
+        /// <summary>
+        /// The highest scan number.
+        /// </summary>
+        private int _maxScan;
+
+        /// <summary>
+        /// Scans file for lazy loading.
+        /// </summary>
+        private string _scansFilePath;
+
+        /// <summary>
+        /// ScanSummaryDAO for lazy loading.
+        /// </summary>
+        private ScanSummaryDAOHibernate _scanSummaryDao;
+
+        public ScanSummaryProvider(int groupId)
         {
-            if (!_summaries.ContainsKey(groupId))
-            {
-                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
-            }
-            //var summaries = new Dictionary<int, ScanSummary>();
-            //for (int i = 0; i < _maxScans[groupId]; i++)
-            //{
-            //    summaries.Add(i, GetScanSummary(i, groupId));
-            //}
-            //return summaries;
-            return _summaries[groupId].ScanMetaData;
+            this.GroupId = groupId;
+            this._summary = null;
+            this._totalScans = -1;
+            this._minScan = -1;
+            this._maxScan = -1;
         }
 
-        public ScanSummary GetScanSummary(int scan, int group)
+        public ScanSummaryProvider(int groupId, string scansFilePath) : this(groupId)
         {
-            if (!_summaries.ContainsKey(group))
+            this._scansFilePath = scansFilePath;
+        }
+
+        public ScanSummaryProvider(int groupId, ScanSummaryDAOHibernate scanSummaryDao)
+            : this(groupId)
+        {
+            this._scanSummaryDao = scanSummaryDao;
+        }
+
+        /// <summary>
+        /// Gets the group ID for the dataset this scan summary provider is for.
+        /// </summary>
+        public int GroupId { get; private set; }
+
+        /// <summary>
+        /// Gets the total number of scans.
+        /// </summary>
+        public int TotalScans
+        {
+            get
             {
-                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
+                if (this._totalScans < 0)
+                {   // Lazy load scans file.
+                    this.LoadScans();
+                }
+
+                return this._totalScans;
             }
-            if (!_summaries[group].ScanMetaData.ContainsKey(scan))
+            private set { this._totalScans = value; }
+        }
+
+        /// <summary>
+        /// Gets the lowest scan number.
+        /// </summary>
+        public int MinScan
+        {
+            get
+            {
+                if (this._minScan < 0)
+                {   // Lazy load scans file.
+                    this.LoadScans();
+                }
+
+                return this._minScan;
+            }
+            private set { this._minScan = value; }
+        }
+
+        /// <summary>
+        /// Gets the highest scan number.
+        /// </summary>
+        public int MaxScan
+        {
+            get
+            {
+                if (this._maxScan < 0)
+                {   // Lazy load scans file.
+                    this.LoadScans();
+                }
+
+                return this._maxScan;
+            }
+            private set { this._maxScan = value; }
+        }
+
+        /// <summary>
+        /// Retrieves the scan header from the underlying stream.
+        /// </summary>
+        public ScanSummary GetScanSummary(int scan)
+        {
+            if (this._summary == null)
+            {
+                this.LoadScans();
+            }
+
+            if (!_summary.ScanMetaData.ContainsKey(scan))
             {
                 throw new ScanOutOfRangeException("The requested scan is out of range.");
             }
-            return _summaries[group].ScanMetaData[scan];
+
+            return _summary.ScanMetaData[scan];
         }
 
-        public void AddDataFile(string path, int groupId)
+        /// <summary>
+        /// Get scan summaries for a particular ms level.
+        /// </summary>
+        /// <param name="msLevel">
+        /// The mslevel to get scan summaries for.
+        /// 0 = MS1 and MS2
+        /// </param>
+        /// <returns>All scan summaries.</returns>
+        public List<ScanSummary> GetScanSummaries(int msLevel = 0)
         {
-            if (path.ToLower().EndsWith("_scans.csv"))
+            if (this._summary == null)
             {
-                LoadScansFile(path, groupId);
+                this.LoadScans();
             }
-            else if (path.ToLower().EndsWith("analysis.db3"))
+
+            if (msLevel == 0)
             {
-                LoadFromDatabase();
+                return this._summary.ScanMetaData.Values.ToList();
             }
-            else
-            {
-                throw new ArgumentException("Cannot handle input file", "path");
-            }
+
+            return this._summary.ScanMetaData.Values.Where(sum => sum.MsLevel == msLevel).ToList();
         }
 
-        public int GetTotalScans(int group)
+        /// <summary>
+        /// Load scan summaries from a scans file.
+        /// </summary>
+        /// <param name="scansFilePath">The file path to the scans file.</param>
+        public void LoadScansFile(string scansFilePath)
         {
-            if (!_summaries.ContainsKey(group))
-            {
-                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
-            }
-            return _scanCounts[group];
-        }
-
-        public int GetMinScan(int group)
-        {
-            if (!_summaries.ContainsKey(group))
-            {
-                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
-            }
-            return _minScans[group];
-        }
-
-        public int GetMaxScan(int group)
-        {
-            if (!_summaries.ContainsKey(group))
-            {
-                throw new ArgumentOutOfRangeException("The group-dataset ID provided was not found.");
-            }
-            return _maxScans[group];
-        }
-
-        public void Dispose()
-        {
-            _summaries.Clear();
-            _maxScans.Clear();
-            _minScans.Clear();
-            _scanCounts.Clear();
-        }
-
-        public void LoadScansFile(string scansFilePath, int groupId)
-        {
+            this._scansFilePath = scansFilePath;
+            this._summary = new DatasetSummary();
             var reader = new ScansFileReader { Delimiter = ',' };
             var scans = reader.ReadFile(scansFilePath);
-            if (!_summaries.ContainsKey(groupId))
-            {
-                _summaries.Add(groupId, new DatasetSummary
-                {
-                    ScanMetaData = new Dictionary<int, ScanSummary>()
-                });
-                _minScans.Add(groupId, 0);
-                _maxScans.Add(groupId, 0);
-                _scanCounts.Add(groupId, 0);
-            }
-            var dict = _summaries[groupId].ScanMetaData;
+            var dict = this._summary.ScanMetaData;
             dict.Clear();
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;
             foreach (var scan in scans)
             {
-                scan.DatasetId = groupId;
+                scan.DatasetId = this.GroupId;
                 dict.Add(scan.Scan, scan);
                 minScan = Math.Min(minScan, scan.Scan);
                 maxScan = Math.Max(maxScan, scan.Scan);
             }
-            _minScans[groupId] = minScan;
-            _maxScans[groupId] = maxScan;
-            _scanCounts[groupId] = maxScan - minScan; // Not truly the total number present; Scans file contains only MS1 scans
-            SetNets(groupId);
+
+            this.MinScan = minScan;
+            this.MaxScan = maxScan;
+            this.TotalScans = maxScan - minScan; // Not truly the total number present; Scans file contains only MS1 scans
+            this.SetNets();
         }
 
+        /// <summary>
+        /// Load scan summaries from database from dataset specified by <see cref="GroupId" />.
+        /// </summary>
         public void LoadFromDatabase()
         {
             var dao = new ScanSummaryDAOHibernate();
-            LoadFromDatabase(dao);
+            this.LoadFromDatabase(dao);
         }
 
+        /// <summary>
+        /// Load scan summaries from database from dataset specified by <see cref="GroupId" />,
+        /// given an existing data-access-object to use.
+        /// </summary>
+        /// <param name="dao">The existing data-access-object to use to access the database.</param>
         public void LoadFromDatabase(ScanSummaryDAOHibernate dao)
         {
-            var data = dao.FindAll();
-            var idsSeen = new Dictionary<int, bool>();
+            this._scanSummaryDao = dao;
+            var data = dao.FindByDatasetId(this.GroupId);
+
             foreach (var summary in data)
             {
-                var groupId = summary.DatasetId;
-                if (!_summaries.ContainsKey(groupId))
-                {
-                    _summaries.Add(groupId, new DatasetSummary
-                    {
-                        ScanMetaData = new Dictionary<int, ScanSummary>()
-                    });
-                    _minScans.Add(groupId, int.MaxValue);
-                    _maxScans.Add(groupId, int.MinValue);
-                    _scanCounts.Add(groupId, 0);
-                }
-                if (!idsSeen.ContainsKey(groupId))
-                {
-                    _summaries[groupId].ScanMetaData.Clear();
-                    idsSeen.Add(groupId, true);
-                }
-                
-                _summaries[groupId].ScanMetaData.Add(summary.Scan, summary);
+                this._summary.ScanMetaData.Add(summary.Scan, summary);
 
-                _minScans[groupId] = Math.Min(_minScans[groupId], summary.Scan);
-                _maxScans[groupId] = Math.Max(_maxScans[groupId], summary.Scan);
+                this.MinScan = Math.Min(this.MinScan, summary.Scan);
+                this.MaxScan = Math.Max(this.MaxScan, summary.Scan);
             }
-            foreach (var groupId in idsSeen.Keys)
+
+            this.TotalScans = this.MaxScan - this.MinScan;
+        }
+
+        /// <summary>
+        /// Load scans from scans file, if available, or database.
+        /// </summary>
+        private void LoadScans()
+        {
+            if (!string.IsNullOrEmpty(this._scansFilePath) && File.Exists(this._scansFilePath))
             {
-                _scanCounts[groupId] = _maxScans[groupId] - _minScans[groupId];
+                this.LoadScansFile(this._scansFilePath);
+            }
+            else if (this._scanSummaryDao != null)
+            {
+                this.LoadFromDatabase(this._scanSummaryDao);
+            }
+            else
+            {
+                this.LoadFromDatabase();
             }
         }
 
-        private void SetNets(int group)
+        /// <summary>
+        /// Calculate the nets for every scan.
+        /// </summary>
+        private void SetNets()
         {
-            var datasetSummary = this._summaries[group];
-            var minScanSum = this.GetScanSummary(this.GetMinScan(group), group);
-            var maxScanSum = this.GetScanSummary(this.GetMaxScan(group), group);
+            var minScanSum = this.GetScanSummary(this.MinScan);
+            var maxScanSum = this.GetScanSummary(this.MaxScan);
             var timeDiff = maxScanSum.Time - minScanSum.Time;
 
-            foreach (var summary in datasetSummary.ScanMetaData.Values)
+            foreach (var summary in this._summary.ScanMetaData.Values)
             {
                 summary.Net = (summary.Time - minScanSum.Time) / timeDiff;
             }
+        }
+
+        /// <summary>
+        /// Dispose of scan summary provider.
+        /// </summary>
+        public void Dispose()
+        {
+            _summary.ScanMetaData.Clear();
         }
     }
 }

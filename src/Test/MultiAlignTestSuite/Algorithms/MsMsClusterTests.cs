@@ -168,14 +168,13 @@ namespace MultiAlignTestSuite.Algorithms
             allFeatures.AddRange(aligneeFeatures);
 
             List<MsmsCluster> clusters = null;
-            using (var rawReader = new InformedProteomicsReader())
-            {
-                rawReader.AddDataFile(baselineInfo.RawFile.Path, baselineInfo.DatasetId);
-                rawReader.AddDataFile(aligneeInfo.RawFile.Path, aligneeInfo.DatasetId);
+            var spectraProviderCache = new SpectraProviderCache();
+            spectraProviderCache.GetSpectraProvider(baselineInfo.RawFile.Path, baselineInfo.DatasetId);
+            spectraProviderCache.GetSpectraProvider(aligneeInfo.RawFile.Path, aligneeInfo.DatasetId);
 
-                clusters = clusterer.Cluster(allFeatures, rawReader);
-                Console.WriteLine("Found {0} Total Clusters", clusters.Count);
-            }
+
+            clusters = clusterer.Cluster(allFeatures, spectraProviderCache);
+            Console.WriteLine("Found {0} Total Clusters", clusters.Count);
 
             if (clusters != null)
             {

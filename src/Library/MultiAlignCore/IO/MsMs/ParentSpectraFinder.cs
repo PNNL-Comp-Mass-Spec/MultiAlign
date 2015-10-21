@@ -37,7 +37,7 @@ namespace MultiAlignCore.IO.MsMs
             try
             {
                 var summary = new ScanSummary();
-                spectrum = provider.GetRawSpectra(scan, 0, 1, out summary);
+                spectrum = provider.GetRawSpectra(scan, 1, out summary);
             }
             catch
             {
@@ -70,7 +70,7 @@ namespace MultiAlignCore.IO.MsMs
             try
             {
                 var summary = new ScanSummary();
-                spectrum = provider.GetRawSpectra(scan, 0, 2, out summary);
+                spectrum = provider.GetRawSpectra(scan, 2, out summary);
             }
             catch
             {
@@ -89,10 +89,8 @@ namespace MultiAlignCore.IO.MsMs
             ISpectraProvider provider;
             if (!mRawDataProviders.TryGetValue(path, out provider))
             {
-                provider = new InformedProteomicsReader();
+                provider = new InformedProteomicsReader(0, path);
                 mRawDataProviders.Add(path, provider);
-
-                provider.AddDataFile(path, 0);
             }
 
             return provider;

@@ -17,7 +17,7 @@ namespace MultiAlignRogue.Clustering
     public interface IClusterViewFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(List<ClusterMatch> clusters, InformedProteomicsReader provider);
+        void CreateNewWindow(List<ClusterMatch> clusters, ScanSummaryProviderCache provider);
         void CreateChargeStateDistributionWindow(IEnumerable<UMCClusterLight> clusters, string title);
         void CreateDatasetHistogramWindow(IEnumerable<UMCClusterLight> clusters, string title);
         void CreateSettingsWindow(ClusterViewerSettings clusterViewerSettings);

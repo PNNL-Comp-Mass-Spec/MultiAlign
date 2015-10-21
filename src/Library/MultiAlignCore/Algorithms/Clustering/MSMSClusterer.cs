@@ -8,6 +8,8 @@ using PNNLOmics.Data.Constants.Libraries;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
+    using MultiAlignCore.IO.RawData;
+
     /// <summary>
     /// Aligns multiple datasets based on MS/MS clustering methods.
     /// </summary>
@@ -107,7 +109,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         private List<MsmsCluster> Cluster(int start,
                                          int stop,
                                          List<MSFeatureLight> features,
-                                         ISpectraProvider provider,
+                                         SpectraProviderCache provider,
                                          double similarityTolerance)
         {
             var massTolerance = MassTolerance;
@@ -170,7 +172,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                             var scanSummary = new ScanSummary();
                             if (featureI.MSnSpectra[0].Peaks.Count <= 0)
                             {
-                                featureI.MSnSpectra[0].Peaks = provider.GetRawSpectra(featureI.MSnSpectra[0].Scan, featureI.GroupId, out scanSummary);
+                                var spectraProvider = provider.GetSpectraProvider(featureI.GroupId);
+                                featureI.MSnSpectra[0].Peaks = spectraProvider.GetRawSpectra(featureI.MSnSpectra[0].Scan, featureI.GroupId, out scanSummary);
                                 featureI.MSnSpectra[0].Peaks = XYData.Bin(featureI.MSnSpectra[0].Peaks,
                                                                             0,
                                                                             2000,
@@ -178,7 +181,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                             }
                             if (featureJ.MSnSpectra[0].Peaks.Count <= 0)
                             {
-                                featureJ.MSnSpectra[0].Peaks = provider.GetRawSpectra(featureJ.MSnSpectra[0].Scan, featureJ.GroupId, out scanSummary);
+                                var spectraProvider = provider.GetSpectraProvider(featureJ.GroupId);
+                                featureJ.MSnSpectra[0].Peaks = spectraProvider.GetRawSpectra(featureJ.MSnSpectra[0].Scan, out scanSummary);
                                 featureJ.MSnSpectra[0].Peaks = XYData.Bin(featureJ.MSnSpectra[0].Peaks,
                                                                             0,
                                                                             2000,
@@ -221,7 +225,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         /// <param name="featureMap"></param>
         /// <param name="msms"></param>
-        public List<MsmsCluster> Cluster(List<UMCLight> features, ISpectraProvider provider)
+        public List<MsmsCluster> Cluster(List<UMCLight> features, SpectraProviderCache provider)
         {
 
             UpdateStatus("Mapping UMC's to MS/MS spectra using intensity profile.");

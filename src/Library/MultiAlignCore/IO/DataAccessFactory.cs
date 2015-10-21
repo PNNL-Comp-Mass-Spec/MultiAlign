@@ -14,6 +14,8 @@ using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO
 {
+    using MultiAlignCore.IO.RawData;
+
     public class DataAccessFactory
     {
         public static FeatureDataAccessProviders CreateDataAccessProviders(MultiAlignAnalysis analysis,
@@ -67,7 +69,8 @@ namespace MultiAlignCore.IO
                     new DatabaseSearchSequenceDAOHibernate(),
                     sequenceMap)
                 {
-                    ScanSummaryCache = new ScanSummaryDAOHibernate(),
+                    ScanSummaryDao = new ScanSummaryDAOHibernate(),
+                    ScanSummaryProviderCache = new ScanSummaryProviderCache()
                 };
 
             return providers;

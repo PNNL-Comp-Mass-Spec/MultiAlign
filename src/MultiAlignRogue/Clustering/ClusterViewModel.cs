@@ -49,7 +49,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Provider for LCMSRun for access to PBF files.
         /// </summary>
-        private readonly InformedProteomicsReader rawProvider;
+        private readonly ScanSummaryProviderCache rawProvider;
 
         /// <summary>
         /// The selected cluster.
@@ -83,7 +83,7 @@ namespace MultiAlignRogue.Clustering
         /// <param name="matches">The clusters.</param>
         /// <param name="layoutFilePath">Path to layout file.</param>
         /// <param name="rawProvider">Provider for LCMSRun for access to PBF files.</param>
-        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath, InformedProteomicsReader rawProvider)
+        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath, ScanSummaryProviderCache rawProvider)
         {
             this.viewFactory = viewFactory;
             this.providers = providers;

@@ -16,7 +16,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         public static MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
             var summary = new ScanSummary();
-            var spectrum   = reader.GetSpectrum(scan, group, 2, out summary, true);
+            var spectrum   = reader.GetSpectrum(scan, 2, out summary, true);
 
             if (ShouldLogScale)
             {

@@ -202,19 +202,19 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                 throw new ArgumentNullException();
             }
             var matches = new List<SpectralAnchorPointMatch>();
-            var scanDataX  = readerX.GetScanData(0);
-            var scanDataY  = readerY.GetScanData(0);
+            var scanDataX  = readerX.GetScanSummaries();
+            var scanDataY  = readerY.GetScanSummaries(0);
 
             // Determine the scan extrema
-            var maxX = scanDataX.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
-            var minX = scanDataX.Aggregate((l, r) => l.Value.Scan < r.Value.Scan ? l : r).Key;
-            var maxY = scanDataY.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
-            var minY = scanDataY.Aggregate((l, r) => l.Value.Scan < r.Value.Scan ? l : r).Key;
+            var maxX = scanDataX.Aggregate((l, r) => l.Scan > r.Scan ? l : r).Scan;
+            var minX = scanDataX.Aggregate((l, r) => l.Scan < r.Scan ? l : r).Scan;
+            var maxY = scanDataY.Aggregate((l, r) => l.Scan > r.Scan ? l : r).Scan;
+            var minY = scanDataY.Aggregate((l, r) => l.Scan < r.Scan ? l : r).Scan;
 
             // Here we sort the summary spectra....so that we can improve run time efficiency
             // and minimize as much memory as possible.
-            var ySpectraSummary = scanDataY.Values.Where(summary => summary.MsLevel == 2).ToList();
-            var xSpectraSummary = scanDataX.Values.Where(summary => summary.MsLevel == 2).ToList();
+            var ySpectraSummary = scanDataY.Where(summary => summary.MsLevel == 2).ToList();
+            var xSpectraSummary = scanDataX.Where(summary => summary.MsLevel == 2).ToList();
 
 
             ySpectraSummary.Sort((x, y) => x.PrecursorMz.CompareTo(y.PrecursorMz));

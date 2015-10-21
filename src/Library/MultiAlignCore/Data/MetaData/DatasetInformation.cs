@@ -25,8 +25,6 @@ namespace MultiAlignCore.Data.MetaData
     /// </summary>
     public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged
     {
-        private DatasetSummary summary;
-
         private bool featuresFound;
         private bool isAligned;
 
@@ -42,28 +40,10 @@ namespace MultiAlignCore.Data.MetaData
             Sequence = null;
             InputFiles = new List<InputFile>();
             IsBaseline = false;
-            DatasetSummary = new DatasetSummary();
             PlotData = new DatasetPlotInformation();
             ScanTimes = new Dictionary<int, double>();
             FeaturesFound = false;
             IsAligned = false;
-        }
-
-        /// <summary>
-        ///     Gets or sets the dataset summary.
-        /// </summary>
-        public DatasetSummary DatasetSummary
-        {
-            get
-            {
-                return this.summary;
-            }
-
-            set
-            {
-                summary = value;
-                this.OnPropertyChanged();
-            }
         }
 
         #region Properties
@@ -301,32 +281,6 @@ namespace MultiAlignCore.Data.MetaData
                 scanTimeMap.Add(scan.Scan, scan.Time);
             }
             this.ScanTimes = scanTimeMap;
-        }
-
-        public void BuildScanTimes(IScanSummaryProvider provider, int groupId)
-        {
-            Dictionary<int, double> scanTimeMap = new Dictionary<int, double>();
-            foreach (var scan in provider.GetScanData(groupId))
-            {
-                scanTimeMap.Add(scan.Key, scan.Value.Time);
-            }
-            this.ScanTimes = scanTimeMap;
-        }
-
-        private static InformedProteomicsReader reader;
-        public static InformedProteomicsReader GetInformedProteomicsReader(IEnumerable<DatasetInformation> datasets)
-        {
-            if (reader == null)
-            {
-                reader = new InformedProteomicsReader();
-            }
-
-            foreach (var dataset in datasets)
-            {
-                reader.AddDataFile(dataset.RawFile.Path, dataset.DatasetId);
-            }
-
-            return reader;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

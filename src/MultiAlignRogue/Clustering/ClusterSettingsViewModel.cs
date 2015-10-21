@@ -203,9 +203,7 @@ namespace MultiAlignRogue.Clustering
             if (clusterer is PromexClusterer)
             {
                 var promexClusterer = clusterer as PromexClusterer;
-                promexClusterer.Reader =
-                    DatasetInformation.GetInformedProteomicsReader(
-                        this.Datasets.Where(ds => ds.FeaturesFound).Select(ds => ds.Dataset));
+                promexClusterer.Readers = this.analysis.DataProviders.ScanSummaryProviderCache;
             }
 
             // This just tells us whether we are using mammoth memory partitions or not.          
@@ -377,10 +375,7 @@ namespace MultiAlignRogue.Clustering
             // reconstruct matches
             var matches = await Task.Run(() => this.ReconstructClusterMatches(clusters));
 
-            var rawProvider =
-                DatasetInformation.GetInformedProteomicsReader(
-                    this.Datasets.Where(ds => ds.IsClustered).Select(ds => ds.Dataset));
-            this.clusterViewFactory.CreateNewWindow(matches, rawProvider);
+            this.clusterViewFactory.CreateNewWindow(matches, this.analysis.DataProviders.ScanSummaryProviderCache);
         }
 
         private List<ClusterMatch> ReconstructClusterMatches(IEnumerable<UMCClusterLight> clusters)

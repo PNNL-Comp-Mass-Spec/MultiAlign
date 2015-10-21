@@ -34,7 +34,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             int id = 0, count = 0;
             int msmsFeatureId = 0;
             var resultFeatures = new List<UMCLight> { Capacity = features.Count };
-            var ipr = provider.GetReaderForGroup(0);
+            var ipr = provider.LcMsRun;
 
             ipr.HigherPrecursorChromatogramCacheSize = 2000;
             

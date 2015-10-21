@@ -91,7 +91,7 @@ namespace MultiAlignCore.Extensions
                     for (var scan = minScan; scan < maxScan; scan++)
                     {
                         var summary = new ScanSummary();
-                        var spectrum = provider.GetRawSpectra(scan, feature.GroupId, 1, out summary);
+                        var spectrum = provider.GetRawSpectra(scan, 1, out summary);
                         double intensity = 0;
                         var minDistance = double.MaxValue;
                         var index = -1;

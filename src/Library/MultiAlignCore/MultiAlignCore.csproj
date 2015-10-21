@@ -549,11 +549,12 @@
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
     <Compile Include="IO\Proteins\IProteinDAO.cs" />
     <Compile Include="IO\Proteins\PeptideScanWriter.cs" />
-    <Compile Include="IO\RawData\CachedFeatureSpectraProvider.cs" />
     <Compile Include="IO\RawData\InformedProteomicsReader.cs" />
     <Compile Include="IO\RawData\RawLoaderFactory.cs" />
     <Compile Include="IO\RawData\ScanOutOfRangeException.cs" />
     <Compile Include="IO\RawData\ScanSummaryProvider.cs" />
+    <Compile Include="IO\RawData\ScanSummaryProviderCache.cs" />
+    <Compile Include="IO\RawData\SpectraProviderCache.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\Reports\AnalysisReportGenerator.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />

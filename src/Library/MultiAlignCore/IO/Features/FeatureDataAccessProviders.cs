@@ -12,6 +12,8 @@ using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO.Features
 {
+    using MultiAlignCore.IO.RawData;
+
     /// <summary>
     ///     Holds all feature access providers required by a MA analysis.
     /// </summary>
@@ -20,6 +22,7 @@ namespace MultiAlignCore.IO.Features
         public FeatureDataAccessProviders()
         {
             Synch = new object();
+            this.ScanSummaryProviderCache = new ScanSummaryProviderCache();
         }
 
         /// <summary>
@@ -121,6 +124,8 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         public IMSnFeatureDAO MSnFeatureCache { get; set; }
 
-        public ScanSummaryDAOHibernate ScanSummaryCache { get; set; }
+        public ScanSummaryDAOHibernate ScanSummaryDao { get; set; }
+
+        public ScanSummaryProviderCache ScanSummaryProviderCache { get; set; }
     }
 }

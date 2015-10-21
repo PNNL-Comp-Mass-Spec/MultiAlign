@@ -92,13 +92,11 @@ namespace MultiAlignTestSuite.IO
                                         // MS/MS spectra from PNNLOmics without having to reference any of the Thermo DLL's
                                         // Nor support file reading capability.  This is also nice because I don't have to load
                                         // several MS/MS spectra when analyzing large datasets for my spectral clustering work.
-                                        var rawReader = new InformedProteomicsReader();
-                                        rawReader.AddDataFile(info.RawFile.Path, spectrumMetaData.GroupId);
+                                        var rawReader = new InformedProteomicsReader(spectrumMetaData.GroupId, info.RawFile.Path);
 
                                         // Then grab the actual spectrum...
                                         var summary = new ScanSummary();
-                                        var spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan,
-                                            spectrumMetaData.GroupId, 2, out summary);
+                                        var spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, 2, out summary);
 
                                         // Then do what you want...
                                         // Profit???

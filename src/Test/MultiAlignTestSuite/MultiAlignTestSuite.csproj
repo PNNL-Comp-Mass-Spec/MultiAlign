@@ -149,7 +149,6 @@
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentTest.cs" />
     <Compile Include="Algorithms\Alignment\LCMS_LCAlignment.cs" />
     <Compile Include="Algorithms\Alignment\SimilarityScoreTest.cs" />
-    <Compile Include="Algorithms\CallisterClusters\ClusterComparer.cs" />
     <Compile Include="Algorithms\Distance\WeightedDistanceCalculatorTests.cs" />
     <Compile Include="Algorithms\Distance\DistanceCalculatorTests.cs" />
     <Compile Include="Algorithms\FeatureClustering\UMCAverageLinkageTests.cs" />
@@ -189,22 +188,6 @@
     <Compile Include="IO\Utilities.cs" />
     <Compile Include="OHSU\ClusterExtractor.cs" />
     <Compile Include="OHSU\LargeScaleClusterTests.cs" />
-    <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />
-    <Compile Include="Papers\Alignment\IO\AlignmentFigureType.cs" />
-    <Compile Include="Papers\Alignment\IO\PaperFileWriter.cs" />
-    <Compile Include="Papers\Alignment\IO\RawLoaderCache.cs" />
-    <Compile Include="Papers\Alignment\IO\ReportFileUtility.cs" />
-    <Compile Include="Papers\Alignment\IO\ScanSummaryCache.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureOne.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureThree.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureTwo.cs" />
-    <Compile Include="Papers\Alignment\SSM\BaseSpectralAlignmentTest.cs" />
-    <Compile Include="Papers\Alignment\SSM\TestSpectralLinking.cs" />
-    <Compile Include="Papers\Alignment\ClusterIdentificationStatistic.cs" />
-    <Compile Include="Papers\Alignment\ClusterValidationTests.cs" />
-    <Compile Include="Papers\Alignment\FigureGenerator.cs" />
-    <Compile Include="Papers\Alignment\MatchCountHistogramBuilder.cs" />
-    <Compile Include="Papers\Alignment\SpectralCacheUtilityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

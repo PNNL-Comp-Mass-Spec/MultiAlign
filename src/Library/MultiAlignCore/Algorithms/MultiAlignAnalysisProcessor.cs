@@ -23,6 +23,8 @@ using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlignCore.Algorithms
 {
+    using MultiAlignCore.IO.RawData;
+
     /// <summary>
     ///     Transition class to remove the excess from the data storage object.
     ///     Remove garbage code and mixed-mode BS.
@@ -96,6 +98,8 @@ namespace MultiAlignCore.Algorithms
         private Thread m_analysisThread;
 
         private Dictionary<AnalysisStep, DelegateAnalysisMethod> m_methodMap;
+
+        private ScanSummaryProviderCache m_scanSummaryProviderCache;
 
         #endregion
 
@@ -324,7 +328,8 @@ namespace MultiAlignCore.Algorithms
                 var features = featureCache.LoadDataset(dataset,
                     analysisOptions.MsFilteringOptions,
                     analysisOptions.LcmsFindingOptions,
-                    analysisOptions.LcmsFilteringOptions);
+                    analysisOptions.LcmsFilteringOptions,
+                    m_scanSummaryProviderCache);
                 features = AlignDataset(features,
                     baselineFeatures,
                     database,
@@ -368,7 +373,8 @@ namespace MultiAlignCore.Algorithms
                 baselineFeatures = cache.LoadDataset(baselineInfo,
                     msFilterOptions,
                     lcmsFindingOptions,
-                    lcmsFilterOptions);
+                    lcmsFilterOptions,
+                    m_scanSummaryProviderCache);
 
                 cache.CacheFeatures(baselineFeatures);
                 if (BaselineFeaturesLoaded != null)

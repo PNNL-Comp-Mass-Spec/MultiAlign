@@ -7,6 +7,11 @@ namespace MultiAlignCore.Data
     /// </summary>
     public class DatasetSummary
     {
+        public DatasetSummary()
+        {
+            this.ScanMetaData = new Dictionary<int, ScanSummary>();
+        }
+
         /// <summary>
         /// Gets or sets the summary data associated with the meta-data.
         /// </summary>
