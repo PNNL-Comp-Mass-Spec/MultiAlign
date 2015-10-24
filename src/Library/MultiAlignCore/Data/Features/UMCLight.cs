@@ -378,5 +378,24 @@ namespace MultiAlignCore.Data.Features
             get { return m_umcList; }
         }
 
+        public class UmcMassComparer : IComparer<UMCLight>
+        {
+            public int Compare(UMCLight left, UMCLight right)
+            {
+                if (left != null)
+                {
+                    if (right != null)
+                    {
+                        return left.MassMonoisotopic.CompareTo(right.MassMonoisotopic);
+                    }
+                    return 1;
+                }
+                if (right == null)
+                {
+                    return 0;
+                }
+                return -1;
+            }
+        } 
     }
 }

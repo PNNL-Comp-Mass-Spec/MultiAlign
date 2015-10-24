@@ -2,6 +2,8 @@
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using MultiAlignCore.Data.Features;
+
     /// <summary>
     /// Object to contain the feature match data for LCMS Warp.
     /// Contains the feature index, baseline index, feature normalized elution time,
@@ -61,12 +63,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public int FeatureIndex { get; set; }
 
+        public UMCLight AligneeFeature { get; set; }
+
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the baseline feature that this match corresponds to
         /// Auto property
         /// </summary>
         public int BaselineFeatureIndex { get; set; }
+
+        public UMCLight BaselineFeature { get; set; }
 
         /// <summary>
         /// Compares two feature matches based on the Normalized elution time

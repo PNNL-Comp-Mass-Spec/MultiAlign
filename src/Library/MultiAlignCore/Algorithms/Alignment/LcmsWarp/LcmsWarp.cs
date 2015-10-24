@@ -593,7 +593,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             FeatureMatches.Clear();
 
             var minMatchScore = -0.5 * (MassTolerance * MassTolerance) / (_massStd * _massStd);
-            minMatchScore -= 0.5 * (NetTolerance * NetTolerance) / (_netStd * _netStd);
+            minMatchScore -= 0.5 * (NetTolerance * NetTolerance) /
+                (_netStd * _netStd);
 
             for (var featureIndex = 0; featureIndex < _features.Count; featureIndex++)
             {
