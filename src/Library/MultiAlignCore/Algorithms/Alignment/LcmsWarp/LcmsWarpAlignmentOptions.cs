@@ -2,6 +2,10 @@
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System.Collections.Generic;
+
+    using MultiAlignCore.Data.Features;
+
     /// <summary>
     /// Object to hold the options for LcmsWarp Alignment. 
     /// </summary>
@@ -183,6 +187,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
+        public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; } 
+
         /// <summary>
         /// Default constructor, initializes every value to commonly used values and flags
         /// </summary>
@@ -224,6 +230,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             DriftTimeBinSize = 0.03;
             StoreAlignmentFunction = false;
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
+            SeparationTypes = new List<FeatureLight.SeparationTypes>();
         }
     }
 }

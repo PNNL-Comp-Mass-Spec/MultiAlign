@@ -85,7 +85,17 @@ namespace MultiAlignCore.Data.Features
         }
         #endregion
 
-        public override int GetHashCode()
+	    public override double GetSeparationValue(SeparationTypes type)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public override void SetSeparationValue(SeparationTypes type, double value)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public override int GetHashCode()
         {
             var hash = 17;
             hash = hash * 23 + Id.GetHashCode();

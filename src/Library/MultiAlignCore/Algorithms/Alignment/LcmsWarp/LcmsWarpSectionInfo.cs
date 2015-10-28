@@ -75,7 +75,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns>The lowest start NET></returns>
         public double GetSectionStartNet(int section)
         {
-            return this.MinNet + (section * (this.MaxNet - this.MinNet)) / this.NumSections;
+            return this.MinNet + (section * this.SectionWidth);
         }
 
         /// <summary>
@@ -85,7 +85,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns>The highest start NET></returns>
         public double GetSectionEndNet(int section)
         {
-            return this.MinNet + ((section + 1) * (this.MaxNet - this.MinNet)) / this.NumSections;
+            return this.MinNet + ((section + 1) * this.SectionWidth);
+        }
+
+        /// <summary>
+        /// Get the section number that a given NET falls into.
+        /// </summary>
+        /// <param name="net">The given NET value.</param>
+        /// <returns>The section number.</returns>
+        public int GetSectionNumber(double net)
+        {
+            return this.GetSectionNumber(net, this.MinNet, this.MaxNet);
         }
 
         /// <summary>

@@ -76,6 +76,15 @@ namespace MultiAlignCore.Data.MassTags
         public int ConformationObservationCount { get; set; }
         public int QualityScore { get; set; }
         public Molecule Molecule { get; set; }
-        
+
+        public override double GetSeparationValue(SeparationTypes type)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void SetSeparationValue(SeparationTypes type, double value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

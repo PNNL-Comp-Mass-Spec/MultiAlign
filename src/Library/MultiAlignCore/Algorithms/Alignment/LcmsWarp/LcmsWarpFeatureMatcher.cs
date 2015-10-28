@@ -15,6 +15,22 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarpFeatureMatcher(LcmsWarpAlignmentOptions options)
         {
             this.options = options;
+            this.Matches = new List<LcmsWarpFeatureMatch>();
+        }
+
+        public List<LcmsWarpFeatureMatch> Matches { get; private set; }
+
+        public List<LcmsWarpFeatureMatch> GetMatchesAs(FeatureLight.SeparationTypes separationType)
+        {
+            return this.Matches.Select(
+                    match =>
+                    new LcmsWarpFeatureMatch
+                        {
+                            AligneeFeature = match.AligneeFeature,
+                            BaselineFeature = match.BaselineFeature,
+                            Net = match.AligneeFeature.GetSeparationValue(separationType),
+                            BaselineNet = match.AligneeFeature.GetSeparationValue(separationType)
+                        }).ToList();
         }
 
         /// <summary>
@@ -23,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// mass tolerance window
         /// This ONLY matches in mass. Elution time will be considered later.
         /// </summary>
-        public List<LcmsWarpFeatureMatch> GenerateCandidateMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
+        public void GenerateCandidateMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
         {
             // Sort features by mass
             var massComparer = new UMCLight.UmcMassComparer();
@@ -74,7 +90,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // Filter out ambiguous matches
             featureMatches = this.RemovePromiscuousMatches(featureMatches);
 
-            return featureMatches;
+            this.Matches = featureMatches;
         }
 
         /// <summary>

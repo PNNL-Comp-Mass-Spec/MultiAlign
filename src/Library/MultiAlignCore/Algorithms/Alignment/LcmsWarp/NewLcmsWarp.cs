@@ -8,8 +8,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     using MultiAlignCore.Data.Features;
 
+    using PNNLOmics.Utilities;
+
     public class NewLcmsWarp
     {
+        private const int REQUIRED_MATCHES = 6;
+
         private LcmsWarpAlignmentOptions options;
 
         public NewLcmsWarp(LcmsWarpAlignmentOptions options)
@@ -17,152 +21,105 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             
         }
 
-        /// <summary>
-        /// Goes through the matched features and determines the probability
-        /// of each that the match is correct
-        /// </summary>
-        public void GetMatchProbabilities(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, List<LcmsWarpFeatureMatch> matches)
+        public List<UMCLight> WarpNet(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, bool includeMassInMatchScore)
         {
-            // TODO: move this to the constructor:
-            ////_subsectionMatchScores = new double[NumSections, NumBaselineSections, NumMatchesPerBaseline];
-            ////for (var i = 0; i < NumSections; i++)
-            ////{
-            ////    for (var j = 0; j < NumBaselineSections; j++)
-            ////    {
-            ////        for (var k = 0; k < NumMatchesPerBaseline; k++)
-            ////        {
-            ////            _subsectionMatchScores[i, j, k] = MinScore;
-            ////        }
-            ////    }
-            ////}
+            // Generate candidate matches: Match alignee features -> baseline features by mass only
+            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
+            featureMatcher.GenerateCandidateMatches(aligneeFeatures, baselineFeatures);
 
-            int numBaselineSections = this.options.NumTimeSections * this.options.ContractionFactor;
-            int numMatchesPerBaseline = this.options.ContractionFactor * this.options.ContractionFactor;
-
-            // Calculate sections
-            var aligneeSectionInfo = new LcmsWarpSectionInfo(options.NumTimeSections);
-            aligneeSectionInfo.InitSections(aligneeFeatures);
-
-            var baselineSectionInfo = new LcmsWarpSectionInfo(numBaselineSections);
-            baselineSectionInfo.InitSections(baselineFeatures);
-
-            // Sort matches into sections.
-            for (int section = 0; section < this.options.NumTimeSections; section++)
+            var warpedFeatures = new List<UMCLight>();
+            foreach (var separationType in this.options.SeparationTypes)
             {
-                var minNet = aligneeSectionInfo.GetSectionStartNet(section);
-                var maxNet = aligneeSectionInfo.GetSectionEndNet(section);
+                // Get matches for current separation type
+                var matches = featureMatcher.GetMatchesAs(separationType);
 
-                var sectionMatches = matches.Where(match => match.Net >= minNet && match.Net <= maxNet);
+                // Calculate two dimensional statistics for mass and the current separation dimension.
+                var statistics = this.CalculateStandardDeviations(matches, separationType);
 
-                // Compute section score.
-                //ComputeSectionMatch(section, aligneeSectionInfo, baselineSectionInfo, uniqueFeatureToMatchMap.Values.ToList());
+                // Calculate alignee sections
+                var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
+                aligneeSections.InitSections(aligneeFeatures);
+
+                // Calculate baseline sections
+                var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
+                baselineSections.InitSections(baselineFeatures);
+
+                // Generate alignment function, only score sections based on NET.
+                var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
+                var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
+
+                // Warp the values in the features for this separation type
+                warpedFeatures = this.WarpFeatures(aligneeFeatures, alignmentFunction, separationType);
             }
+
+            // Calculate actual feature matches in mass and all separation dimensions
+
+            return warpedFeatures;
         }
 
-        //private void ComputeSectionMatch(int msSection, LcmsWarpSectionInfo aligneeSections, LcmsWarpSectionInfo baselineSections, List<LcmsWarpFeatureMatch> sectionMatches)
-        //{
-        //    var numMatchesPerBaseline = this.options.ContractionFactor * this.options.ContractionFactor;
-        //    var numMatchesPerSection = baselineSections.NumSections * numMatchesPerBaseline;
+        public List<UMCLight> WarpNetMass(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
+        {
+            // First pass NET warp: Perform warp by only scoring matches in Nnet
+            var netWarpedFeatures = this.WarpNet(aligneeFeatures, baselineFeatures, false);
 
-        //    // Get unique features in the section
+            // Warp mass
 
-        //    for (var baselineSectionStart = 0; baselineSectionStart < baselineSections.NumSections; baselineSectionStart++)
-        //    {
-        //        var baselineStartNet = baselineSections.GetSectionStartNet(baselineSectionStart);
-        //        var endSection = Math.Min(baselineSectionStart + numMatchesPerBaseline, baselineSections.NumSections);
+            // Second pass NET warp: Perform warp that scores matches in mass AND net
+            var netMassWarpedFeatures = this.WarpNet(netWarpedFeatures, baselineFeatures, true);
 
-        //        for (var baselineSectionEnd = baselineSectionStart; baselineSectionEnd < endSection; baselineSectionEnd++)
-        //        {
-        //            var baselineEndNet = baselineSections.GetSectionEndNet(baselineSectionEnd);
+            return netMassWarpedFeatures;
+        }
 
-        //            for (var i = 0; i < sectionMatches.Count; i++)
-        //            {
-        //                var msFeatureIndex = _sectionUniqueFeatureIndices[i];
-        //                _tempFeatureBestDelta[msFeatureIndex] = double.MaxValue;
-        //                _tempFeatureBestIndex[msFeatureIndex] = -1;
-        //            }
+        /// <summary>
+        /// Calculates the Standard deviations of the matches.
+        /// Note: method requires more than 6 matches to produce meaningful
+        /// results.
+        /// </summary>
+        private LcmsWarpStatistics CalculateStandardDeviations(List<LcmsWarpFeatureMatch> matches, FeatureLight.SeparationTypes separationType)
+        {
+            if (matches.Count <= REQUIRED_MATCHES)
+            {
+                throw new ArgumentException(string.Format("This requires at least {0} matches to produce meaningful results", REQUIRED_MATCHES));
+            }
 
-        //            // Now that we have msmsSection and matching msSection, transform the scan numbers to nets using a
-        //            // transformation of the two sections, and use a temporary list to keep only the best match
-        //            for (var i = 0; i < numMatchingFeatures; i++)
-        //            {
-        //                var match = sectionMatchingFeatures[i];
-        //                var msFeatureIndex = match.FeatureIndex;
-        //                var featureNet = match.Net;
+            var massDeltas = new List<double>(matches.Count);
+            var netDeltas = new List<double>(matches.Count);
+            for (var matchNum = 0; matchNum < matches.Count; matchNum++)
+            {
+                var match = matches[matchNum];
+                var feature = match.AligneeFeature;
+                var baselineFeature = match.BaselineFeature;
+                massDeltas.Add(((baselineFeature.MassMonoisotopic - feature.MassMonoisotopic) * 1000000) /
+                                       feature.MassMonoisotopic);
+                netDeltas.Add(baselineFeature.GetSeparationValue(separationType) - feature.NetAligned);
+            }
 
-        //                var transformNet = (featureNet - minNet) * (baselineEndNet - baselineStartNet);
-        //                transformNet = transformNet / (maxNet - minNet) + baselineStartNet;
+            double normalProb, u, muMass, muNet, massStd, netStd;
 
-        //                var deltaMatch = transformNet - match.BaselineNet;
-        //                if (!(Math.Abs(deltaMatch) < Math.Abs(_tempFeatureBestDelta[msFeatureIndex])))
-        //                    continue;
+            MathUtilities.TwoDem(massDeltas, netDeltas, out normalProb, out u,
+                out muMass, out muNet, out massStd, out netStd);
 
-        //                _tempFeatureBestDelta[msFeatureIndex] = deltaMatch;
-        //                _tempFeatureBestIndex[msFeatureIndex] = match.BaselineFeatureIndex;
-        //            }
+            return new LcmsWarpStatistics
+            {
+                MassStdDev = massStd,
+                NetStdDev = netStd,
+                Mu = u,
+                NormalProbability = normalProb
+            };
+        }
 
-        //            _subsectionMatchScores[msSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = CurrentlyStoredSectionMatchScore(numUniqueFeatures);
-        //        }
-        //    }
-        //}
+        private List<UMCLight> WarpFeatures(List<UMCLight> features, LcmsWarpNetAlignmentFunction alignmentFunction, FeatureLight.SeparationTypes separationType)
+        {
+            var warpedFeatures = new List<UMCLight> { Capacity = features.Count };
+            foreach (var feature in features)
+            {
+                var warpedFeature = new UMCLight(feature);
+                var separationValue = feature.GetSeparationValue(separationType);
+                var warpedValue = alignmentFunction.WarpNet(separationValue);
+                warpedFeature.SetSeparationValue(separationType, warpedValue);
+            }
 
-        ///// <summary>
-        ///// Compute match scores for this section: log(P(match of ms section to MSMS section))
-        ///// Does this within the Net Tolerance of the LCMSWarper
-        ///// </summary>
-        ///// <param name="numUniqueFeatures"></param>
-        ///// <returns></returns>
-        //private double CurrentlyStoredSectionMatchScore(int numUniqueFeatures)
-        //{
-        //    //Compute match scores for this section: log(P(match of ms section to MSMS section))
-        //    double matchScore = 0;
-
-        //    var lg2PiStdNetSqrd = Math.Log(2 * Math.PI * _netStd * _netStd);
-        //    for (var i = 0; i < numUniqueFeatures; i++)
-        //    {
-        //        var msFeatureIndex = _sectionUniqueFeatureIndices[i];
-        //        var featureMonoMass = _features[msFeatureIndex].MassMonoisotopic;
-        //        var baselineFeatureMonoMass = _baselineFeatures[_tempFeatureBestIndex[msFeatureIndex]].MassMonoisotopic;
-
-        //        var deltaNet = _tempFeatureBestDelta[msFeatureIndex];
-
-        //        if (_useMass)
-        //        {
-        //            var massDelta = (featureMonoMass - baselineFeatureMonoMass) * 1000000 /
-        //                            baselineFeatureMonoMass;
-        //            var likelihood = GetMatchLikelihood(massDelta, deltaNet);
-        //            matchScore += Math.Log(likelihood);
-        //        }
-        //        else
-        //        {
-        //            var calcVal = deltaNet;
-        //            if (Math.Abs(deltaNet) > NetTolerance)
-        //            {
-        //                calcVal = NetTolerance;
-        //            }
-        //            matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
-        //            matchScore -= 0.5 * lg2PiStdNetSqrd;
-        //        }
-        //    }
-        //    return matchScore;
-        //}
-
-        //private double GetFeatureMatchScore(double netStdDev)
-        //{
-            
-        //}
-
-        //private double GetMatchLikelihood(double massDelta, double massStdDev, double netDelta, double netStdDev)
-        //{
-        //    var massZ = massDelta / massStdDev;
-        //    var netZ = netDelta / netStdDev;
-        //    var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ))) / (2 * Math.PI * netStdDev * massStdDev);
-        //    var likelihood = (normProb * _normalProb + ((1 - _normalProb) * _u));
-        //    if (likelihood < MIN_MASS_NET_LIKELIHOOD)
-        //    {
-        //        likelihood = MIN_MASS_NET_LIKELIHOOD;
-        //    }
-        //    return likelihood;
-        //}
+            return warpedFeatures;
+        }
     }
 }

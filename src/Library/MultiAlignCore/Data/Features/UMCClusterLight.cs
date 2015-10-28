@@ -260,7 +260,18 @@ namespace MultiAlignCore.Data.Features
 		}
 
 		#region Overriden Base Methods
-		public override string ToString()
+
+        public override double GetSeparationValue(SeparationTypes type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetSeparationValue(SeparationTypes type, double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
 		{
 			var size = 0;
 			if (UmcList != null)

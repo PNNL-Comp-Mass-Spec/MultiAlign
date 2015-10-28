@@ -159,6 +159,7 @@
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentProcessor.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentScorer.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpCalibrationType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpCentralRegression.cs" />
@@ -166,10 +167,12 @@
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatcher.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpNetAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpNetWarper.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpPlotDataCreator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpRegressionType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpSectionInfo.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpStatistics.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\NewLcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointFinder.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointMatcher.cs" />

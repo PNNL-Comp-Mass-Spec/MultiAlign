@@ -158,6 +158,17 @@ namespace MultiAlignCore.Data.Features
         public int ClusterId { get; set; }
 
         #region Overriden Base Methods
+
+        public override double GetSeparationValue(SeparationTypes type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetSeparationValue(SeparationTypes type, double value)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
 		/// Returns a basic string representation of the cluster.
 		/// </summary>

@@ -8,6 +8,12 @@ namespace MultiAlignCore.Data.Features
     /// </summary>
     public class FeatureLight
     {
+        public enum SeparationTypes
+        {
+            LC,
+            DriftTime,
+        }
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -180,6 +186,16 @@ namespace MultiAlignCore.Data.Features
         {
             var charge = Convert.ToDouble(chargeState);
             return (mz * charge) - (SubAtomicParticleLibrary.MASS_PROTON * charge);
+        }
+
+        public virtual double GetSeparationValue(SeparationTypes type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void SetSeparationValue(SeparationTypes type, double value)
+        {
+            throw new NotImplementedException();
         }
 
         #region Public Utility Functions
