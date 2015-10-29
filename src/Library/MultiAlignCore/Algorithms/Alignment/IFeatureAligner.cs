@@ -14,13 +14,5 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="alignee">Typically an IEnumerable of a datatype T that are aligned to a reference.</param>        
         /// <returns></returns>
         TMatchData Align(TBaselineFeature baseline, TAligneeFeature alignee, IProgress<ProgressData> progress = null);
-        /// <summary>
-        /// Gets or sets the baseline spectra provider
-        /// </summary>
-        IScanSummaryProvider BaselineSpectraProvider { get; set; }
-        /// <summary>
-        /// Gets or sets the alignee spectra provider.
-        /// </summary>
-        IScanSummaryProvider AligneeSpectraProvider { get; set; }
     }
 }

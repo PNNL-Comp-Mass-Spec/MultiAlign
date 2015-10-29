@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using InformedProteomics.Backend.Utils;
+
+    using MultiAlignCore.Data;
+    using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Data.MassTags;
 
     using PNNLOmics.Utilities;
 
-    public class NewLcmsWarp
+    public class NewLcmsWarp :
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, AlignmentData>
     {
         private const int REQUIRED_MATCHES = 6;
 
@@ -21,6 +28,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="aligneeFeatures"></param>
+        /// <param name="baselineFeatures"></param>
+        /// <param name="includeMassInMatchScore"></param>
+        /// <returns></returns>
         public List<UMCLight> WarpNet(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, bool includeMassInMatchScore)
         {
             // Generate candidate matches: Match alignee features -> baseline features by mass only
@@ -34,7 +48,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var matches = featureMatcher.GetMatchesAs(separationType);
 
                 // Calculate two dimensional statistics for mass and the current separation dimension.
-                var statistics = this.CalculateStandardDeviations(matches, separationType);
+                var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
 
                 // Calculate alignee sections
                 var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
@@ -70,44 +84,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return netMassWarpedFeatures;
         }
 
-        /// <summary>
-        /// Calculates the Standard deviations of the matches.
-        /// Note: method requires more than 6 matches to produce meaningful
-        /// results.
-        /// </summary>
-        private LcmsWarpStatistics CalculateStandardDeviations(List<LcmsWarpFeatureMatch> matches, FeatureLight.SeparationTypes separationType)
-        {
-            if (matches.Count <= REQUIRED_MATCHES)
-            {
-                throw new ArgumentException(string.Format("This requires at least {0} matches to produce meaningful results", REQUIRED_MATCHES));
-            }
-
-            var massDeltas = new List<double>(matches.Count);
-            var netDeltas = new List<double>(matches.Count);
-            for (var matchNum = 0; matchNum < matches.Count; matchNum++)
-            {
-                var match = matches[matchNum];
-                var feature = match.AligneeFeature;
-                var baselineFeature = match.BaselineFeature;
-                massDeltas.Add(((baselineFeature.MassMonoisotopic - feature.MassMonoisotopic) * 1000000) /
-                                       feature.MassMonoisotopic);
-                netDeltas.Add(baselineFeature.GetSeparationValue(separationType) - feature.NetAligned);
-            }
-
-            double normalProb, u, muMass, muNet, massStd, netStd;
-
-            MathUtilities.TwoDem(massDeltas, netDeltas, out normalProb, out u,
-                out muMass, out muNet, out massStd, out netStd);
-
-            return new LcmsWarpStatistics
-            {
-                MassStdDev = massStd,
-                NetStdDev = netStd,
-                Mu = u,
-                NormalProbability = normalProb
-            };
-        }
-
         private List<UMCLight> WarpFeatures(List<UMCLight> features, LcmsWarpNetAlignmentFunction alignmentFunction, FeatureLight.SeparationTypes separationType)
         {
             var warpedFeatures = new List<UMCLight> { Capacity = features.Count };
@@ -120,6 +96,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
 
             return warpedFeatures;
+        }
+
+        public event EventHandler<ProgressNotifierArgs> Progress;
+
+        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
