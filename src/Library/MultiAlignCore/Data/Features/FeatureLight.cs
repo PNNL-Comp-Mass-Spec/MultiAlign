@@ -3,6 +3,8 @@ using PNNLOmics.Data.Constants.Libraries;
 
 namespace MultiAlignCore.Data.Features
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Basic feature class
     /// </summary>
@@ -28,6 +30,7 @@ namespace MultiAlignCore.Data.Features
             Net = 0;
             NetAligned = 0;
             Net = 0;
+            MSnSpectra = new List<MSSpectra>();
         }
 
         /// <summary>
@@ -57,11 +60,14 @@ namespace MultiAlignCore.Data.Features
             Score = feature.Score;
             Net = feature.Net;
             AmbiguityScore = double.MaxValue;
+            MSnSpectra = new List<MSSpectra>();
         }
 
         public int Id { get; set; }
         public int Index { get; set; }
         public int IdentifiedSpectraCount { get; set; }
+
+        public virtual List<MSSpectra> MSnSpectra { get; set; }
 
         /// <summary>
         /// Gets or sets the number of MSMS spectra 
@@ -194,6 +200,11 @@ namespace MultiAlignCore.Data.Features
         }
 
         public virtual void SetSeparationValue(SeparationTypes type, double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual bool CheckDimensionality(FeatureLight features)
         {
             throw new NotImplementedException();
         }

@@ -102,12 +102,43 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
+            // Throw an exception if separation dimensions in basline and alignee features do not match.
+            this.CheckDimensionality(alignee, baseline);
+
             throw new NotImplementedException();
         }
 
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
-            throw new NotImplementedException();
+            // Convert baseline features to UMCLights.
+            var baselineUmcs = baseline.Select(
+                baselineFeature => new UMCLight
+                {
+                    MassMonoisotopic = baselineFeature.MassMonoisotopic,
+                    Net = baselineFeature.NetAligned
+                });
+
+            return this.Align(baselineUmcs, alignee, progress);
+        }
+
+        /// <summary>
+        /// This method checks to see if both alignee features and
+        /// reference features have the same separation dimensions.
+        /// </summary>
+        /// <param name="aligneeFeatures">The features that will be aligned.</param>
+        /// <param name="baselineFeatures">The reference dataset/database features.</param>
+        /// <exception cref="ArgumentException">
+        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensions.
+        /// </exception>
+        private void CheckDimensionality(IEnumerable<FeatureLight> aligneeFeatures, IEnumerable<FeatureLight> baselineFeatures)
+        {
+            foreach (var aligneeFeature in aligneeFeatures)
+            {
+                if (baselineFeatures.Any(baselineFeature => !aligneeFeature.CheckDimensionality(baselineFeature)))
+                {
+                    throw new ArgumentException("The dimensions of the alignee dataset and the reference dataset are not the same.");
+                }
+            }
         }
     }
 }

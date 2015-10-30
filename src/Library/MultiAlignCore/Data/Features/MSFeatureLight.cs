@@ -39,7 +39,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Gets or sets the list of potential MS/MS (MSn) spectra associated with this feature.
         /// </summary>
-        public List<MSSpectra> MSnSpectra { get; set; }
+        public override List<MSSpectra> MSnSpectra { get; set; }
 		#endregion
 
         public override double MassMonoisotopicAligned
