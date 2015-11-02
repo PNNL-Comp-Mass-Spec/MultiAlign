@@ -20,6 +20,7 @@ namespace MultiAlignCore.IO.RawData
         ///     Constructs a raw data file reader for reading the instrument (or equivalent) mass spectra.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="groupId"></param>
         /// <returns>The cold scan summary provider (uses lazy loading)</returns>
         public static IScanSummaryProvider CreateFileReader(string name, int groupId)
         {
