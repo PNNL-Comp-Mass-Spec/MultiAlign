@@ -578,12 +578,19 @@ namespace MultiAlignRogue.Feature_Finding
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
 
-                    var ssDao = this.analysis.DataProviders.ScanSummaryDao;
-                    ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
-
                     var scanSumProvider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(file.Dataset.DatasetId);
-                    // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
-                    ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ => { summ.DatasetId = file.Dataset.DatasetId; return summ; }).ToList());
+                    if (scanSumProvider.IsBackedByFile)
+                    {
+                        var ssDao = this.analysis.DataProviders.ScanSummaryDao;
+                        ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
+
+                        // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
+                        ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ => 
+                        {
+                            summ.DatasetId = file.Dataset.DatasetId;
+                            return summ;
+                        }).ToList());
+                    }
 
                     progData.StepRange(100);
                     this.featureCache.CacheFeatures(features, progressRpt);

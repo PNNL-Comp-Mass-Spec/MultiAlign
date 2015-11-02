@@ -42,5 +42,10 @@ namespace MultiAlignCore.Data
         /// Gets the highest scan number
         /// </summary>
         int MaxScan { get; }
+
+        /// <summary>
+        /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
+        /// </summary>
+        bool IsBackedByFile { get; }
     }
 }

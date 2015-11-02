@@ -46,6 +46,7 @@ namespace MultiAlignCore.IO.RawData
             this._totalScans = -1;
             this._minScan = -1;
             this._maxScan = -1;
+            this.IsBackedByFile = true;
         }
 
         public ScanSummaryProvider(int groupId, string scansFilePath) : this(groupId)
@@ -57,6 +58,7 @@ namespace MultiAlignCore.IO.RawData
             : this(groupId)
         {
             this._scanSummaryDao = scanSummaryDao;
+            this.IsBackedByFile = false;
         }
 
         /// <summary>
@@ -157,6 +159,11 @@ namespace MultiAlignCore.IO.RawData
         }
 
         /// <summary>
+        /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
+        /// </summary>
+        public bool IsBackedByFile { get; private set; }
+
+        /// <summary>
         /// Load scan summaries from a scans file.
         /// </summary>
         /// <param name="scansFilePath">The file path to the scans file.</param>
@@ -182,6 +189,7 @@ namespace MultiAlignCore.IO.RawData
             this.MaxScan = maxScan;
             this.TotalScans = maxScan - minScan; // Not truly the total number present; Scans file contains only MS1 scans
             this.SetNets();
+            this.IsBackedByFile = true;
         }
 
         /// <summary>
@@ -212,6 +220,7 @@ namespace MultiAlignCore.IO.RawData
             }
 
             this.TotalScans = this.MaxScan - this.MinScan;
+            this.IsBackedByFile = false;
         }
 
         /// <summary>

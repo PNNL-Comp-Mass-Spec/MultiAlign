@@ -143,6 +143,15 @@ namespace MultiAlignCore.IO.RawData
             return scanNumbers.Select(this.GetScanSummary).ToList();
         }
 
+        /// <summary>
+        /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
+        /// Always true for InformedProteomicsReader
+        /// </summary>
+        public bool IsBackedByFile
+        {
+            get { return true; }
+        }
+
         #endregion
         #region ISpectraProvider
 
