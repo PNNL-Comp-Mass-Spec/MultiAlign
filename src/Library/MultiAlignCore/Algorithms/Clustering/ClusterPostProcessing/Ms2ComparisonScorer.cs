@@ -14,9 +14,9 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     {
         private readonly ISpectralComparer comparer;
 
-        public Ms2ComparisonScorer(ISpectralComparer comparer)
+        public Ms2ComparisonScorer(ISpectralComparer comparer = null)
         {
-            this.comparer = comparer;
+            this.comparer = comparer ?? new SpectralDotProductComprarer();
         }
 
         public double ScoreComparison(FeatureLight feature1, FeatureLight feature2)
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                 {
                     var rightSpectrum = feature1.MSnSpectra[j];
                     var specScore = this.comparer.CompareSpectra(leftSpectrum, rightSpectrum);
-                    score += this.IsScoreWithinTolerance(specScore) ? specScore : -1 * specScore;
+                    score += this.IsScoreWithinTolerance(specScore) ? 1 : -1;
                 }
             }
 
@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 
         private bool IsScoreWithinTolerance(double score)
         {
-            throw new NotImplementedException();
+            return score >= 0.7;
         }
     }
 }
