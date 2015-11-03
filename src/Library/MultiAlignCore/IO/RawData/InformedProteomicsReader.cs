@@ -143,6 +143,28 @@ namespace MultiAlignCore.IO.RawData
             return scanNumbers.Select(this.GetScanSummary).ToList();
         }
 
+        public ScanSummary GetPreviousScanSummary(int scan, int msLevel)
+        {
+            if (this.LcMsRun == null)
+            {
+                this.LoadLcmsRun();
+            }
+
+            var prevScan = Math.Max(this.LcMsRun.GetPrevScanNum(scan, msLevel), this.LcMsRun.MinLcScan);
+            return this.GetScanSummary(prevScan);
+        }
+
+        public ScanSummary GetNextScanSummary(int scan, int msLevel)
+        {
+            if (this.LcMsRun == null)
+            {
+                this.LoadLcmsRun();
+            }
+
+            var nextScan = Math.Min(this.LcMsRun.GetNextScanNum(scan, msLevel), this.LcMsRun.MaxLcScan);
+            return this.GetScanSummary(nextScan);
+        }
+
         /// <summary>
         /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
         /// Always true for InformedProteomicsReader
@@ -154,6 +176,21 @@ namespace MultiAlignCore.IO.RawData
 
         #endregion
         #region ISpectraProvider
+
+        public List<MSSpectra> GetMSMSSpectra(int prevMsScan, int nextMsScan, double mz, bool loadPeaks)
+        {
+            var fragmentationScans = this.LcMsRun.GetFragmentationSpectraScanNums(mz);
+            var msms = fragmentationScans.Where(scan => scan > prevMsScan && scan < nextMsScan);
+
+            var spectra = new List<MSSpectra>();
+            foreach (var scan in fragmentationScans)
+            {
+                ScanSummary scanSummary;
+                spectra.Add(this.GetSpectrum(scan, 2, out scanSummary, loadPeaks));
+            }
+
+            return spectra;
+        }
 
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the Raw file

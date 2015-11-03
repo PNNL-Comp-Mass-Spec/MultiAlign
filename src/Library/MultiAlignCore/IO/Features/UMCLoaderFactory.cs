@@ -16,6 +16,8 @@ namespace MultiAlignCore.IO.Features
 {
     using InformedProteomics.Backend.MassSpecData;
 
+    using MultiAlignCore.Data.MassTags;
+
     /// <summary>
     ///     Loads UMC's from the given sources.
     /// </summary>
@@ -76,6 +78,12 @@ namespace MultiAlignCore.IO.Features
                 default: //Was reconstructing features from scratch even when they were already cached because the file extention was ".csv" not ".db3"
                         features = featureCache.FindByDatasetId(dataset.DatasetId);
                     break;
+            }
+
+            if (features != null && provider is ISpectraProvider)
+            {
+                var spectraProvider = provider as ISpectraProvider;
+                LoadMsMs(features, spectraProvider);
             }
             return features;
         }
@@ -140,6 +148,23 @@ namespace MultiAlignCore.IO.Features
             scanSummaries.AddRange(scans);
             UpdateStatus("Loaded scan summaries from CSV files.");
             return scanSummaries;
-        } 
+        }
+
+        public static void LoadMsMs(List<UMCLight> features, ISpectraProvider spectraProvider)
+        {
+            foreach (var feature in features)
+            {
+                foreach (var msFeature in feature.Features)
+                {
+                    var nextScanSum = spectraProvider.GetNextScanSummary(msFeature.Scan, 1);
+                    var fragmentationSpectra = spectraProvider.GetMSMSSpectra(
+                        msFeature.Scan,
+                        nextScanSum.Scan,
+                        msFeature.Mz,
+                        false);
+                    msFeature.MSnSpectra.AddRange(fragmentationSpectra);
+                }
+            }
+        }
     }
 }

@@ -26,7 +26,23 @@ namespace MultiAlignCore.Data
         /// 0 = MS1 and MS2
         /// </param>
         /// <returns>All scan summaries.</returns>
-        List<ScanSummary> GetScanSummaries(int msLevel = 0);  
+        List<ScanSummary> GetScanSummaries(int msLevel = 0);
+
+        /// <summary>
+        /// Get the summary for the next scan following the given scan for the given MS level.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="msLevel"></param>
+        /// <returns></returns>
+        ScanSummary GetNextScanSummary(int scan, int msLevel);
+
+        /// <summary>
+        /// Get the summary for the previous scan following the given scan for the given MS level.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="msLevel"></param>
+        /// <returns></returns>
+        ScanSummary GetPreviousScanSummary(int scan, int msLevel);
 
         /// <summary>
         /// Gets the total number of scans

@@ -66,6 +66,11 @@ namespace MultiAlignCore.IO.RawData
         /// </summary>
         public int GroupId { get; private set; }
 
+        public ScanSummary GetPreviousScanSummary(int scan, int msLevel)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Gets the total number of scans.
         /// </summary>
@@ -156,6 +161,11 @@ namespace MultiAlignCore.IO.RawData
             }
 
             return this._summary.ScanMetaData.Values.Where(sum => sum.MsLevel == msLevel).ToList();
+        }
+
+        public ScanSummary GetNextScanSummary(int scan, int msLevel)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

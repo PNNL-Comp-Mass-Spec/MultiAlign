@@ -327,6 +327,12 @@ namespace MultiAlignCore.IO
                 }
             }
 
+            if (provider is ISpectraProvider)
+            {
+                var spectraProvider = provider as ISpectraProvider;
+                UmcLoaderFactory.LoadMsMs(features.ToList(), spectraProvider);
+            }
+
             // Process the MS/MS data with peptides
             UpdateStatus("Reading List of Peptides");
             if (dataset.SequenceFile != null && !string.IsNullOrEmpty(dataset.SequenceFile.Path))

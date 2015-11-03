@@ -41,6 +41,13 @@ namespace MultiAlignCore.Data
         List<MSSpectra> GetMSMSSpectra();
 
         /// <summary>
+        /// Gets the fragmentation spectra associated with a given scan.
+        /// </summary>
+        /// <param name="scan">The MS1 scan to get MS/MS scans for.</param>
+        /// <returns></returns>
+        List<MSSpectra> GetMSMSSpectra(int prevMsScan, int nextMsScan, double mz, bool loadPeaks);
+
+            /// <summary>
         /// Get a list of MS/MS spectra, but exclude if it exists in the dictionary of provided scans.
         /// </summary>
         /// <param name="group"></param>
