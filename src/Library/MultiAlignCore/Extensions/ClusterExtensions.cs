@@ -447,5 +447,38 @@ namespace MultiAlignCore.Extensions
             }
             return chargeHistogram;
         }
+
+        /// <summary>
+        /// Reconstruct the MS/MS for a cluster.
+        /// Requires that the cluster's LCMS and MS features have been reconstructed.
+        /// </summary>
+        /// <param name="cluster">The cluster to reconstruct.</param>
+        public static void ReconstructClusterMsMs(this UMCClusterLight cluster, SpectraProviderCache providers, bool getPeaks = true)
+        {
+            foreach (var feature in cluster.Features)
+            {
+                var provider = providers.GetSpectraProvider(feature.GroupId);
+                feature.ReconstructUMCMsMs(provider, getPeaks);
+            }
+        }
+
+        /// <summary>
+        /// Reconstruct the MS/MS for a feature.
+        /// Requires that the features's LCMS and MS features have been reconstructed.
+        /// </summary>
+        /// <param name="umc">The feature to reconstruct.</param>
+        public static void ReconstructUMCMsMs(this UMCLight umc, ISpectraProvider provider, bool getPeaks = true)
+        {
+            foreach (var msFeature in umc.Features)
+            {
+                var nextScanSum = provider.GetNextScanSummary(msFeature.Scan, 1);
+                var fragmentationSpectra = provider.GetMSMSSpectra(
+                    msFeature.Scan,
+                    nextScanSum.Scan,
+                    msFeature.Mz,
+                    false);
+                msFeature.MSnSpectra.AddRange(fragmentationSpectra);
+            }
+        }
     }
 }

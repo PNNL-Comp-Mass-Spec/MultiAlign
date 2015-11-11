@@ -6,17 +6,27 @@ using System.Threading.Tasks;
 
 namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 {
+    using MultiAlignCore.Algorithms.SpectralProcessing;
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.RawData;
 
     public class ClusterPostProcessor
     {
         private readonly IFeatureComparisonScorer clusterScorer;
 
-        public ClusterPostProcessor(IFeatureComparisonScorer clusterScorer)
+        private readonly SpectraProviderCache spectraProviderCache;
+
+        public ClusterPostProcessor(IFeatureComparisonScorer clusterScorer, SpectraProviderCache spectraProviderCache)
         {
             this.clusterScorer = clusterScorer;
+            this.spectraProviderCache = spectraProviderCache;
         }
 
+        /// <summary>
+        /// Breaks up clusters into smaller separate clusters that do no match well in MS/MS.
+        /// </summary>
+        /// <param name="cluster">The cluster to break up.</param>
+        /// <returns>The resulting clusters.</returns>
         public List<UMCClusterLight> ProcessClusters(List<UMCClusterLight> clusters)
         {
             var processedClusters = new List<UMCClusterLight>();
@@ -28,6 +38,11 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
             return processedClusters;
         }
 
+        /// <summary>
+        /// Breaks up clusters into smaller separate clusters that do no match well in MS/MS.
+        /// </summary>
+        /// <param name="cluster">The cluster to break up.</param>
+        /// <returns>The resulting clusters.</returns>
         public List<UMCClusterLight> ProcessCluster(UMCClusterLight cluster)
         {
             var features = cluster.UmcList;
