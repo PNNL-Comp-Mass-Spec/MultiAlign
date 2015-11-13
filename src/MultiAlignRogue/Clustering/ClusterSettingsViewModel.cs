@@ -23,6 +23,7 @@ namespace MultiAlignRogue.Clustering
     using GalaSoft.MvvmLight.Command;
 
     using MultiAlignCore.Algorithms;
+    using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
     using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.MassTags;
@@ -138,6 +139,8 @@ namespace MultiAlignRogue.Clustering
                 }
             }
         }
+
+        public bool ShouldRefineWithMsMs { get; set; }
 
         private bool shouldShowProgress;
 
