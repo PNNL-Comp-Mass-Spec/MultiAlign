@@ -156,10 +156,8 @@ namespace MultiAlignCore.IO.Features
             {
                 foreach (var msFeature in feature.Features)
                 {
-                    var nextScanSum = spectraProvider.GetNextScanSummary(msFeature.Scan, 1);
                     var fragmentationSpectra = spectraProvider.GetMSMSSpectra(
                         msFeature.Scan,
-                        nextScanSum.Scan,
                         msFeature.Mz,
                         false);
                     msFeature.MSnSpectra.AddRange(fragmentationSpectra);
