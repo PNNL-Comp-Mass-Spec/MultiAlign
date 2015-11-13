@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 {
     using MultiAlignCore.Algorithms.SpectralProcessing;
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.RawData;
 
@@ -14,21 +15,31 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     {
         private readonly ISpectralComparer comparer;
 
-        public Ms2ComparisonScorer(ISpectralComparer comparer = null)
+        private readonly SpectraProviderCache spectraProvider;
+
+        public Ms2ComparisonScorer(SpectraProviderCache spectraProvider, ISpectralComparer comparer = null)
         {
+            this.spectraProvider = spectraProvider;
             this.comparer = comparer ?? new SpectralDotProductComprarer();
         }
 
         public double ScoreComparison(FeatureLight feature1, FeatureLight feature2)
         {
             double score = 0.0;
-            for (int i = 0; i < feature1.MSnSpectra.Count; i++)
-            {
-                var leftSpectrum = feature1.MSnSpectra[i];
 
-                for (int j = 0; j < feature2.MSnSpectra.Count; j++)
+            var leftSpectraProvider = this.spectraProvider.GetSpectraProvider(feature1.GroupId);
+            var rightSpectraProvider = this.spectraProvider.GetSpectraProvider(feature2.GroupId);
+
+            var leftSpectra = leftSpectraProvider.GetMSMSSpectra(feature1.Scan, feature1.Mz, true);
+            var rightSpectra = rightSpectraProvider.GetMSMSSpectra(feature2.Scan, feature2.Mz, true);
+
+            for (int i = 0; i < leftSpectra.Count; i++)
+            {
+                var leftSpectrum = leftSpectra[i];
+
+                for (int j = 0; j < rightSpectra.Count; j++)
                 {
-                    var rightSpectrum = feature1.MSnSpectra[j];
+                    var rightSpectrum = rightSpectra[i];
                     var specScore = this.comparer.CompareSpectra(leftSpectrum, rightSpectrum);
                     score += this.IsScoreWithinTolerance(specScore) ? 1 : -1;
                 }

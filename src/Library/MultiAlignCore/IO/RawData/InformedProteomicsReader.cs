@@ -177,10 +177,11 @@ namespace MultiAlignCore.IO.RawData
         #endregion
         #region ISpectraProvider
 
-        public List<MSSpectra> GetMSMSSpectra(int prevMsScan, int nextMsScan, double mz, bool loadPeaks)
+        public List<MSSpectra> GetMSMSSpectra(int prevMsScan, double mz, bool loadPeaks)
         {
-            var fragmentationScans = this.LcMsRun.GetFragmentationSpectraScanNums(mz);
-            var msms = fragmentationScans.Where(scan => scan > prevMsScan && scan < nextMsScan);
+            var nextMsScan = this.GetNextScanSummary(prevMsScan, 1).Scan;
+            IEnumerable<int> fragmentationScans = this.LcMsRun.GetFragmentationSpectraScanNums(mz);
+            fragmentationScans = fragmentationScans.Where(scan => scan > prevMsScan && scan < nextMsScan);
 
             var spectra = new List<MSSpectra>();
             foreach (var scan in fragmentationScans)

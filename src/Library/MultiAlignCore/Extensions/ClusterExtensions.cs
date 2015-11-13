@@ -471,10 +471,8 @@ namespace MultiAlignCore.Extensions
         {
             foreach (var msFeature in umc.Features)
             {
-                var nextScanSum = provider.GetNextScanSummary(msFeature.Scan, 1);
                 var fragmentationSpectra = provider.GetMSMSSpectra(
                     msFeature.Scan,
-                    nextScanSum.Scan,
                     msFeature.Mz,
                     false);
                 msFeature.MSnSpectra.AddRange(fragmentationSpectra);

@@ -45,7 +45,7 @@ namespace MultiAlignCore.Data
         /// </summary>
         /// <param name="scan">The MS1 scan to get MS/MS scans for.</param>
         /// <returns></returns>
-        List<MSSpectra> GetMSMSSpectra(int prevMsScan, int nextMsScan, double mz, bool loadPeaks);
+        List<MSSpectra> GetMSMSSpectra(int prevMsScan, double mz, bool loadPeaks);
 
             /// <summary>
         /// Get a list of MS/MS spectra, but exclude if it exists in the dictionary of provided scans.

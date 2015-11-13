@@ -5,6 +5,7 @@ using System.Linq;
 namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 {
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.SequenceData;
 
     public class IdComparisonScorer : IFeatureComparisonScorer
     {
