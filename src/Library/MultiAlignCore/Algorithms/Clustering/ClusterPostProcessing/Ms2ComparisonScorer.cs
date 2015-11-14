@@ -11,13 +11,13 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.RawData;
 
-    class Ms2ComparisonScorer : IFeatureComparisonScorer
+    public class Ms2ComparisonScorer : IFeatureComparisonScorer
     {
         private readonly ISpectralComparer comparer;
 
-        private readonly SpectraProviderCache spectraProvider;
+        private readonly ScanSummaryProviderCache spectraProvider;
 
-        public Ms2ComparisonScorer(SpectraProviderCache spectraProvider, ISpectralComparer comparer = null)
+        public Ms2ComparisonScorer(ScanSummaryProviderCache spectraProvider, ISpectralComparer comparer = null)
         {
             this.spectraProvider = spectraProvider;
             this.comparer = comparer ?? new SpectralDotProductComprarer();
@@ -27,8 +27,13 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         {
             double score = 0.0;
 
-            var leftSpectraProvider = this.spectraProvider.GetSpectraProvider(feature1.GroupId);
-            var rightSpectraProvider = this.spectraProvider.GetSpectraProvider(feature2.GroupId);
+            var leftSpectraProvider = this.spectraProvider.GetScanSummaryProvider(feature1.GroupId) as ISpectraProvider;
+            var rightSpectraProvider = this.spectraProvider.GetScanSummaryProvider(feature2.GroupId) as ISpectraProvider;
+
+            if (leftSpectraProvider == null || rightSpectraProvider == null)
+            {
+                throw new Exception("Do not have spectra data available for dataset.");
+            }
 
             var leftSpectra = leftSpectraProvider.GetMSMSSpectra(feature1.Scan, feature1.Mz, true);
             var rightSpectra = rightSpectraProvider.GetMSMSSpectra(feature2.Scan, feature2.Mz, true);

@@ -259,6 +259,23 @@ namespace MultiAlignRogue.Clustering
                     }
                 }
 
+
+                if (this.ShouldRefineWithMsMs)
+                {
+                    progData.StepRange(75);
+                    // Add spectraproviders for dataset.
+                    foreach (var dataset in this.analysis.MetaData.Datasets)
+                    {
+                        var rawFilePath = dataset.RawFile.Path;
+                        this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
+                            rawFilePath,
+                            dataset.DatasetId);
+                    }
+
+                    var clusterRefiner = new ClusterPostProcessor<UMCClusterLight, UMCLight>(new Ms2ComparisonScorer(this.analysis.DataProviders.ScanSummaryProviderCache));
+                    clusters = clusterRefiner.Cluster(clusters, clusterProgress);
+                }
+
                 this.analysis.Clusters = clusters;
                 clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
 
@@ -273,7 +290,7 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
-                progData.StepRange(60);
+                progData.StepRange(85);
                 providers.ClusterCache.ClearAllClusters();
                 providers.ClusterCache.AddAllStateless(clusters, clusterProgress);
 

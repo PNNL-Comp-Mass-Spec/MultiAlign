@@ -11,9 +11,9 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.RawData;
 
-    public class ClusterPostProcessor<T, U> : IClusterer<T, U>
-            where T : FeatureLight, IFeatureCluster<T>, new()
-            where U : FeatureLight, IFeatureCluster<T>, new()
+    public class ClusterPostProcessor<T, U>
+            where T : FeatureLight, IFeatureCluster<U>, new()
+            where U : FeatureLight, IChildFeature<T>, new()
     {
         private readonly IFeatureComparisonScorer clusterScorer;
 
@@ -30,11 +30,11 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         /// <param name="data">The clusters to break up.</param>
         /// <param name="progress">The progress reporter.</param>
         /// <returns>The resulting clusters.</returns>
-        public List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null)
+        public List<T> Cluster(List<T> data, IProgress<ProgressData> progress = null)
         {
             progress = progress ?? new Progress<ProgressData>();
             var progressData = new ProgressData();
-            var processedClusters = new List<U>();
+            var processedClusters = new List<T>();
             for (int i = 0; i < data.Count; i++)
             {
                 processedClusters.AddRange(this.ProcessCluster(data[i]));
@@ -48,17 +48,17 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         /// </summary>
         /// <param name="cluster">The cluster to break up.</param>
         /// <returns>The resulting clusters.</returns>
-        private List<U> ProcessCluster(T cluster)
+        private List<T> ProcessCluster(T cluster)
         {
             var features = cluster.Features;
-            var umcToClusterHash = new Dictionary<FeatureLight, U> { { features[0], new U() } };
+            var umcToClusterHash = new Dictionary<FeatureLight, T> { { features[0], new T() } };
             for (int leftFeatureIndex = 1; leftFeatureIndex < features.Count; leftFeatureIndex++)
             {
                 var leftFeature = features[leftFeatureIndex];
                 for (int rightFeatureIndex = 0; rightFeatureIndex < leftFeatureIndex; rightFeatureIndex++)
                 {
                     var rightFeature = features[rightFeatureIndex];
-                    U clusterMatch;
+                    T clusterMatch;
 
                     // Score features against each other.
                     var score = this.clusterScorer.ScoreComparison(leftFeature, rightFeature);
@@ -67,13 +67,21 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                         // Add the left feature to the right feature's cluster.
                         clusterMatch = umcToClusterHash[rightFeature];
                         clusterMatch.AddChildFeature(leftFeature);
-                        umcToClusterHash.Add(rightFeature, clusterMatch);
+                        if (!umcToClusterHash.ContainsKey(leftFeature))
+                        {
+                            umcToClusterHash.Add(leftFeature, clusterMatch);
+                        }
                     }
                     else
                     {   // Not a match cluster. Cluster the left feature on its own.
-                        clusterMatch = new U();
-                        clusterMatch.AddChildFeature(leftFeature);
-                        umcToClusterHash.Add(leftFeature, clusterMatch);
+                        if (!umcToClusterHash.ContainsKey(leftFeature))
+                        {
+                            clusterMatch = new T();
+                            clusterMatch.AddChildFeature(leftFeature);
+                            umcToClusterHash.Add(leftFeature, clusterMatch);
+                        }
+
+                        clusterMatch = umcToClusterHash[leftFeature];
                     }
 
                     clusterMatch.CalculateStatistics(ClusterCentroidRepresentation.Median);
@@ -82,21 +90,5 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 
             return umcToClusterHash.Values.Distinct().ToList();
         }
-
-        // Not used
-        public FeatureClusterParameters<T> Parameters { get; set; }
-
-        #region WILL NOT IMPLEMENT
-        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

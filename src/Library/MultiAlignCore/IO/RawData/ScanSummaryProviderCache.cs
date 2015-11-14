@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.RawData
             this.datasetToSummaryProvider = new Dictionary<int, IScanSummaryProvider>();
         }
 
-        public IScanSummaryProvider GetScanSummaryProvider(string filePath, int groupId = -1)
+        public virtual IScanSummaryProvider GetScanSummaryProvider(string filePath, int groupId = -1)
         {
             if (!filePathToSummaryProvider.ContainsKey(filePath))
             {
@@ -46,7 +46,7 @@ namespace MultiAlignCore.IO.RawData
             return this.filePathToSummaryProvider[filePath];
         }
 
-        public IScanSummaryProvider GetScanSummaryProvider(int groupId)
+        public virtual IScanSummaryProvider GetScanSummaryProvider(int groupId)
         {
             if (!datasetToSummaryProvider.ContainsKey(groupId))
             {   // We don't have the scan summary for this dataset yet, try to load it from the DB.

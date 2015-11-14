@@ -8,7 +8,7 @@ namespace MultiAlignCore.IO.RawData
 {
     using MultiAlignCore.Data;
 
-    public class SpectraProviderCache
+    public class SpectraProviderCache : ScanSummaryProviderCache
     {
         private Dictionary<string, ISpectraProvider> filePathToSpectraProvider;
 
