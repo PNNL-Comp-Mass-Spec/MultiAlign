@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 {
+    using InformedProteomics.Backend.Data.Spectrometry;
+
     using MultiAlignCore.Algorithms.SpectralProcessing;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
@@ -20,7 +22,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         public Ms2ComparisonScorer(ScanSummaryProviderCache spectraProvider, ISpectralComparer comparer = null)
         {
             this.spectraProvider = spectraProvider;
-            this.comparer = comparer ?? new SpectralDotProductComprarer();
+            this.comparer = comparer ?? new SpectraPearsonCorrelationComparer(new Tolerance(5, ToleranceUnit.Ppm));
         }
 
         public double ScoreComparison(FeatureLight feature1, FeatureLight feature2)
