@@ -560,6 +560,7 @@ namespace MultiAlignRogue.Feature_Finding
                                                     this.analysis.Options.LcmsFindingOptions,
                                                     this.analysis.Options.LcmsFilteringOptions,
                                                     analysis.DataProviders.ScanSummaryProviderCache,
+                                                    analysis.DataProviders.IdentificationProviderCache,
                                                     progressRpt);
 
                 if (!this.features.ContainsKey(file.Dataset))

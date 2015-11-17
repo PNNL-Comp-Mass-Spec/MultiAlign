@@ -23,6 +23,7 @@ namespace MultiAlignCore.IO.Features
         {
             Synch = new object();
             this.ScanSummaryProviderCache = new ScanSummaryProviderCache();
+            this.IdentificationProviderCache = new IdentificationProviderCache();
         }
 
         /// <summary>
@@ -127,5 +128,7 @@ namespace MultiAlignCore.IO.Features
         public ScanSummaryDAOHibernate ScanSummaryDao { get; set; }
 
         public ScanSummaryProviderCache ScanSummaryProviderCache { get; set; }
+
+        public IdentificationProviderCache IdentificationProviderCache { get; set; }
     }
 }

@@ -20,6 +20,8 @@ using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.IO
 {
+    using MultiAlignCore.IO.SequenceData;
+
     /// <summary>
     ///     This class is in charge of caching the appropriate LCMS Feature data to the underlying database.
     /// </summary>
@@ -222,6 +224,7 @@ namespace MultiAlignCore.IO
             LcmsFeatureFindingOptions lcmsFindingOptions,
             LcmsFeatureFilteringOptions lcmsFilteringOptions,
             ScanSummaryProviderCache providerCache,
+            IdentificationProviderCache identificationProviders,
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
@@ -337,12 +340,9 @@ namespace MultiAlignCore.IO
             UpdateStatus("Reading List of Peptides");
             if (dataset.SequenceFile != null && !string.IsNullOrEmpty(dataset.SequenceFile.Path))
             {
-                var sequenceProvider = PeptideReaderFactory.CreateReader(dataset.SequenceFile.Path);
                 UpdateStatus("Reading List of Peptides");
-                var peptides = sequenceProvider.Read(dataset.SequenceFile.Path);
-                var count = 0;
-                var peptideList = peptides.ToList();
-                peptideList.ForEach(x => x.Id = count++);
+                var idProvider = identificationProviders.GetProvider(dataset.SequenceFile.Path, dataset.DatasetId);
+                var peptideList = idProvider.GetAllIdentifications();
 
                 UpdateStatus("Linking MS/MS to any known Peptide/Metabolite Sequences");
 
