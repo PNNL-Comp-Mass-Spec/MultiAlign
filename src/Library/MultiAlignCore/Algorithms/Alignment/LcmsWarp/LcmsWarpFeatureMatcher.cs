@@ -172,8 +172,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
 
             return featureMatches;
-
-            // TODO: CalculateNetSlopeAndIntercept();
         }
 
         /// <summary>

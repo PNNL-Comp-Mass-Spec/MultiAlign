@@ -1,20 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using PNNLOmics.Utilities;
 
+    /// <summary>
+    /// This class contains statistical information based on the multivariate
+    /// distribution of NET and mass.
+    /// </summary>
     public class LcmsWarpStatistics
     {
+        /// <summary>
+        /// The number of matches required for statistically significant results.
+        /// </summary>
         private const int RequiredMatches = 6;
 
+        /// <summary>
+        /// The mass standard deviation.
+        /// </summary>
+        private double massStdDev;
+
+        /// <summary>
+        /// The NET standard deviation.
+        /// </summary>
+        private double netStdDev;
+
+        /// <summary>
+        /// The multivariate mean of both NET and mass.
+        /// </summary>
         public double Mu { get; set; }
 
-        private double massStdDev;
+        /// <summary>
+        /// Gets or sets the mass standard deviation.
+        /// </summary>
         public double MassStdDev
         {
             get { return this.massStdDev; }
@@ -25,6 +45,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
+        /// <summary>
+        /// Gets the variance in the mass dimension.
+        /// </summary>
         public double MassVariance
         {
             get { return this.MassStdDev * this.MassStdDev; }
@@ -35,7 +58,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public double Log2PiMassStdDevSq { get; private set; }
 
-        private double netStdDev;
+        /// <summary>
+        /// Gets or sets the NET standard deviation.
+        /// </summary>
         public double NetStdDev
         {
             get { return this.netStdDev; }
@@ -46,6 +71,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
+        /// <summary>
+        /// Gets the variance in the NET dimension.
+        /// </summary>
         public double NetVariance
         {
             get { return this.NetStdDev * this.NetStdDev; }
@@ -56,7 +84,26 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public double Log2PiNetStdDevSq { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the probability given a multivariate normal distribution.
+        /// </summary>
         public double NormalProbability { get; set; }
+
+        /// <summary>
+        /// Gets or sets the slope of the line fitted to the NET feature matches.
+        /// </summary>
+        public double NetSlope { get; set; }
+
+        /// <summary>
+        /// Gets or sets the intercept of the line fitted to the NET feature matches.
+        /// </summary>
+        public double NetIntercept { get; set; }
+
+        /// <summary>
+        /// Gets or sets the R-Squared value (correlation coefficient) for the line fitted to the
+        /// NET feature matches.
+        /// </summary>
+        public double NetRSquared { get; set; }
 
         /// <summary>
         /// Calculates the Standard deviations of the matches.
@@ -84,13 +131,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             MathUtilities.TwoDem(massDeltas, netDeltas, out normalProb, out u,
                 out muMass, out muNet, out massStd, out netStd);
 
-            return new LcmsWarpStatistics
+            var statistics = new LcmsWarpStatistics
             {
                 MassStdDev = massStd,
                 NetStdDev = netStd,
                 Mu = u,
                 NormalProbability = normalProb
             };
+
+            return statistics;
         }
     }
 }

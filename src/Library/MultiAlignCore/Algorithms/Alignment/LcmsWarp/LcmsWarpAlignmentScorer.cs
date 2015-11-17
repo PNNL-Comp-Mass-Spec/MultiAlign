@@ -313,11 +313,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Compute match scores for this section: log(P(match of ms section to MSMS section))
         /// Does this within the Net Tolerance of the LCMSWarper
         /// </summary>
-        /// <param name="numUniqueFeatures"></param>
+        /// <param name="deltaNets"></param>
         /// <returns></returns>
         private double ComputeSectionMatchScore(List<LcmsWarpFeatureMatch> uniqueSectionMatches, List<double> deltaNets)
         {
-            //Compute match scores for this section: log(P(match of ms section to MSMS section))
+            // Compute match scores for this section: log(P(match of ms section to MSMS section))
             double matchScore = 0;
             for (var i = 0; i < uniqueSectionMatches.Count; i++)
             {
@@ -367,6 +367,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             return matchScore;
         }
 
+        /// <summary>
+        /// Use the previously calculated statistics to calculate the likelihood score for the
+        /// given mass and NET deltas.
+        /// </summary>
+        /// <param name="massDelta">The difference between the baseline feature mass and the alignee feature mass.</param>
+        /// <param name="netDelta">The difference between the baseline feature NET and the alignee feature NET.</param>
+        /// <returns>The likelihood score.</returns>
         private double GetMatchLikelihood(double massDelta, double netDelta)
         {
             var massZ = massDelta / this.statistics.MassStdDev;

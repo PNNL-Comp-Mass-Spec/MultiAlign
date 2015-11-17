@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System;
+    using System.Collections.Generic;
     using MultiAlignCore.Data.Features;
 
+    /// <summary>
+    /// This class calculates and stores information relating to sections that
+    /// a separation dimension is descritized into.
+    /// </summary>
     public class LcmsWarpSectionInfo
     {
-        private Dictionary<int, List<UMCLight>> sectionToFeatures; 
+        /// <summary>
+        /// A dictionary mapping a section index to the features in that section.
+        /// </summary>
+        private readonly Dictionary<int, List<UMCLight>> sectionToFeatures; 
 
         public LcmsWarpSectionInfo(int numSections)
         {
@@ -29,12 +32,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public double SectionWidth { get; private set; }
 
         /// <summary>
-        /// The lowest NET in the feature set.
+        /// Gets the lowest NET in the feature set.
         /// </summary>
         public double MinNet { get; private set; }
 
         /// <summary>
-        /// The highest NET in the feature set.
+        /// Gets the highest NET in the feature set.
         /// </summary>
         public double MaxNet { get; private set; }
 
@@ -109,9 +112,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             var sectionNum = Convert.ToInt32(((net - minNet) * this.NumSections) / (maxNet - minNet));
 
-            if (sectionNum >= NumSections)
+            if (sectionNum >= this.NumSections)
             {
-                sectionNum = NumSections - 1;
+                sectionNum = this.NumSections - 1;
             }
             if (sectionNum < 0)
             {
