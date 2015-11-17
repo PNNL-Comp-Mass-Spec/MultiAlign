@@ -5,6 +5,7 @@
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
         xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="{Binding WindowTitle}" Height="650" Width="1100" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
@@ -140,7 +141,7 @@
 
                             <RowDefinition Height="20" />
 
-                            <RowDefinition Height="25" />
+                            <RowDefinition Height="100" />
                             
                             <RowDefinition Height="*" />
                             <RowDefinition Height="25" />
@@ -172,10 +173,33 @@
                                   VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding ShouldEnableClustererSettings}" />
                         
-                        <CheckBox Grid.Row="6" Grid.Column="0"
-                                  VerticalAlignment="Center"
-                                  IsChecked="{Binding ShouldRefineWithMsMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine clusters using MS/MS</CheckBox>
-                        
+                        <!-- Cluster refinement options -->
+                        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
+                            <GroupBox.Header>
+                                <CheckBox IsChecked="{Binding ShouldRefineWithMsMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine clusters using MS/MS</CheckBox>
+                            </GroupBox.Header>
+                            <Grid IsEnabled="{Binding ShouldRefineWithMsMs, UpdateSourceTrigger=PropertyChanged}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!-- Cluster comparison type -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Comparison Type</TextBlock>
+                                <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center"
+                                          ItemsSource="{Binding PostProcessingComparisonType}"
+                                          SelectedItem="{Binding ClusterComparisonType}" />
+                                
+                                <!-- Tolerance -->
+                                <TextBlock Grid.Row="1" Grid.Column="0">Tolerance (ppm)</TextBlock>
+                                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Height="25" 
+                                                   Minimum="0" Increment="1" Value="{Binding ClusterPostProcessingTolerance}" />
+                            </Grid>
+                        </GroupBox>
+                                              
                         <ProgressBar Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Value="{Binding ProgressPercent}"
                                      Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
 

@@ -88,6 +88,9 @@ namespace MultiAlignRogue.Clustering
             Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => this.CentroidRepresentations.Add(x));
             this.ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
             Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
+
+            this.PostProcessingComparisonType = new ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType>(
+                Enum.GetValues(typeof(ClusterPostProcessingOptions.ClusterComparisonType)).Cast<ClusterPostProcessingOptions.ClusterComparisonType>());
         }
 
         public bool ShouldSeparateByCharge
@@ -140,7 +143,46 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
-        public bool ShouldRefineWithMsMs { get; set; }
+        public bool ShouldRefineWithMsMs
+        {
+            get { return this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement; }
+            set
+            {
+                if (this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement != value)
+                {
+                    this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType> PostProcessingComparisonType { get; private set; } 
+
+        public ClusterPostProcessingOptions.ClusterComparisonType ClusterComparisonType
+        {
+            get { return this.options.ClusterPostProcessingoptions.ComparisonType; }
+            set
+            {
+                if (this.options.ClusterPostProcessingoptions.ComparisonType != value)
+                {
+                    this.options.ClusterPostProcessingoptions.ComparisonType = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double ClusterPostProcessingTolerance
+        {
+            get { return this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance; }
+            set
+            {
+                if (this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance != value)
+                {
+                    this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         private bool shouldShowProgress;
 
@@ -241,6 +283,11 @@ namespace MultiAlignRogue.Clustering
                 foreach (var dataset in datasets)
                 {
                     features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
+                    var rawFilePath = dataset.Dataset.RawFile.Path;
+                    this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
+                        rawFilePath,
+                        dataset.DatasetId);
+
                     progData.Report(++i, datasets.Count);
                 }
 
@@ -263,16 +310,10 @@ namespace MultiAlignRogue.Clustering
                 if (this.ShouldRefineWithMsMs)
                 {
                     progData.StepRange(75);
-                    // Add spectraproviders for dataset.
-                    foreach (var dataset in this.analysis.MetaData.Datasets)
-                    {
-                        var rawFilePath = dataset.RawFile.Path;
-                        this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
-                            rawFilePath,
-                            dataset.DatasetId);
-                    }
-
-                    var clusterRefiner = new ClusterPostProcessor<UMCClusterLight, UMCLight>(new Ms2ComparisonScorer(this.analysis.DataProviders.ScanSummaryProviderCache));
+                    var clusterRefiner =
+                        ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
+                            this.analysis.Options.ClusterPostProcessingoptions,
+                            this.analysis.DataProviders);
                     clusters = clusterRefiner.Cluster(clusters, clusterProgress);
                 }
 

@@ -208,7 +208,9 @@
     <Compile Include="Algorithms\Chromatograms\XicFeature.cs" />
     <Compile Include="Algorithms\Chromatograms\XicRefiner.cs" />
     <Compile Include="Algorithms\Clustering\BinarySearchTree.cs" />
+    <Compile Include="Algorithms\Clustering\ClusterPostProcessing\ClusterPostProcessingOptions.cs" />
     <Compile Include="Algorithms\Clustering\ClusterPostProcessing\ClusterPostProcessor.cs" />
+    <Compile Include="Algorithms\Clustering\ClusterPostProcessing\ClusterPostProcessorBuilder.cs" />
     <Compile Include="Algorithms\Clustering\ClusterPostProcessing\IFeatureComparisonScorer.cs" />
     <Compile Include="Algorithms\Clustering\ClusterPostProcessing\IdComparisonScorer.cs" />
     <Compile Include="Algorithms\Clustering\ClusterPostProcessing\Ms2ComparisonScorer.cs" />
@@ -573,6 +575,9 @@
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\SequenceData\DatabaseSearchSequenceDAOHibernate.cs" />
     <Compile Include="IO\SequenceData\IDatabaseSearchSequenceDAO.cs" />
+    <Compile Include="IO\SequenceData\IdentificationProvider.cs" />
+    <Compile Include="IO\SequenceData\IdentificationProviderCache.cs" />
+    <Compile Include="IO\SequenceData\IIdentificationProvider.cs" />
     <Compile Include="IO\SequenceData\ISequenceToMsnFeatureDAO.cs" />
     <Compile Include="IO\SequenceData\MAGEDatabaseSearchAdapter.cs" />
     <Compile Include="IO\SequenceData\SequenceToMsnDAOHibernate.cs" />

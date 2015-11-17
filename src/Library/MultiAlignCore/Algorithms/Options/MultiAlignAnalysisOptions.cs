@@ -10,6 +10,8 @@ using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Options
 {
+    using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
+
     /// <summary>
     ///     Analysis Options for MultiAlign
     /// </summary>
@@ -34,6 +36,7 @@ namespace MultiAlignCore.Algorithms.Options
             StacOptions = new StacOptions();
             HasMsMs = false;
             UsedIonMobility = false;
+            this.ClusterPostProcessingoptions = new ClusterPostProcessingOptions();
         }
 
         /// <summary>
@@ -71,6 +74,8 @@ namespace MultiAlignCore.Algorithms.Options
         ///     Gets or sets the options for clustering LC-MS data
         /// </summary>
         public LcmsClusteringOptions LcmsClusteringOptions { get; set; }
+
+        public ClusterPostProcessingOptions ClusterPostProcessingoptions { get; set; }
 
         /// <summary>
         ///     Gets or sets the options for STAC identification

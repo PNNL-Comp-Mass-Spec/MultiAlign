@@ -24,6 +24,7 @@ using MultiAlignCore.IO.MTDB;
 namespace MultiAlignCore.Algorithms
 {
     using MultiAlignCore.IO.RawData;
+    using MultiAlignCore.IO.SequenceData;
 
     /// <summary>
     ///     Transition class to remove the excess from the data storage object.
@@ -100,6 +101,8 @@ namespace MultiAlignCore.Algorithms
         private Dictionary<AnalysisStep, DelegateAnalysisMethod> m_methodMap;
 
         private ScanSummaryProviderCache m_scanSummaryProviderCache;
+
+        private IdentificationProviderCache m_identificationsProvider;
 
         #endregion
 
@@ -329,7 +332,8 @@ namespace MultiAlignCore.Algorithms
                     analysisOptions.MsFilteringOptions,
                     analysisOptions.LcmsFindingOptions,
                     analysisOptions.LcmsFilteringOptions,
-                    m_scanSummaryProviderCache);
+                    m_scanSummaryProviderCache,
+                    m_identificationsProvider);
                 features = AlignDataset(features,
                     baselineFeatures,
                     database,
@@ -374,7 +378,8 @@ namespace MultiAlignCore.Algorithms
                     msFilterOptions,
                     lcmsFindingOptions,
                     lcmsFilterOptions,
-                    m_scanSummaryProviderCache);
+                    m_scanSummaryProviderCache,
+                    this.m_identificationsProvider);
 
                 cache.CacheFeatures(baselineFeatures);
                 if (BaselineFeaturesLoaded != null)
