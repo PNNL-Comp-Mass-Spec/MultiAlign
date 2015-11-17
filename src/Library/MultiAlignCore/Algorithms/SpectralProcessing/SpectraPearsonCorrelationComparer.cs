@@ -37,7 +37,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         /// <param name="spectraY">The spectrum to expand.</param>
         private List<XYData> ExpandVector(List<XYData> spectraX, List<XYData> spectraY)
         {
-            var xTempSpec = new List<XYData>();
+            var yTempSpec = new List<XYData>();
 
             var yIt = 0;
             for (int xIt = 0; xIt < spectraX.Count; xIt++)
@@ -50,21 +50,29 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
                 var maxMz = xpeak.X + toleranceTh;
 
                 var ypeak = spectraY[yIt];
-                while (ypeak.X < minMz)
+                while (ypeak.X < minMz && yIt < spectraY.Count - 1)
                 {
                     ypeak = spectraY[++yIt];
                 }
 
                 if (ypeak.X > maxMz)
                 {
-                    xTempSpec.Add(new XYData(xpeak.X, 0.0));
+                    yTempSpec.Add(new XYData(xpeak.X, 0.0));
                 }
             }
 
-            xTempSpec.AddRange(spectraY);
-            xTempSpec.Sort();
+            yTempSpec.AddRange(spectraY);
+            yTempSpec.Sort(new XYDataMzComparer());
 
-            return xTempSpec;
+            return yTempSpec;
+        }
+
+        private class XYDataMzComparer : IComparer<XYData>
+        {
+            public int Compare(XYData x, XYData y)
+            {
+                return x.X.CompareTo(y.X);
+            }
         }
     }
 }

@@ -330,6 +330,7 @@
     <Compile Include="Algorithms\SpectralProcessing\SpectralNormalizedDotProductComparer.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralMzComparer.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralPeakCountComparer.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\SpectraPearsonCorrelationComparer.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectrumFilterFactory.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SteinDotProduct.cs" />
     <Compile Include="Algorithms\SpectralProcessing\ThresholdSpectralFilter.cs" />
