@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="MultiAlignRogue.LoadingScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MultiAlignRogue"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+    <Grid>
+        <Border BorderBrush="Black" Background="#90E3E3E3"
+                VerticalAlignment="Stretch" Visibility="{Binding ShowLoadingScreen, Converter={StaticResource BoolToVis}}">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="220" Background="LightGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding LoadStatus}" Margin="6" FontSize="8" />
+                
+                <ProgressBar Grid.Row="1" Margin="6" Value="{Binding LoadProgress}" />
+            </Grid>
+        </Border> 
+    </Grid>
+</UserControl>
