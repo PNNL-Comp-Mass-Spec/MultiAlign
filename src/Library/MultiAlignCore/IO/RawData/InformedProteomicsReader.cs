@@ -8,6 +8,9 @@ using MultiAlignCore.Data;
 namespace MultiAlignCore.IO.RawData
 {
     using System.IO;
+    using System.Threading.Tasks;
+
+    using InformedProteomics.Backend.Utils;
 
     public class InformedProteomicsReader : ISpectraProvider
     {
@@ -172,6 +175,24 @@ namespace MultiAlignCore.IO.RawData
         public bool IsBackedByFile
         {
             get { return true; }
+        }
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        public void Initialize(IProgress<ProgressData> progress = null)
+        {
+            this.LoadLcmsRun(progress);
+        }
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        public Task InitializeAsync(IProgress<ProgressData> progress = null)
+        {
+            return Task.Run(() => this.LoadLcmsRun(progress));
         }
 
         #endregion
@@ -393,9 +414,9 @@ namespace MultiAlignCore.IO.RawData
             return summary;
         }
 
-        private void LoadLcmsRun()
+        private void LoadLcmsRun(IProgress<ProgressData> progress = null)
         {
-            this._lcmsRun = PbfLcMsRun.GetLcMsRun(this._dataFilePath);
+            this._lcmsRun = PbfLcMsRun.GetLcMsRun(this._dataFilePath, progress);
         }
     }
 }

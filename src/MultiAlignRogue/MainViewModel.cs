@@ -399,7 +399,7 @@ namespace MultiAlignRogue
             }
         }
 
-        public void UpdateDatasets()
+        public async Task UpdateDatasets()
         {
             Datasets.Clear();
             int i = 0;
@@ -430,10 +430,12 @@ namespace MultiAlignRogue
                 Datasets.Add(viewmodel);
             }
 
+            await this.LoadRawData(this.Datasets);
+
             this.RaisePropertyChanged("m_config");
         }
 
-        private void AddDatasets(string folderPath)
+        private async Task AddDatasets(string folderPath)
         {
             var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
@@ -449,10 +451,10 @@ namespace MultiAlignRogue
 
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
-            this.UpdateDatasets();
+            await this.UpdateDatasets();
         }
 
-        private void AddDatasets(IEnumerable<string> files)
+        private async Task AddDatasets(IEnumerable<string> files)
         {
             var datasetLoader = new DatasetLoader();
             var datasets = datasetLoader.GetValidDatasets(files);
@@ -464,7 +466,7 @@ namespace MultiAlignRogue
 
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
-            this.UpdateDatasets();
+            await this.UpdateDatasets();
         }
 
         #endregion
@@ -542,7 +544,7 @@ namespace MultiAlignRogue
 
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
-            this.UpdateDatasets();
+            await this.UpdateDatasets();
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
@@ -655,6 +657,23 @@ namespace MultiAlignRogue
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
 
             return rogueProject;
+        }
+
+        private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)
+        {
+            foreach (var dataset in datasets)
+            {
+                if (dataset.Dataset.RawFile != null && File.Exists(dataset.Dataset.RawFile.Path))
+                {
+                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.LoadingRawData;
+                    var progress = new Progress<ProgressData>(pd => dataset.Progress = pd.Percent);
+                    var provider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
+                        dataset.Dataset.RawFile.Path,
+                        dataset.DatasetId);
+                    await provider.InitializeAsync(progress);
+                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
+                }
+            }
         }
         #endregion
 

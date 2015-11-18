@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace MultiAlignCore.Data
 {
+    using System.Threading.Tasks;
+
+    using InformedProteomics.Backend.Utils;
+
     /// <summary>
     /// Interface for objects that need access to scan summary data
     /// </summary>
@@ -63,5 +67,17 @@ namespace MultiAlignCore.Data
         /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
         /// </summary>
         bool IsBackedByFile { get; }
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        void Initialize(IProgress<ProgressData> progress = null);
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        Task InitializeAsync(IProgress<ProgressData> progress = null);
     }
 }

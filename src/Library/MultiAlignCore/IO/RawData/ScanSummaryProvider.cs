@@ -9,6 +9,9 @@ namespace MultiAlignCore.IO.RawData
 {
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using InformedProteomics.Backend.Utils;
 
     public class ScanSummaryProvider: IScanSummaryProvider
     {
@@ -172,6 +175,24 @@ namespace MultiAlignCore.IO.RawData
         /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
         /// </summary>
         public bool IsBackedByFile { get; private set; }
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        public void Initialize(IProgress<ProgressData> progress = null)
+        {
+            this.LoadScans();
+        }
+
+        /// <summary>
+        /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
+        /// </summary>
+        /// <param name="progress">The progress of the initialization process.</param>
+        public Task InitializeAsync(IProgress<ProgressData> progress = null)
+        {
+            return Task.Run(() => this.Initialize(progress));
+        }
 
         /// <summary>
         /// Load scan summaries from a scans file.

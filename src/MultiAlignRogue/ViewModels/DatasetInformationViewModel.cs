@@ -20,6 +20,8 @@ namespace MultiAlignRogue.ViewModels
     {
         public enum DatasetStates
         {
+            Waiting,
+            LoadingRawData,
             Loaded,
             FindingFeatures,
             PersistingFeatures,
@@ -106,12 +108,15 @@ namespace MultiAlignRogue.ViewModels
                     this.IsAligned = value >= DatasetInformationViewModel.DatasetStates.Aligned;
                     this.IsClustered = value >= DatasetInformationViewModel.DatasetStates.Clustered;
 
+                    this.IsLoadingRawData = value == DatasetStates.LoadingRawData;
+
                     if (this.StateChanged != null)
                     {
                         this.StateChanged(this, EventArgs.Empty);
                     }
 
-                    this.ShouldShowProgress = (value == DatasetStates.FindingFeatures) ||
+                    this.ShouldShowProgress = (value == DatasetStates.LoadingRawData) ||
+                                              (value == DatasetStates.FindingFeatures) ||
                                               (value == DatasetStates.PersistingFeatures) ||
                                               ((value == DatasetStates.Aligning) ||
                                               (value == DatasetStates.PersistingAlignment));
@@ -294,9 +299,25 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
+        private bool isLoadingRawData;
+        public bool IsLoadingRawData
+        {
+            get { return this.isLoadingRawData; }
+            private set
+            {
+                if (this.isLoadingRawData != value)
+                {
+                    this.isLoadingRawData = value;
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged("DoingWork");
+                }
+            }
+        }
+
         public bool DoingWork
         {
-            get { return this.IsAligning || this.IsFindingFeatures || this.IsClustering; }
+            get { return this.IsLoadingRawData || this.IsAligning || this.IsFindingFeatures || this.IsClustering; }
         }
 
         private double progress;
