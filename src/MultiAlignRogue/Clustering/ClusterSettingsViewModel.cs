@@ -283,11 +283,6 @@ namespace MultiAlignRogue.Clustering
                 foreach (var dataset in datasets)
                 {
                     features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
-                    var rawFilePath = dataset.Dataset.RawFile.Path;
-                    this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
-                        rawFilePath,
-                        dataset.DatasetId);
-
                     progData.Report(++i, datasets.Count);
                 }
 
