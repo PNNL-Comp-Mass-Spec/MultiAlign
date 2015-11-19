@@ -665,13 +665,16 @@ namespace MultiAlignRogue
             {
                 if (dataset.Dataset.RawFile != null && File.Exists(dataset.Dataset.RawFile.Path))
                 {
+                    var finalDatasetState = dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Waiting ? 
+                        DatasetInformationViewModel.DatasetStates.Loaded : dataset.DatasetState;
+
                     dataset.DatasetState = DatasetInformationViewModel.DatasetStates.LoadingRawData;
                     var progress = new Progress<ProgressData>(pd => dataset.Progress = pd.Percent);
                     var provider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
                         dataset.Dataset.RawFile.Path,
                         dataset.DatasetId);
                     await provider.InitializeAsync(progress);
-                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
+                    dataset.DatasetState = finalDatasetState;
                 }
             }
         }
