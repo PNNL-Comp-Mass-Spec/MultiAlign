@@ -18,6 +18,7 @@ namespace MultiAlignRogue.Clustering
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -304,12 +305,20 @@ namespace MultiAlignRogue.Clustering
 
                 if (this.ShouldRefineWithMsMs)
                 {
-                    progData.StepRange(75);
-                    var clusterRefiner =
-                        ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
-                            this.analysis.Options.ClusterPostProcessingoptions,
-                            this.analysis.DataProviders);
-                    clusters = clusterRefiner.Cluster(clusters, clusterProgress);
+                    try
+                    {
+                        progData.StepRange(75);
+                        var clusterRefiner =
+                            ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
+                                this.analysis.Options.ClusterPostProcessingoptions,
+                                this.analysis.DataProviders);
+                        clusters = clusterRefiner.Cluster(clusters, clusterProgress);
+
+                    }
+                    catch (DatasetInformation.MissingRawDataException e)
+                    {
+                        MessageBox.Show(string.Format("{0}\nDataset: {1}", e.Message, e.GroupId));
+                    }
                 }
 
                 this.analysis.Clusters = clusters;

@@ -291,5 +291,15 @@ namespace MultiAlignCore.Data.MetaData
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public class MissingRawDataException : Exception
+        {
+            public MissingRawDataException(string message, int groupId) : base(message)
+            {
+                this.GroupId = groupId;
+            }
+
+            public int GroupId { get; private set; }
+        }
     }
 }

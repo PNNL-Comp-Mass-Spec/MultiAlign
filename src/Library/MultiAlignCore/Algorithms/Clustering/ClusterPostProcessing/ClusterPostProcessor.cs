@@ -40,6 +40,9 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                 processedClusters.AddRange(this.ProcessCluster(data[i]));
                 progress.Report(progressData.UpdatePercent((100.0 * i++) / data.Count));
             }
+
+            int id = 0;
+            processedClusters.ForEach(cluster => cluster.Id = id++);
             return processedClusters;
         }
 
@@ -51,6 +54,11 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         private List<T> ProcessCluster(T cluster)
         {
             var features = cluster.Features;
+            if (cluster.Features.Count < 2)
+            {
+                return new List<T> { cluster };
+            }
+
             var umcToClusterHash = new Dictionary<FeatureLight, T> { { features[0], new T() } };
             for (int leftFeatureIndex = 1; leftFeatureIndex < features.Count; leftFeatureIndex++)
             {
@@ -58,14 +66,13 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                 for (int rightFeatureIndex = 0; rightFeatureIndex < leftFeatureIndex; rightFeatureIndex++)
                 {
                     var rightFeature = features[rightFeatureIndex];
-                    T clusterMatch;
 
                     // Score features against each other.
                     var score = this.clusterScorer.ScoreComparison(leftFeature, rightFeature);
                     if (score > 0)
                     {   // The features are a good match.
                         // Add the left feature to the right feature's cluster.
-                        clusterMatch = umcToClusterHash[rightFeature];
+                        var clusterMatch = umcToClusterHash[rightFeature];
                         clusterMatch.AddChildFeature(leftFeature);
                         if (!umcToClusterHash.ContainsKey(leftFeature))
                         {
@@ -76,19 +83,17 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                     {   // Not a match cluster. Cluster the left feature on its own.
                         if (!umcToClusterHash.ContainsKey(leftFeature))
                         {
-                            clusterMatch = new T();
+                            var clusterMatch = new T();
                             clusterMatch.AddChildFeature(leftFeature);
                             umcToClusterHash.Add(leftFeature, clusterMatch);
                         }
-
-                        clusterMatch = umcToClusterHash[leftFeature];
                     }
-
-                    clusterMatch.CalculateStatistics(ClusterCentroidRepresentation.Median);
                 }
             }
 
-            return umcToClusterHash.Values.Distinct().ToList();
+            var clusters = umcToClusterHash.Values.Distinct().ToList();
+            clusters.ForEach(refinedCluster => refinedCluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
+            return clusters;
         }
     }
 }
