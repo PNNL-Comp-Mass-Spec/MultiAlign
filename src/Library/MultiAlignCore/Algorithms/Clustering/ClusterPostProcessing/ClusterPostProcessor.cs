@@ -59,7 +59,9 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
                 return new List<T> { cluster };
             }
 
-            var umcToClusterHash = new Dictionary<FeatureLight, T> { { features[0], new T() } };
+            var seedCluster = new T();
+            seedCluster.AddChildFeature(features[0]);
+            var umcToClusterHash = new Dictionary<FeatureLight, T> { { features[0], seedCluster } };
             for (int leftFeatureIndex = 1; leftFeatureIndex < features.Count; leftFeatureIndex++)
             {
                 var leftFeature = features[leftFeatureIndex];
@@ -69,7 +71,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 
                     // Score features against each other.
                     var score = this.clusterScorer.ScoreComparison(leftFeature, rightFeature);
-                    if (score > 0)
+                    if (score >= 0)
                     {   // The features are a good match.
                         // Add the left feature to the right feature's cluster.
                         var clusterMatch = umcToClusterHash[rightFeature];

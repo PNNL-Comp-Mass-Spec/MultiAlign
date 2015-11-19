@@ -46,6 +46,11 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
             var leftSpectra = leftSpectraProvider.GetMSMSSpectra(feature1.Scan, feature1.Mz, true);
             var rightSpectra = rightSpectraProvider.GetMSMSSpectra(feature2.Scan, feature2.Mz, true);
 
+            if ((leftSpectra.Count == 0 || rightSpectra.Count == 0) && leftSpectra.Count != rightSpectra.Count)
+            {   // One has MS/MS but the other doesn't
+                score = -1;
+            }
+
             for (int i = 0; i < leftSpectra.Count; i++)
             {
                 var leftSpectrum = leftSpectra[i];
