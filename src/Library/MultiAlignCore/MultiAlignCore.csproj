@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\IAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
