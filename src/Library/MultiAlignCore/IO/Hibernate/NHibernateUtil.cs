@@ -3,6 +3,8 @@
 using System;
 using System.Data.SQLite;
 using System.IO;
+using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
@@ -19,7 +21,7 @@ namespace MultiAlignCore.IO.Hibernate
     public static class NHibernateUtil
     {
         private static String m_dbLocation;
-        private static readonly Configuration Configuration;
+        //private static readonly Configuration Configuration;
         private static ISessionFactory m_sessionFactory;
 
         /// <summary>
@@ -27,9 +29,11 @@ namespace MultiAlignCore.IO.Hibernate
         /// </summary>
         static NHibernateUtil()
         {
-            Configuration = new Configuration();
-            Configuration.Configure();
-            Configuration.AddAssembly(typeof (NHibernateUtil).Assembly);
+            //Configuration = new Configuration();
+            //// Load configuration from hibernate.cfg.xml
+            //Configuration.Configure();
+            //Configuration.AddAssembly(typeof (NHibernateUtil).Assembly);
+            m_dbLocation = "Analysis.db3";
         }
 
         /// <summary>
@@ -78,6 +82,8 @@ namespace MultiAlignCore.IO.Hibernate
         /// </param>
         public static void CreateDatabase(String dbLocation)
         {
+            CreateDatabaseFluent(dbLocation);
+            return;
             SetConfigurationDbLocation(dbLocation);
             m_dbLocation = dbLocation;
             m_sessionFactory = null;
@@ -100,10 +106,26 @@ namespace MultiAlignCore.IO.Hibernate
                     }
                 }
 
-                var schemaExport = new SchemaExport(Configuration);
-                //schemaExport.Execute(false, true, false, false, conn, null);
-                schemaExport.Execute(false, true, false, conn, null);
+                //var schemaExport = new SchemaExport(Configuration);
+                ////schemaExport.Execute(false, true, false, false, conn, null);
+                //schemaExport.Execute(false, true, false, conn, null);
             }
+        }
+
+        /// <summary>
+        ///     Creates a SQLite database based on the hibernate config file.
+        /// </summary>
+        /// <param name="dbLocation">
+        ///     The file location of the database file to be created. The file should not exist before the
+        ///     database is created.
+        /// </param>
+        public static void CreateDatabaseFluent(String dbLocation)
+        {
+            SetConfigurationDbLocation(dbLocation);
+            m_dbLocation = dbLocation;
+            m_sessionFactory = null;
+
+            m_sessionFactory = GetFluentConfiguration(m_dbLocation).BuildSessionFactory();
         }
 
         /// <summary>
@@ -115,6 +137,9 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="createIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
         public static void ConnectToDatabase(string databaseLocation, bool createIfMissing)
         {
+            ConnectToDatabaseFluent(databaseLocation, createIfMissing);
+            return;
+
             m_dbLocation = databaseLocation;
 
             // If the database does not exist, and we are trying to connect to it (not create)
@@ -140,6 +165,39 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
+        ///     Sets the location of the database file that the Hibernate Session should be attached to. If a Session already
+        ///     existed,
+        ///     it will be killed so that a new Session can be created that points to the new database location.
+        /// </summary>
+        /// <param name="databaseLocation">The file location of the database file.</param>
+        /// <param name="createIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
+        public static void ConnectToDatabaseFluent(string databaseLocation, bool createIfMissing)
+        {
+            m_dbLocation = databaseLocation;
+
+            // If the database does not exist, and we are trying to connect to it (not create)
+            // then we have a problem.
+            var exists = File.Exists(databaseLocation);
+            if (!exists && !createIfMissing)
+            {
+                throw new FileNotFoundException("The file does not exist.");
+            }
+
+            // Otherwise, make sure we have a closed session.
+            if (m_sessionFactory != null)
+            {
+                m_sessionFactory.Close();
+                m_sessionFactory = null;
+            }
+
+            // If the database is missing, and you want to create a database if it's missing, construct and open open it.
+            if (createIfMissing && !exists)
+            {
+                CreateDatabaseFluent(databaseLocation);
+            }
+        }
+
+        /// <summary>
         ///     SessionFactory object containing a get method that creates and returns a Hibernate SessionFactory if one does not
         ///     already exist
         ///     If a SessionFactory already exists, that object will be returned.
@@ -148,25 +206,134 @@ namespace MultiAlignCore.IO.Hibernate
         {
             get
             {
+                return SessionFactoryFluent;
                 if (m_sessionFactory == null)
                 {
                     if (m_dbLocation != null)
                     {
                         SetConfigurationDbLocation(m_dbLocation);
                     }
-                    else
-                    {
-                        var connectionString = Configuration.GetProperty("connection.connection_string");
-                        var fileLocation = connectionString.Split('=', ';')[1];
-                        if (!File.Exists(fileLocation))
-                        {
-                            CreateDatabase(fileLocation);
-                        }
-                    }
-                    Configuration.SetProperty("adonet.batch_size", "1000");
-                    m_sessionFactory = Configuration.BuildSessionFactory();
+                    //else
+                    //{
+                    //    var connectionString = Configuration.GetProperty("connection.connection_string");
+                    //    var fileLocation = connectionString.Split('=', ';')[1];
+                    //    if (!File.Exists(fileLocation))
+                    //    {
+                    //        CreateDatabase(fileLocation);
+                    //    }
+                    //}
+                    //Configuration.SetProperty("adonet.batch_size", "1000");
+                    //m_sessionFactory = Configuration.BuildSessionFactory();
                 }
                 return m_sessionFactory;
+            }
+        }
+
+        /// <summary>
+        ///     SessionFactory object containing a get method that creates and returns a Hibernate SessionFactory if one does not
+        ///     already exist
+        ///     If a SessionFactory already exists, that object will be returned.
+        /// </summary>
+        private static ISessionFactory SessionFactoryFluent
+        {
+            get
+            {
+                if (m_sessionFactory == null)
+                {
+                    //if (m_dbLocation == null)
+                    //{
+                    //    var connectionString = Configuration.GetProperty("connection.connection_string");
+                    //    var fileLocation = connectionString.Split('=', ';')[1];
+                    //    m_dbLocation = fileLocation;
+                    //    if (!File.Exists(fileLocation))
+                    //    {
+                    //        CreateDatabaseFluent(fileLocation);
+                    //        return m_sessionFactory;
+                    //    }
+                    //}
+                    m_sessionFactory = GetFluentConfiguration(m_dbLocation).BuildSessionFactory();
+                }
+                return m_sessionFactory;
+            }
+        }
+
+        private static FluentConfiguration GetFluentConfiguration(string dbLocation, bool createIfMissing = true)
+        {
+            if (!File.Exists(dbLocation) && !createIfMissing)
+            {
+                throw new FileNotFoundException("The file does not exist.");
+            }
+
+            var conf = Fluently.Configure()
+                .Database(
+                    SQLiteConfiguration.Standard
+                        //.UsingFile(m_dbLocation) // Won't work because of the need for custom additions to the connection string
+                        .AdoNetBatchSize(1000)
+                        .ConnectionString("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536"))
+                .Mappings(m =>
+                {
+                    //Directory.CreateDirectory("Mappings");
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.AlignmentDataMapping>()                    /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.AlignmentDataPointMapping>()               /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ClusterToMassTagMapMapping>()              /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatabaseSearchSequenceMapping>()           /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatasetInformationMapping>()               /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatasetToExperimentalFactorMapMapping>()   /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ExperimentalFactorMapping>()               /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MassTagLightMapping>()                     /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MassTagToProteinMapMapping>()              /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSFeatureLightMapping>()                   /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSFeatureToMSnFeatureMapMapping>()         /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSMSClusterMapMapping>()                   /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSSpectraMapping>()                        /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ParameterHibernateMappingMapping>()        /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ProteinMapping>()                          /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.SequenceToMsnFeatureMapping>()             /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.STACFDRMapping>()                          /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCClusterLightMapping>()                  /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCLightMapping>()                         /* .ExportTo("Mappings") */ ;
+                });
+
+            if (!File.Exists(dbLocation))
+            {
+                conf = conf.ExposeConfiguration(BuildSchemaNew);
+            }
+            else
+            {
+                conf = conf.ExposeConfiguration(BuildSchemaOpen);
+            }
+
+            return conf;
+        }
+
+        /// <summary>
+        /// Export the schema to a new database
+        /// </summary>
+        /// <param name="config"></param>
+        private static void BuildSchemaNew(Configuration config)
+        {
+            new SchemaExport(config).Create(false, true);
+        }
+
+        /// <summary>
+        /// Validate or update the schema in an existing database
+        /// </summary>
+        /// <param name="config"></param>
+        private static void BuildSchemaOpen(Configuration config)
+        {
+            try
+            {
+                // Try to validate the schema. If it is correct, we can use it as is.
+                new SchemaValidator(config).Validate();
+                //config.SetProperty("adonet.batch_size", "100");
+            }
+            catch (HibernateException)
+            {
+                // Validation failed; we need to update the schema.
+                // If this fails, we need to report an error.
+                // If we are supposed to append, then only 'update' the schema
+                // This will also create if it does not exist
+                new SchemaUpdate(config).Execute(false, true);
             }
         }
 
@@ -176,8 +343,9 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="dbLocation">The file location of the database file</param>
         private static void SetConfigurationDbLocation(string dbLocation)
         {
-            Configuration.SetProperty("connection.connection_string",
-                "Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536");
+            m_dbLocation = dbLocation;
+            //Configuration.SetProperty("connection.connection_string",
+            //    "Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536");
         }
 
         public static string Connection

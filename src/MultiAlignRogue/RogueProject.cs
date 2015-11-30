@@ -11,6 +11,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Gets or sets the MultiAlign analysis options.
         /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public MultiAlignAnalysisOptions MultiAlignAnalysisOptions { get; set; }
 
         /// <summary>
@@ -21,6 +22,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Gets or sets the list of datasets.
         /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public List<DatasetInformation> Datasets { get; set; }
 
         /// <summary>

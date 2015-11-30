@@ -32,7 +32,12 @@ namespace MultiAlignCore.Data.Features
         public double MinimumDeisotopingScore   { get; set; }
         public bool ShouldUseMzFilter           { get; set; }
         public bool ShouldUseIntensityFilter    { get; set; }
-        public bool ShouldUseChargeFilter        { get; set; }  
-        public bool ShouldUseDeisotopingFilter  { get; set; }        
+        public bool ShouldUseChargeFilter        { get; set; }
+        public bool ShouldUseDeisotopingFilter { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }      
     }
 }

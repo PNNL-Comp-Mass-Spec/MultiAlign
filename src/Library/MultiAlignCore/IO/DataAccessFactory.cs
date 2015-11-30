@@ -70,8 +70,11 @@ namespace MultiAlignCore.IO
                     sequenceMap)
                 {
                     ScanSummaryDao = new ScanSummaryDAOHibernate(),
-                    ScanSummaryProviderCache = new ScanSummaryProviderCache()
+                    ScanSummaryProviderCache = new ScanSummaryProviderCache(),
+                    AnalysisOptionsDao = new AnalysisOptionsDAOHibernate(),
                 };
+
+            providers.AlignmentPointCache = new AlignmentDataPointDAOHibernate();
 
             return providers;
         }

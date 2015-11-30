@@ -47,30 +47,26 @@ namespace MultiAlignCore.Algorithms
         /// Gets or sets the approximate size of a fragmentation window.
         /// </summary>
         public double FragmentationWindowSize { get; set; }
+
         /// <summary>
         /// Gets or sets the drift time tolerance.
         /// </summary>
-        public double DriftTime
-        {
-            get;
-            set;
-        }
+        public double DriftTime { get; set; }
+
         /// <summary>
         /// Gets or sets the mass tolerance.
         /// </summary>
-        public double Mass
-        {
-            get;
-            set;
-        }
+        public double Mass { get; set; }
+
         /// <summary>
         /// Gets or sets the normalized elution time (NET) tolerance.
         /// </summary>
-        public double Net
-        {
-            get;
-            set;
-        }
+        public double Net { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
         #endregion
 
         /// <summary>

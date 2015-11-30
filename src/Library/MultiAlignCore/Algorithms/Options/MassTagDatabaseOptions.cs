@@ -33,5 +33,10 @@
         public double MaximumNet { get; set; }
         public double MinimumMass { get; set; }
         public double MaximumMass { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
     }
 }

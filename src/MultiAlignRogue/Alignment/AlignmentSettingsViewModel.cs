@@ -610,6 +610,8 @@ namespace MultiAlignRogue.Alignment
                     this.alignmentInformation.Add(alignment);
                 }
 
+                this.featureCache.Providers.AlignmentPointCache.DeleteByDatasetId(file.DatasetId);
+                
                 this.featureCache.CacheFeatures(features);
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());

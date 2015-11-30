@@ -103,5 +103,10 @@ namespace MultiAlignCore.Algorithms.Options
         [Category("Tolerances")]
         [Description("Determines if tolerances were refined using STAC.")]
         public bool Refined { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
     }
 }

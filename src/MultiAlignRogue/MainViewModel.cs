@@ -633,7 +633,17 @@ namespace MultiAlignRogue
             };
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
-            this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
+            if (rogueProject.Datasets != null)
+            {
+                this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
+            }
+
+            this.Analysis.MetaData.Datasets.AddRange(this.Analysis.DataProviders.DatasetCache.FindAll());
+            var dbOptions = this.Analysis.DataProviders.AnalysisOptionsDao.FindAll();
+            if (dbOptions.Count > 0)
+            {
+                this.Analysis.Options = dbOptions[0];
+            }
 
             this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
 
@@ -742,6 +752,9 @@ namespace MultiAlignRogue
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
+
+            this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
+            this.Analysis.DataProviders.AnalysisOptionsDao.Add(this.Analysis.Options);
 
             var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
 

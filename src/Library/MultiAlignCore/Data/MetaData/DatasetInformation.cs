@@ -107,6 +107,20 @@ namespace MultiAlignCore.Data.MetaData
         public List<InputFile> InputFiles { get; set; }
 
         /// <summary>
+        /// Input File interface for use with NHibernate (IList does not have "AddRange")
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public IList<InputFile> InputFilesNHibernate
+        {
+            get { return this.InputFiles; }
+            set
+            {
+                var list = value as List<InputFile>;
+                this.InputFiles = list ?? new List<InputFile>(value);
+            }
+        }
+
+            /// <summary>
         ///     Gets the raw file info.
         /// </summary>
         [System.Runtime.Serialization.IgnoreDataMemberAttribute]

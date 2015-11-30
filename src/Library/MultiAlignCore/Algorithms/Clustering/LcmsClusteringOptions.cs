@@ -19,7 +19,12 @@ namespace MultiAlignCore.Algorithms.Clustering
         public DistanceMetric                DistanceFunction { get; set; }
         public LcmsFeatureClusteringAlgorithmType       LcmsFeatureClusteringAlgorithm { get; set; }
         public ClusterCentroidRepresentation ClusterCentroidRepresentation { get; set; }
-        public FeatureTolerances             InstrumentTolerances { get; set; }
+        public FeatureTolerances InstrumentTolerances { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
 
         public static FeatureClusterParameters<UMCLight> ConvertToOmics(LcmsClusteringOptions options)
         {                        

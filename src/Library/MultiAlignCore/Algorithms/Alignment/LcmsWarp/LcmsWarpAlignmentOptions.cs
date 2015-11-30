@@ -187,7 +187,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
-        public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; } 
+        public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; }
 
         /// <summary>
         /// Default constructor, initializes every value to commonly used values and flags
@@ -232,5 +232,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
             SeparationTypes = new List<FeatureLight.SeparationTypes>();
         }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
     }
 }

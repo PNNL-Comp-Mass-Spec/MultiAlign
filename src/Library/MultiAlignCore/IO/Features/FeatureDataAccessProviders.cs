@@ -70,6 +70,8 @@ namespace MultiAlignCore.IO.Features
             SequenceMsnMapCache = sequenceMapCache;
         }
 
+        public AlignmentDataPointDAOHibernate AlignmentPointCache { get; set; }
+
         public ISequenceToMsnFeatureDAO SequenceMsnMapCache { get; set; }
 
         /// <summary>
@@ -128,6 +130,8 @@ namespace MultiAlignCore.IO.Features
         public ScanSummaryDAOHibernate ScanSummaryDao { get; set; }
 
         public ScanSummaryProviderCache ScanSummaryProviderCache { get; set; }
+
+        public AnalysisOptionsDAOHibernate AnalysisOptionsDao { get; set; }
 
         public IdentificationProviderCache IdentificationProviderCache { get; set; }
     }

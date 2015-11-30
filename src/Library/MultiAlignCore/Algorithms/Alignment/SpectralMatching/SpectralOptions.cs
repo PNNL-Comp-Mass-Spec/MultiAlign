@@ -20,5 +20,10 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// Gets or sets the number of required peaks 
         /// </summary>
         public int RequiredPeakCount { get; set; }
+
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; set; }
     }
 }
