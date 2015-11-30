@@ -20,6 +20,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         public List<LcmsWarpFeatureMatch> Matches { get; private set; }
 
+        /// <summary>
+        /// Gets the matches where the NET value is the given separation type.
+        /// </summary>
+        /// <param name="separationType">The separation type to get matches as.</param>
+        /// <returns>List of feature matches.</returns>
         public List<LcmsWarpFeatureMatch> GetMatchesAs(FeatureLight.SeparationTypes separationType)
         {
             return this.Matches.Select(
@@ -37,9 +42,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Function generates candidate matches between alignee features and baseline features.
         /// It does so by finding all alignee-baseline feature pairs that match within a provided
         /// mass tolerance window
-        /// This ONLY matches in mass. Elution time will be considered later.
         /// </summary>
-        public void GenerateCandidateMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
+        /// <param name="separationTypes">Separation types to include in matching.</param>
+        public void GenerateCandidateMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, IEnumerable<FeatureLight.SeparationTypes> separationTypes = null)
         {
             // Sort features by mass
             var massComparer = new UMCLight.UmcMassComparer();

@@ -1,0 +1,32 @@
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+{
+    using System.Collections.Generic;
+    using MultiAlignCore.Data.Features;
+
+    public interface IAlignmentFunction
+    {
+        /// <summary>
+        /// Gets or sets a list of matches mapping alignee to baseline.
+        /// </summary>
+        List<LcmsWarpAlignmentMatch> Matches { get; set; }
+
+        /// <summary>
+        /// Warp a value by the alignment function.
+        /// </summary>
+        /// <param name="value">The value to warp.</param>
+        /// <returns>The warped value.</returns>
+        double WarpValue(double value);
+
+        /// <summary>
+        /// Warp the feature's value by the alignment function for the given value type.
+        /// </summary>
+        /// <param name="feature">The feature to warp.</param>
+        UMCLight GetWarpedFeature(UMCLight feature);
+
+        /// <summary>
+        /// Warp each feature's separation value by the alignment function for the value type.
+        /// </summary>
+        /// <param name="features">The features to warp.</param>
+        IEnumerable<UMCLight> GetWarpedFeatures(IEnumerable<UMCLight> features);
+    }
+}

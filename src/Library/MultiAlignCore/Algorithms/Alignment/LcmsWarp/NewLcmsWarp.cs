@@ -1,113 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using InformedProteomics.Backend.Utils;
 
-    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MassTags;
 
-    using PNNLOmics.Utilities;
-
+    /// <summary>
+    /// This class is the entry point for MultiAlign's implementation of the LcmsWarp
+    /// alignment algorithm
+    /// </summary>
     public class NewLcmsWarp :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
         IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, AlignmentData>
     {
-        private const int REQUIRED_MATCHES = 6;
+        /// <summary>
+        /// The alignment configuration options.
+        /// </summary>
+        private readonly LcmsWarpAlignmentOptions options;
 
-        private LcmsWarpAlignmentOptions options;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NewLcmsWarp"/> class.
+        /// </summary>
+        /// <param name="options">The alignment configuration options.</param>
         public NewLcmsWarp(LcmsWarpAlignmentOptions options)
         {
-            
+            this.options = options;
         }
 
         /// <summary>
-        /// 
+        /// An event for updating the progress of LcmsWarp.
         /// </summary>
-        /// <param name="aligneeFeatures"></param>
-        /// <param name="baselineFeatures"></param>
-        /// <param name="includeMassInMatchScore"></param>
-        /// <returns></returns>
-        public List<UMCLight> WarpNet(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, bool includeMassInMatchScore)
-        {
-            // Generate candidate matches: Match alignee features -> baseline features by mass only
-            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
-            featureMatcher.GenerateCandidateMatches(aligneeFeatures, baselineFeatures);
-
-            var warpedFeatures = new List<UMCLight>();
-            foreach (var separationType in this.options.SeparationTypes)
-            {
-                // Get matches for current separation type
-                var matches = featureMatcher.GetMatchesAs(separationType);
-
-                // Calculate two dimensional statistics for mass and the current separation dimension.
-                var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
-
-                // Calculate alignee sections
-                var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
-                aligneeSections.InitSections(aligneeFeatures);
-
-                // Calculate baseline sections
-                var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
-                baselineSections.InitSections(baselineFeatures);
-
-                // Generate alignment function, only score sections based on NET.
-                var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
-                var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
-
-                // Warp the values in the features for this separation type
-                warpedFeatures = this.WarpFeatures(aligneeFeatures, alignmentFunction, separationType);
-            }
-
-            // Calculate actual feature matches in mass and all separation dimensions
-
-            return warpedFeatures;
-        }
-
-        public List<UMCLight> WarpNetMass(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
-        {
-            // First pass NET warp: Perform warp by only scoring matches in Nnet
-            var netWarpedFeatures = this.WarpNet(aligneeFeatures, baselineFeatures, false);
-
-            // Warp mass
-
-            // Second pass NET warp: Perform warp that scores matches in mass AND net
-            var netMassWarpedFeatures = this.WarpNet(netWarpedFeatures, baselineFeatures, true);
-
-            return netMassWarpedFeatures;
-        }
-
-        private List<UMCLight> WarpFeatures(List<UMCLight> features, LcmsWarpNetAlignmentFunction alignmentFunction, FeatureLight.SeparationTypes separationType)
-        {
-            var warpedFeatures = new List<UMCLight> { Capacity = features.Count };
-            foreach (var feature in features)
-            {
-                var warpedFeature = new UMCLight(feature);
-                var separationValue = feature.GetSeparationValue(separationType);
-                var warpedValue = alignmentFunction.WarpNet(separationValue);
-                warpedFeature.SetSeparationValue(separationType, warpedValue);
-            }
-
-            return warpedFeatures;
-        }
-
+        [Obsolete("Use IProgress<ProgressData> in the Align() methods instead of this.")]
         public event EventHandler<ProgressNotifierArgs> Progress;
 
+        /// <summary>
+        /// Align a set of features to a set of baseline features.
+        /// </summary>
+        /// <param name="baseline">The baseline features to align to.</param>
+        /// <param name="alignee">The features to align.</param>
+        /// <param name="progress">The progress reporter for the alignment process.</param>
+        /// <returns>Information about the alignment.</returns>
+        /// <exception cref="ArgumentException">
+        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
+        /// </exception>
         public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
-            // Throw an exception if separation dimensions in basline and alignee features do not match.
-            this.CheckDimensionality(alignee, baseline);
+            // Enumerate features to lists.
+            var aligneeFeatures = alignee.ToList();
+            var baselineFeatures = baseline.ToList();
 
-            throw new NotImplementedException();
+            // Throw an exception if separation dimensions in basline and alignee features do not match.
+            this.CheckDimensionality(aligneeFeatures, baselineFeatures);
+
+            // Warp mass if NET_MASS_WARP, otherwise only warp NET.
+            var netMassWarp = this.options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP;
+            var warpedFeatures = netMassWarp ? this.WarpNetMass(aligneeFeatures, baselineFeatures)
+                                             : this.WarpNet(aligneeFeatures, baselineFeatures, true);
+
+            // TODO: Populate alignment data.
+            var alignmentData = new AlignmentData();
+
+            return alignmentData;
         }
 
+        /// <summary>
+        /// Align a set of features to a set of mass tags.
+        /// </summary>
+        /// <param name="baseline">The baseline mass tags to align to.</param>
+        /// <param name="alignee">The features to align.</param>
+        /// <param name="progress">The progress reporter for the alignment process.</param>
+        /// <returns>Information about the alignment.</returns>
+        /// <exception cref="ArgumentException">
+        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
+        /// </exception>
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
             // Convert baseline features to UMCLights.
@@ -122,15 +92,112 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
+        /// Generates alignment functions for alignment between features in each separation dimension.
+        /// Warps the elution value for each feature based on the alignment function.
+        /// </summary>
+        /// <param name="aligneeFeatures">The features to warp.</param>
+        /// <param name="baselineFeatures">The features to warp to.</param>
+        /// <param name="includeMassInMatchScore">
+        /// Should mass be considered when scoring a match between an alignee feature and baseline feature?
+        /// </param>
+        /// <returns>The features with all NET values warped.</returns>
+        public List<UMCLight> WarpNet(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, bool includeMassInMatchScore)
+        {
+            // Generate candidate matches: Match alignee features -> baseline features by mass only
+            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
+            featureMatcher.GenerateCandidateMatches(aligneeFeatures, baselineFeatures);
+
+            var warpedFeatures = new List<UMCLight>();
+            foreach (var separationType in this.options.SeparationTypes)
+            {   
+                // Get matches for given separation dimension
+                var matches = featureMatcher.GetMatchesAs(separationType);
+
+                // Warp features for each separation dimension.
+                var alignmentFunction = this.GetAlignmentFunction(
+                                                matches,
+                                                aligneeFeatures,
+                                                baselineFeatures,
+                                                includeMassInMatchScore);
+                alignmentFunction.SeparationType = separationType;
+
+                // Warp the values in the features for this separation type
+                warpedFeatures = alignmentFunction.GetWarpedFeatures(aligneeFeatures).ToList();
+            }
+
+            featureMatcher.GenerateCandidateMatches(
+                warpedFeatures,
+                baselineFeatures,
+                this.options.SeparationTypes);
+            var completeMatches = featureMatcher.Matches;
+
+            return warpedFeatures;
+        }
+
+        /// <summary>
+        /// Generates alignment functions for alignment between features in each separation dimension.
+        /// Warps the elution value for each feature based on the alignment function.
+        /// </summary>
+        /// <param name="aligneeFeatures">The features to warp.</param>
+        /// <param name="baselineFeatures">The features to warp to.</param>
+        /// <returns>The features with all NET values warped.</returns>
+        public List<UMCLight> WarpNetMass(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
+        {
+            // First pass NET warp: Perform warp by only scoring matches in NET
+            var netWarpedFeatures = this.WarpNet(aligneeFeatures, baselineFeatures, false);
+
+            // TODO: Warp mass
+
+            // Second pass NET warp: Perform warp that scores matches in mass AND net
+            var netMassWarpedFeatures = this.WarpNet(netWarpedFeatures, baselineFeatures, true);
+
+            return netMassWarpedFeatures;
+        }
+
+        /// <summary>
+        /// Get alignment function for a single separation for a set of alignee features.
+        /// </summary>
+        /// <param name="matches">The matched features.</param>
+        /// <param name="aligneeFeatures">The features to warp.</param>
+        /// <param name="baselineFeatures">The features to warp to.</param>
+        /// <param name="includeMassInMatchScore">
+        /// Should mass be considered when scoring a match between an alignee feature and baseline feature?
+        /// </param>
+        /// <returns>The features with all values for the given separation dimension warped.</returns>
+        /// <returns></returns>
+        private LcmsWarpNetAlignmentFunction GetAlignmentFunction(List<LcmsWarpFeatureMatch> matches,
+                                                                  List<UMCLight> aligneeFeatures,
+                                                                  List<UMCLight> baselineFeatures,
+                                                                  bool includeMassInMatchScore)
+        {
+            // Calculate two dimensional statistics for mass and the current separation dimension.
+            var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
+
+            // Calculate alignee sections
+            var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
+            aligneeSections.InitSections(aligneeFeatures);
+
+            // Calculate baseline sections
+            var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
+            baselineSections.InitSections(baselineFeatures);
+
+            // Generate alignment function, only score sections based on NET.
+            var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
+            var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
+
+            return alignmentFunction;
+        }
+
+        /// <summary>
         /// This method checks to see if both alignee features and
         /// reference features have the same separation dimensions.
         /// </summary>
         /// <param name="aligneeFeatures">The features that will be aligned.</param>
         /// <param name="baselineFeatures">The reference dataset/database features.</param>
         /// <exception cref="ArgumentException">
-        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensions.
+        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
         /// </exception>
-        private void CheckDimensionality(IEnumerable<FeatureLight> aligneeFeatures, IEnumerable<FeatureLight> baselineFeatures)
+        private void CheckDimensionality(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
         {
             foreach (var aligneeFeature in aligneeFeatures)
             {

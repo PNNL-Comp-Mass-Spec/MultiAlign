@@ -93,7 +93,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         // For each unique alignee feature match group, find the minimum NET difference between the match NET and the transformed NET.
                         var deltas = uniqueSectionMatches.Select(group => group.Min(match => this.GetDelta(match.Net, baselineStartNet, baselineEndNet, aligneeSections)));
 
-                        //subsectionMatchScores[aligneeSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(uniqueSectionMatches, deltas);
+                        ////subsectionMatchScores[aligneeSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(uniqueSectionMatches, deltas);
                     }
                 }
             }
