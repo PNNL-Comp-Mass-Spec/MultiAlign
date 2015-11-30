@@ -72,6 +72,16 @@ namespace MultiAlignRogue.Alignment
         private readonly List<AlignmentData> alignmentInformation;
 
         /// <summary>
+        /// The progress percentage for the alignment process.
+        /// </summary>
+        private double alignmentProgress;
+
+        /// <summary>
+        /// A value indicating whether the alignment progress bar should be displayed.
+        /// </summary>
+        private bool showAlignmentProgress;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AlignmentSettingsViewModel"/> class.
         /// </summary>
         /// <param name="analysis">The analysis information to run alignment on.</param>
@@ -148,19 +158,38 @@ namespace MultiAlignRogue.Alignment
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
         }
 
+        /// <summary>
+        /// Gets a command that performs the alignment on the selected atasets.
+        /// </summary>
         public RelayCommand AlignCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command that displays the alignment information for the selected datasets.
+        /// </summary>
         public RelayCommand DisplayAlignmentCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the list of possible alignment algorithms.
+        /// </summary>
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
+        /// <summary>
+        /// Gets the list of possible alignment types.
+        /// </summary>
         public ObservableCollection<LcmsWarpAlignmentType> CalibrationOptions { get; private set; }
 
+        /// <summary>
+        /// Gets the list of datasets that alignment can be ru non.
+        /// </summary>
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
+        /// <summary>
+        /// Gets the view model for selecting an AMT database.
+        /// </summary>
         public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; private set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this alignment is to a baseline dataset.
         /// True when aligning to a baseline dataset; false when aligning to an AMT tag database
         /// </summary>
         public bool ShouldAlignToBaseline
@@ -178,6 +207,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this alignment is to an AMT database.
+        /// </summary>
         public bool ShouldAlignToAMT
         {
             get { return this.analysis.Options.AlignmentOptions.AlignToAMT; }
@@ -193,6 +225,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected baseline dataset.
+        /// </summary>
         public DatasetInformationViewModel SelectedBaseline
         {
             get { return this.selectedBaseline; }
@@ -218,6 +253,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected alignment algorithm.
+        /// </summary>
         public FeatureAlignmentType SelectedAlignmentAlgorithm
         {
             get { return this.analysis.Options.AlignmentOptions.AlignmentAlgorithm; }
@@ -231,6 +269,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the possible alignment types.
+        /// </summary>
         public LcmsWarpAlignmentType SelectedCalibrationType
         {
             get { return this.analysis.Options.AlignmentOptions.AlignmentType; }
@@ -244,6 +285,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the alignment contraction/expansion factor.
+        /// </summary>
         public int AlignmentContractionFactor
         {
             get { return this.analysis.Options.AlignmentOptions.ContractionFactor; }
@@ -257,6 +301,9 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the number of sections to break the NETs into.
+        /// </summary>
         public int AlignmentNumTimeSections
         {
             get { return this.analysis.Options.AlignmentOptions.NumTimeSections; }
@@ -269,13 +316,14 @@ namespace MultiAlignRogue.Alignment
                 }
             }
         }
-        
 
-        private double alignmentProgress;
+        /// <summary>
+        /// Gets the progress percentage for the alignment process.
+        /// </summary>
         public double AlignmentProgress
         {
             get { return this.alignmentProgress; }
-            set
+            private set
             {
                 if (Math.Abs(this.alignmentProgress - value) > float.Epsilon)
                 {
@@ -285,11 +333,13 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        private bool showAlignmentProgress;
+        /// <summary>
+        /// Gets or sets a value indicating whether the alignment progress bar should be displayed.
+        /// </summary>
         public bool ShowAlignmentProgress
         {
             get { return this.showAlignmentProgress; }
-            set
+            private set
             {
                 if (this.showAlignmentProgress != value)
                 {
@@ -299,6 +349,10 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Gets or sets the minimum number times a mass tag should be observed to be elgible for being
+        /// a baseline feature.
+        /// </summary>
         public int MinObservationCount
         {
             get { return this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter; }
@@ -312,30 +366,39 @@ namespace MultiAlignRogue.Alignment
             }
         }
         
+        /// <summary>
+        /// Performs alignment asynchronously.
+        /// </summary>
+        // TODO: This should return a Task. Never use async void if it can be avoided.
         public async void AsyncAlign()
         {
-            if (ShouldAlignToBaseline && this.SelectedBaseline != null)
+            if (this.ShouldAlignToBaseline && this.SelectedBaseline != null)
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
-            else if (ShouldAlignToAMT)
+            else if (this.ShouldAlignToAMT)
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
         }
 
+        /// <summary>
+        /// Perform alignment.
+        /// </summary>
+        /// <param name="workFlowDatasets">Datasets to run on when being called externally form this view model.</param>
+        /// <param name="workflowProgress">The progress reporter for when this method is called externally from this view model.</param>
         internal void AlignToBaseline(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
         {
 
             // Use Promiscuous points when aligning to an AMT tag database
             // Do not use Promiscuous points when aligning to a baseline dataset
-            this.analysis.Options.AlignmentOptions.UsePromiscuousPoints = !ShouldAlignToBaseline;
+            this.analysis.Options.AlignmentOptions.UsePromiscuousPoints = !this.ShouldAlignToBaseline;
 
             // Flag whether we are aligning to an AMT tag database
-            this.analysis.Options.AlignmentOptions.LCMSWarpOptions.AlignToMassTagDatabase = !ShouldAlignToBaseline;
-            
+            this.analysis.Options.AlignmentOptions.LCMSWarpOptions.AlignToMassTagDatabase = !this.ShouldAlignToBaseline;
+
             // Show the progress bar
-            ShowAlignmentProgress = true;
+            this.ShowAlignmentProgress = true;
             TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
 
             //Update algorithms and providers
@@ -348,7 +411,7 @@ namespace MultiAlignRogue.Alignment
             this.aligner.m_algorithms = this.algorithms;
             var baselineFeatures = new List<UMCLight>();
 
-            if (ShouldAlignToBaseline)
+            if (this.ShouldAlignToBaseline)
             {
                 baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Baseline;
@@ -386,7 +449,7 @@ namespace MultiAlignRogue.Alignment
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                if ((file.Dataset.IsBaseline || !file.FeaturesFound) && ShouldAlignToBaseline)
+                if ((file.Dataset.IsBaseline || !file.FeaturesFound) && this.ShouldAlignToBaseline)
                 {
                     file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                     continue;
@@ -437,7 +500,7 @@ namespace MultiAlignRogue.Alignment
                 file.Progress = 0;
             }
 
-            if (ShouldAlignToBaseline)
+            if (this.ShouldAlignToBaseline)
             {
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
             }
@@ -445,10 +508,13 @@ namespace MultiAlignRogue.Alignment
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
             TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
-            ShowAlignmentProgress = false;
+            this.ShowAlignmentProgress = false;
             this.AlignmentProgress = 0;
         }
 
+        /// <summary>
+        /// Display alignment information for the selected datasets.
+        /// </summary>
         private void DisplayAlignment()
         {
             foreach (var file in (this.Datasets.Where(x => x.IsSelected && x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
@@ -465,6 +531,10 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        /// <summary>
+        /// Determines whether a valid permutation of configuration settings have been selected.
+        /// </summary>
+        /// <returns>A value indicating whether alignment can be performed.</returns>
         private bool CanAlign()
         {
             var selectedDatasets = this.Datasets.Where(ds => ds.IsSelected).ToList();
@@ -472,7 +542,7 @@ namespace MultiAlignRogue.Alignment
             var validBaselineSelected = this.ShouldAlignToBaseline && this.SelectedBaseline != null &&
                                         // something other than baseline should be selected
                                         selectedDatasets.Any(ds => ds != this.SelectedBaseline);
-            var validAmtSelected = this.ShouldAlignToAMT && analysis.MassTagDatabase != null;
+            var validAmtSelected = this.ShouldAlignToAMT && this.analysis.MassTagDatabase != null;
             return validDatasetsSelected && (validBaselineSelected || validAmtSelected);
         }
     }
