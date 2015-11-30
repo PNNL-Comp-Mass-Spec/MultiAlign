@@ -36,7 +36,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Finds LCMS Features from MS Features.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="rawMSFeatures"></param>
+        /// <param name="progress"></param>
         /// <returns></returns>
         public List<U> Cluster(List<T> rawMSFeatures, IProgress<ProgressData> progress = null)
         {

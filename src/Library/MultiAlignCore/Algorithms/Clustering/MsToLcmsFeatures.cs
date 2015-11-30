@@ -86,6 +86,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// This generates LCMS-Features from a list of seed MSFeatures (typically from _isos file).
         /// </summary>
         /// <param name="msFeatures">The seed <see cref="MSFeatureLight" />.</param>
+        /// <param name="progress"></param>
         /// <returns>LCMS-Features as a list of <see cref="UMCLight" />.</returns>
         public List<UMCLight> Convert(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress = null)
         {
