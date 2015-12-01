@@ -43,6 +43,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// It does so by finding all alignee-baseline feature pairs that match within a provided
         /// mass tolerance window
         /// </summary>
+        /// <param name="aligneeFeatures"></param>
+        /// <param name="baselineFeatures"></param>
         /// <param name="separationTypes">Separation types to include in matching.</param>
         public void GenerateCandidateMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, IEnumerable<FeatureLight.SeparationTypes> separationTypes = null)
         {
