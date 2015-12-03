@@ -38,6 +38,7 @@ namespace MultiAlignCore.Drawing
             Model.IsLegendVisible = true;
             Model.Axes.Add(axis);
             Model.Axes.Add(linearAxis);
+            //Model.Title = name;
 
             // Add the data to the view model
             var data = new ColumnSeries

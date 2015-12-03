@@ -65,7 +65,7 @@
                     <RowDefinition Height="64"/>
                     <RowDefinition Height="50*"/>
                 </Grid.RowDefinitions>
-                <oxy:Plot Model="{Binding Path=XicModel.Model}"
+                <oxy:PlotView Model="{Binding Path=XicModel.Model}"
                             Grid.Row="0"
                             Margin="5" />
                 <GridSplitter
@@ -100,7 +100,7 @@
                                         NotifyOnSourceUpdated=True}"                        
                         Margin="5"/>
                 </StackPanel>
-                <oxy:Plot 
+                <oxy:PlotView 
                     Grid.Row="3"
                     Margin="5"
                     Model="{Binding ParentSpectrumViewModel.Model}"/>

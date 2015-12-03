@@ -10,7 +10,7 @@
         MinHeight="{Binding Path=Height}"
         MinWidth="{Binding Path=Width}">
     <Grid>
-        <wpf:Plot Model="{Binding Path=FeaturesPlot.Model}"
+        <wpf:PlotView Model="{Binding Path=FeaturesPlot.Model}"
                   Grid.Row="0"
                   Margin="5" />
 

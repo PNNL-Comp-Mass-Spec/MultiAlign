@@ -114,6 +114,7 @@ namespace MultiAlignRogue.Clustering
             this.ClusterPlotModel = new PlotModel();
             this.ClusterPlotModel.Axes.Add(this.netAxis);
             this.ClusterPlotModel.Axes.Add(this.massAxis);
+            this.ClusterPlotModel.Title = "Clusters";
             this.ClusterPlotModel.MouseDown += this.ClusterPlotMouseDown;
 
             this.throttler.Run(this.BuildClusterPlot);

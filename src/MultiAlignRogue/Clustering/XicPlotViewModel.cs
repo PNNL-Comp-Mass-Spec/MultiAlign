@@ -83,6 +83,7 @@ namespace MultiAlignRogue.Clustering
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
             this.XicPlotModel = new PlotModel
             {
+                Title = "Extracted Ion Chromatograms",
                 ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 

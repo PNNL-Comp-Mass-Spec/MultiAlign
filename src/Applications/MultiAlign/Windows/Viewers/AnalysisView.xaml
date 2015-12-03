@@ -54,7 +54,7 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <wpf:Plot Model="{Binding ClustersPlotModel.Model}"/>
+                        <wpf:PlotView Model="{Binding ClustersPlotModel.Model}"/>
                         <Button 
                             Grid.Row="1"
                             Margin="5"

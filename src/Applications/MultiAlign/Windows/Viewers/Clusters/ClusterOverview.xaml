@@ -17,12 +17,12 @@
             <ColumnDefinition Width="50*" />
         </Grid.ColumnDefinitions>
         
-        <wpf:Plot Model="{Binding ClusterMassPlot.Model}" />
-        <wpf:Plot
+        <wpf:PlotView Model="{Binding ClusterMassPlot.Model}" />
+        <wpf:PlotView
             Grid.Row="0"
             Grid.Column="1"
             Model="{Binding ClusterDriftPlot.Model}" />
-        <wpf:Plot
+        <wpf:PlotView
             Margin="5"
             Grid.Row="1"
             Grid.Column="0"

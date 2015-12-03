@@ -168,11 +168,11 @@
                         <ColumnDefinition Width="50*" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <wpf:Plot
+                    <wpf:PlotView
                         Grid.Column="0"
                         Margin="2"
                         Model="{Binding SelectedSpectrumPlotModel.Model}" />
-                    <wpf:Plot
+                    <wpf:PlotView
                         Grid.Column="1"
                         Margin="2"
                         Model="{Binding SelectedSpectrumXic.Model}" />

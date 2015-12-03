@@ -63,7 +63,7 @@
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument Title="Clusters" CanClose="False">
                             <Grid DataContext="{Binding ClusterPlotViewModel}" Name="ClusterPlotGrid">
-                                <oxy:PlotView Title="Clusters" Model="{Binding ClusterPlotModel}" />
+                                <oxy:PlotView Model="{Binding ClusterPlotModel}" />
                             </Grid>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False">
@@ -73,7 +73,7 @@
                                     <RowDefinition Height="5" />
                                     <RowDefinition Height="20" />
                                 </Grid.RowDefinitions>
-                                <oxy:PlotView Grid.Row="0" Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}">
+                                <oxy:PlotView Grid.Row="0" Model="{Binding XicPlotModel}">
                                     <oxy:PlotView.ContextMenu>
                                         <ContextMenu Name="XicPlotMenu">
                                             <MenuItem IsCheckable="True" IsChecked="{Binding AutoScaleYAxis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

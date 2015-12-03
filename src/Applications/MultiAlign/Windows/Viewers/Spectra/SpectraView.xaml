@@ -45,7 +45,7 @@
                             Background="Gray"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"/>
-            <oxy:Plot
+            <oxy:PlotView
                 Margin="5"
                 Model="{Binding SelectedSpectrumPlotModel.Model}"
                 />

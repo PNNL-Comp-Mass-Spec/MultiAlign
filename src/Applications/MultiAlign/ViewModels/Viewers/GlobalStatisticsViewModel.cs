@@ -14,7 +14,9 @@ namespace MultiAlign.ViewModels.Viewers
         {
             var histogram = charges.CreateHistogram(1, 10);
             AllChargeHistogramModel = new ChargeHistogramPlot(histogram, "All Charge States");
+            AllChargeHistogramModel.Model.Title = "All Cluster Charge States";
             FilteredChargeHistogramModel = new ChargeHistogramPlot(histogram, "Filtered Charge States");
+            FilteredChargeHistogramModel.Model.Title = "Filtered Cluster Charge States";
         }
 
 
