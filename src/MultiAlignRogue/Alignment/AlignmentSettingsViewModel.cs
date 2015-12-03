@@ -1,4 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
+using NHibernate.Mapping.ByCode;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -82,6 +83,21 @@ namespace MultiAlignRogue.Alignment
         private bool showAlignmentProgress;
 
         /// <summary>
+        /// DPI of saved images
+        /// </summary>
+        private double imageDPI = 96;
+
+        /// <summary>
+        /// Pixel width of saved images
+        /// </summary>
+        private double imageWidth = 1024;
+
+        /// <summary>
+        /// Pixel height of saved images
+        /// </summary>
+        private double imageHeight = 768;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AlignmentSettingsViewModel"/> class.
         /// </summary>
         /// <param name="analysis">The analysis information to run alignment on.</param>
@@ -123,6 +139,7 @@ namespace MultiAlignRogue.Alignment
                 {
                     ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
                 }
             });
 
@@ -135,6 +152,7 @@ namespace MultiAlignRogue.Alignment
                 {
                     ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
                 }
             });
 
@@ -156,6 +174,12 @@ namespace MultiAlignRogue.Alignment
                                                             this.DisplayAlignment,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
+
+            // Executable if the selected files are aligned and alignment information is available.
+            this.SaveAlignmentPlotsCommand = new RelayCommand(
+                                                            this.SaveAlignmentPlots,
+                                                            () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
+                                                                  this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
         }
 
         /// <summary>
@@ -167,6 +191,11 @@ namespace MultiAlignRogue.Alignment
         /// Gets a command that displays the alignment information for the selected datasets.
         /// </summary>
         public RelayCommand DisplayAlignmentCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that saves the alignment plots for the selected datasets.
+        /// </summary>
+        public RelayCommand SaveAlignmentPlotsCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of possible alignment algorithms.
@@ -365,6 +394,54 @@ namespace MultiAlignRogue.Alignment
                 }
             }
         }
+
+        /// <summary>
+        /// DPI of saved images
+        /// </summary>
+        public double ImageDPI
+        {
+            get { return this.imageDPI; }
+            set
+            {
+                if (!this.imageDPI.Equals(value))
+                {
+                    this.imageDPI = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pixel Width of saved images
+        /// </summary>
+        public double ImageWidth
+        {
+            get { return this.imageWidth; }
+            set
+            {
+                if (!this.imageWidth.Equals(value))
+                {
+                    this.imageWidth = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pixel Height of saved images
+        /// </summary>
+        public double ImageHeight
+        {
+            get { return this.imageHeight; }
+            set
+            {
+                if (!this.imageHeight.Equals(value))
+                {
+                    this.imageHeight = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
         
         /// <summary>
         /// Performs alignment asynchronously.
@@ -449,6 +526,7 @@ namespace MultiAlignRogue.Alignment
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
                 if ((file.Dataset.IsBaseline || !file.FeaturesFound) && this.ShouldAlignToBaseline)
                 {
                     file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
@@ -497,6 +575,7 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
                 file.Progress = 0;
             }
 
@@ -527,6 +606,34 @@ namespace MultiAlignRogue.Alignment
                 else
                 {
                     MessageBox.Show(String.Format("No alignment to show for {0}", file.Dataset.DatasetName));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Save alignment plots for the selected datasets.
+        /// </summary>
+        private void SaveAlignmentPlots()
+        {
+            foreach (var file in (this.Datasets.Where(x => x.IsSelected && x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
+            {
+                var alignment = this.alignmentInformation.Find(x => x.DatasetID == file.DatasetId);
+                if (alignment != null)
+                {
+                    var plots = new AlignmentPlotCreator(alignment);
+
+                    var dirPath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), file.Name);
+                    if (!System.IO.Directory.Exists(dirPath))
+                    {
+                        System.IO.Directory.CreateDirectory(dirPath);
+                    }
+                    var path = System.IO.Path.Combine(dirPath, "Alignment_");
+
+                    plots.SavePlots(path, this.ImageWidth, this.ImageHeight, this.ImageDPI);
+                }
+                else
+                {
+                    MessageBox.Show(String.Format("No alignment plots to save for {0}", file.Dataset.DatasetName));
                 }
             }
         }

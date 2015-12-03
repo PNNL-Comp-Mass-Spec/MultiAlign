@@ -162,6 +162,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Alignment\AlignmentPlotCreator.cs" />
     <Compile Include="Alignment\AlignmentSettingsViewModel.cs" />
     <Compile Include="Alignment\AlignmentView.xaml.cs">
       <DependentUpon>AlignmentView.xaml</DependentUpon>

@@ -133,6 +133,7 @@
       <HintPath>..\..\..\lib\PNNLOmicsIO.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="Svg, Version=2.1.0.28187, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Svg.2.1.0\lib\Svg.dll</HintPath>
       <Private>True</Private>

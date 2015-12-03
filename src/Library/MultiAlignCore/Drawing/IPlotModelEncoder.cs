@@ -1,6 +1,6 @@
 ﻿#region
 
-using System.Drawing;
+using System.Windows;
 using OxyPlot;
 using PNNLOmics.Annotations;
 
