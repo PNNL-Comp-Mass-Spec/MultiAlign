@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using InformedProteomics.Backend.MassFeature;
 using MultiAlignCore.Data.Features;
@@ -72,6 +73,8 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private bool autoScaleYAxis;
 
+        public RelayCommand SavePlotCommand { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
         /// </summary>
@@ -115,6 +118,8 @@ namespace MultiAlignRogue.Clustering
                     this.ScaleYAxis();
                 }
             };
+
+            this.SavePlotCommand = new RelayCommand(this.SavePlot);
 
             this.XicPlotModel.Axes.Add(this.xaxis);
             this.XicPlotModel.Axes.Add(this.yaxis);
@@ -439,6 +444,11 @@ namespace MultiAlignRogue.Clustering
             };
 
             this.XicPlotModel.Annotations.Add(annotation);
+        }
+
+        public void SavePlot()
+        {
+            PlotSavingViewModel.SavePlot(this.XicPlotModel, 800, 600, "XIC_View");
         }
     }
 }

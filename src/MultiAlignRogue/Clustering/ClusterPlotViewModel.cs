@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight.Command;
 using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Data.Features;
 using NHibernate.Util;
@@ -61,6 +62,8 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private UMCClusterLight selectedCluster;
 
+        public RelayCommand SavePlotCommand { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterPlotViewModel"/> class.
         /// </summary>
@@ -71,6 +74,8 @@ namespace MultiAlignRogue.Clustering
 
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.BuildClusterTree();
+
+            this.SavePlotCommand = new RelayCommand(this.SavePlot);
 
             this.ClusterViewerSettings = new ClusterViewerSettings();
 
@@ -330,6 +335,11 @@ namespace MultiAlignRogue.Clustering
                     this.ClusterPlotModel.Annotations.Add(massAnnotation);
                 }
             }
+        }
+
+        public void SavePlot()
+        {
+            PlotSavingViewModel.SavePlot(this.ClusterPlotModel, 1024, 768, "ClusterPlot", true);
         }
     }
 }

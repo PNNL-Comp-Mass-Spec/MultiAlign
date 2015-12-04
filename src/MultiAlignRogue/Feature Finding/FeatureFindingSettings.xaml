@@ -16,7 +16,7 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         
-        <Grid> <!-- Grid For settings -->
+        <Grid Grid.Row="0" > <!-- Grid For settings -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="26" />
                 <RowDefinition Height="26" />

@@ -63,7 +63,13 @@
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument Title="Clusters" CanClose="False">
                             <Grid DataContext="{Binding ClusterPlotViewModel}" Name="ClusterPlotGrid">
-                                <oxy:PlotView Model="{Binding ClusterPlotModel}" />
+                                <oxy:PlotView Model="{Binding ClusterPlotModel}" >
+                                    <oxy:PlotView.ContextMenu>
+                                        <ContextMenu Name="ClusterPlotMenu">
+                                            <MenuItem Command="{Binding SavePlotCommand}" Header="Save Plot" />
+                                        </ContextMenu>
+                                    </oxy:PlotView.ContextMenu>
+                                </oxy:PlotView>
                             </Grid>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False">
@@ -76,6 +82,7 @@
                                 <oxy:PlotView Grid.Row="0" Model="{Binding XicPlotModel}">
                                     <oxy:PlotView.ContextMenu>
                                         <ContextMenu Name="XicPlotMenu">
+                                            <MenuItem Command="{Binding SavePlotCommand}" Header="Save Plot" />
                                             <MenuItem IsCheckable="True" IsChecked="{Binding AutoScaleYAxis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       Header="Auto Scale Y Axis" />
                                             <MenuItem IsCheckable="True" IsChecked="{Binding IsLegendVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -114,7 +121,13 @@
                         </xcad:LayoutDocument>-->
                         <xcad:LayoutDocument Title="Cluster Features" CanClose="False">
                             <Grid Name="ClusterFeatureGrid" DataContext="{Binding ClusterFeaturePlotViewModel}">
-                                <oxy:PlotView Model="{Binding ClusterFeaturePlotModel}" />
+                                <oxy:PlotView Model="{Binding ClusterFeaturePlotModel}" >
+                                    <oxy:PlotView.ContextMenu>
+                                        <ContextMenu Name="ClusterFeaturePlotMenu">
+                                            <MenuItem Command="{Binding SavePlotCommand}" Header="Save Plot" />
+                                        </ContextMenu>
+                                    </oxy:PlotView.ContextMenu>
+                                </oxy:PlotView>
                             </Grid>
                         </xcad:LayoutDocument>
                     </xcad:LayoutDocumentPane>

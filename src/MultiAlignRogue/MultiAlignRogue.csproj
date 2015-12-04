@@ -221,6 +221,10 @@
       <DependentUpon>LoadingScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ClusterMatch.cs" />
+    <Compile Include="Utils\PlotSaving.xaml.cs">
+      <DependentUpon>PlotSaving.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\PlotSavingViewModel.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="Utils\TaskBarProgressSingleton.cs" />
     <Compile Include="Utils\Throttler.cs" />
@@ -289,6 +293,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NewProjectWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Utils\PlotSaving.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

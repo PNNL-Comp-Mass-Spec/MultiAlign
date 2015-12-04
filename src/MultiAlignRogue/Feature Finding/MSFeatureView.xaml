@@ -11,6 +11,12 @@
     </Window.DataContext>
     
     <Grid>
-        <oxy:PlotView Model="{Binding Model}"/>
+        <oxy:PlotView Model="{Binding Model}" >
+            <oxy:PlotView.ContextMenu>
+                <ContextMenu Name="ClusterPlotMenu">
+                    <MenuItem Command="{Binding SavePlotCommand}" Header="Save Plot" />
+                </ContextMenu>
+            </oxy:PlotView.ContextMenu>
+        </oxy:PlotView>
     </Grid>
 </Window>

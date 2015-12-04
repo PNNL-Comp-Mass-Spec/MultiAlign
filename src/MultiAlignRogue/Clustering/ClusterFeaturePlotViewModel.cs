@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using OxyPlot;
 using OxyPlot.Annotations;
@@ -19,6 +21,8 @@ namespace MultiAlignRogue.Clustering
 
         private readonly LinearAxis clusterFeatureplotYaxis;
 
+        public RelayCommand SavePlotCommand { get; private set; }
+
         /// <summary>
         /// The features to display.
         /// </summary>
@@ -26,6 +30,8 @@ namespace MultiAlignRogue.Clustering
 
         public ClusterFeaturePlotViewModel()
         {
+            this.SavePlotCommand = new RelayCommand(this.SavePlot);
+
             this.ClusterFeaturePlotModel = new PlotModel();
             this.clusterFeaturePlotXaxis = new LinearAxis
             {
@@ -202,6 +208,11 @@ namespace MultiAlignRogue.Clustering
                     }
                 }
             }
+        }
+
+        public void SavePlot()
+        {
+            PlotSavingViewModel.SavePlot(this.ClusterFeaturePlotModel, 800, 600, "ClusterFeaturePlot");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using MultiAlignCore.Data.Features;
+﻿using GalaSoft.MvvmLight.Command;
+using MultiAlign.Windows.Plots;
+using MultiAlignCore.Data.Features;
 using NHibernate.Mapping;
 using OxyPlot.Annotations;
 
@@ -61,6 +63,8 @@ namespace MultiAlignRogue.Feature_Finding
         /// </summary>
         private readonly Dictionary<DatasetInformation, IList<UMCLight>> allFeatures;
 
+        public RelayCommand SavePlotCommand { get; private set; }
+
         public MSFeatureViewModel()
         {
             
@@ -68,6 +72,8 @@ namespace MultiAlignRogue.Feature_Finding
 
         public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, bool aligned, int numSectionsPerAxis = 10, int featuresPerSection = 50)
         {
+            this.SavePlotCommand = new RelayCommand(this.SavePlot);
+
             this.allFeatures = features;
             this.aligned = aligned;
             this.numSectionsPerAxis = numSectionsPerAxis;
@@ -368,6 +374,16 @@ namespace MultiAlignRogue.Feature_Finding
             var et = dataset.ScanTimes[scan];
 
             return (et - minEt) / (maxEt - minEt);
+        }
+
+        public void SavePlot()
+        {
+            string name = "FeaturePlot";
+            if (this.allFeatures.Count == 1)
+            {
+                name = System.IO.Path.Combine(this.allFeatures.Keys.First().DatasetName, name);
+            }
+            PlotSavingViewModel.SavePlot(this.Model, 1024, 768, name, true);
         }
     }
 }
