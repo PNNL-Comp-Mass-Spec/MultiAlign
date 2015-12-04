@@ -120,6 +120,20 @@
                 </DataGrid>
             </Grid>
 
+            <!-- Open/New project -->
+            <Grid Grid.Column="0" Background="#F0000000" Visibility="{Binding ShowSplash, Converter={StaticResource BoolToVis}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="1" Content="New Project" Command="{Binding CreateNewProjectCommand}" Width="125" HorizontalAlignment="Center" />
+                <Button Grid.Row="3" Content="Load Project" Command="{Binding LoadProjectCommand}" Width="125" HorizontalAlignment="Center" />
+            </Grid>
+
             <!-- Settings -->
             <TabControl Grid.Column="1">
                 <TabItem Header="1. Feature Finding" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
@@ -133,16 +147,16 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20" />
                             <RowDefinition Height="25" />
-                            
+
                             <RowDefinition Height="20" />
-                            
+
                             <RowDefinition Height="20" />
                             <RowDefinition Height="25" />
 
                             <RowDefinition Height="20" />
 
                             <RowDefinition Height="100" />
-                            
+
                             <RowDefinition Height="*" />
                             <RowDefinition Height="25" />
                             <RowDefinition Height="5" />
@@ -172,7 +186,7 @@
                         <CheckBox Grid.Row="4" Grid.Column="2" Content="Separate by Charge" FontWeight="Bold" HorizontalAlignment="Center"
                                   VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   IsEnabled="{Binding ShouldEnableClustererSettings}" />
-                        
+
                         <!-- Cluster refinement options -->
                         <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
                             <GroupBox.Header>
@@ -192,14 +206,14 @@
                                 <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center"
                                           ItemsSource="{Binding PostProcessingComparisonType}"
                                           SelectedItem="{Binding ClusterComparisonType}" />
-                                
+
                                 <!-- Tolerance -->
                                 <TextBlock Grid.Row="1" Grid.Column="0">Tolerance (ppm)</TextBlock>
                                 <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Height="25" 
                                                    Minimum="0" Increment="1" Value="{Binding ClusterPostProcessingTolerance}" />
                             </Grid>
                         </GroupBox>
-                                              
+
                         <ProgressBar Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Value="{Binding ProgressPercent}"
                                      Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
 

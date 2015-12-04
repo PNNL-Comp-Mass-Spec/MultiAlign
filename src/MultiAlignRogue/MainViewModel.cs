@@ -79,6 +79,8 @@ namespace MultiAlignRogue
 
         private bool shouldShowProgress;
 
+        private bool showSplash = true;
+
         #endregion
 
         #region Constructor
@@ -177,6 +179,19 @@ namespace MultiAlignRogue
         #endregion
 
         #region Public Properties
+
+        public bool ShowSplash
+        {
+            get { return this.showSplash; }
+            private set
+            {
+                if (this.showSplash != value)
+                {
+                    this.showSplash = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public MultiAlignAnalysis Analysis
         {
@@ -519,6 +534,7 @@ namespace MultiAlignRogue
 
             if (success)
             {
+                this.ShowSplash = false;
                 var rogueProject = newProjectViewModel.GetRogueProject();
                 rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
                 await this.LoadRogueProject(rogueProject, true);
@@ -592,6 +608,7 @@ namespace MultiAlignRogue
             var result = openFileDialog.ShowDialog();
             if (result != null && result.Value)
             {
+                this.ShowSplash = false;
                 var rogueProject = this.Deserialize(openFileDialog.FileName);
                 if (string.IsNullOrWhiteSpace(rogueProject.LayoutFilePath))
                 {
