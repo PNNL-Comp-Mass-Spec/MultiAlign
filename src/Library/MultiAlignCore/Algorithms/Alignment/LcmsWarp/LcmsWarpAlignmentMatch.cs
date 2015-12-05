@@ -11,6 +11,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     {
         #region Public properties
 
+        public int Id { get; set; } // for storing in the database, set when stored.
+
         public double AligneeNetStart { get; set; }
         public double AligneeNetEnd { get; set; }
         public int AligneeSectionStart { get; set; }

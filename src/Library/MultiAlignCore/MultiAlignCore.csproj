@@ -502,6 +502,7 @@
     <Compile Include="IO\Hibernate\DatasetToFactorDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\FactorDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\AlignmentDataPointMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpAlignmentMatchMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\Options\AlignmentOptionsMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\Options\FeatureTolerancesMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\Options\FilterRangeMapping.cs" />
