@@ -75,6 +75,10 @@ namespace MultiAlignRogue
 
         private string outputDirectory;
 
+        private string lastInputDirectory;
+
+        private string lastProjectDirectory;
+
         private int progressTracker;
 
         private bool shouldShowProgress;
@@ -88,6 +92,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
+        /// <remarks>Constructor</remarks>
         public MainViewModel()
         {
             m_config = new AnalysisConfig();
@@ -100,7 +105,7 @@ namespace MultiAlignRogue
             this.serializerThrottler = new Throttler(TimeSpan.FromSeconds(1));
 
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
-            
+
             SelectFilesCommand = new RelayCommand(SelectFiles, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             SelectDirectoryCommand = new RelayCommand(SelectDirectory, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath) && !string.IsNullOrWhiteSpace(this.ProjectPath));
@@ -109,9 +114,15 @@ namespace MultiAlignRogue
             SaveProjectCommand = new RelayCommand(SaveProject, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             LoadProjectCommand = new RelayCommand(async () => await LoadProject());
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+
             RestoreDefaultSettingsCommand = new RelayCommand(this.RestoreDefaultSettings);
+            RestoreDefaultAnalysisOptionsCommand = new RelayCommand(this.RestoreDefaultAnalysisOptions);
+            RestoreDefaultFeatureFindingSettingsCommand = new RelayCommand(this.RestoreDefaultFeatureFindingSettings);
+            RestoreDefaultAlignmentSettingsCommand = new RelayCommand(this.RestoreDefaultAlignmentSettings);
+            RestoreDefaultClusterSettingsCommand = new RelayCommand(this.RestoreDefaultClusterSettings);
+
             RunFullWorkflowCommand = new RelayCommand(this.AsyncWorkflow);
-            
+
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
@@ -122,7 +133,10 @@ namespace MultiAlignRogue
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
             ShouldShowProgress = false;
+
+            RegistryLoadSettings();
         }
+
         #endregion
 
         #region Command
@@ -172,6 +186,26 @@ namespace MultiAlignRogue
         /// </summary>
         public RelayCommand RestoreDefaultSettingsCommand { get; private set; }
 
+         /// <summary>
+        /// Gets a command that restores default analysis options
+        /// </summary>
+        public RelayCommand RestoreDefaultAnalysisOptionsCommand { get; private set; }
+
+         /// <summary>
+        /// Gets a command that restores default featuring finding settings
+        /// </summary>
+        public RelayCommand RestoreDefaultFeatureFindingSettingsCommand { get; private set; }
+
+         /// <summary>
+        /// Gets a command that restores default alignment settings
+        /// </summary>
+        public RelayCommand RestoreDefaultAlignmentSettingsCommand { get; private set; }
+
+         /// <summary>
+        /// Gets a command that restores default cluster settings
+        /// </summary>
+        public RelayCommand RestoreDefaultClusterSettingsCommand{ get; private set; }    
+
         /// <summary>
         /// Gets a command for running feature finding, alignment, and clustering in succession.
         /// </summary>
@@ -208,7 +242,7 @@ namespace MultiAlignRogue
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
-        public bool ShouldShowProgress 
+        public bool ShouldShowProgress
         {
             get
             { return shouldShowProgress; }
@@ -251,7 +285,7 @@ namespace MultiAlignRogue
                     this.SelectDirectoryCommand.RaiseCanExecuteChanged();
                     this.SearchDmsCommand.RaiseCanExecuteChanged();
                     this.AddFolderCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged();   
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -336,6 +370,10 @@ namespace MultiAlignRogue
         #endregion
 
         #region Import Files
+
+        /// <summary>
+        /// Select an input dataset file
+        /// </summary>
         public void SelectFiles()
         {
             var openFileDialog = new OpenFileDialog
@@ -345,23 +383,46 @@ namespace MultiAlignRogue
                 Filter = DatasetLoader.SupportedFileFilter
             };
 
-            var result = openFileDialog.ShowDialog();
-            if (result != null && result.Value)
+            if (!string.IsNullOrWhiteSpace(lastInputDirectory))
             {
-                var filePaths = openFileDialog.FileNames;
-                this.AddDatasets(filePaths);
+                openFileDialog.InitialDirectory = this.lastInputDirectory;
             }
+
+            var result = openFileDialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            var filePaths = openFileDialog.FileNames;
+            if (filePaths.Length == 0)
+                return;
+
+            this.AddDatasets(filePaths);
+
+            this.lastInputDirectory = Path.GetDirectoryName(filePaths.First());
         }
 
+        /// <summary>
+        /// Select an input dataset folder
+        /// </summary>
         public void SelectDirectory()
         {
             var folderBrowser = new VistaFolderBrowserDialog();
-            var result = folderBrowser.ShowDialog();
 
-            if (result != null && result.Value)
+            if (!string.IsNullOrWhiteSpace(lastInputDirectory))
             {
-                InputFilePath = folderBrowser.SelectedPath;
+                folderBrowser.SelectedPath = this.lastInputDirectory;
             }
+
+            var result = folderBrowser.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            InputFilePath = folderBrowser.SelectedPath;
+            this.lastInputDirectory = Path.GetDirectoryName(InputFilePath);
 
             this.AddFolderCommand.Execute(null);
         }
@@ -390,6 +451,7 @@ namespace MultiAlignRogue
             var dmsLookupViewModel = new DmsLookupViewModel { OutputDirectory = this.outputDirectory };
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
             dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
+
             dialog.ShowDialog();
             if (!dmsLookupViewModel.Status)
             {
@@ -417,7 +479,7 @@ namespace MultiAlignRogue
         public async Task UpdateDatasets()
         {
             Datasets.Clear();
-            int i = 0;
+            var i = 0;
             foreach (var info in Analysis.MetaData.Datasets)
             {
                 info.DatasetId = i++;
@@ -489,12 +551,12 @@ namespace MultiAlignRogue
         #region Data Providers
         private FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
         {
-            FeatureDataAccessProviders providers;
+            FeatureDataAccessProviders dataProviders;
             Logger.PrintMessage("Setting up data providers for caching and storage.");
             try
             {
                 var path = AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName);
-                providers = SetupDataProviders(path, createNewDatabase);
+                dataProviders = SetupDataProviders(path, createNewDatabase);
             }
             catch (IOException ex)
             {
@@ -502,7 +564,7 @@ namespace MultiAlignRogue
                 Logger.PrintMessage(ex.StackTrace);
                 throw;
             }
-            return providers;
+            return dataProviders;
         }
 
         private FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
@@ -525,24 +587,48 @@ namespace MultiAlignRogue
             var success = false;
             var newProjectViewModel = new NewProjectViewModel();
             var dialog = new NewProjectWindow { DataContext = newProjectViewModel };
-            newProjectViewModel.Success += (s, e) =>
+
+            try
+            {
+                newProjectViewModel.LastInputDirectory = lastInputDirectory;
+                newProjectViewModel.LastProjectDirectory = lastProjectDirectory;
+                newProjectViewModel.OutputDirectory = outputDirectory;
+
+                newProjectViewModel.Success += (s, e) =>
                 {
                     success = true;
                     dialog.Close();
                 };
-            dialog.ShowDialog();
+                dialog.ShowDialog();
 
-            if (success)
-            {
+                if (success)
+                {
                 this.ShowSplash = false;
-                var rogueProject = newProjectViewModel.GetRogueProject();
-                rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
-                await this.LoadRogueProject(rogueProject, true);
-                this.Serialize(newProjectViewModel.ProjectFilePath);
-                this.ProjectPath = newProjectViewModel.ProjectFilePath;
-                Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
-                this.outputDirectory = newProjectViewModel.OutputDirectory;
+                    var rogueProject = newProjectViewModel.GetRogueProject();
+                    rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
+                    await this.LoadRogueProject(rogueProject, true);
+                    
+                    this.Serialize(newProjectViewModel.ProjectFilePath);
+
+                    lastInputDirectory = newProjectViewModel.LastInputDirectory;
+                    
+                    ProjectPath = newProjectViewModel.ProjectFilePath;
+                    lastProjectDirectory = newProjectViewModel.LastProjectDirectory;
+
+                    Directory.SetCurrentDirectory(lastProjectDirectory);
+                    
+                    this.outputDirectory = newProjectViewModel.OutputDirectory;
+
+                    RegistrySaveSettings();
+
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.PrintMessage("Exception creating a new project: " + ex.Message);
+                MessageBox.Show("Exception creating the new project: " + ex.Message);
+            }
+
         }
 
         private async Task LoadRogueProject(RogueProject rogueProject, bool isNewProject)
@@ -582,18 +668,28 @@ namespace MultiAlignRogue
                 Filter = @"Supported Files|*.xml"
             };
 
-            var result = saveFileDialog.ShowDialog();
-            if (result != null && result.Value)
+            if (!string.IsNullOrWhiteSpace(lastProjectDirectory))
             {
-                this.Serialize(saveFileDialog.FileName);
+                saveFileDialog.InitialDirectory = this.lastProjectDirectory;
             }
+
+            var result = saveFileDialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            this.Serialize(saveFileDialog.FileName);
+
+            this.lastProjectDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+
         }
 
         private void SaveProject()
         {
             if (!string.IsNullOrWhiteSpace(this.ProjectPath))
             {
-                this.Serialize(this.ProjectPath);   
+                this.Serialize(this.ProjectPath);
             }
         }
 
@@ -605,31 +701,38 @@ namespace MultiAlignRogue
                 Filter = @"Supported Files|*.xml"
             };
 
-            var result = openFileDialog.ShowDialog();
-            if (result != null && result.Value)
+            if (!string.IsNullOrWhiteSpace(outputDirectory))
             {
-                this.ShowSplash = false;
-                var rogueProject = this.Deserialize(openFileDialog.FileName);
-                if (string.IsNullOrWhiteSpace(rogueProject.LayoutFilePath))
-                {
-                    rogueProject.LayoutFilePath = string.Format("{0}\\Layout.xml",
-                        Path.GetDirectoryName(rogueProject.AnalysisPath));
-                }
-
-                await this.LoadRogueProject(rogueProject, false);
-                this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
-                this.ProjectPath = openFileDialog.FileName;
+                openFileDialog.InitialDirectory = this.outputDirectory;
             }
+
+            var result = openFileDialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+			this.ShowSplash = false;
+            var rogueProject = this.Deserialize(openFileDialog.FileName);
+            this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
+
+            if (string.IsNullOrWhiteSpace(rogueProject.LayoutFilePath))
+            {
+                rogueProject.LayoutFilePath = string.Format(@"{0}\Layout.xml", this.outputDirectory);
+            }
+
+            await this.LoadRogueProject(rogueProject, false);
+            this.ProjectPath = openFileDialog.FileName;
         }
 
         private void Serialize(string filePath)
         {
-            var rogueProjectSerializer = new DataContractSerializer(typeof (RogueProject));
+            var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
             var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
             ClusterViewerSettings clusterViewerSettings = null;
             if (this.clusterViewFactory is ClusterViewFactory)
             {
-                var cvf = clusterViewFactory as ClusterViewFactory;
+                var cvf = (ClusterViewFactory)clusterViewFactory;
                 if (cvf.ClusterViewModel != null)
                 {
                     clusterViewerSettings = cvf.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings;
@@ -646,7 +749,7 @@ namespace MultiAlignRogue
 
             var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
 
-            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings)) 
+            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings))
             {
                 rogueProjectSerializer.WriteObject(writer, rogueProject);
             }
@@ -661,9 +764,9 @@ namespace MultiAlignRogue
             {
                 try
                 {
-                    rogueProject = (RogueProject) rogueProjectSerializer.ReadObject(reader);
-                    this.Analysis.Options = rogueProject.MultiAlignAnalysisOptions;                   
-                    
+                    rogueProject = (RogueProject)rogueProjectSerializer.ReadObject(reader);
+                    this.Analysis.Options = rogueProject.MultiAlignAnalysisOptions;
+
                 }
                 catch (InvalidCastException)
                 {
@@ -682,7 +785,7 @@ namespace MultiAlignRogue
             {
                 if (dataset.Dataset.RawFile != null && File.Exists(dataset.Dataset.RawFile.Path))
                 {
-                    var finalDatasetState = dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Waiting ? 
+                    var finalDatasetState = dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Waiting ?
                         DatasetInformationViewModel.DatasetStates.Loaded : dataset.DatasetState;
 
                     dataset.DatasetState = DatasetInformationViewModel.DatasetStates.LoadingRawData;
@@ -697,17 +800,157 @@ namespace MultiAlignRogue
         }
         #endregion
 
+        /// <summary>
+        /// Load settings from the registry
+        /// </summary>
+        private void RegistryLoadSettings()
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+
+            lastInputDirectory = RegistryReadValue("LastInputDirectory", currentDirectory);
+            lastProjectDirectory = RegistryReadValue("LastProjectDirectory", currentDirectory);
+            outputDirectory = RegistryReadValue("outputDirectory", currentDirectory);
+        }
+
+        /// <summary>
+        /// Save settings to the registry
+        /// </summary>
+        private void RegistrySaveSettings()
+        {
+            var success = RegistrySaveValue("LastInputDirectory", lastInputDirectory);
+            if (!success)
+                return;
+
+            RegistrySaveValue("LastProjectDirectory", lastProjectDirectory);
+            RegistrySaveValue("outputDirectory", outputDirectory);
+        }
+
+        /// <summary>
+        /// Read a value from the registry
+        /// </summary>
+        /// <param name="keyName"></param>
+        /// <param name="valueIfMissing"></param>
+        /// <returns></returns>
+        private string RegistryReadValue(string keyName, string valueIfMissing)
+        {
+            var currentTask = "Initializing";
+
+            try
+            {
+                currentTask = @"OpenSubKey Software\PNNL\MultiAlign";
+                var regKey = Registry.CurrentUser.OpenSubKey(@"Software\PNNL\MultiAlign", false);
+
+                if (regKey == null)
+                {
+                    // Key not found
+                    return valueIfMissing;
+                }
+
+                var value = regKey.GetValue(keyName);
+
+                if (value == null)
+                {
+                    // Entry not found
+                    return valueIfMissing;
+                }
+
+                return value.ToString();
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintMessage(string.Format("Error reading from the registry, {0}: {1}", currentTask, ex.Message));
+            }
+
+            return valueIfMissing;
+        }
+
+        /// <summary>
+        /// Write a value to the registry
+        /// </summary>
+        /// <param name="keyName"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private bool RegistrySaveValue(string keyName, string value)
+        {
+            var currentTask = "Initializing";
+
+            try
+            {
+                currentTask = "OpenSubKey Software";
+                var regKey = Registry.CurrentUser.OpenSubKey("Software", true);
+
+                if (regKey == null)
+                {
+                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software"));
+                    return false;
+                }
+                
+                currentTask = @"Open Software\PNNL";
+                regKey.CreateSubKey("PNNL");
+
+                currentTask = @"Software\PNNL\MultiAlign";
+                var subKey = regKey.OpenSubKey("MultiAlign", true);
+
+                if (subKey == null)
+                {
+                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software\PNNL\MultiAlign"));
+                    return false;
+                }
+
+                subKey.SetValue(keyName, value);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintMessage(string.Format("Error writing to the registry, {0}: {1}", currentTask, ex.Message));
+            }
+
+            return false;
+        }
+
         private void RestoreDefaultSettings()
         {
-            if (
-                MessageBox.Show("Are you sure you would like to reset all settings to their default values?",
-                    "Restore Defaults", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you would like to reset all settings to their default values?",
+                                "Restore Defaults", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
-                this.Analysis.Options = new MultiAlignAnalysisOptions();
-                this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
-                this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
-                this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);   
+                return;
             }
+
+            RestoreDefaultAnalysisOptions();
+            RestoreDefaultFeatureFindingSettings();
+            RestoreDefaultAlignmentSettings();
+            RestoreDefaultClusterSettings();
+
+        }
+
+        private void RestoreDefaultAnalysisOptions()
+        {
+            // Todo: (maybe) use .RestoreDefaults
+            this.Analysis.Options = new MultiAlignAnalysisOptions();
+        }
+
+        private void RestoreDefaultFeatureFindingSettings()
+        {
+            // The nuclear option:
+            // this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+
+            // The kindler, gentler option:
+            this.FeatureFindingSettingsViewModel.RestoreDefaults();
+        }
+
+        private void RestoreDefaultAlignmentSettings()
+        {
+            // The nuclear option:
+            // this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
+
+            // The kindler, gentler option:
+            this.AlignmentSettingsViewModel.RestoreDefaults();            
+        }
+
+        private void RestoreDefaultClusterSettings()
+        {
+            // Todo: use .RestoreDefaults
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
         }
 
         private async void AsyncWorkflow()
@@ -718,9 +961,11 @@ namespace MultiAlignRogue
         private void RunFullWorkflow()
         {
             ShouldShowProgress = true;
-            bool filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
-            bool alignmentChosen = (AlignmentSettingsViewModel.ShouldAlignToBaseline && AlignmentSettingsViewModel.SelectedBaseline != null) || 
+            var filesSelected = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList().Count != 0;
+            var alignmentChosen =
+                (AlignmentSettingsViewModel.ShouldAlignToBaseline && AlignmentSettingsViewModel.SelectedBaseline != null) ||
                 (AlignmentSettingsViewModel.ShouldAlignToAMT && Analysis.MassTagDatabase != null);
+
             if (filesSelected && alignmentChosen)
             {
                 TaskBarProgressSingleton.TakeTaskbarControl(this);
@@ -730,7 +975,7 @@ namespace MultiAlignRogue
                 IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
                 {
                     var prog = progData.UpdatePercent(pd.Percent).Percent;
-                    this.ProgressTracker = (int) prog;
+                    this.ProgressTracker = (int)prog;
                     TaskBarProgressSingleton.SetTaskBarProgress(this, prog);
                 });
 
@@ -755,7 +1000,7 @@ namespace MultiAlignRogue
             {
                 MessageBox.Show("Alignment settings not set.");
             }
-            
+
         }
     }
 }

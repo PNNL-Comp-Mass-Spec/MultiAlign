@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Hibernate;
@@ -31,7 +32,7 @@ namespace MultiAlignRogue.Feature_Finding
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Features;
 
-    
+
     public class FeatureFindingSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;
@@ -44,12 +45,20 @@ namespace MultiAlignRogue.Feature_Finding
 
         private readonly string[] _timeOptions = { "Minutes", "Scans" };
 
-        private readonly Dictionary<DatasetInformation, IList<UMCLight>> features;
+        private readonly Dictionary<DatasetInformation, IList<UMCLight>> featuresByDataset;
 
         private double totalProgress;
 
         private bool shouldShowProgress;
 
+        /// <summary>
+        /// Cosntructor
+        /// </summary>
+        /// <param name="analysis"></param>
+        /// <param name="featureCache"></param>
+        /// <param name="datasets"></param>
+        /// <param name="msFeatureWindowFactory"></param>
+        /// <param name="progressReporter"></param>
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
                                                FeatureLoader featureCache,
@@ -63,14 +72,14 @@ namespace MultiAlignRogue.Feature_Finding
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
-            this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
+            this.featuresByDataset = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.MsFeatureClusterers = new ObservableCollection<MsFeatureClusteringAlgorithmType>(
                                        Enum.GetValues(typeof(MsFeatureClusteringAlgorithmType)).Cast<MsFeatureClusteringAlgorithmType>());
             this.LcmsFeatureClusterers = new ObservableCollection<GenericClusteringAlgorithmType>(
                            Enum.GetValues(typeof(GenericClusteringAlgorithmType)).Cast<GenericClusteringAlgorithmType>());
 
             this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path, dataset.DatasetId))
-                                        .Any(reader => reader != null && reader is ISpectraProvider);
+                                        .Any(reader => reader is ISpectraProvider);
 
             // When dataset is selected/unselected, update can executes.
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, this.UpdateDatasetSelection);
@@ -92,6 +101,7 @@ namespace MultiAlignRogue.Feature_Finding
             this.FindMSFeaturesCommand = new RelayCommand(
                                         async () => await this.LoadMSFeaturesAsync(),
                                         () => this.Datasets.Any(ds => ds.IsSelected && !ds.IsFindingFeatures));
+
             this.PlotMSFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(false),
                                         () => this.Datasets.Any(
@@ -103,19 +113,25 @@ namespace MultiAlignRogue.Feature_Finding
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
                                         () => this.Datasets.Any(ds => ds.IsAligned));
+
+            this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
         }
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; }
 
-        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; private set; } 
+        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; private set; }
+
+        public RelayCommand FeatureFindingDefaultsCommand { get; private set; }
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
 
         public RelayCommand PlotAlignedFeaturesCommand { get; private set; }
+
+        public RelayCommand RestoreDefaultsCommand { get; private set; }
 
         public double MassResolution
         {
@@ -436,7 +452,7 @@ namespace MultiAlignRogue.Feature_Finding
             get { return this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold; }
             set
             {
-                if (this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold != value)
+                if (Math.Abs(this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold - value) > Single.Epsilon)
                 {
                     this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold = value;
                     this.RaisePropertyChanged();
@@ -488,7 +504,7 @@ namespace MultiAlignRogue.Feature_Finding
             get { return this.totalProgress; }
             set
             {
-                if (this.totalProgress != value)
+                if (Math.Abs(this.totalProgress - value) > Single.Epsilon)
                 {
                     this.totalProgress = value;
                     this.RaisePropertyChanged();
@@ -539,17 +555,20 @@ namespace MultiAlignRogue.Feature_Finding
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
 
-            int i = 1;
+            var i = 1;
             foreach (var file in selectedFiles)
             {
                 // Set range based on file
                 totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
                 var progData = new ProgressData();
+
+                var fileInstance = file;
                 var progressRpt = new Progress<ProgressData>(pd =>
                 {
-                    file.Progress = progData.UpdatePercent(pd.Percent).Percent;
+                    fileInstance.Progress = progData.UpdatePercent(pd.Percent).Percent;
+
                     // Report file progress
-                    totalProgressData.Report(file.Progress);
+                    totalProgressData.Report(fileInstance.Progress);
                 });
 
                 progData.StepRange(30);
@@ -563,12 +582,12 @@ namespace MultiAlignRogue.Feature_Finding
                                                     analysis.DataProviders.IdentificationProviderCache,
                                                     progressRpt);
 
-                if (!this.features.ContainsKey(file.Dataset))
+                if (!this.featuresByDataset.ContainsKey(file.Dataset))
                 {
-                    this.features.Add(file.Dataset, new List<UMCLight>());
+                    this.featuresByDataset.Add(file.Dataset, new List<UMCLight>());
                 }
 
-                this.features[file.Dataset] = features;
+                this.featuresByDataset[file.Dataset] = features;
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
@@ -586,7 +605,7 @@ namespace MultiAlignRogue.Feature_Finding
                         ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
 
                         // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
-                        ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ => 
+                        ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ =>
                         {
                             summ.DatasetId = file.Dataset.DatasetId;
                             return summ;
@@ -634,29 +653,74 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        private async Task<Dictionary<DatasetInformation, IList<UMCLight>>>  GetFeatures(IEnumerable<DatasetInformationViewModel> datasets)
+        private async Task<Dictionary<DatasetInformation, IList<UMCLight>>> GetFeatures(IEnumerable<DatasetInformationViewModel> datasets)
         {
             var datasetFeatures = new Dictionary<DatasetInformation, IList<UMCLight>>();
             foreach (var file in datasets)
             {   // Select only datasets with features.
                 IList<UMCLight> feat;
-                if (this.features.ContainsKey(file.Dataset))
+                if (this.featuresByDataset.ContainsKey(file.Dataset))
                 {
-                    feat = this.features[file.Dataset];
+                    feat = this.featuresByDataset[file.Dataset];
                 }
                 else
                 {
-                    DatasetInformationViewModel file1 = file;
+                    var fileInstance = file;
                     feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
-                            file1.Dataset,
+                            fileInstance.Dataset,
                             this.featureCache.Providers.FeatureCache));
-                    this.features.Add(file.Dataset, feat);
+                    this.featuresByDataset.Add(file.Dataset, feat);
                 }
 
                 datasetFeatures.Add(file.Dataset, feat);
             }
 
             return datasetFeatures;
+        }
+
+        /// <summary>
+        /// Reset the settings the default values
+        /// </summary>
+        public void RestoreDefaults()
+        {
+            var defaultOptions = new MultiAlignAnalysisOptions();
+
+            MassResolution = defaultOptions.InstrumentTolerances.Mass;
+            FragmentationTolerance = defaultOptions.InstrumentTolerances.FragmentationWindowSize;
+
+            MinimumMz = defaultOptions.MsFilteringOptions.MzRange.Minimum;
+            MaximumMz = defaultOptions.MsFilteringOptions.MzRange.Maximum;
+            ShouldUseMzFilter = defaultOptions.MsFilteringOptions.ShouldUseMzFilter;
+
+            MinimumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Minimum;
+            MaximumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Maximum;
+            ShouldUseChargeStateFilter = defaultOptions.MsFilteringOptions.ShouldUseChargeFilter;
+
+            MinimumFeatureLengthMinutes = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
+            MaximumFeatureLengthMinutes = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
+            MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
+            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
+            FilterOnMinutes = defaultOptions.LcmsFilteringOptions.FilterOnMinutes;
+
+            MinimumFeatureDataPoints = defaultOptions.LcmsFilteringOptions.MinimumDataPoints;
+
+            MinimumDeisotopingScore = defaultOptions.MsFilteringOptions.MinimumDeisotopingScore;
+            ShouldUseDeisotopingFilter = defaultOptions.MsFilteringOptions.ShouldUseDeisotopingFilter;
+
+            MinimumIntensity = defaultOptions.MsFilteringOptions.MinimumIntensity;
+            ShouldUseIntensityFilter = defaultOptions.MsFilteringOptions.ShouldUseIntensityFilter;
+
+            FirstPassClusterer = defaultOptions.LcmsFindingOptions.FirstPassClusterer;
+            ShouldCreateXics = defaultOptions.LcmsFindingOptions.FindXics;
+
+            XicRelativeIntensityThreshold = defaultOptions.LcmsFindingOptions.XicRelativeIntensityThreshold;
+            ShouldRefineXics = defaultOptions.LcmsFindingOptions.RefineXics;
+
+            ShouldPerformSecondPassClustering = defaultOptions.LcmsFindingOptions.SecondPassClustering;
+            SecondPassClusterer = defaultOptions.LcmsFindingOptions.SecondPassClusterer;
+
+            SmoothingWindowSize = defaultOptions.LcmsFindingOptions.SmoothingWindowSize;
+            SmoothingPolynomialOrder = defaultOptions.LcmsFindingOptions.SmoothingPolynomialOrder;
         }
 
         /// <summary>

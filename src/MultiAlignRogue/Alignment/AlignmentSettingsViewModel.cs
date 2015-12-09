@@ -1,5 +1,6 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
 using NHibernate.Mapping.ByCode;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -174,12 +175,15 @@ namespace MultiAlignRogue.Alignment
                                                             this.DisplayAlignment,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
-
+           
             // Executable if the selected files are aligned and alignment information is available.
             this.SaveAlignmentPlotsCommand = new RelayCommand(
                                                             this.SaveAlignmentPlots,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
+ 
+            this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
+
         }
 
         /// <summary>
@@ -191,11 +195,12 @@ namespace MultiAlignRogue.Alignment
         /// Gets a command that displays the alignment information for the selected datasets.
         /// </summary>
         public RelayCommand DisplayAlignmentCommand { get; private set; }
-
         /// <summary>
         /// Gets a command that saves the alignment plots for the selected datasets.
         /// </summary>
         public RelayCommand SaveAlignmentPlotsCommand { get; private set; }
+
+		public RelayCommand RestoreDefaultsCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of possible alignment algorithms.
@@ -226,13 +231,16 @@ namespace MultiAlignRogue.Alignment
             get { return !this.analysis.Options.AlignmentOptions.AlignToAMT; }
             set
             {
-                if (this.analysis.Options.AlignmentOptions.AlignToAMT == value)
+                var alignToAmt = !value;
+                if (this.analysis.Options.AlignmentOptions.AlignToAMT == alignToAmt)
                 {
-                    this.analysis.Options.AlignmentOptions.AlignToAMT = !value;
-                    this.AlignCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged("ShouldAlignToAMT");
-                    this.RaisePropertyChanged();
+                    return;
                 }
+
+                this.analysis.Options.AlignmentOptions.AlignToAMT = alignToAmt;
+                this.AlignCommand.RaiseCanExecuteChanged();
+                this.RaisePropertyChanged("ShouldAlignToAMT");
+                this.RaisePropertyChanged();
             }
         }
 
@@ -244,13 +252,15 @@ namespace MultiAlignRogue.Alignment
             get { return this.analysis.Options.AlignmentOptions.AlignToAMT; }
             set
             {
-                if (this.analysis.Options.AlignmentOptions.AlignToAMT != value)
+                if (this.analysis.Options.AlignmentOptions.AlignToAMT == value)
                 {
-                    this.analysis.Options.AlignmentOptions.AlignToAMT = value;
-                    this.AlignCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged("ShouldAlignToBaseline");
-                    this.RaisePropertyChanged();
+                    return;
                 }
+
+                this.analysis.Options.AlignmentOptions.AlignToAMT = value;
+                this.AlignCommand.RaiseCanExecuteChanged();
+                this.RaisePropertyChanged("ShouldAlignToBaseline");
+                this.RaisePropertyChanged();
             }
         }
 
@@ -446,7 +456,6 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// Performs alignment asynchronously.
         /// </summary>
-        // TODO: This should return a Task. Never use async void if it can be avoided.
         public async void AsyncAlign()
         {
             if (this.ShouldAlignToBaseline && this.SelectedBaseline != null)
@@ -457,6 +466,24 @@ namespace MultiAlignRogue.Alignment
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
+        }
+
+        /// <summary>
+        /// Reset the settings the default values
+        /// </summary>
+        public void RestoreDefaults()
+        {
+            var defaultOptions = new MultiAlignAnalysisOptions();
+
+            ShouldAlignToAMT = defaultOptions.AlignmentOptions.AlignToAMT;
+
+            SelectedAlignmentAlgorithm = defaultOptions.AlignmentOptions.AlignmentAlgorithm;
+            SelectedCalibrationType = defaultOptions.AlignmentOptions.AlignmentType;
+
+            AlignmentContractionFactor = defaultOptions.AlignmentOptions.ContractionFactor;
+            AlignmentNumTimeSections = defaultOptions.AlignmentOptions.NumTimeSections;
+            MinObservationCount = defaultOptions.MassTagDatabaseOptions.MinimumObservationCountFilter;
+
         }
 
         /// <summary>
@@ -521,7 +548,7 @@ namespace MultiAlignRogue.Alignment
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
 
-            int i = 1;
+            var i = 1;
             foreach (var file in selectedFiles)
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -538,11 +565,12 @@ namespace MultiAlignRogue.Alignment
 
                 totalProgressData.StepRange((100.0 * i++) / selectedFiles.Count);
 
+                var fileInstance = file;
                 var datasetProgress =
                     new Progress<ProgressData>(
                         pd =>
                         {
-                            file.Progress = pd.Percent;
+                            fileInstance.Progress = pd.Percent;
                             totalProgressData.Report(pd.Percent);
                         });
 

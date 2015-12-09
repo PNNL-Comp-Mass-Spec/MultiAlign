@@ -40,6 +40,14 @@
             <xctk:DoubleUpDown Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" Width="60"
                                Minimum="0" Increment="0.1"
                                Value="{Binding MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Button Grid.Row="0"
+                    Grid.Column="3"
+                    Width="70"
+                    Height="22"
+                    Command="{Binding RestoreDefaultsCommand}">
+                Defaults
+            </Button>
             
             <!-- Fragmentation Window Size -->
             <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">Fragmentation Window Size</TextBlock>
