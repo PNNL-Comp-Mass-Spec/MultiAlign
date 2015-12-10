@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
         xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
+        xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Name="RogueMainWindow"
         Title="{Binding WindowTitle}"
         Width="1100"
@@ -57,8 +57,8 @@
         <!--  Actual content  -->
         <Grid Margin="10,25,10,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="550" />
+                <ColumnDefinition Width="4*" MinWidth="10" />
+                <ColumnDefinition Width="5*" MinWidth="10" />
             </Grid.ColumnDefinitions>
 
             <DockPanel Name="datasetPanel" LastChildFill="True">
@@ -214,142 +214,8 @@
                     <TabItem DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="3. Alignment">
                         <alignment:AlignmentSettings Margin="5" />
                     </TabItem>
-                    <TabItem DataContext="{Binding ClusterSettingsViewModel}" Header="4. Clustering">
-                        <Grid Margin="5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="20" />
-                                <RowDefinition Height="25" />
-
-                                <RowDefinition Height="20" />
-
-                                <RowDefinition Height="20" />
-                                <RowDefinition Height="25" />
-
-                                <RowDefinition Height="20" />
-
-                                <RowDefinition Height="100" />
-
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="25" />
-                                <RowDefinition Height="5" />
-                                <RowDefinition Height="25" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50*" />
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width=" 50*" />
-                            </Grid.ColumnDefinitions>
-
-                            <!--  Clustering Method  -->
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Center"
-                                       FontWeight="Bold">
-                                Clustering Method
-                            </TextBlock>
-                            <ComboBox Grid.Row="1"
-                                      Grid.Column="0"
-                                      Height="22"
-                                      ItemsSource="{Binding ClusteringMethods}"
-                                      SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}" />
-
-                            <!--  Distance Function  -->
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="2"
-                                       HorizontalAlignment="Center"
-                                       FontWeight="Bold">
-                                Distance Function
-                            </TextBlock>
-                            <ComboBox Grid.Row="1"
-                                      Grid.Column="2"
-                                      IsEnabled="{Binding ShouldEnableClustererSettings}"
-                                      ItemsSource="{Binding DistanceMetrics}"
-                                      SelectedItem="{Binding SelectedDistanceFunction}" />
-
-                            <!--  Centroid Representation  -->
-                            <TextBlock Grid.Row="3"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Center"
-                                       FontWeight="Bold">
-                                Centroid Representation
-                            </TextBlock>
-                            <ComboBox Grid.Row="4"
-                                      Grid.Column="0"
-                                      IsEnabled="{Binding ShouldEnableClustererSettings}"
-                                      ItemsSource="{Binding CentroidRepresentations}"
-                                      SelectedItem="{Binding SelectedCentroidMethod}" />
-
-                            <CheckBox Grid.Row="4"
-                                      Grid.Column="2"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Content="Separate by Charge"
-                                      FontWeight="Bold"
-                                      IsChecked="{Binding ShouldSeparateByCharge,
-                                                          Mode=TwoWay,
-                                                          UpdateSourceTrigger=PropertyChanged}"
-                                      IsEnabled="{Binding ShouldEnableClustererSettings}" />
-
-                            <!--  Cluster refinement options  -->
-                            <GroupBox Grid.Row="6"
-                                      Grid.Column="0"
-                                      Grid.ColumnSpan="3">
-                                <GroupBox.Header>
-                                    <CheckBox IsChecked="{Binding ShouldRefineWithMsMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine clusters using MS/MS</CheckBox>
-                                </GroupBox.Header>
-                                <Grid IsEnabled="{Binding ShouldRefineWithMsMs, UpdateSourceTrigger=PropertyChanged}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <!--  Cluster comparison type  -->
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               VerticalAlignment="Center">
-                                        Comparison Type
-                                    </TextBlock>
-                                    <ComboBox Grid.Row="0"
-                                              Grid.Column="1"
-                                              Height="25"
-                                              VerticalAlignment="Center"
-                                              ItemsSource="{Binding PostProcessingComparisonType}"
-                                              SelectedItem="{Binding ClusterComparisonType}" />
-
-                                    <!--  Tolerance  -->
-                                    <TextBlock Grid.Row="1" Grid.Column="0">Tolerance (ppm)</TextBlock>
-                                    <xctk:DoubleUpDown Grid.Row="1"
-                                                       Grid.Column="1"
-                                                       Height="25"
-                                                       Increment="1"
-                                                       Minimum="0"
-                                                       Value="{Binding ClusterPostProcessingTolerance}" />
-                                </Grid>
-                            </GroupBox>
-
-                            <ProgressBar Grid.Row="8"
-                                         Grid.Column="0"
-                                         Grid.ColumnSpan="3"
-                                         Visibility="{Binding ShouldShowProgress,
-                                                              Converter={StaticResource BoolToVis}}"
-                                         Value="{Binding ProgressPercent}" />
-
-                            <Button Grid.Row="10"
-                                    Grid.Column="0"
-                                    Width="125"
-                                    HorizontalAlignment="Left"
-                                    Command="{Binding ClusterFeaturesCommand}"
-                                    Content="Cluster Features" />
-                            <Button Grid.Row="10"
-                                    Grid.Column="2"
-                                    Width="125"
-                                    HorizontalAlignment="Right"
-                                    Command="{Binding DisplayClustersCommand}"
-                                    Content="View Clusters" />
-                        </Grid>
+                    <TabItem DataContext="{Binding ClusterSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="4. Clustering">
+                        <clustering:ClusterSettings Margin="5" />
                     </TabItem>
                     <TabItem DataContext="{Binding StacSettingsViewModel}" Header="5. AMT Tag Matching">
                         <amtMatching:StacSettingsView Margin="5" />

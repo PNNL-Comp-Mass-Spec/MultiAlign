@@ -182,7 +182,7 @@ namespace MultiAlignRogue
             if (!string.IsNullOrWhiteSpace(this.LastProjectDirectory))
                 saveFileDialog.InitialDirectory = this.LastProjectDirectory;
             else if (!string.IsNullOrWhiteSpace(this.outputDirectory))
-                    saveFileDialog.InitialDirectory = this.outputDirectory;
+                saveFileDialog.InitialDirectory = this.outputDirectory;
 
             var result = saveFileDialog.ShowDialog();
             if (result != true)

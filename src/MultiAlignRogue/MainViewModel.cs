@@ -577,8 +577,10 @@ namespace MultiAlignRogue
             var newProjectViewModel = new NewProjectViewModel();
             var dialog = new NewProjectWindow { DataContext = newProjectViewModel };
 
+#if (!DEBUG)
             try
             {
+#endif
                 newProjectViewModel.LastInputDirectory = lastInputDirectory;
                 newProjectViewModel.LastProjectDirectory = lastProjectDirectory;
                 newProjectViewModel.OutputDirectory = outputDirectory;
@@ -592,7 +594,7 @@ namespace MultiAlignRogue
 
                 if (success)
                 {
-                this.ShowSplash = false;
+                    this.ShowSplash = false;
                     var rogueProject = newProjectViewModel.GetRogueProject();
                     rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
                     await this.LoadRogueProject(rogueProject, true);
@@ -611,12 +613,14 @@ namespace MultiAlignRogue
                     RegistrySaveSettings();
 
                 }
+#if (!DEBUG)
             }
             catch (Exception ex)
             {
                 Logger.PrintMessage("Exception creating a new project: " + ex.Message);
                 MessageBox.Show("Exception creating the new project: " + ex.Message);
             }
+#endif
 
         }
 
@@ -798,6 +802,10 @@ namespace MultiAlignRogue
         private void RegistryLoadSettings()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
+            if (currentDirectory == Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+            {
+                currentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
 
             lastInputDirectory = RegistryReadValue("LastInputDirectory", currentDirectory);
             lastProjectDirectory = RegistryReadValue("LastProjectDirectory", currentDirectory);

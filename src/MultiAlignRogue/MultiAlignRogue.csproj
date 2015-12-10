@@ -164,6 +164,9 @@
     <Compile Include="Clustering\ClusterFeaturePlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPoint.cs" />
+    <Compile Include="Clustering\ClusterSettings.xaml.cs">
+      <DependentUpon>ClusterSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
     <Compile Include="Clustering\ClusterView.xaml.cs">
       <DependentUpon>ClusterView.xaml</DependentUpon>
@@ -241,6 +244,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Clustering\ChargeStateDistributionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ClusterSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
