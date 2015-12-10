@@ -1,7 +1,9 @@
 ﻿<Window x:Class="MultiAlignRogue.NewProjectWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="New MultiAlign Rogue Project" Height="400" Width="1100">
+        Title="New MultiAlign Rogue Project"
+        Width="1100"
+        Height="400">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -12,7 +14,7 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0">
             <GroupBox.Header>
-                <TextBlock Text="Project File" FontWeight="Bold" />
+                <TextBlock FontWeight="Bold" Text="Project File" />
             </GroupBox.Header>
 
             <Grid Margin="3">
@@ -28,7 +30,7 @@
         </GroupBox>
         <GroupBox Grid.Row="1">
             <GroupBox.Header>
-                <TextBlock Text="Output Directory" FontWeight="Bold" />
+                <TextBlock FontWeight="Bold" Text="Output Directory" />
             </GroupBox.Header>
 
             <Grid Margin="3">
@@ -45,39 +47,58 @@
 
         <GroupBox Grid.Row="2">
             <GroupBox.Header>
-                <TextBlock Text="Datasets" FontWeight="Bold" />
+                <TextBlock FontWeight="Bold" Text="Datasets" />
             </GroupBox.Header>
-            
+
             <Grid Margin="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Button Content="+ Add Dataset" Command="{Binding AddDatasetCommand}" Width="90" Height="25" HorizontalAlignment="Left" />
-                
-                <DataGrid Grid.Row="1" ItemsSource="{Binding Datasets}" AutoGenerateColumns="False">
+                <Button Width="90"
+                        Height="25"
+                        HorizontalAlignment="Left"
+                        Command="{Binding AddDatasetCommand}"
+                        Content="+ Add Dataset" />
+
+                <DataGrid Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          ItemsSource="{Binding Datasets}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="25">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="-" Command="{Binding RequestRemovalCommand}" />
+                                    <Button Command="{Binding RequestRemovalCommand}" Content="-" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTextColumn Header="Dataset Name" Width="25*" Binding="{Binding Dataset.Alias}" />
-                        <DataGridTextColumn Header="Dataset Path" Width="75*" Binding="{Binding Dataset.FeaturePath}" />
+                        <DataGridTextColumn Width="25*"
+                                            Binding="{Binding Dataset.Alias}"
+                                            Header="Dataset Name" />
+                        <DataGridTextColumn Width="75*"
+                                            Binding="{Binding Dataset.FeaturePath}"
+                                            Header="Dataset Path" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </GroupBox>
 
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="4"
-                    HorizontalAlignment="Right">
-            <Button Width="70" Margin="0,0,10,0" Command="{Binding CancelCommand}" IsCancel="True">Cancel</Button>
-            <Button Width="70" Command="{Binding CreateCommand}" IsDefault="True">Open</Button>
+        <StackPanel Grid.Row="4"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button Width="70"
+                    Margin="0,0,10,0"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True">
+                Cancel
+            </Button>
+            <Button Width="70"
+                    Command="{Binding CreateCommand}"
+                    IsDefault="True">
+                Open
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

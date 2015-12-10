@@ -122,7 +122,7 @@
         </CheckBox>
         <xctk:DoubleUpDown Grid.Row="3"
                            Grid.Column="2"
-                           Grid.ColumnSpan ="2"
+                           Grid.ColumnSpan="2"
                            Width="90"
                            Height="25"
                            HorizontalAlignment="Left"

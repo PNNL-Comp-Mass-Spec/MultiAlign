@@ -1,12 +1,14 @@
 ﻿<Window x:Class="MultiAlignRogue.DMS.DmsLookupView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Search DMS" Height="400" Width="1100">
-    
+        Title="Search DMS"
+        Width="1100"
+        Height="400">
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
-    
+
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="80*" />
@@ -33,107 +35,170 @@
                     <ColumnDefinition Width="70" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" TextAlignment="Center">Weeks</TextBlock>
-                <TextBlock Grid.Row="0" Grid.Column="2" FontWeight="Bold" TextAlignment="Center">Dataset Filter</TextBlock>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           FontWeight="Bold"
+                           TextAlignment="Center">
+                    Weeks
+                </TextBlock>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="2"
+                           FontWeight="Bold"
+                           TextAlignment="Center">
+                    Dataset Filter
+                </TextBlock>
 
-                <TextBox Grid.Row="1" Grid.Column="0" Height="25" Text="{Binding NumberOfWeeks, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox Grid.Row="1"
+                         Grid.Column="0"
+                         Height="25"
+                         Text="{Binding NumberOfWeeks,
+                                        UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
                 </TextBox>
-                <TextBox Grid.Row="1" Grid.Column="2" Height="25" IsReadOnly="False" Text="{Binding DatasetFilter, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox Grid.Row="1"
+                         Grid.Column="2"
+                         Height="25"
+                         IsReadOnly="False"
+                         Text="{Binding DatasetFilter,
+                                        UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
                 </TextBox>
 
-                <Button Grid.Row="1" Grid.Column="4" Command="{Binding SearchCommand}" Height="25">Search</Button>
+                <Button Grid.Row="1"
+                        Grid.Column="4"
+                        Height="25"
+                        Command="{Binding SearchCommand}">
+                    Search
+                </Button>
 
-                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
+                <Grid Grid.Row="2"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="75*" />
                         <ColumnDefinition Width="3" />
                         <ColumnDefinition Width="25*" />
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid AutoGenerateColumns="False" SelectionMode="Extended"
-                          CanUserAddRows="False"
-                          IsReadOnly="False" RowHeaderWidth="0"
-                          Grid.Row="0" Grid.Column="0"
-                          ItemsSource="{Binding Datasets}">
+                    <DataGrid Grid.Row="0"
+                              Grid.Column="0"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              IsReadOnly="False"
+                              ItemsSource="{Binding Datasets}"
+                              RowHeaderWidth="0"
+                              SelectionMode="Extended">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Dataset ID" Width="80" Binding="{Binding DatasetId}" />
-                            <DataGridTextColumn Header="Name" Width="3*" Binding="{Binding Dataset}" />
-                            <DataGridTextColumn Header="Path" Width="7*" Binding="{Binding DatasetFolderPath}" />
+                            <DataGridTextColumn Width="80"
+                                                Binding="{Binding DatasetId}"
+                                                Header="Dataset ID" />
+                            <DataGridTextColumn Width="3*"
+                                                Binding="{Binding Dataset}"
+                                                Header="Name" />
+                            <DataGridTextColumn Width="7*"
+                                                Binding="{Binding DatasetFolderPath}"
+                                                Header="Path" />
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <DataGrid Grid.Row="0" Grid.Column="2" ItemsSource="{Binding AvailableFiles}" AutoGenerateColumns="False">
+                    <DataGrid Grid.Row="0"
+                              Grid.Column="2"
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding AvailableFiles}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Available Files" Width="*" Binding="{Binding Chars}" />
+                            <DataGridTextColumn Width="*"
+                                                Binding="{Binding Chars}"
+                                                Header="Available Files" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-                   
-                    <!--<Border BorderBrush="Black" Grid.Row="0"  Grid.RowSpan="2" BorderThickness="1" Background="#80000000"
-                VerticalAlignment="Stretch" Visibility="{Binding IsNoResultsShown, Converter={StaticResource BoolToVis}}">
-                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50*"/>
-                                <RowDefinition Height="50*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Margin="0"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Bottom"
-                           Grid.Row="0"
-                           TextAlignment="Center"
-                           FontSize="24" FontWeight="Bold" Foreground="#FF1919">No Datasets Found</TextBlock>
-                        </Grid>
-                    </Border>-->
 
-                </Grid>
+                <!--
+                    <Border BorderBrush="Black" Grid.Row="0"  Grid.RowSpan="2" BorderThickness="1" Background="#80000000"
+                    VerticalAlignment="Stretch" Visibility="{Binding IsNoResultsShown, Converter={StaticResource BoolToVis}}">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <Grid.RowDefinitions>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="50*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0"
+                    TextWrapping="Wrap"
+                    VerticalAlignment="Bottom"
+                    Grid.Row="0"
+                    TextAlignment="Center"
+                    FontSize="24" FontWeight="Bold" Foreground="#FF1919">No Datasets Found</TextBlock>
+                    </Grid>
+                    </Border>
+                -->
+
+            </Grid>
         </GroupBox>
-        
-        <CheckBox Grid.Row="2" 
-                  IsChecked="{Binding ShouldCopyFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                  Content="Copy files to output directory" />
-        
-        <!--<GroupBox Grid.Row="2">
+
+        <CheckBox Grid.Row="2"
+                  Content="Copy files to output directory"
+                  IsChecked="{Binding ShouldCopyFiles,
+                                      Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--
+            <GroupBox Grid.Row="2">
             <GroupBox.Header>
-                <TextBlock Text="Output Directory" FontWeight="Bold" />
+            <TextBlock Text="Output Directory" FontWeight="Bold" />
             </GroupBox.Header>
             
             <StackPanel Margin="3">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="70" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBox Grid.Column="0" Text="{Binding OutputDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Button Grid.Column="2" Command="{Binding BrowseOutputDirectoriesCommand}">Browse</Button>
-                </Grid>
-
-                <CheckBox Margin="0,5,0,0" IsChecked="{Binding ShouldCopyFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Copy files to output directory" />
+            <Grid>
+            <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="70" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBox Grid.Column="0" Text="{Binding OutputDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Column="2" Command="{Binding BrowseOutputDirectoriesCommand}">Browse</Button>
+            </Grid>
+            
+            <CheckBox Margin="0,5,0,0" IsChecked="{Binding ShouldCopyFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Copy files to output directory" />
             </StackPanel>
-        </GroupBox>-->
+            </GroupBox>
+        -->
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Visibility="{Binding IsCopying, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}}">
-            <ProgressBar Width="70" Minimum="0" Maximum="100"  Value="{Binding Progress}" HorizontalAlignment="Left" Margin="0,0,10,0" />
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    Visibility="{Binding IsCopying,
+                                         UpdateSourceTrigger=PropertyChanged,
+                                         Converter={StaticResource BoolToVis}}">
+            <ProgressBar Width="70"
+                         Margin="0,0,10,0"
+                         HorizontalAlignment="Left"
+                         Maximum="100"
+                         Minimum="0"
+                         Value="{Binding Progress}" />
             <TextBlock Text="{Binding CopyStatusText}" />
         </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" 
-                    Grid.Row="4"
-                    HorizontalAlignment="Right">
-            <Button Width="70" Margin="0,0,10,0" Command="{Binding CancelCommand}">Cancel</Button>
-            <Button Width="70" Command="{Binding OpenCommand}" IsDefault="True">Open</Button>
+
+        <StackPanel Grid.Row="4"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button Width="70"
+                    Margin="0,0,10,0"
+                    Command="{Binding CancelCommand}">
+                Cancel
+            </Button>
+            <Button Width="70"
+                    Command="{Binding OpenCommand}"
+                    IsDefault="True">
+                Open
+            </Button>
         </StackPanel>
     </Grid>
 </Window>
