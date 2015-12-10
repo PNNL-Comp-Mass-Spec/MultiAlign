@@ -5,9 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
+             Background="White"
+             d:DataContext="{d:DesignInstance d:Type=featureFinding:FeatureFindingSettingsViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="500"
              d:DesignWidth="500"
-             d:DataContext="{d:DesignInstance d:Type=featureFinding:FeatureFindingSettingsViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

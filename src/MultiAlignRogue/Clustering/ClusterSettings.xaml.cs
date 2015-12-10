@@ -23,6 +23,11 @@ namespace MultiAlignRogue.Clustering
         public ClusterSettings()
         {
             InitializeComponent();
+
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                this.Background = Brushes.Transparent;
+            }
         }
     }
 }
