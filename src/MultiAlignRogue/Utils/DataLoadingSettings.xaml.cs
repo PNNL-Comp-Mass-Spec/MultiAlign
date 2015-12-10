@@ -23,6 +23,11 @@ namespace MultiAlignRogue.Utils
         public DataLoadingSettings()
         {
             InitializeComponent();
+
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                this.Background = Brushes.Transparent;
+            }
         }
     }
 }

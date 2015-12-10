@@ -77,21 +77,22 @@ namespace MultiAlignRogue.Utils
                 if (this.isQuadTree != value)
                 {
                     this.isQuadTree = value;
+                    this.isQuadTree = false; //// TODO: Remove this line when plotting without QuadTrees is implemented
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged("ShowAllVisibility");
                 }
             }
         }
 
-        public Visibility ShowAllVisibility
+        public bool ShowAllData
         {
-            get
+            get { return this.showAllData; }
+            set
             {
-                if (this.isQuadTree)
+                if (this.showAllData != value)
                 {
-                    return Visibility.Visible;
+                    this.showAllData = value;
+                    this.RaisePropertyChanged();
                 }
-                return Visibility.Hidden;
             }
         }
 
@@ -194,6 +195,7 @@ namespace MultiAlignRogue.Utils
             }
 
             // TODO: Save plot, according to settings - QuadTree stuff...
+            //if (this.ShowAllData)
 
             var encoder = new PngPlotModelEncoder();
             var size = new Size(Width, Height);

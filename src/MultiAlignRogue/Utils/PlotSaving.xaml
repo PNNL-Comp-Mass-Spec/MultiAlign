@@ -1,8 +1,13 @@
 ﻿<Window x:Class="MultiAlignRogue.Utils.PlotSaving"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Plot Saving Settings" Height="250" Width="500">
+        xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
+        Title="Plot Saving Settings" Height="250" Width="500"
+        d:DataContext="{d:DesignInstance d:Type=utils:PlotSavingViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
@@ -41,30 +46,28 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50*" />
-                    <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="50*" />
-                    <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
 
                 <!-- Width -->
-                <Label Content="Width" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
-                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="800" Increment="1.0"
+                <Label Content="Width" Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Center" />
+                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5,0" Minimum="800" Increment="1.0"
                                        Value="{Binding Path=Width, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
 
                 <!-- Height -->
-                <Label Content="Height" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2" />
-                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="2" Minimum="600" Increment="1.0"
+                <Label Content="Height" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="5,0" />
+                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5,0" Minimum="600" Increment="1.0"
                                        Value="{Binding Path=Height, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- DPI -->
-                <Label Content="DPI" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="4" />
-                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="4" Minimum="60" Increment="1.0" Maximum="1200"
+                <Label Content="DPI" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2" Margin="5,0" />
+                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="2" Margin="5,0" Minimum="60" Increment="1.0" Maximum="1200"
                                        Value="{Binding Path=DPI, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- QuadTree control -->
                 <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
-                      IsChecked="{Binding ShowAllData, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ShowAllVisibility, Converter={StaticResource BoolToVis}}">
+                      IsChecked="{Binding ShowAllData, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsQuadTree, Converter={StaticResource BoolToVis}}">
                     Show all data points
                 </CheckBox>
             </Grid>
