@@ -199,6 +199,7 @@ namespace MultiAlignRogue.Alignment
         /// Gets a command that displays the alignment information for the selected datasets.
         /// </summary>
         public RelayCommand DisplayAlignmentCommand { get; private set; }
+
         /// <summary>
         /// Gets a command that saves the alignment plots for the selected datasets.
         /// </summary>
