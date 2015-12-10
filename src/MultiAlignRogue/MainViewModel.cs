@@ -56,6 +56,7 @@ namespace MultiAlignRogue
         private DataTable datasetInfo;
         private FeatureDataAccessProviders providers;
 
+        private DataLoadingSettingsViewModel dataLoadingSettingsViewModel;
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
@@ -116,10 +117,6 @@ namespace MultiAlignRogue
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
 
             RestoreDefaultSettingsCommand = new RelayCommand(this.RestoreDefaultSettings);
-            RestoreDefaultAnalysisOptionsCommand = new RelayCommand(this.RestoreDefaultAnalysisOptions);
-            RestoreDefaultFeatureFindingSettingsCommand = new RelayCommand(this.RestoreDefaultFeatureFindingSettings);
-            RestoreDefaultAlignmentSettingsCommand = new RelayCommand(this.RestoreDefaultAlignmentSettings);
-            RestoreDefaultClusterSettingsCommand = new RelayCommand(this.RestoreDefaultClusterSettings);
 
             RunFullWorkflowCommand = new RelayCommand(this.AsyncWorkflow);
 
@@ -129,6 +126,7 @@ namespace MultiAlignRogue
             taskBarProgressSingleton = new TaskBarProgressSingleton();
 
             featureCache.Providers = Analysis.DataProviders;
+            this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(Analysis);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
@@ -185,26 +183,6 @@ namespace MultiAlignRogue
         /// Gets a command that restores all settings to their defaults.
         /// </summary>
         public RelayCommand RestoreDefaultSettingsCommand { get; private set; }
-
-         /// <summary>
-        /// Gets a command that restores default analysis options
-        /// </summary>
-        public RelayCommand RestoreDefaultAnalysisOptionsCommand { get; private set; }
-
-         /// <summary>
-        /// Gets a command that restores default featuring finding settings
-        /// </summary>
-        public RelayCommand RestoreDefaultFeatureFindingSettingsCommand { get; private set; }
-
-         /// <summary>
-        /// Gets a command that restores default alignment settings
-        /// </summary>
-        public RelayCommand RestoreDefaultAlignmentSettingsCommand { get; private set; }
-
-         /// <summary>
-        /// Gets a command that restores default cluster settings
-        /// </summary>
-        public RelayCommand RestoreDefaultClusterSettingsCommand{ get; private set; }    
 
         /// <summary>
         /// Gets a command for running feature finding, alignment, and clustering in succession.
@@ -328,6 +306,17 @@ namespace MultiAlignRogue
         #endregion
 
         #region Child ViewModels
+
+        public DataLoadingSettingsViewModel DataLoadingSettingsViewModel
+        {
+            get { return this.dataLoadingSettingsViewModel; }
+            private set
+            {
+                this.dataLoadingSettingsViewModel = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
         public FeatureFindingSettingsViewModel FeatureFindingSettingsViewModel
         {
             get { return this.featureFindingSettingsViewModel; }
@@ -647,7 +636,10 @@ namespace MultiAlignRogue
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             await this.UpdateDatasets();
+
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
+
+            this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(this.Analysis);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.StacSettingsViewModel = new StacSettingsViewModel(this.Analysis, this.Datasets);
@@ -877,19 +869,24 @@ namespace MultiAlignRogue
             try
             {
                 currentTask = "OpenSubKey Software";
-                var regKey = Registry.CurrentUser.OpenSubKey("Software", true);
+                var regSoftware = Registry.CurrentUser.OpenSubKey("Software", true);
 
-                if (regKey == null)
+                if (regSoftware == null)
                 {
                     Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software"));
                     return false;
                 }
                 
                 currentTask = @"Open Software\PNNL";
-                regKey.CreateSubKey("PNNL");
+                var regPNNL = regSoftware.CreateSubKey("PNNL");
+                if (regPNNL == null)
+                {
+                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software\PNNL"));
+                    return false;
+                }
 
                 currentTask = @"Software\PNNL\MultiAlign";
-                var subKey = regKey.OpenSubKey("MultiAlign", true);
+                var subKey = regPNNL.CreateSubKey("MultiAlign");
 
                 if (subKey == null)
                 {
@@ -916,42 +913,19 @@ namespace MultiAlignRogue
                 return;
             }
 
-            RestoreDefaultAnalysisOptions();
-            RestoreDefaultFeatureFindingSettings();
-            RestoreDefaultAlignmentSettings();
-            RestoreDefaultClusterSettings();
+            this.DataLoadingSettingsViewModel.RestoreDefaults();
 
-        }
-
-        private void RestoreDefaultAnalysisOptions()
-        {
             // Todo: (maybe) use .RestoreDefaults
             this.Analysis.Options = new MultiAlignAnalysisOptions();
-        }
 
-        private void RestoreDefaultFeatureFindingSettings()
-        {
-            // The nuclear option:
-            // this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
-
-            // The kindler, gentler option:
             this.FeatureFindingSettingsViewModel.RestoreDefaults();
-        }
+            this.AlignmentSettingsViewModel.RestoreDefaults();    
 
-        private void RestoreDefaultAlignmentSettings()
-        {
-            // The nuclear option:
-            // this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
-
-            // The kindler, gentler option:
-            this.AlignmentSettingsViewModel.RestoreDefaults();            
-        }
-
-        private void RestoreDefaultClusterSettings()
-        {
-            // Todo: use .RestoreDefaults
+            // ToDo: use .RestoreDefaults
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
-        }
+            //this.ClusterSettingsViewModel.RestoreDefaults();
+
+        }  
 
         private async void AsyncWorkflow()
         {
@@ -980,9 +954,11 @@ namespace MultiAlignRogue
                 });
 
                 progData.StepRange(50);
-                List<DatasetInformationViewModel> selectedDatasetsCopy =
-                    featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();  //Make copy of selected datasets at time of function call so all work is done on the same set of files
-                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy, totalProgress); //even if the user changes the selection while the workflow is running.
+                
+                // Make copy of selected datasets at time of function call so all work is done on the same set of files
+                // even if the user changes the selection while the workflow is running.
+                var selectedDatasetsCopy = featureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();
+                FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy, totalProgress);
                 progData.StepRange(80);
                 AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy, totalProgress);
                 progData.StepRange(100);

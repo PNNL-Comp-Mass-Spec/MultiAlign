@@ -696,11 +696,15 @@ namespace MultiAlignRogue.Feature_Finding
             MaximumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Maximum;
             ShouldUseChargeStateFilter = defaultOptions.MsFilteringOptions.ShouldUseChargeFilter;
 
-            MinimumFeatureLengthMinutes = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
-            MaximumFeatureLengthMinutes = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
-            MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
-            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
             FilterOnMinutes = defaultOptions.LcmsFilteringOptions.FilterOnMinutes;
+            MinimumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
+            MaximumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
+
+            MinimumFeatureLengthMinutes = MinimumFeatureLength;
+            MaximumFeatureLengthMinutes = MaximumFeatureLength;
+            
+            MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
+            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;            
 
             MinimumFeatureDataPoints = defaultOptions.LcmsFilteringOptions.MinimumDataPoints;
 

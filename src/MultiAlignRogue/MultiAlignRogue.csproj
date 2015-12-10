@@ -201,6 +201,10 @@
       <DependentUpon>LoadingScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ClusterMatch.cs" />
+    <Compile Include="Utils\DataLoadingSettings.xaml.cs">
+      <DependentUpon>DataLoadingSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\DataLoadingSettingsViewModel.cs" />
     <Compile Include="Utils\PlotSaving.xaml.cs">
       <DependentUpon>PlotSaving.xaml</DependentUpon>
     </Compile>
@@ -273,6 +277,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NewProjectWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Utils\DataLoadingSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

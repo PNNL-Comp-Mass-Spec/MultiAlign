@@ -22,15 +22,19 @@ namespace MultiAlignCore.Algorithms.Options
         /// </summary>
         public MultiAlignAnalysisOptions()
         {
+            DataLoadOptions = new DataLoadingOptions();
             InstrumentTolerances = new FeatureTolerances();
             MassTagDatabaseOptions = new MassTagDatabaseOptions();
             MsFilteringOptions = new MsFeatureFilteringOptions();
             LcmsFindingOptions = new LcmsFeatureFindingOptions(InstrumentTolerances);
-            LcmsFilteringOptions = new LcmsFeatureFilteringOptions();
-            LcmsFilteringOptions.FilterOnMinutes = true;
-            LcmsFilteringOptions.FeatureLengthRangeMinutes = new FilterRange(0, 20);
-            LcmsFilteringOptions.MinimumDataPoints = 3;
-            LcmsFilteringOptions.FeatureLengthRangeScans = new FilterRange(0, 2000);
+            LcmsFilteringOptions = new LcmsFeatureFilteringOptions
+            {
+                FilterOnMinutes = true,
+                FeatureLengthRangeMinutes = new FilterRange(0, 20),
+                MinimumDataPoints = 3,
+                FeatureLengthRangeScans = new FilterRange(0, 2000)
+            };
+
             AlignmentOptions = new AlignmentOptions();
             LcmsClusteringOptions = new LcmsClusteringOptions(InstrumentTolerances);
             StacOptions = new StacOptions();
@@ -38,6 +42,11 @@ namespace MultiAlignCore.Algorithms.Options
             UsedIonMobility = false;
             this.ClusterPostProcessingoptions = new ClusterPostProcessingOptions();
         }
+
+        /// <summary>
+        ///     Gets or sets data loading options
+        /// </summary>
+        public DataLoadingOptions DataLoadOptions { get; set; }
 
         /// <summary>
         ///     Gets or sets instrument tolerances

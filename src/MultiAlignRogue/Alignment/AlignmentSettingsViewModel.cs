@@ -33,6 +33,10 @@ namespace MultiAlignRogue.Alignment
 
     public class AlignmentSettingsViewModel : ViewModelBase
     {
+        private const int DEFAULT_IMAGE_DPI = 96;
+        private const int DEFAULT_IMAGE_WIDTH = 1024;
+        private const int DEFAULT_IMAGE_HEIGHT = 768;
+
         /// <summary>
         /// The analysis information to run alignment on.
         /// </summary>
@@ -86,17 +90,17 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// DPI of saved images
         /// </summary>
-        private double imageDPI = 96;
+        private double imageDPI = DEFAULT_IMAGE_DPI;
 
         /// <summary>
         /// Pixel width of saved images
         /// </summary>
-        private double imageWidth = 1024;
+        private double imageWidth = DEFAULT_IMAGE_WIDTH;
 
         /// <summary>
         /// Pixel height of saved images
         /// </summary>
-        private double imageHeight = 768;
+        private double imageHeight = DEFAULT_IMAGE_HEIGHT;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlignmentSettingsViewModel"/> class.
@@ -122,7 +126,7 @@ namespace MultiAlignRogue.Alignment
             }
 
             this.alignmentWindowFactory = alignmentWindowFactory ?? new AlignmentViewFactory();
-            this.aligner = new LCMSFeatureAligner();            
+            this.aligner = new LCMSFeatureAligner();
             this.builder = new AlgorithmBuilder();
             this.CalibrationOptions = new ObservableCollection<LcmsWarpAlignmentType>(Enum.GetValues(typeof(LcmsWarpAlignmentType)).Cast<LcmsWarpAlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
@@ -135,38 +139,38 @@ namespace MultiAlignRogue.Alignment
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(
                 this,
                 args =>
-            {
-                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
                 {
-                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
-                }
-            });
+                    if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
+                    {
+                        ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                        ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                        ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
+                    }
+                });
 
             // When dataset state changes, update CanExecutes for alignment and plotting commands.
             this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(
                 this,
                 args =>
-            {
-                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "DatasetState")
                 {
-                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
-                }
-            });
+                    if (args.Sender is DatasetInformationViewModel && args.PropertyName == "DatasetState")
+                    {
+                        ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                        ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                        ThreadSafeDispatcher.Invoke(() => this.SaveAlignmentPlotsCommand.RaiseCanExecuteChanged());
+                    }
+                });
 
             // When database server is selected, update CanExecute for the alignment command.
             this.MessengerInstance.Register<PropertyChangedMessage<DmsDatabaseServerViewModel>>(
                 this,
                 args =>
+                {
+                    if (args.Sender is DatabaseSelectionViewModel && args.PropertyName == "SelectedDatabaseServer")
                     {
-                        if (args.Sender is DatabaseSelectionViewModel && args.PropertyName == "SelectedDatabaseServer")
-                        {
-                            ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
-                        }
-                    });
+                        ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                    }
+                });
 
             this.AlignCommand = new RelayCommand(this.AsyncAlign, this.CanAlign);
 
@@ -175,13 +179,13 @@ namespace MultiAlignRogue.Alignment
                                                             this.DisplayAlignment,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
-           
+
             // Executable if the selected files are aligned and alignment information is available.
             this.SaveAlignmentPlotsCommand = new RelayCommand(
                                                             this.SaveAlignmentPlots,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
- 
+
             this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
 
         }
@@ -200,7 +204,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public RelayCommand SaveAlignmentPlotsCommand { get; private set; }
 
-		public RelayCommand RestoreDefaultsCommand { get; private set; }
+        public RelayCommand RestoreDefaultsCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of possible alignment algorithms.
@@ -452,7 +456,7 @@ namespace MultiAlignRogue.Alignment
                 }
             }
         }
-        
+
         /// <summary>
         /// Performs alignment asynchronously.
         /// </summary>
@@ -484,6 +488,12 @@ namespace MultiAlignRogue.Alignment
             AlignmentNumTimeSections = defaultOptions.AlignmentOptions.NumTimeSections;
             MinObservationCount = defaultOptions.MassTagDatabaseOptions.MinimumObservationCountFilter;
 
+            DatabaseSelectionViewModel.MassTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Mass;
+            DatabaseSelectionViewModel.NetTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Net;
+
+            imageDPI = DEFAULT_IMAGE_DPI;
+            imageWidth = DEFAULT_IMAGE_WIDTH;
+            imageHeight = DEFAULT_IMAGE_HEIGHT;
         }
 
         /// <summary>
@@ -527,9 +537,9 @@ namespace MultiAlignRogue.Alignment
             }
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
-         
-            var selectedFiles = workFlowDatasets ?? 
-                                this.Datasets.Where(file => file.IsSelected && !file.DoingWork && 
+
+            var selectedFiles = workFlowDatasets ??
+                                this.Datasets.Where(file => file.IsSelected && !file.DoingWork &&
                                                             (this.ShouldAlignToAMT || !file.IsBaseline)).ToList();
             foreach (var file in selectedFiles)
             {
@@ -575,7 +585,7 @@ namespace MultiAlignRogue.Alignment
                         });
 
                 if (this.ShouldAlignToBaseline)
-                {                 
+                {
                     // Aligning to a baseline dataset
                     alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures, datasetProgress);
                     alignment.BaselineIsAmtDB = false;
@@ -598,7 +608,7 @@ namespace MultiAlignRogue.Alignment
                 {
                     this.alignmentInformation.Add(alignment);
                 }
-             
+
                 this.featureCache.CacheFeatures(features);
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -675,7 +685,7 @@ namespace MultiAlignRogue.Alignment
             var selectedDatasets = this.Datasets.Where(ds => ds.IsSelected).ToList();
             var validDatasetsSelected = selectedDatasets.Any(ds => !ds.DoingWork && ds.FeaturesFound);
             var validBaselineSelected = this.ShouldAlignToBaseline && this.SelectedBaseline != null &&
-                                        // something other than baseline should be selected
+                // something other than baseline should be selected
                                         selectedDatasets.Any(ds => ds != this.SelectedBaseline);
             var validAmtSelected = this.ShouldAlignToAMT && this.analysis.MassTagDatabase != null;
             return validDatasetsSelected && (validBaselineSelected || validAmtSelected);
