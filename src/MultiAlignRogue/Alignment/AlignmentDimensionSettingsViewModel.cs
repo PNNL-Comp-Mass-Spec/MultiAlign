@@ -6,6 +6,10 @@
 
     using MultiAlignCore.Data.Features;
 
+    /// <summary>
+    /// This class is a view model for configuring a <see cref="AlignmentDimensionSettings" />
+    /// settings for a single separation dimension.
+    /// </summary>
     public class AlignmentDimensionSettingsViewModel : ViewModelBase
     {
         /// <summary>
