@@ -62,6 +62,9 @@
             var warpedFeatures = netMassWarp ? this.WarpNetMass(aligneeFeatures, baselineFeatures)
                                              : this.WarpNet(aligneeFeatures, baselineFeatures, true);
 
+            // TODO: Create Plots
+
+
             // TODO: Populate alignment data.
             var alignmentData = new AlignmentData();
 
@@ -115,26 +118,20 @@
 
                 // Warp features for each separation dimension.
                 var alignmentFunction = this.GetAlignmentFunction(
-                                                matches,
-                                                aligneeFeatures,
-                                                baselineFeatures,
-                                                includeMassInMatchScore);
+                                                                  matches,
+                                                                  aligneeFeatures,
+                                                                  baselineFeatures,
+                                                                  includeMassInMatchScore);
                 alignmentFunction.SeparationType = separationType;
 
                 // Warp the values in the features for this separation type
                 warpedFeatures = alignmentFunction.GetWarpedFeatures(aligneeFeatures).ToList();
             }
 
-            featureMatcher.GenerateCandidateMatches(
-                warpedFeatures,
-                baselineFeatures,
-                this.options.SeparationTypes);
-            var completeMatches = featureMatcher.Matches;
-
             return warpedFeatures;
         }
 
-        /// <summary>
+        /// <summary>0000000
         /// Generates alignment functions for alignment between features in each separation dimension.
         /// Warps the elution value for each feature based on the alignment function.
         /// </summary>
@@ -146,7 +143,21 @@
             // First pass NET warp: Perform warp by only scoring matches in NET
             var netWarpedFeatures = this.WarpNet(aligneeFeatures, baselineFeatures, false);
 
-            // TODO: Warp mass
+            // Generate matches from features by matching in both mass and NET
+            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
+            featureMatcher.GenerateCandidateMatches(
+                            aligneeFeatures,
+                            baselineFeatures,
+                            this.options.SeparationTypes);
+            var matches = featureMatcher.Matches;
+
+            // Warp mass
+            var massCalibrator = new LcmsWarpMassCalibrator(this.options);
+            var massCalibrations = massCalibrator.GetMassCalibrations(matches);
+            foreach (var calibration in massCalibrations)
+            {
+                calibration.CalibrateFeatures(aligneeFeatures);
+            }
 
             // Second pass NET warp: Perform warp that scores matches in mass AND net
             var netMassWarpedFeatures = this.WarpNet(netWarpedFeatures, baselineFeatures, true);
@@ -165,7 +176,8 @@
         /// </param>
         /// <returns>The features with all values for the given separation dimension warped.</returns>
         /// <returns></returns>
-        private LcmsWarpNetAlignmentFunction GetAlignmentFunction(List<LcmsWarpFeatureMatch> matches,
+        private LcmsWarpNetAlignmentFunction GetAlignmentFunction(
+                                                                  List<LcmsWarpFeatureMatch> matches,
                                                                   List<UMCLight> aligneeFeatures,
                                                                   List<UMCLight> baselineFeatures,
                                                                   bool includeMassInMatchScore)
@@ -186,6 +198,11 @@
             var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
 
             return alignmentFunction;
+        }
+
+        private AlignmentData GetAlignmentData()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

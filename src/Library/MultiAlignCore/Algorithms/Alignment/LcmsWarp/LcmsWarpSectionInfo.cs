@@ -13,8 +13,12 @@
         /// <summary>
         /// A dictionary mapping a section index to the features in that section.
         /// </summary>
-        private readonly Dictionary<int, List<UMCLight>> sectionToFeatures; 
+        private readonly Dictionary<int, List<UMCLight>> sectionToFeatures;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LcmsWarpSectionInfo" /> class.
+        /// </summary>
+        /// <param name="numSections">The total number of sections to discretize the time range into.</param>
         public LcmsWarpSectionInfo(int numSections)
         {
             this.NumSections = numSections;
@@ -22,7 +26,7 @@
         }
 
         /// <summary>
-        /// Gets the total number of sections.
+        /// Gets the total number of sections to discretize the time range into.
         /// </summary>
         public int NumSections { get; private set; }
 

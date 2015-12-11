@@ -4,6 +4,8 @@ using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using MultiAlignCore.Data.Features;
+
     /// <summary>
     /// Object that holds instances of all three regression types, as well as providing a wrapper method for all three of the
     /// regression types that LCMS could use
@@ -90,6 +92,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 default:
                     return !_lsqFailed ? _cubicSpline.GetPredictedValue(x) : _central.GetPredictedValue(x);
+            }
+        }
+
+        public void CalibrateFeature(UMCLight feature)
+        {
+            var mass = feature.MassMonoisotopic;
+            var ppmShift = this.GetPredictedValue(feature.Mz);
+            var newMass = mass - (mass * ppmShift) / 1000000;
+            feature.MassMonoisotopicAligned = newMass;
+            feature.MassMonoisotopic = newMass;
+        }
+
+        public void CalibrateFeatures(List<UMCLight> umcs)
+        {
+            foreach (var feature in umcs)
+            {
+                this.CalibrateFeature(feature);
             }
         }
     }
