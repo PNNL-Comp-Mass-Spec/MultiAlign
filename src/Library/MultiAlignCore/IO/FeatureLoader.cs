@@ -223,13 +223,14 @@ namespace MultiAlignCore.IO
             MsFeatureFilteringOptions msFilteringOptions,
             LcmsFeatureFindingOptions lcmsFindingOptions,
             LcmsFeatureFilteringOptions lcmsFilteringOptions,
+            DataLoadingOptions dataLoadOptions,
             ScanSummaryProviderCache providerCache,
             IdentificationProviderCache identificationProviders,
             IProgress<ProgressData> progress = null)
         {
             var progData = new ProgressData(progress);
             IScanSummaryProvider provider = null;
-            if (dataset.RawFile.Path != null && !string.IsNullOrWhiteSpace(dataset.RawFile.Path))
+            if (!string.IsNullOrWhiteSpace(dataset.RawFile.Path))
             {
                 UpdateStatus("Using raw data to create better features.");
                 provider = providerCache.GetScanSummaryProvider(dataset.RawFile.Path, dataset.DatasetId);
@@ -249,7 +250,9 @@ namespace MultiAlignCore.IO
                 progData.Status = "Loading MS Feature Data.";
                 UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                     dataset.DatasetName));
-                msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);   
+
+                var isosFilterOptions = dataLoadOptions.GetIsosFilterOptions();
+                msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path, isosFilterOptions);   
             }
 
             progData.StepRange(3);

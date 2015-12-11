@@ -98,6 +98,9 @@ namespace MultiAlignCore.IO.Features
 			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
 			while ((line = textReader.ReadLine()) != null)
 			{
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
 				var columns = line.Split('\t', '\n');
 
 			    var currentId = -99;

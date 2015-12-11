@@ -44,7 +44,10 @@ namespace MultiAlignSTACRunner
                     
                         while ((line = reader.ReadLine()) != null)
                         {
-                            var data           = line.Split(',');
+                            if (string.IsNullOrWhiteSpace(line))
+                                continue;
+
+                            var data            = line.Split(',');
 
                             var mass            = Convert.ToDouble(data[CONST_COLUMN_MASS]);
                             var retentionTime   = Convert.ToDouble(data[CONST_COLUMN_NET]);

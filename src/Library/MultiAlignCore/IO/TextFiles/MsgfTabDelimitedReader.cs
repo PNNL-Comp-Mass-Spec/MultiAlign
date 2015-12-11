@@ -67,6 +67,9 @@ namespace MultiAlignCore.IO.TextFiles
 
             while ((line = textReader.ReadLine()) != null)
             {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
                 var columns = line.Split('\t', '\n');
 
                 var peptide = new Peptide();

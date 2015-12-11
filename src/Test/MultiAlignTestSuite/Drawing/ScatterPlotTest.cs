@@ -11,6 +11,7 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Drawing;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.TextFiles;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -116,9 +117,10 @@ namespace MultiAlignTestSuite.Drawing
                 didirectory.Create();
 
             var aligner = new LcmsWarpFeatureAligner(new LcmsWarpAlignmentOptions());
+            var isosFilterOptions = new DeconToolsIsosFilterOptions();
 
-            var baselineMs = UmcLoaderFactory.LoadMsFeatureData(path1);
-            var aligneeMs = UmcLoaderFactory.LoadMsFeatureData(path2);
+            var baselineMs = UmcLoaderFactory.LoadMsFeatureData(path1, isosFilterOptions);
+            var aligneeMs = UmcLoaderFactory.LoadMsFeatureData(path2, isosFilterOptions);
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
 
             var tolerances = new FeatureTolerances

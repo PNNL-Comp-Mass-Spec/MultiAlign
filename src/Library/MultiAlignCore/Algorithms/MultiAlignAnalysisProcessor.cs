@@ -295,11 +295,14 @@ namespace MultiAlignCore.Algorithms
             var datasets = config.Analysis.MetaData.Datasets.ToList();
             var lcmsFilterOptions = analysisOptions.LcmsFilteringOptions;
             var msFilterOptions = analysisOptions.MsFilteringOptions;
+            var dataLoadOptions = analysisOptions.DataLoadOptions;
             var baselineDataset = config.Analysis.MetaData.BaselineDataset;
+
             var baselineFeatures = LoadBaselineData(baselineDataset,
                 msFilterOptions,
                 analysisOptions.LcmsFindingOptions,
                 lcmsFilterOptions,
+                dataLoadOptions,
                 config.Analysis.DataProviders,
                 config.Analysis.MassTagDatabase,
                 config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);
@@ -332,6 +335,7 @@ namespace MultiAlignCore.Algorithms
                     analysisOptions.MsFilteringOptions,
                     analysisOptions.LcmsFindingOptions,
                     analysisOptions.LcmsFilteringOptions,
+                    analysisOptions.DataLoadOptions,
                     m_scanSummaryProviderCache,
                     m_identificationsProvider);
                 features = AlignDataset(features,
@@ -351,6 +355,7 @@ namespace MultiAlignCore.Algorithms
             MsFeatureFilteringOptions msFilterOptions,
             LcmsFeatureFindingOptions lcmsFindingOptions,
             LcmsFeatureFilteringOptions lcmsFilterOptions,
+            DataLoadingOptions dataLoadOptions,
             FeatureDataAccessProviders dataProviders,
             MassTagDatabase database,
             bool shouldUseMassTagDbAsBaseline)
@@ -378,6 +383,7 @@ namespace MultiAlignCore.Algorithms
                     msFilterOptions,
                     lcmsFindingOptions,
                     lcmsFilterOptions,
+                    dataLoadOptions,
                     m_scanSummaryProviderCache,
                     this.m_identificationsProvider);
 
@@ -440,6 +446,7 @@ namespace MultiAlignCore.Algorithms
                 options.MsFilteringOptions,
                 options.LcmsFindingOptions,
                 options.LcmsFilteringOptions,
+                options.DataLoadOptions,
                 config.Analysis.DataProviders,
                 config.Analysis.MassTagDatabase,
                 config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);

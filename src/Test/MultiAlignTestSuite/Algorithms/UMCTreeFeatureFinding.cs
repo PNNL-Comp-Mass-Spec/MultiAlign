@@ -295,8 +295,7 @@ namespace MultiAlignTestSuite.Algorithms
 
             using (var provider = RawLoaderFactory.CreateFileReader(path, 0))
             {
-                ScanSummary summary;
-                provider.GetScanSummary(10000000);
+                var summary = provider.GetScanSummary(10000000);
             }
         }
 

@@ -29,32 +29,36 @@ namespace MultiAlignCore.Data.Features
                 var maximumSize = options.FeatureLengthRangeMinutes.Maximum;
                 var minimumPoints = options.MinimumDataPoints;
 
+                var knownScanNumbers = scanTimes.Keys.ToList();
+                knownScanNumbers.Sort();
+
                 // Scan Length
                 newFeatures = features.Where(x =>
                 {
                     try
                     {
                         double size = 0;
-                        if (x.ScanStart != 0)
+                        if (x.ScanStart == 0)
                         {
-                            size = Math.Abs(scanTimes[x.ScanEnd] - scanTimes[x.ScanStart]);
+                            //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
+                            size = GetScanTime(scanTimes, knownScanNumbers, x.ScanEnd);
                         }
-                        else //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
+                        else
                         {
-                            size = scanTimes[x.ScanEnd];
+                            size = Math.Abs(GetScanTime(scanTimes, knownScanNumbers, x.ScanEnd) - GetScanTime(scanTimes, knownScanNumbers, x.ScanStart));
                         }
                         return size >= minimumSize && size <= maximumSize && x.Features.Count >= minimumPoints;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        throw (new IndexOutOfRangeException(String.Format("Scan {0} or {1} not found in scan to time map.", x.ScanStart, x.ScanEnd)));
+                        throw (new IndexOutOfRangeException(String.Format("Exception determining the elution time for scans {0} and {1}: {2}", x.ScanStart, x.ScanEnd, ex.Message)));
                     }
                 });
             }
 
             return newFeatures.Where(x => x.Abundance > 0).ToList();
         }
-
+        
         /// <summary>
         /// Filters the list of MS Features based on user defined filtering criteria.
         /// </summary>
@@ -97,6 +101,27 @@ namespace MultiAlignCore.Data.Features
             }
 
             return filteredMsFeatures.ToList();
+        }
+
+
+        private static double GetScanTime(IReadOnlyDictionary<int, double> scanTimes, List<int> knownScanNumbers, int scanNumber)
+        {
+            double scanTime;
+            if (scanTimes.TryGetValue(scanNumber, out scanTime))
+                return scanTime;
+
+            // Exact match not found; find the elution time of the nearest scan
+			// ToDo: Interpolate between the two nearest scans
+			
+            var indexNearest = ~(knownScanNumbers.BinarySearch(scanNumber));
+
+            if (indexNearest <= 0)
+                return scanTimes[knownScanNumbers[0]];
+
+            if (indexNearest >= knownScanNumbers.Count)
+                return scanTimes[knownScanNumbers[knownScanNumbers.Count - 1]];
+
+            return scanTimes[knownScanNumbers[indexNearest]];
         }
     }
 }

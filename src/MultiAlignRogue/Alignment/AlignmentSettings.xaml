@@ -6,7 +6,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              Background="White"
-             d:DataContext="{d:DesignInstance d:Type=alignment:AlignmentSettingsViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance d:Type=alignment:AlignmentSettingsViewModel,
+                                              IsDesignTimeCreatable=True}"
              d:DesignHeight="500"
              d:DesignWidth="500"
              mc:Ignorable="d">

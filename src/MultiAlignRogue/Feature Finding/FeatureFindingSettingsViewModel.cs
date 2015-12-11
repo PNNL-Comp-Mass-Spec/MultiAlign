@@ -573,49 +573,62 @@ namespace MultiAlignRogue.Feature_Finding
 
                 progData.StepRange(30);
 
-                var features = this.featureCache.LoadDataset(
-                                                    file.Dataset,
-                                                    this.analysis.Options.MsFilteringOptions,
-                                                    this.analysis.Options.LcmsFindingOptions,
-                                                    this.analysis.Options.LcmsFilteringOptions,
-                                                    analysis.DataProviders.ScanSummaryProviderCache,
-                                                    analysis.DataProviders.IdentificationProviderCache,
-                                                    progressRpt);
-
-                if (!this.featuresByDataset.ContainsKey(file.Dataset))
+                try
                 {
-                    this.featuresByDataset.Add(file.Dataset, new List<UMCLight>());
-                }
+                    var features = this.featureCache.LoadDataset(
+                        file.Dataset,
+                        this.analysis.Options.MsFilteringOptions,
+                        this.analysis.Options.LcmsFindingOptions,
+                        this.analysis.Options.LcmsFilteringOptions,
+                        this.analysis.Options.DataLoadOptions,
+                        analysis.DataProviders.ScanSummaryProviderCache,
+                        analysis.DataProviders.IdentificationProviderCache,
+                        progressRpt);
 
-                this.featuresByDataset[file.Dataset] = features;
 
-                file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
-                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-
-                using (var logger = new StreamWriter("nhibernate_stats.txt", true))
-                {
-                    logger.WriteLine();
-                    var stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    var scanSumProvider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(file.Dataset.DatasetId);
-                    if (scanSumProvider.IsBackedByFile)
+                    if (!this.featuresByDataset.ContainsKey(file.Dataset))
                     {
-                        var ssDao = this.analysis.DataProviders.ScanSummaryDao;
-                        ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
-
-                        // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
-                        ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ =>
-                        {
-                            summ.DatasetId = file.Dataset.DatasetId;
-                            return summ;
-                        }).ToList());
+                        this.featuresByDataset.Add(file.Dataset, new List<UMCLight>());
                     }
 
-                    progData.StepRange(100);
-                    this.featureCache.CacheFeatures(features, progressRpt);
-                    stopWatch.Stop();
-                    logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
+                    this.featuresByDataset[file.Dataset] = features;
+
+                    file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
+                    ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+
+                    using (var logger = new StreamWriter("nhibernate_stats.txt", true))
+                    {
+                        logger.WriteLine();
+                        var stopWatch = new Stopwatch();
+                        stopWatch.Start();
+
+                        var scanSumProvider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(file.Dataset.DatasetId);
+                        if (scanSumProvider.IsBackedByFile)
+                        {
+                            var ssDao = this.analysis.DataProviders.ScanSummaryDao;
+                            ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
+
+                            // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
+                            ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ =>
+                            {
+                                summ.DatasetId = file.Dataset.DatasetId;
+                                return summ;
+                            }).ToList());
+                        }
+
+                        progData.StepRange(100);
+                        this.featureCache.CacheFeatures(features, progressRpt);
+                        stopWatch.Stop();
+                        logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
+                    }
+
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("File loading error: " + ex.Message);
+                    file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
+                    continue;
                 }
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
@@ -702,9 +715,9 @@ namespace MultiAlignRogue.Feature_Finding
 
             MinimumFeatureLengthMinutes = MinimumFeatureLength;
             MaximumFeatureLengthMinutes = MaximumFeatureLength;
-            
+
             MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
-            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;            
+            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
 
             MinimumFeatureDataPoints = defaultOptions.LcmsFilteringOptions.MinimumDataPoints;
 
