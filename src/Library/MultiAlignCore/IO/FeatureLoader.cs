@@ -139,12 +139,12 @@ namespace MultiAlignCore.IO
                 Providers.DatabaseSequenceCache.AddAll(mappedPeptides, internalProgress);
             }
 
-            if (msFeatures.Count > 0)
-            {
-                progData.StepRange(99);
-                Providers.MSFeatureCache.DeleteByDatasetId(msFeatures[0].GroupId);
-                Providers.MSFeatureCache.AddAllStateless(msFeatures, internalProgress);
-            }
+            ////if (msFeatures.Count > 0)
+            ////{
+            ////    progData.StepRange(99);
+            ////    Providers.MSFeatureCache.DeleteByDatasetId(msFeatures[0].GroupId);
+            ////    Providers.MSFeatureCache.AddAllStateless(msFeatures, internalProgress);
+            ////}
 
             if (features.Count > 0)
             {

@@ -22,6 +22,8 @@ using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
+    using InformedProteomics.Backend.Data.Spectrometry;
+
     using MultiAlignCore.Data;
     using MultiAlignCore.IO.RawData;
 
@@ -248,55 +250,58 @@ namespace MultiAlignRogue.Clustering
             int i = 0;
             foreach (var feature in this.Features)
             {
-                var chargeMap = feature.UMCLight.CreateChargeMap();
-                chargeHash.UnionWith(chargeMap.Keys);
-
-                foreach (var charge in chargeMap.Keys)
+                if (!chargeHash.Contains(feature.UMCLight.ChargeState))
                 {
-                    var scanDataProvider = this.rawProvider.GetScanSummaryProvider(feature.UMCLight.GroupId);
-                    var msfeatures = chargeMap[charge];
-
-                    // Get dataset info for mapping scan # -> retention time
-                    var dsInfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
-
-                    foreach (var msfeature in msfeatures)
-                    {
-                        var scanSum = scanDataProvider.GetScanSummary(msfeature.Scan);
-                        var rt = scanSum.Time;
-                        minX = Math.Min(minX, rt);
-                        maxX = Math.Max(maxX, rt);
-                        minY = Math.Min(minY, msfeature.Abundance);
-                        maxY = Math.Max(maxY, msfeature.Abundance);
-                    }
-
-                    var maxA = msfeatures.Max(msf => msf.Abundance);
-                    var maxL = msfeatures.FirstOrDefault(msf => msf.Abundance.Equals(maxA));
-                    if (maxFeature == null || (maxL != null && maxL.Abundance >= maxFeature.Abundance))
-                    {
-                        maxFeature = maxL;
-                    }
-
-                    var color = this.Colors[i++ % this.Colors.Count];
-                    var series = new LineSeries
-                    {
-                        Title = string.Format("{0}({1}+) ID({2})", dsInfo.DatasetName, charge, feature.UMCLight.Id),
-                        Color = color,
-                        MarkerType = MarkerType.Circle,
-                        MarkerSize = 3,
-                        MarkerFill = OxyColors.White,
-                        MarkerStroke = color,
-                        MarkerStrokeThickness = 0.5,
-                        TrackerFormatString = "{0}" + Environment.NewLine +
-                                   "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
-                                   "{3}: {4:0.###E0}" + Environment.NewLine
-                    };
-
-                    msfeatures.ForEach(point => series.Points.Add(new DataPoint(
-                                                     scanDataProvider.GetScanSummary(point.Scan).Time,
-                                                     point.Abundance)));
-
-                    this.XicPlotModel.Series.Add(series);   
+                    chargeHash.Add(feature.UMCLight.ChargeState);
                 }
+
+                var scanDataProvider = this.rawProvider.GetScanSummaryProvider(feature.UMCLight.GroupId);
+                var msfeatures = this.GetXic(feature.UMCLight);
+                if (msfeatures.Count == 0)
+                {
+                    continue;
+                }
+
+                // Get dataset info for mapping scan # -> retention time
+                var dsInfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
+
+                foreach (var msfeature in msfeatures)
+                {
+                    var scanSum = scanDataProvider.GetScanSummary(msfeature.Scan);
+                    var rt = scanSum.Time;
+                    minX = Math.Min(minX, rt);
+                    maxX = Math.Max(maxX, rt);
+                    minY = Math.Min(minY, msfeature.Abundance);
+                    maxY = Math.Max(maxY, msfeature.Abundance);
+                }
+
+                var maxA = msfeatures.Max(msf => msf.Abundance);
+                var maxL = msfeatures.FirstOrDefault(msf => msf.Abundance.Equals(maxA));
+                if (maxFeature == null || (maxL != null && maxL.Abundance >= maxFeature.Abundance))
+                {
+                    maxFeature = maxL;
+                }
+
+                var color = this.Colors[i++ % this.Colors.Count];
+                var series = new LineSeries
+                {
+                    Title = string.Format("{0}({1}+) ID({2})", dsInfo.DatasetName, feature.UMCLight.ChargeState, feature.UMCLight.Id),
+                    Color = color,
+                    MarkerType = MarkerType.Circle,
+                    MarkerSize = 3,
+                    MarkerFill = OxyColors.White,
+                    MarkerStroke = color,
+                    MarkerStrokeThickness = 0.5,
+                    TrackerFormatString = "{0}" + Environment.NewLine +
+                               "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
+                               "{3}: {4:0.###E0}" + Environment.NewLine
+                };
+
+                msfeatures.ForEach(point => series.Points.Add(new DataPoint(
+                                                 scanDataProvider.GetScanSummary(point.Scan).Time,
+                                                 point.Abundance)));
+
+                this.XicPlotModel.Series.Add(series);
             }
 
             this.SelectedMsFeature = maxFeature;
@@ -418,6 +423,36 @@ namespace MultiAlignRogue.Clustering
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets an XIC using the <see cref="InformedProteomicsReader" />.
+        /// </summary>
+        /// <param name="feature">The feature to get the XIC for.</param>
+        /// <returns>The XIC.</returns>
+        private List<MSFeatureLight> GetXic(UMCLight feature)
+        {
+            var msFeatures = new List<MSFeatureLight>();
+            var ipr = this.rawProvider.GetScanSummaryProvider(feature.GroupId) as InformedProteomicsReader;
+            if (ipr != null)
+            {
+                var lcms = ipr.LcMsRun;
+                var xic = lcms.GetFullPrecursorIonExtractedIonChromatogram(feature.Mz, new Tolerance(10, ToleranceUnit.Ppm))
+                              .Where(xicP => xicP.ScanNum >= feature.ScanStart && xicP.ScanNum <= feature.ScanEnd)
+                              .ToList();
+                foreach (var xicPoint in xic)
+                {
+                    msFeatures.Add(new MSFeatureLight
+                    {
+                        GroupId = feature.GroupId,
+                        Scan = xicPoint.ScanNum,
+                        Abundance = xicPoint.Intensity,
+                        ChargeState = feature.ChargeState,
+                    });
+                }
+            }
+
+            return msFeatures;
         }
 
         /// <summary>
