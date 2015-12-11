@@ -146,6 +146,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Alignment\AlignmentDimensionSettings.cs" />
     <Compile Include="Alignment\AlignmentPlotCreator.cs" />
     <Compile Include="Alignment\AlignmentSettingsViewModel.cs" />
     <Compile Include="Alignment\AlignmentView.xaml.cs">
@@ -158,6 +159,10 @@
     <Compile Include="Alignment\AlignmentSettings.xaml.cs">
       <DependentUpon>AlignmentSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Alignment\MultiDimensionalAlignmentSettingsView.xaml.cs">
+      <DependentUpon>MultiDimensionalAlignmentSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Alignment\AlignmentDimensionSettingsViewModel.cs" />
     <Compile Include="AMTMatching\StacSettingsView.xaml.cs">
       <DependentUpon>StacSettingsView.xaml</DependentUpon>
     </Compile>
@@ -240,6 +245,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Alignment\AlignmentSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Alignment\MultiDimensionalAlignmentSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

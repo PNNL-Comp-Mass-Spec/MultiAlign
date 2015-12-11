@@ -187,8 +187,21 @@ namespace MultiAlignRogue.Alignment
                                                                   this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
 
             this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
-
         }
+
+        //public AlignmentSettingsViewModel()
+        //{
+        //    this.DimensionSettings = new ObservableCollection<AlignmentDimensionSettingsViewModel>
+        //    {
+        //        new AlignmentDimensionSettingsViewModel(new AlignmentDimensionSettings()),
+        //        new AlignmentDimensionSettingsViewModel(new AlignmentDimensionSettings { SeparationType = FeatureLight.SeparationTypes.DriftTime })
+        //    };
+        //}
+
+        ///// <summary>
+        ///// Gets the alignment settings for each separation dimension.
+        ///// </summary>
+        //public ObservableCollection<AlignmentDimensionSettingsViewModel> DimensionSettings { get; private set; } 
 
         /// <summary>
         /// Gets a command that performs the alignment on the selected atasets.
