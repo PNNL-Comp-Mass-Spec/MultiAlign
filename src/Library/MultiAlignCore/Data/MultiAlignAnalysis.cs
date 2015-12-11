@@ -61,7 +61,7 @@ namespace MultiAlignCore.Data
         public AnalysisType AnalysisType { get; set; }
 
         /// <summary>
-        ///     Gets or est the analysis options.
+        ///     Gets or sets the analysis options.
         /// </summary>
         public MultiAlignAnalysisOptions Options { get; set; }
 

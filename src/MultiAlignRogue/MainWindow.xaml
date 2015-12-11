@@ -1,230 +1,228 @@
 ﻿<Window x:Class="MultiAlignRogue.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
-        xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
         xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="{Binding WindowTitle}" Height="650" Width="1100" x:Name="RogueMainWindow">
+        xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
+        xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
+        xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
+        xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
+        x:Name="RogueMainWindow"
+        Title="{Binding WindowTitle}"
+        Width="1100"
+        Height="650">
     <Window.DataContext>
-        <multiAlignRogue:MainViewModel/>
+        <multiAlignRogue:MainViewModel />
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
     <Window.InputBindings>
-        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProjectCommand}" />
+        <KeyBinding Key="S"
+                    Command="{Binding SaveProjectCommand}"
+                    Modifiers="Control" />
     </Window.InputBindings>
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskBarItemInfo"></TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskBarItemInfo" />
     </Window.TaskbarItemInfo>
 
     <Grid Name="MainGrid">
 
-        <!-- Menu -->
-        <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
+        <!--  Menu  -->
+        <Menu Grid.ColumnSpan="2"
+              Width="{Binding ElementName=MainGrid,
+                              Path=ActualWidth}"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="New Project" Command="{Binding CreateNewProjectCommand}" />
-                <MenuItem Header="Load Project" Command="{Binding LoadProjectCommand}" />
-                <MenuItem Header="Open Dataset" Command="{Binding SelectFilesCommand}">
-                    <MenuItem Header="Select Files" Command="{Binding SelectFilesCommand}"/>
-                    <MenuItem Header="Select Directory" Command="{Binding SelectDirectoryCommand}" />
-                    <MenuItem Header="From DMS" Command="{Binding SearchDmsCommand}" Visibility="{Binding ShowOpenFromDms, Converter={StaticResource BoolToVis}}" />
+                <MenuItem Command="{Binding CreateNewProjectCommand}" Header="New Project" />
+                <MenuItem Command="{Binding LoadProjectCommand}" Header="Load Project" />
+                <MenuItem Command="{Binding SelectFilesCommand}" Header="Open Dataset">
+                    <MenuItem Command="{Binding SelectFilesCommand}" Header="Select Files" />
+                    <MenuItem Command="{Binding SelectDirectoryCommand}" Header="Select Directory" />
+                    <MenuItem Command="{Binding SearchDmsCommand}"
+                              Header="From DMS"
+                              Visibility="{Binding ShowOpenFromDms,
+                                                   Converter={StaticResource BoolToVis}}" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Save Project" Command="{Binding SaveProjectCommand}" />
-                <MenuItem Header="Save Project As" Command="{Binding SaveAsProjectCommand}" />
+                <MenuItem Command="{Binding SaveProjectCommand}" Header="Save Project" />
+                <MenuItem Command="{Binding SaveAsProjectCommand}" Header="Save Project As" />
                 <Separator />
-                <MenuItem Header="Restore Defaults" Command="{Binding RestoreDefaultSettingsCommand}" />
-                <MenuItem Header="Run Full Workflow" Command="{Binding RunFullWorkflowCommand}"/>
+                <MenuItem Command="{Binding RestoreDefaultSettingsCommand}" Header="Restore Defaults" />
+                <MenuItem Command="{Binding RunFullWorkflowCommand}" Header="Run Full Workflow" />
             </MenuItem>
         </Menu>
 
-        <!-- Actual content -->
+        <!--  Actual content  -->
         <Grid Margin="10,25,10,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="475" />
+                <ColumnDefinition Width="4*" MinWidth="10" />
+                <ColumnDefinition Width="5*" MinWidth="10" />
             </Grid.ColumnDefinitions>
 
-            <!-- File list data grid -->
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <DockPanel Name="datasetPanel" LastChildFill="True">
 
-                <TextBlock FontSize="16" Grid.Row="0" Margin="0,0,0,3">Working Data Files</TextBlock>
-                <ProgressBar Name="WorkflowProgressBar" Value="{Binding ProgressTracker}"
-                                     Margin="2,0,11,0" RenderTransformOrigin="0.5,0.5" Grid.Row="1" Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}"
-                             IsVisibleChanged="WorkflowProgressBar_OnIsVisibleChanged" Height="26" VerticalAlignment="Bottom">
-                    <ProgressBar.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleY="-1"/>
-                            <SkewTransform/>
-                            <RotateTransform/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </ProgressBar.RenderTransform>
-                </ProgressBar>
-                <DataGrid Name="FileSelectionDataGrid" Grid.Row="1" Margin="0,0,10,0"
-                  AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
-                  ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.CanContentScroll="False">
-                    <DataGrid.Resources>
-                        <Style TargetType="DataGridRow">
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </Style>
-                    </DataGrid.Resources>
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Width="25">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="-" Command="{Binding RequestRemovalCommand}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Dataset Name" Width="*">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <ProgressBar Value="{Binding Progress}" Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
-                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Dataset.DatasetName}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Status" Binding="{Binding DatasetState}" Width="110" IsReadOnly="True" />
-                        <!--<DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <DataGridCheckBoxColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="{Binding FindingFeatureLabelColor, UpdateSourceTrigger=PropertyChanged}" />
-                                </Style>
-                            </DataGridCheckBoxColumn.CellStyle>
-                        </DataGridCheckBoxColumn>
-                        <DataGridCheckBoxColumn Header="Aligned" Width="60" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <DataGridCheckBoxColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="{Binding AligningLabelColor, UpdateSourceTrigger=PropertyChanged}" />
-                                </Style>
-                            </DataGridCheckBoxColumn.CellStyle>
-                        </DataGridCheckBoxColumn>
-                        <DataGridCheckBoxColumn Header="Clustered" Width="60" IsReadOnly="True" Binding="{Binding IsClustered, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <DataGridCheckBoxColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="Background" Value="{Binding ClusterLabelColor, UpdateSourceTrigger=PropertyChanged}" />
-                                </Style>
-                            </DataGridCheckBoxColumn.CellStyle>
-                        </DataGridCheckBoxColumn>-->
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+                <Grid Margin="0,0,0,0" DockPanel.Dock="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <!-- Open/New project -->
-            <Grid Grid.Column="0" Background="#F0000000" Visibility="{Binding ShowSplash, Converter={StaticResource BoolToVis}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="10" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="2*" />
-                </Grid.RowDefinitions>
-
-                <Button Grid.Row="1" Content="New Project" Command="{Binding CreateNewProjectCommand}" Width="125" HorizontalAlignment="Center" />
-                <Button Grid.Row="3" Content="Load Project" Command="{Binding LoadProjectCommand}" Width="125" HorizontalAlignment="Center" />
-            </Grid>
-
-            <!-- Settings -->
-            <TabControl Grid.Column="1">
-                <TabItem Header="1. Feature Finding" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
-                    <featureFinding:FeatureFindingSettings Margin="5" />
-                </TabItem>
-                <TabItem Header="2. Alignment" DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
-                    <alignment:AlignmentSettings Margin="5" />
-                </TabItem>
-                <TabItem Header="3. Clustering" DataContext="{Binding ClusterSettingsViewModel}">
-                    <Grid Margin="5">
+                    <!--  File list data grid  -->
+                    <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="20" />
                             <RowDefinition Height="25" />
-
-                            <RowDefinition Height="20" />
-
-                            <RowDefinition Height="20" />
-                            <RowDefinition Height="25" />
-
-                            <RowDefinition Height="20" />
-
-                            <RowDefinition Height="100" />
-
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="25" />
-                            <RowDefinition Height="5" />
-                            <RowDefinition Height="25" />
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50*" />
-                            <ColumnDefinition Width="3" />
-                            <ColumnDefinition Width=" 50*" />
-                        </Grid.ColumnDefinitions>
 
-                        <!-- Clustering Method -->
-                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold">Clustering Method</TextBlock>
-                        <ComboBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"
-                              ItemsSource="{Binding ClusteringMethods}" Height="22" />
-
-                        <!-- Distance Function -->
-                        <TextBlock Grid.Row="0" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center">Distance Function</TextBlock>
-                        <ComboBox Grid.Row="1" Grid.Column="2" SelectedItem="{Binding SelectedDistanceFunction}" ItemsSource="{Binding DistanceMetrics}"
-                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
-
-                        <!-- Centroid Representation -->
-                        <TextBlock Grid.Row="3" Grid.Column="0"  FontWeight="Bold" HorizontalAlignment="Center">Centroid Representation</TextBlock>
-                        <ComboBox Grid.Row="4" Grid.Column="0" SelectedItem="{Binding SelectedCentroidMethod}" ItemsSource="{Binding CentroidRepresentations}"
-                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
-
-                        <CheckBox Grid.Row="4" Grid.Column="2" Content="Separate by Charge" FontWeight="Bold" HorizontalAlignment="Center"
-                                  VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
-
-                        <!-- Cluster refinement options -->
-                        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
-                            <GroupBox.Header>
-                                <CheckBox IsChecked="{Binding ShouldRefineWithMsMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine clusters using MS/MS</CheckBox>
-                            </GroupBox.Header>
-                            <Grid IsEnabled="{Binding ShouldRefineWithMsMs, UpdateSourceTrigger=PropertyChanged}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <!-- Cluster comparison type -->
-                                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Comparison Type</TextBlock>
-                                <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center"
-                                          ItemsSource="{Binding PostProcessingComparisonType}"
-                                          SelectedItem="{Binding ClusterComparisonType}" />
-
-                                <!-- Tolerance -->
-                                <TextBlock Grid.Row="1" Grid.Column="0">Tolerance (ppm)</TextBlock>
-                                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Height="25" 
-                                                   Minimum="0" Increment="1" Value="{Binding ClusterPostProcessingTolerance}" />
-                            </Grid>
-                        </GroupBox>
-
-                        <ProgressBar Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Value="{Binding ProgressPercent}"
-                                     Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
-
-                        <Button Grid.Row="10" Grid.Column="0" Content="Cluster Features" Command="{Binding ClusterFeaturesCommand}" Width="125" HorizontalAlignment="Left" />
-                        <Button Grid.Row="10" Grid.Column="2" Content="View Clusters" Command="{Binding DisplayClustersCommand}" Width="125" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Row="0"
+                                   Margin="0,0,0,3"
+                                   FontSize="16">
+                            Working Data Files
+                        </TextBlock>
+                        <ProgressBar Name="WorkflowProgressBar"
+                                     Grid.Row="1"
+                                     Height="26"
+                                     Margin="2,0,11,0"
+                                     VerticalAlignment="Bottom"
+                                     IsVisibleChanged="WorkflowProgressBar_OnIsVisibleChanged"
+                                     RenderTransformOrigin="0.5,0.5"
+                                     Visibility="{Binding ShouldShowProgress,
+                                                          Converter={StaticResource BoolToVis}}"
+                                     Value="{Binding ProgressTracker}">
+                            <ProgressBar.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="-1" />
+                                    <SkewTransform />
+                                    <RotateTransform />
+                                    <TranslateTransform />
+                                </TransformGroup>
+                            </ProgressBar.RenderTransform>
+                        </ProgressBar>
+                        <DataGrid Name="FileSelectionDataGrid"
+                                  Grid.Row="1"
+                                  Margin="0,0,10,0"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserReorderColumns="False"
+                                  ItemsSource="{Binding Datasets,
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                  ScrollViewer.CanContentScroll="False">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="25">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding RequestRemovalCommand}" Content="-" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="*" Header="Dataset Name">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <ProgressBar Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" Value="{Binding Progress}" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Text="{Binding Dataset.DatasetName}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Width="110"
+                                                    Binding="{Binding DatasetState}"
+                                                    Header="Status"
+                                                    IsReadOnly="True" />
+                                <!--
+                                    <DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <DataGridCheckBoxColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Background" Value="{Binding FindingFeatureLabelColor, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Style>
+                                    </DataGridCheckBoxColumn.CellStyle>
+                                    </DataGridCheckBoxColumn>
+                                    <DataGridCheckBoxColumn Header="Aligned" Width="60" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <DataGridCheckBoxColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Background" Value="{Binding AligningLabelColor, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Style>
+                                    </DataGridCheckBoxColumn.CellStyle>
+                                    </DataGridCheckBoxColumn>
+                                    <DataGridCheckBoxColumn Header="Clustered" Width="60" IsReadOnly="True" Binding="{Binding IsClustered, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <DataGridCheckBoxColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Background" Value="{Binding ClusterLabelColor, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Style>
+                                    </DataGridCheckBoxColumn.CellStyle>
+                                    </DataGridCheckBoxColumn>
+                                -->
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Grid>
-                </TabItem>
-                <TabItem Header="4. AMT Tag Matching" DataContext="{Binding StacSettingsViewModel}">
-                    <amtMatching:StacSettingsView Margin="5" />
-                </TabItem>
-            </TabControl>
+
+                    <!--  Open/New project  -->
+                    <Grid Grid.Column="0"
+                          Background="Gray"
+                          Visibility="{Binding ShowSplash,
+                                               Converter={StaticResource BoolToVis}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="2*" />
+                        </Grid.RowDefinitions>
+
+                        <Button Grid.Row="1"
+                                Width="125"
+                                HorizontalAlignment="Center"
+                                Command="{Binding CreateNewProjectCommand}"
+                                Content="New Project" />
+                        <Button Grid.Row="3"
+                                Width="125"
+                                HorizontalAlignment="Center"
+                                Command="{Binding LoadProjectCommand}"
+                                Content="Load Project" />
+                    </Grid>
+                </Grid>
+            </DockPanel>
+
+            <GridSplitter Width="5"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Stretch"
+                          ResizeBehavior="CurrentAndNext" />
+
+            <DockPanel Name="settingsPanel"
+                       Grid.Column="1"
+                       MaxWidth="700"
+                       DockPanel.Dock="Right"
+                       LastChildFill="True">
+
+                <!--  Settings  -->
+                <TabControl Grid.Column="1">
+                    <TabItem DataContext="{Binding DataLoadingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="1. Loading Options">
+                        <utils:DataLoadingSettings Margin="5" />
+                    </TabItem>
+
+                    <TabItem DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="2. Feature Finding">
+                        <featureFinding:FeatureFindingSettings Margin="5" />
+                    </TabItem>
+                    <TabItem DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="3. Alignment">
+                        <alignment:AlignmentSettings Margin="5" />
+                    </TabItem>
+                    <TabItem DataContext="{Binding ClusterSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="4. Clustering">
+                        <clustering:ClusterSettings Margin="5" />
+                    </TabItem>
+                    <TabItem DataContext="{Binding StacSettingsViewModel}" Header="5. AMT Tag Matching">
+                        <amtMatching:StacSettingsView Margin="5" />
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+
         </Grid>
     </Grid>
 </Window>

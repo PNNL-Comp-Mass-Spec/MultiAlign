@@ -23,6 +23,11 @@ namespace MultiAlignRogue.Feature_Finding
         public FeatureFindingSettings()
         {
             InitializeComponent();
+
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                this.Background = Brushes.Transparent;
+            }
         }
     }
 }

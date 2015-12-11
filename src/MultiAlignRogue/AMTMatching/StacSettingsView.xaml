@@ -1,17 +1,20 @@
 ﻿<UserControl x:Class="MultiAlignRogue.AMTMatching.StacSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500">
+             xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
+             d:DesignHeight="500"
+             d:DesignWidth="500"
+             d:DataContext="{d:DesignInstance d:Type=amtMatching:StacSettingsViewModel, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <Grid Margin="3">
         <Grid.RowDefinitions>
-            <RowDefinition Height="85" Name="AmtTagDatabaseRow" />
+            <RowDefinition Name="AmtTagDatabaseRow" Height="85" />
             <RowDefinition Height="20" />
             <RowDefinition Height="85" />
             <RowDefinition Height="20" />
@@ -23,7 +26,7 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-        <!-- AMT Tag database selection -->
+        <!--  AMT Tag database selection  -->
         <GroupBox Grid.Row="0" Grid.Column="0">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">AMT Tag Database</TextBlock>
@@ -39,18 +42,35 @@
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox TextWrapping="Wrap" IsReadOnly="True" IsEnabled="{Binding ShouldAlignToAMT, UpdateSourceTrigger=PropertyChanged}"
-                         Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabaseServer.DatabaseName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}"
-                         Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" Height="25" />
-                <Button Content="Select Database" Command="{Binding Path=DatabaseSelectionViewModel.SelectAMTCommand}"
-                        Grid.Row="0" Grid.Column="1" Height="25" />
-                <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0" Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress}"
-                             Name="AmtTagDatabaseProgressBar"
-                             Visibility="{Binding Path=DatabaseSelectionViewModel.ShowMassTagProgress, Converter={StaticResource BoolToVis}}" />
+                <TextBox Grid.Row="0"
+                         Grid.Column="0"
+                         Height="25"
+                         Margin="0,0,5,0"
+                         IsEnabled="{Binding ShouldAlignToAMT,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="True"
+                         Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabaseServer.DatabaseName,
+                                        UpdateSourceTrigger=PropertyChanged,
+                                        Mode=TwoWay,
+                                        NotifyOnSourceUpdated=True}"
+                         TextWrapping="Wrap" />
+                <Button Grid.Row="0"
+                        Grid.Column="1"
+                        Height="25"
+                        Command="{Binding Path=DatabaseSelectionViewModel.SelectAMTCommand}"
+                        Content="Select Database" />
+                <ProgressBar Name="AmtTagDatabaseProgressBar"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Margin="0,5,0,0"
+                             Visibility="{Binding Path=DatabaseSelectionViewModel.ShowMassTagProgress,
+                                                  Converter={StaticResource BoolToVis}}"
+                             Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress}" />
             </Grid>
         </GroupBox>
 
-        <!-- Tolerances -->
+        <!--  Tolerances  -->
         <GroupBox Grid.Row="2">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Tolerances</TextBlock>
@@ -66,25 +86,45 @@
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Mass Tolerance -->
-                <Label Content="Mass Tolerance (ppm)" Grid.Column="0" HorizontalAlignment="Center" />
-                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="0" Increment="1.0"
-                                   Value="{Binding Path=DatabaseSelectionViewModel.MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                <!--  Mass Tolerance  -->
+                <Label Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="Mass Tolerance (ppm)" />
+                <xctk:DoubleUpDown Grid.Row="1"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   Increment="1.0"
+                                   Minimum="0"
+                                   Value="{Binding Path=DatabaseSelectionViewModel.MassTolerance,
+                                                   Mode=TwoWay,
+                                                   NotifyOnSourceUpdated=True,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- Net Tolerance -->
-                <Label Content="NET Tolerance" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2" />
-                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="2" Minimum="0" Increment="0.1" Maximum="1.0"
-                                   Value="{Binding Path=DatabaseSelectionViewModel.NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--  Net Tolerance  -->
+                <Label Grid.Row="0"
+                       Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       Content="NET Tolerance" />
+                <xctk:DoubleUpDown Grid.Row="1"
+                                   Grid.Column="2"
+                                   HorizontalContentAlignment="Center"
+                                   Increment="0.1"
+                                   Maximum="1.0"
+                                   Minimum="0"
+                                   Value="{Binding Path=DatabaseSelectionViewModel.NetTolerance,
+                                                   Mode=TwoWay,
+                                                   NotifyOnSourceUpdated=True,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
             </Grid>
         </GroupBox>
 
-        <!-- Stac Options -->
+        <!--  Stac Options  -->
         <GroupBox Grid.Row="4">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">STAC Options</TextBlock>
             </GroupBox.Header>
-            
+
             <Grid Margin="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
@@ -96,22 +136,41 @@
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
 
-                <!--Peak matching type-->
+                <!--  Peak matching type  -->
                 <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCalculateStac, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate STAC</CheckBox>
-                
-                 <!--Calculate SliC--> 
-                <CheckBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                          IsChecked="{Binding ShouldUseSlic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate SLiC</CheckBox>
-                
-                <!--Use Prior Probabilities-->
-                <CheckBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding UsePriors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Prior Probabilities</CheckBox>
-                
-                 <!--Use Ellipsoid--> 
-                <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
-                          IsChecked="{Binding ShouldUseEllipsoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Use Ellipsoid</CheckBox>
+
+                <!--  Calculate SliC  -->
+                <CheckBox Grid.Row="0"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding ShouldUseSlic,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}">
+                    Calculate SLiC
+                </CheckBox>
+
+                <!--  Use Prior Probabilities  -->
+                <CheckBox Grid.Row="1"
+                          Grid.Column="0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding UsePriors,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}">
+                    Use Prior Probabilities
+                </CheckBox>
+
+                <!--  Use Ellipsoid  -->
+                <CheckBox Grid.Row="1"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding ShouldUseEllipsoid,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}">
+                    Use Ellipsoid
+                </CheckBox>
             </Grid>
         </GroupBox>
-        
+
         <GroupBox Grid.Row="6">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Histogram</TextBlock>
@@ -127,24 +186,61 @@
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
 
-                <!--Histogram bin width-->
-                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Histogram Bin Width</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
-                                   Minimum="0" Value="{Binding HistogramBinWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <!--  Histogram bin width  -->
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">
+                    Histogram Bin Width
+                </TextBlock>
+                <xctk:DoubleUpDown Grid.Row="0"
+                                   Grid.Column="1"
+                                   Width="100"
+                                   Height="25"
+                                   HorizontalAlignment="Left"
+                                   Minimum="0"
+                                   Value="{Binding HistogramBinWidth,
+                                                   Mode=TwoWay,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
-                <!--Histogram multiplier-->
-                <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Histogram Multiplier</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Height="25" Width="100"
-                                   Minimum="0" Value="{Binding HistogramMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <!--  Histogram multiplier  -->
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">
+                    Histogram Multiplier
+                </TextBlock>
+                <xctk:DoubleUpDown Grid.Row="1"
+                                   Grid.Column="1"
+                                   Width="100"
+                                   Height="25"
+                                   HorizontalAlignment="Left"
+                                   Minimum="0"
+                                   Value="{Binding HistogramMultiplier,
+                                                   Mode=TwoWay,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
-                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CalculateHistogramFdr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Calculate Histogram FDR</CheckBox>
+                <CheckBox Grid.Row="2"
+                          Grid.Column="0"
+                          IsChecked="{Binding CalculateHistogramFdr,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}">
+                    Calculate Histogram FDR
+                </CheckBox>
             </Grid>
         </GroupBox>
 
-        <ProgressBar Grid.Row="8" Grid.Column="0" Value="{Binding AlignmentProgress}" Height="25"
-                             Visibility="{Binding ShouldShowTotalProgress, Converter={StaticResource BoolToVis}}" />
-        <!-- Buttons -->
-        <Button Content="Run Matching" HorizontalAlignment="Right" Height="25" Width="125" Command="{Binding PerformMatchingCommand}" Grid.Row="9" />
-        <!--<Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Height="25" Width="125" Grid.Row="7" />-->
+        <ProgressBar Grid.Row="8"
+                     Grid.Column="0"
+                     Height="25"
+                     Visibility="{Binding ShouldShowTotalProgress,
+                                          Converter={StaticResource BoolToVis}}"
+                     Value="{Binding AlignmentProgress}" />
+        <!--  Buttons  -->
+        <Button Grid.Row="9"
+                Width="125"
+                Height="25"
+                HorizontalAlignment="Right"
+                Command="{Binding PerformMatchingCommand}"
+                Content="Run Matching" />
+        <!--  <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Height="25" Width="125" Grid.Row="7" />  -->
     </Grid>
 </UserControl>

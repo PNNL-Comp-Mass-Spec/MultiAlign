@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MultiAlignRogue.Alignment
+namespace MultiAlignRogue.Clustering
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for ClusterSettings.xaml
     /// </summary>
-    public partial class AlignmentSettings : UserControl
+    public partial class ClusterSettings : UserControl
     {
-        public AlignmentSettings()
+        public ClusterSettings()
         {
             InitializeComponent();
 

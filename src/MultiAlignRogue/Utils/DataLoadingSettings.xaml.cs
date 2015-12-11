@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MultiAlignRogue.Alignment
+namespace MultiAlignRogue.Utils
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for DataLoadingSettings.xaml
     /// </summary>
-    public partial class AlignmentSettings : UserControl
+    public partial class DataLoadingSettings : UserControl
     {
-        public AlignmentSettings()
+        public DataLoadingSettings()
         {
             InitializeComponent();
 

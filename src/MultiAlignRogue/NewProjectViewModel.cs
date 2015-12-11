@@ -9,20 +9,12 @@ namespace MultiAlignRogue
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using System.Windows.Navigation;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
 
-    using MultiAlign.Data;
-
-    using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.MetaData;
-    using MultiAlignCore.IO.InputFiles;
-
-    using Ookii.Dialogs;
 
     using MessageBox = System.Windows.MessageBox;
 
@@ -44,6 +36,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Initializes a new instance of the <see cref="NewProjectViewModel"/> class.
         /// </summary>
+        /// <remarks>Constructor</remarks>
         public NewProjectViewModel()
         {
             this.Datasets = new ObservableCollection<DatasetInformationViewModel>();
@@ -93,6 +86,18 @@ namespace MultiAlignRogue
         public RelayCommand CancelCommand { get; private set; }
 
         /// <summary>
+        /// Last directory selected for the source data files
+        /// </summary>
+        /// <remarks>This path is used by the the file selection dialog</remarks>
+        public string LastInputDirectory { get; set; }
+
+        /// <summary>
+        /// Last directory selected for the project file
+        /// </summary>
+        /// <remarks>This path is used by the the file selection dialog</remarks>
+        public string LastProjectDirectory { get; set; }
+
+        /// <summary>
         /// Gets or sets the path to the Rogue Project file.
         /// </summary>
         public string ProjectFilePath
@@ -100,17 +105,26 @@ namespace MultiAlignRogue
             get { return this.projectFilePath; }
             set
             {
-                if (this.projectFilePath != value)
+                if (string.IsNullOrWhiteSpace(value) || string.Equals(this.projectFilePath, value))
                 {
-                    this.projectFilePath = value;
-                    if (string.IsNullOrWhiteSpace(this.outputDirectory))
-                    {
-                        this.OutputDirectory = Path.GetDirectoryName(value);
-                    }
-
-                    this.CreateCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged();
+                    return;
                 }
+
+                this.projectFilePath = value;
+                var projectFileDirectory = Path.GetDirectoryName(value);
+
+                if (string.IsNullOrWhiteSpace(this.outputDirectory))
+                {
+                    this.OutputDirectory = projectFileDirectory;
+                }
+
+                if (string.IsNullOrWhiteSpace(this.LastProjectDirectory))
+                {
+                    LastProjectDirectory = projectFileDirectory;
+                }
+
+                this.CreateCommand.RaiseCanExecuteChanged();
+                this.RaisePropertyChanged();
             }
         }
 
@@ -122,12 +136,20 @@ namespace MultiAlignRogue
             get { return this.outputDirectory; }
             set
             {
-                if (this.outputDirectory != value)
+                if (string.IsNullOrWhiteSpace(value) || string.Equals(this.outputDirectory, value))
                 {
-                    this.outputDirectory = value;
-                    this.CreateCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged();
+                    return;
                 }
+
+                this.outputDirectory = value;
+
+                if (string.IsNullOrWhiteSpace(this.LastProjectDirectory))
+                {
+                    LastProjectDirectory = value;
+                }              
+
+                this.CreateCommand.RaiseCanExecuteChanged();
+                this.RaisePropertyChanged();
             }
         }
 
@@ -154,14 +176,25 @@ namespace MultiAlignRogue
             var saveFileDialog = new SaveFileDialog
             {
                 DefaultExt = ".xml",
-                Filter = @"Supported Files|*.xml"
+                Filter = @"Supported Files|*.xml"                
             };
 
+            if (!string.IsNullOrWhiteSpace(this.LastProjectDirectory))
+                saveFileDialog.InitialDirectory = this.LastProjectDirectory;
+            else if (!string.IsNullOrWhiteSpace(this.outputDirectory))
+                saveFileDialog.InitialDirectory = this.outputDirectory;
+
             var result = saveFileDialog.ShowDialog();
-            if (result != null && result.Value)
+            if (result != true)
             {
-                this.ProjectFilePath = saveFileDialog.FileName;
+                return;
             }
+
+            this.ProjectFilePath = saveFileDialog.FileName;
+            this.LastProjectDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+
+            if (string.IsNullOrWhiteSpace(this.outputDirectory))
+                this.OutputDirectory = this.LastProjectDirectory;
         }
 
         /// <summary>
@@ -170,8 +203,14 @@ namespace MultiAlignRogue
         private void BrowseOutputDirectoriesImpl()
         {
             var folderBrowser = new VistaFolderBrowserDialog();
+
+            if (!string.IsNullOrWhiteSpace(this.outputDirectory))
+                folderBrowser.SelectedPath = this.outputDirectory;
+            else if (!string.IsNullOrWhiteSpace(this.LastProjectDirectory))
+                folderBrowser.SelectedPath = this.LastProjectDirectory;
+
             var result = folderBrowser.ShowDialog();
-            if (result != null && result.Value)
+            if (result == true)
             {
                 this.OutputDirectory = folderBrowser.SelectedPath;
             }
@@ -189,18 +228,30 @@ namespace MultiAlignRogue
                 Filter = DatasetLoader.SupportedFileFilter
             };
 
+            if (!string.IsNullOrWhiteSpace(this.LastInputDirectory))
+                openFileDialog.InitialDirectory = this.LastInputDirectory;
+
             var result = openFileDialog.ShowDialog();
-            if (result != null && result.Value)
+            if (result != true)
             {
-                var filePaths = openFileDialog.FileNames;
-                var datasets = this.GetAndValidateDatasets(filePaths);
-                foreach (var dataset in datasets)
-                {
-                    var datasetInformationViewModel = new DatasetInformationViewModel(dataset);
-                    datasetInformationViewModel.RemovalRequested += (s, e) => this.Datasets.Remove(datasetInformationViewModel);
-                    this.Datasets.Add(datasetInformationViewModel);
-                    this.CreateCommand.RaiseCanExecuteChanged();
-                }
+                return;
+            }
+
+            var filePaths = openFileDialog.FileNames;
+            var datasets = this.GetAndValidateDatasets(filePaths);
+            if (datasets.Count == 0)
+            {
+                return;
+            }
+
+            this.LastInputDirectory = Path.GetDirectoryName(filePaths.First());
+
+            foreach (var dataset in datasets)
+            {
+                var datasetInformationViewModel = new DatasetInformationViewModel(dataset);
+                datasetInformationViewModel.RemovalRequested += (s, e) => this.Datasets.Remove(datasetInformationViewModel);
+                this.Datasets.Add(datasetInformationViewModel);
+                this.CreateCommand.RaiseCanExecuteChanged();                
             }
         }
 
