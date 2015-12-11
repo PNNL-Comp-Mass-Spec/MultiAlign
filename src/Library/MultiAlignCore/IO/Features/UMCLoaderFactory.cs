@@ -112,7 +112,7 @@ namespace MultiAlignCore.IO.Features
         ///     Loads MS Features from a CSV file or existing database.
         /// </summary>
         /// <returns></returns>
-        public static List<MSFeatureLight> LoadMsFeatureData(string path)
+        public static List<MSFeatureLight> LoadMsFeatureData(string path, DeconToolsIsosFilterOptions isosFilterOptions)
         {
             var msFeatures = new List<MSFeatureLight>();
             var extension = Path.GetExtension(path);
@@ -131,6 +131,7 @@ namespace MultiAlignCore.IO.Features
 
                 default:
                     var reader = new MsFeatureLightFileReader {Delimiter = ','};
+                    reader.IsosFilteroptions = isosFilterOptions;
                     var newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);
                     UpdateStatus("Loaded features from the CSV files.");

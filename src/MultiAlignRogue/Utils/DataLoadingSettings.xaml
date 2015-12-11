@@ -69,7 +69,6 @@
             maximum fit
         </TextBlock>
 
-
         <CheckBox Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
@@ -118,13 +117,56 @@
                   Grid.ColumnSpan="2"
                   Margin="7,0,0,0"
                   VerticalAlignment="Center"
+                  IsChecked="{Binding ShouldUseLCScanFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+            Enable LC scan filter
+        </CheckBox>
+        <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="2"
+                           Grid.ColumnSpan="2"
+                           Width="90"
+                           Height="25"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Value="{Binding MinimumLCScan,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Grid.Row="3"
+                   Grid.Column="4"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            to
+        </TextBlock>
+        <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="5"
+                           Width="90"
+                           Height="25"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Value="{Binding MaximumLCScan,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+        <CheckBox Grid.Row="4"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
                   IsChecked="{Binding ShouldUseMaximumDataCountFilter,
                                       Mode=TwoWay,
                                       NotifyOnSourceUpdated=True,
                                       UpdateSourceTrigger=PropertyChanged}">
             Enable maximum data count filter
         </CheckBox>
-        <xctk:DoubleUpDown Grid.Row="3"
+        <xctk:DoubleUpDown Grid.Row="4"
                            Grid.Column="2"
                            Grid.ColumnSpan="2"
                            Width="90"
@@ -138,7 +180,7 @@
                                            Mode=TwoWay,
                                            NotifyOnSourceUpdated=True,
                                            UpdateSourceTrigger=PropertyChanged}" />
-        <TextBlock Grid.Row="3"
+        <TextBlock Grid.Row="4"
                    Grid.Column="4"
                    Grid.ColumnSpan="3"
                    HorizontalAlignment="Left"

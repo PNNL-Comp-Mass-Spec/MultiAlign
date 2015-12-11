@@ -77,6 +77,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Gets or sets the scan value.
         /// </summary>
+        /// <remarks>For IMS data, stores the frame number</remarks>
         public int Scan { get; set; }
 
         /// <summary>
@@ -146,6 +147,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Gets or sets the drift time of a feature.
         /// </summary>
+        /// <remarks>Typically an integer for the TOF scan number</remarks>
         public double DriftTime { get; set; }
         
         /// <summary>

@@ -77,6 +77,36 @@ namespace MultiAlignRogue.Utils
             }
         }
 
+        public bool ShouldUseLCScanFilter
+        {
+            get { return this.analysis.Options.DataLoadOptions.UseLCScanFilter; }
+            set
+            {
+                this.analysis.Options.DataLoadOptions.UseLCScanFilter = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public int MinimumLCScan
+        {
+            get { return this.analysis.Options.DataLoadOptions.MinimumLCScan; }
+            set
+            {
+                this.analysis.Options.DataLoadOptions.MinimumLCScan = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public int MaximumLCScan
+        {
+            get { return this.analysis.Options.DataLoadOptions.MaximumLCScan; }
+            set
+            {
+                this.analysis.Options.DataLoadOptions.MaximumLCScan = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
         public bool ShouldUseMaximumDataCountFilter
         {
             get { return this.analysis.Options.DataLoadOptions.UseMaximumDataCountFilter; }
@@ -86,7 +116,6 @@ namespace MultiAlignRogue.Utils
                 this.RaisePropertyChanged();
             }
         }
-
 
         public int MaximumPointsToLoad
         {
@@ -111,6 +140,10 @@ namespace MultiAlignRogue.Utils
             ShouldUseAbundance = defaultOptions.DataLoadOptions.UseAbundanceFilter;
             MinimumAbundance = defaultOptions.DataLoadOptions.MinimumAbundance;
             MaximumAbundance = defaultOptions.DataLoadOptions.MaximumAbundance;
+
+            ShouldUseLCScanFilter = defaultOptions.DataLoadOptions.UseLCScanFilter;
+            MinimumLCScan = defaultOptions.DataLoadOptions.MinimumLCScan;
+            MaximumLCScan = defaultOptions.DataLoadOptions.MaximumLCScan;
 
             ShouldUseMaximumDataCountFilter = defaultOptions.DataLoadOptions.UseMaximumDataCountFilter;
             MaximumPointsToLoad = defaultOptions.DataLoadOptions.MaximumPointsToLoad;

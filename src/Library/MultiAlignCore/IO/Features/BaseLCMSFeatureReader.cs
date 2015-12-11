@@ -30,7 +30,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="filePath">String containing the location of the UMC csv file</param>
         protected BaseLCMSFeatureReader(string filePath)
         {
-            m_umcFileReader = new StreamReader(filePath);
+            m_umcFileReader = new StreamReader(new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
             m_columnMap = CreateColumnMapping();
         }
 
