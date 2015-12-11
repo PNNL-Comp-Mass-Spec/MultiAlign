@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignRogue.Alignment
+﻿namespace MultiAlignRogue.Alignment
 {
     using MultiAlignCore.Data.Features;
 
+    /// <summary>
+    /// This class contains settings for aligning/warping a single separation dimension.
+    /// Each separation dimension can have its own tolerances, discretization, and reference dataset.
+    /// </summary>
     public class AlignmentDimensionSettings
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlignmentDimensionSettings"/> class. 
+        /// </summary>
         public AlignmentDimensionSettings()
         {
             this.SeparationType = FeatureLight.SeparationTypes.LC;
