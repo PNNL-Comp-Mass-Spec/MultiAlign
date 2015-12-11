@@ -201,7 +201,7 @@ namespace MultiAlignRogue
         {
             return new RogueProject
             {
-                AnalysisPath = string.Format("{0}\\Analysis.db3", this.OutputDirectory),
+                AnalysisPath = string.Format("{0}\\{1}", this.OutputDirectory, Path.ChangeExtension(Path.GetFileName(this.ProjectFilePath), ".db3")),
                 Datasets = new List<DatasetInformation>(this.Datasets.Select(x => x.Dataset)),
                 LayoutFilePath = string.Format("{0}\\Layout.xml", this.OutputDirectory)
             };

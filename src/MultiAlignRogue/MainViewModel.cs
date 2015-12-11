@@ -598,6 +598,7 @@ namespace MultiAlignRogue
                 {
                     this.ShowSplash = false;
                     var rogueProject = newProjectViewModel.GetRogueProject();
+                    m_config.AnalysisName = Path.ChangeExtension(Path.GetFileName(newProjectViewModel.ProjectFilePath), "db3");
                     rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
                     await this.LoadRogueProject(rogueProject, true);
                     
