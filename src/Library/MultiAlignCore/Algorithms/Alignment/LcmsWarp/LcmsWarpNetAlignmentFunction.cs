@@ -4,6 +4,12 @@
     using System.Linq;
     using MultiAlignCore.Data.Features;
 
+    /// <summary>
+    /// This class represents the alignment function that is calculated by the LCMSWarp algorithm.
+    /// This class stores the mapping between alignee sections and baseline sections as a
+    /// list of <see cref="LcmsWarpAlignmentMatch" />, and it uses this list and the alignee section
+    /// info to warp the NETs of features for this alignment function.
+    /// </summary>
     public class LcmsWarpNetAlignmentFunction : IAlignmentFunction
     {
         /// <summary>
@@ -48,6 +54,7 @@
             var separationValue = feature.GetSeparationValue(this.SeparationType);
             var warpedValue = this.WarpValue(separationValue);
             warpedFeature.SetSeparationValue(this.SeparationType, warpedValue);
+
             return feature;
         }
 
