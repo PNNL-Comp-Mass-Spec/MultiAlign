@@ -23,6 +23,8 @@ namespace MultiAlignRogue
     /// </summary>
     public class NewProjectViewModel : ViewModelBase
     {
+        private string userDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
         /// <summary>
         /// The path to the Rogue Project file.
         /// </summary>
@@ -32,6 +34,16 @@ namespace MultiAlignRogue
         /// The path for the output (Analysis) files.
         /// </summary>
         private string outputDirectory;
+
+        /// <summary>
+        /// If the user has manually changed the output directory
+        /// </summary>
+        private bool outputDirectoryModified = false;
+
+        /// <summary>
+        /// The last stored output path
+        /// </summary>
+        private string lastOutputDirectory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewProjectViewModel"/> class.
@@ -98,6 +110,29 @@ namespace MultiAlignRogue
         public string LastProjectDirectory { get; set; }
 
         /// <summary>
+        /// Last directory selected for the output files
+        /// </summary>
+        /// <remarks>This path is used by the the file selection dialog</remarks>
+        public string LastOutputDirectory {
+            get
+            {
+                return this.lastOutputDirectory;
+            }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value) && this.lastOutputDirectory != value)
+                {
+                    this.lastOutputDirectory = value;
+                    if (string.IsNullOrWhiteSpace(this.outputDirectory))
+                    {
+                        this.OutputDirectory = value;
+                    }
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the path to the Rogue Project file.
         /// </summary>
         public string ProjectFilePath
@@ -113,7 +148,7 @@ namespace MultiAlignRogue
                 this.projectFilePath = value;
                 var projectFileDirectory = Path.GetDirectoryName(value);
 
-                if (string.IsNullOrWhiteSpace(this.outputDirectory))
+                if (string.IsNullOrWhiteSpace(this.outputDirectory) || (!this.outputDirectoryModified && this.outputDirectory == this.userDocuments))
                 {
                     this.OutputDirectory = projectFileDirectory;
                 }
@@ -146,7 +181,12 @@ namespace MultiAlignRogue
                 if (string.IsNullOrWhiteSpace(this.LastProjectDirectory))
                 {
                     LastProjectDirectory = value;
-                }              
+                }
+
+                if (string.IsNullOrWhiteSpace(this.LastOutputDirectory))
+                {
+                    LastOutputDirectory = value;
+                }          
 
                 this.CreateCommand.RaiseCanExecuteChanged();
                 this.RaisePropertyChanged();
@@ -161,7 +201,7 @@ namespace MultiAlignRogue
         {
             return new RogueProject
             {
-                AnalysisPath = string.Format("{0}\\Analysis.db3", this.OutputDirectory),
+                AnalysisPath = string.Format("{0}\\{1}", this.OutputDirectory, Path.ChangeExtension(Path.GetFileName(this.ProjectFilePath), ".db3")),
                 Datasets = new List<DatasetInformation>(this.Datasets.Select(x => x.Dataset)),
                 LayoutFilePath = string.Format("{0}\\Layout.xml", this.OutputDirectory)
             };
@@ -213,6 +253,8 @@ namespace MultiAlignRogue
             if (result == true)
             {
                 this.OutputDirectory = folderBrowser.SelectedPath;
+                this.outputDirectoryModified = true;
+                this.LastOutputDirectory = folderBrowser.SelectedPath;
             }
         }
 
@@ -230,6 +272,8 @@ namespace MultiAlignRogue
 
             if (!string.IsNullOrWhiteSpace(this.LastInputDirectory))
                 openFileDialog.InitialDirectory = this.LastInputDirectory;
+            else
+                openFileDialog.InitialDirectory = this.userDocuments;
 
             var result = openFileDialog.ShowDialog();
             if (result != true)
@@ -265,6 +309,7 @@ namespace MultiAlignRogue
             {
                 this.Success(this, EventArgs.Empty);
             }
+            this.LastOutputDirectory = OutputDirectory;
         }
 
         private List<DatasetInformation> GetAndValidateDatasets(IEnumerable<string> filePaths)

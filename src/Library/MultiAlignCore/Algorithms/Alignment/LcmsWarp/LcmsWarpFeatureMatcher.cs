@@ -1,23 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using MultiAlignCore.Data.Features;
 
+    /// <summary>
+    /// This class matches alignee features to baseline features.
+    /// </summary>
     public class LcmsWarpFeatureMatcher
     {
+        /// <summary>
+        /// Options for the LCMSWarp alignment algorithm.
+        /// </summary>
         private readonly LcmsWarpAlignmentOptions options;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LcmsWarpFeatureMatcher" /> class.
+        /// </summary>
+        /// <param name="options">Options for the LCMSWarp alignment algorithm.</param>
         public LcmsWarpFeatureMatcher(LcmsWarpAlignmentOptions options)
         {
             this.options = options;
             this.Matches = new List<LcmsWarpFeatureMatch>();
         }
 
+        /// <summary>
+        /// Gets the list of matches between alignee and baseline features.
+        /// </summary>
         public List<LcmsWarpFeatureMatch> Matches { get; private set; }
 
         /// <summary>
@@ -39,9 +48,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Function generates candidate matches between alignee features and baseline features.
+        /// Generates candidate matches between alignee features and baseline features.
         /// It does so by finding all alignee-baseline feature pairs that match within a provided
-        /// mass tolerance window
+        /// mass tolerance window.
+        /// This method matches in mass only.
         /// </summary>
         /// <param name="aligneeFeatures"></param>
         /// <param name="baselineFeatures"></param>
@@ -101,10 +111,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Initially, clears any residual feature matches to ensure no carryover of prior runs,
-        /// then goes through and calculates the match score for each feature with relation to
-        /// the baselines, holding onto the "best match" for each one
+        /// Generates matches between alignee and baseline features in ALL dimensions.
         /// </summary>
+        /// <param name="aligneeFeatures"></param>
+        /// <param name="baselineFeatures"></param>
+        /// <param name="netStdDev"></param>
+        /// <param name="massStdDev"></param>
         public List<LcmsWarpFeatureMatch> CalculateAlignmentMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, double netStdDev, double massStdDev)
         {
             // Sort features by mass
@@ -142,17 +154,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     if (baselineFeature.MassMonoisotopic >
                         aligneeFeature.MassMonoisotopic - massTolerance)
                     {
-                        // Calculate the mass and net errors
+                        // Calculate the mass and net errors.
                         var netDiff = baselineFeature.Net - aligneeFeature.NetAligned;
                         var driftDiff = baselineFeature.DriftTime - aligneeFeature.DriftTime;
                         var massDiff = (baselineFeature.MassMonoisotopic -
                                         aligneeFeature.MassMonoisotopic) * 1000000.0 / aligneeFeature.MassMonoisotopic;
 
-                        // Calculate the match score
+                        // Calculate the match score.
                         var matchScore = -0.5 * (netDiff * netDiff) / (netStdDev * netStdDev);
                         matchScore -= 0.5 * (massDiff * massDiff) / (massStdDev * massStdDev);
 
-                        // If the match score is greater than the best match score, update the holding item
+                        // If the match score is greater than the best match score, update the holding item.
                         if (matchScore > bestMatchScore)
                         {
                             bestMatchScore = matchScore;
@@ -171,7 +183,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     baselineFeatureIndex++;
                 }
 
-                //If we found a match, add it to the list of matches
+                // If we found a match, add it to the list of matches.
                 if (bestMatchFeature != null)
                 {
                     featureMatches.Add(bestMatchFeature);
