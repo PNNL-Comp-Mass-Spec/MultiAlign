@@ -5,6 +5,7 @@
     using GalaSoft.MvvmLight.Command;
 
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Data.MetaData;
 
     /// <summary>
     /// This class is a view model for configuring a <see cref="AlignmentDimensionSettings" />
@@ -16,6 +17,11 @@
         /// The dimension settings model.
         /// </summary>
         private readonly AlignmentDimensionSettings dimensionSettings;
+
+        /// <summary>
+        /// The name of the selected baseline dataset.
+        /// </summary>
+        private string selectedBaselineDatasetName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlignmentDimensionSettingsViewModel"/> class. 
@@ -37,7 +43,8 @@
                         {
                             this.MoveUpRequested(this, EventArgs.Empty);
                         }
-                    });
+                    },
+                    () => this.ShouldAlignDimension);
 
             this.MoveDownCommand = new RelayCommand(
                 () =>
@@ -46,7 +53,8 @@
                     {
                         this.MoveDownRequested(this, EventArgs.Empty);
                     }
-                });
+                },
+                () => this.ShouldAlignDimension);
         }
 
         /// <summary>
@@ -139,9 +147,27 @@
                 if (this.ShouldAlignDimension != value)
                 {
                     this.ShouldAlignDimension = value;
+                    this.MoveUpCommand.RaiseCanExecuteChanged();
+                    this.MoveDownCommand.RaiseCanExecuteChanged();
                     this.RaisePropertyChanged();
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the name of the selected baseline dataset.
+        /// </summary>
+        public IDataset SelectedBaselineDataset
+        {
+            get {  return this.dimensionSettings.BaselineDataset; }
+            private set
+            {
+                if (this.dimensionSettings.BaselineDataset != value)
+                {
+                    this.dimensionSettings.BaselineDataset = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        } 
     }
 }

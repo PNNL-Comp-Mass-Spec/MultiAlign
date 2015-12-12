@@ -1,6 +1,9 @@
 ﻿namespace MultiAlignRogue.Alignment
 {
+    using MultiAlign.ViewModels.Datasets;
+
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Data.MetaData;
 
     /// <summary>
     /// This class contains settings for aligning/warping a single separation dimension.
@@ -48,6 +51,11 @@
         /// Gets or sets a value indicating whether this dimension should be warped.
         /// </summary>
         public bool ShouldAlignDimension { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reference to the baseline dataset to align to.
+        /// </summary>
+        public IDataset BaselineDataset { get; set; }
 
         /// <summary>
         /// Default settings for liquid-chromatography.

@@ -23,7 +23,7 @@ namespace MultiAlignCore.Data.MetaData
     /// <summary>
     ///     Contains information about a dataset used for analysis.r
     /// </summary>
-    public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged
+    public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged, IDataset
     {
         private bool featuresFound;
         private bool isAligned;
@@ -48,7 +48,7 @@ namespace MultiAlignCore.Data.MetaData
 
         #region Properties
 
-        public string Alias { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Gets or sets whether this dataset is a baseline or not.
@@ -162,7 +162,7 @@ namespace MultiAlignCore.Data.MetaData
             set
             {
                 m_datasetName = value;
-                Alias = value;
+                Name = value;
             }
         }
 
