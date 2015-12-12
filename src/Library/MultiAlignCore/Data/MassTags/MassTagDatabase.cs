@@ -4,10 +4,12 @@ using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.Data.MassTags
 {
+    using MultiAlignCore.Data.MetaData;
+
     /// <summary>
     /// Contains all the information for mass tag databases.
     /// </summary>
-    public class MassTagDatabase
+    public class MassTagDatabase : IDataset
     {        
         
         /// <summary>

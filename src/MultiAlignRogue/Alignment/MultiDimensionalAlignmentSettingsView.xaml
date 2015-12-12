@@ -6,7 +6,7 @@
              xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="700">
+             d:DesignHeight="300" d:DesignWidth="750"> <!--d:DataContext="{d:DesignInstance d:Type=alignment:AlignmentSettingsViewModel, IsDesignTimeCreatable=True}">-->
     <!--<UserControl.DataContext>
         <alignment:AlignmentSettingsViewModel />
     </UserControl.DataContext>-->
@@ -26,19 +26,52 @@
                 </DataGridTemplateColumn>
                 
                 <!-- Should align dimension column -->
-                <DataGridCheckBoxColumn Width="50" Header="Warp?" Binding="{Binding ShouldAlignDimension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridCheckBoxColumn Width="50" Header="Warp?" Binding="{Binding ShouldAlignDimension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+                </DataGridCheckBoxColumn>
                 
                 <!-- Separation type column -->
-                <DataGridTextColumn Width="*" Header="Separation" Binding="{Binding SeparationType, Mode=OneWay}" />
+                <DataGridTextColumn Width="*" Header="Separation" Binding="{Binding SeparationType, Mode=OneWay}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 
                 <!-- Reference dataset column -->
-                <DataGridTemplateColumn Width="5*" Header="Reference"></DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="5*" Header="Reference">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:DropDownButton Margin="2" Content="{Binding SelectedBaselineDataset.Name}" IsEnabled="{Binding ShouldAlignDimension}">
+                                <xctk:DropDownButton.DropDownContent>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="25" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        
+                                        
+                                    </Grid>
+                                </xctk:DropDownButton.DropDownContent>
+                            </xctk:DropDownButton>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 
                 <!-- Number of sections column -->
                 <DataGridTemplateColumn Width="*" Header="# Sections">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <xctk:IntegerUpDown Value="{Binding NumSections}" Minimum="0" />
+                            <xctk:IntegerUpDown Value="{Binding NumSections}" Minimum="0" Margin="2" IsEnabled="{Binding ShouldAlignDimension}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -47,7 +80,7 @@
                 <DataGridTemplateColumn Header="Contraction Factor" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <xctk:IntegerUpDown Value="{Binding ContractionFactor}" Minimum="0" />
+                            <xctk:IntegerUpDown Value="{Binding ContractionFactor}" Minimum="0" Margin="2" IsEnabled="{Binding ShouldAlignDimension}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
