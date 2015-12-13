@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Mapping;
 using MultiAlignCore.Algorithms;
 
-namespace MultiAlignCore.IO.Hibernate.FluentMappings
+namespace MultiAlignCore.IO.Hibernate.FluentMappings.Options
 {
     public class FeatureTolerancesMapping : ClassMap<FeatureTolerances>
     {
