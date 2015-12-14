@@ -178,7 +178,7 @@ namespace MultiAlignCore.IO
             var features = finder.FindFeatures(msFeatures, options, provider, progress);
 
             UpdateStatus("Filtering features.");
-            List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, information.ScanTimes);
+            List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, provider);
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;

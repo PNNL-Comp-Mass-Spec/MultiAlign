@@ -1,66 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentNHibernate.Utils;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.Hibernate;
-using MultiAlignCore.IO.TextFiles;
-
-namespace MultiAlignCore.IO.RawData
+﻿namespace MultiAlignCore.IO.RawData
 {
+    using System;
+    using System.Collections.Generic;
+    using MultiAlignCore.Data;
+    using MultiAlignCore.IO.Hibernate;
+    using MultiAlignCore.IO.TextFiles;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
     using InformedProteomics.Backend.Utils;
 
+    /// <summary>
+    /// This class stores the loaded Decon2ls scans file.
+    /// </summary>
     public class ScanSummaryProvider: IScanSummaryProvider
     {
-        private DatasetSummary _summary;
+        /// <summary>
+        /// The summary for the dataset, which contains the scan -> scan summary mapping.
+        /// </summary>
+        private DatasetSummary summary;
 
         /// <summary>
         /// The total number of scans.
         /// </summary>
-        private int _totalScans;
+        private int totalScans;
 
         /// <summary>
         /// The lowest scan number.
         /// </summary>
-        private int _minScan;
+        private int minScan;
 
         /// <summary>
         /// The highest scan number.
         /// </summary>
-        private int _maxScan;
+        private int maxScan;
 
         /// <summary>
         /// Scans file for lazy loading.
         /// </summary>
-        private string _scansFilePath;
+        private string scansFilePath;
 
         /// <summary>
         /// ScanSummaryDAO for lazy loading.
         /// </summary>
-        private ScanSummaryDAOHibernate _scanSummaryDao;
+        private ScanSummaryDAOHibernate scanSummaryDao;
 
-        public ScanSummaryProvider(int groupId)
+        /// <summary>
+        /// Sorted list of scan numbers.
+        /// </summary>
+        private List<int> knownScanNumbers;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class. 
+        /// For initializing an empty ScanSummaryProvider or a preloaded set of scan summaries.
+        /// </summary>
+        /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
+        /// <param name="scanSummaries">Preloaded scan summaries.</param>
+        public ScanSummaryProvider(int groupId, IEnumerable<ScanSummary> scanSummaries = null)
         {
             this.GroupId = groupId;
-            this._summary = null;
-            this._totalScans = -1;
-            this._minScan = -1;
-            this._maxScan = -1;
+            this.summary = null;
+            this.totalScans = -1;
+            this.minScan = -1;
+            this.maxScan = -1;
             this.IsBackedByFile = true;
+            this.knownScanNumbers = new List<int>();
+
+            // Add preloaded scan summaries if available.
+            if (scanSummaries != null)
+            {
+                this.summary = new DatasetSummary();
+                foreach (var scanSummary in scanSummaries)
+                {
+                    this.summary.ScanMetaData.Add(scanSummary.Scan, scanSummary);
+                }
+
+                this.knownScanNumbers = this.summary.ScanMetaData.Keys.OrderBy(x => x).ToList();
+            }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class. 
+        /// For initializing a ScanSummaryProvider from a scans file.
+        /// </summary>
+        /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
+        /// <param name="scansFilePath">The path to the scans file.</param>
         public ScanSummaryProvider(int groupId, string scansFilePath) : this(groupId)
         {
-            this._scansFilePath = scansFilePath;
+            this.scansFilePath = scansFilePath;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class.
+        /// For initializing a ScanSummaryProvider from a database data access object. 
+        /// </summary>
+        /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
+        /// <param name="scanSummaryDao"></param>
         public ScanSummaryProvider(int groupId, ScanSummaryDAOHibernate scanSummaryDao)
             : this(groupId)
         {
-            this._scanSummaryDao = scanSummaryDao;
+            this.scanSummaryDao = scanSummaryDao;
             this.IsBackedByFile = false;
         }
 
@@ -81,14 +121,14 @@ namespace MultiAlignCore.IO.RawData
         {
             get
             {
-                if (this._totalScans < 0)
+                if (this.totalScans < 0)
                 {   // Lazy load scans file.
                     this.LoadScans();
                 }
 
-                return this._totalScans;
+                return this.totalScans;
             }
-            private set { this._totalScans = value; }
+            private set { this.totalScans = value; }
         }
 
         /// <summary>
@@ -98,14 +138,14 @@ namespace MultiAlignCore.IO.RawData
         {
             get
             {
-                if (this._minScan < 0)
+                if (this.minScan < 0)
                 {   // Lazy load scans file.
                     this.LoadScans();
                 }
 
-                return this._minScan;
+                return this.minScan;
             }
-            private set { this._minScan = value; }
+            private set { this.minScan = value; }
         }
 
         /// <summary>
@@ -115,14 +155,14 @@ namespace MultiAlignCore.IO.RawData
         {
             get
             {
-                if (this._maxScan < 0)
+                if (this.maxScan < 0)
                 {   // Lazy load scans file.
                     this.LoadScans();
                 }
 
-                return this._maxScan;
+                return this.maxScan;
             }
-            private set { this._maxScan = value; }
+            private set { this.maxScan = value; }
         }
 
         /// <summary>
@@ -130,17 +170,16 @@ namespace MultiAlignCore.IO.RawData
         /// </summary>
         public ScanSummary GetScanSummary(int scan)
         {
-            if (this._summary == null)
+            if (this.summary == null)
             {
                 this.LoadScans();
             }
 
-            if (!_summary.ScanMetaData.ContainsKey(scan))
-            {
-                throw new ScanOutOfRangeException("The requested scan is out of range.");
-            }
+            var scanSummary = this.summary.ScanMetaData.ContainsKey(scan) ? 
+                                          this.summary.ScanMetaData[scan] :
+                                          this.InterpolateScanSummary(scan);
 
-            return _summary.ScanMetaData[scan];
+            return scanSummary;
         }
 
         /// <summary>
@@ -153,17 +192,17 @@ namespace MultiAlignCore.IO.RawData
         /// <returns>All scan summaries.</returns>
         public List<ScanSummary> GetScanSummaries(int msLevel = 0)
         {
-            if (this._summary == null)
+            if (this.summary == null)
             {
                 this.LoadScans();
             }
 
             if (msLevel == 0)
             {
-                return this._summary.ScanMetaData.Values.ToList();
+                return this.summary.ScanMetaData.Values.ToList();
             }
 
-            return this._summary.ScanMetaData.Values.Where(sum => sum.MsLevel == msLevel).ToList();
+            return this.summary.ScanMetaData.Values.Where(sum => sum.MsLevel == msLevel).ToList();
         }
 
         public ScanSummary GetNextScanSummary(int scan, int msLevel)
@@ -172,7 +211,7 @@ namespace MultiAlignCore.IO.RawData
         }
 
         /// <summary>
-        /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
+        /// Gets a value that indicates whether the scan summary provider is populated from a file, or from something else (i.e., the database)
         /// </summary>
         public bool IsBackedByFile { get; private set; }
 
@@ -197,14 +236,14 @@ namespace MultiAlignCore.IO.RawData
         /// <summary>
         /// Load scan summaries from a scans file.
         /// </summary>
-        /// <param name="scansFilePath">The file path to the scans file.</param>
-        public void LoadScansFile(string scansFilePath)
+        /// <param name="filePath">The file path to the scans file.</param>
+        public void LoadScansFile(string filePath)
         {
-            this._scansFilePath = scansFilePath;
-            this._summary = new DatasetSummary();
+            this.scansFilePath = filePath;
+            this.summary = new DatasetSummary();
             var reader = new ScansFileReader { Delimiter = ',' };
-            var scans = reader.ReadFile(scansFilePath);
-            var dict = this._summary.ScanMetaData;
+            var scans = reader.ReadFile(this.scansFilePath);
+            var dict = this.summary.ScanMetaData;
             dict.Clear();
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;
@@ -219,6 +258,7 @@ namespace MultiAlignCore.IO.RawData
             this.MinScan = minScan;
             this.MaxScan = maxScan;
             this.TotalScans = maxScan - minScan; // Not truly the total number present; Scans file contains only MS1 scans
+            this.knownScanNumbers = dict.Values.OrderBy(value => value.Scan).Select(value => value.Scan).ToList();
             this.SetNets();
             this.IsBackedByFile = true;
         }
@@ -239,12 +279,12 @@ namespace MultiAlignCore.IO.RawData
         /// <param name="dao">The existing data-access-object to use to access the database.</param>
         public void LoadFromDatabase(ScanSummaryDAOHibernate dao)
         {
-            this._scanSummaryDao = dao;
+            this.scanSummaryDao = dao;
             var data = dao.FindByDatasetId(this.GroupId);
 
             foreach (var summary in data)
             {
-                this._summary.ScanMetaData.Add(summary.Scan, summary);
+                this.summary.ScanMetaData.Add(summary.Scan, summary);
 
                 this.MinScan = Math.Min(this.MinScan, summary.Scan);
                 this.MaxScan = Math.Max(this.MaxScan, summary.Scan);
@@ -255,17 +295,25 @@ namespace MultiAlignCore.IO.RawData
         }
 
         /// <summary>
+        /// Dispose of scan summary provider.
+        /// </summary>
+        public void Dispose()
+        {
+            summary.ScanMetaData.Clear();
+        }
+
+        /// <summary>
         /// Load scans from scans file, if available, or database.
         /// </summary>
         private void LoadScans()
         {
-            if (!string.IsNullOrEmpty(this._scansFilePath) && File.Exists(this._scansFilePath))
+            if (!string.IsNullOrEmpty(this.scansFilePath) && File.Exists(this.scansFilePath))
             {
-                this.LoadScansFile(this._scansFilePath);
+                this.LoadScansFile(this.scansFilePath);
             }
-            else if (this._scanSummaryDao != null)
+            else if (this.scanSummaryDao != null)
             {
-                this.LoadFromDatabase(this._scanSummaryDao);
+                this.LoadFromDatabase(this.scanSummaryDao);
             }
             else
             {
@@ -282,18 +330,70 @@ namespace MultiAlignCore.IO.RawData
             var maxScanSum = this.GetScanSummary(this.MaxScan);
             var timeDiff = maxScanSum.Time - minScanSum.Time;
 
-            foreach (var summary in this._summary.ScanMetaData.Values)
+            foreach (var summary in this.summary.ScanMetaData.Values)
             {
                 summary.Net = (summary.Time - minScanSum.Time) / timeDiff;
             }
         }
 
         /// <summary>
-        /// Dispose of scan summary provider.
+        /// If scan summary is not known from the scans file/databse,
+        /// calculate the retention time by interpolating between the two
+        /// nearest scans.
         /// </summary>
-        public void Dispose()
+        /// <param name="scanNumber">The target scan number.</param>
+        /// <returns>The scan summary for the target scan number.</returns>
+        private ScanSummary InterpolateScanSummary(int scanNumber)
         {
-            _summary.ScanMetaData.Clear();
+            // Exact match not found; find the elution time of the nearest scan
+            var indexNearest = ~this.knownScanNumbers.BinarySearch(scanNumber);
+
+            ScanSummary scanSummary;
+
+            if (indexNearest <= 0)
+            {
+                scanSummary = this.summary.ScanMetaData[this.knownScanNumbers[0]];
+            }
+            else if (indexNearest >= this.knownScanNumbers.Count)
+            {
+                scanSummary = this.summary.ScanMetaData[this.knownScanNumbers[this.knownScanNumbers.Count - 1]];
+            }
+            else
+            {
+                var lowScanSummary = this.summary.ScanMetaData[this.knownScanNumbers[indexNearest]];
+                var highScanSummary = this.summary.ScanMetaData[this.knownScanNumbers[indexNearest]];
+                var lowScan = lowScanSummary.Scan;
+                var highScan = highScanSummary.Scan;
+                var lowRt = lowScanSummary.Time;
+                var highRt = highScanSummary.Time;
+
+                var retentionTime = lowRt + (highRt - lowRt) * ((double)(scanNumber - lowScan) / (highScan - lowScan));
+
+                scanSummary = new ScanSummary
+                {
+                    DatasetId = this.GroupId,
+                    Scan = scanNumber,
+                    Time = retentionTime,
+                    Net = this.CalculateNet(retentionTime),
+                    MsLevel = 1,
+                    CollisionType = CollisionType.None
+                };
+            }
+
+            return scanSummary;
+        }
+
+        /// <summary>
+        /// Calculate normal elution time from retention time.
+        /// </summary>
+        /// <param name="retentionTime"></param>
+        /// <returns></returns>
+        private double CalculateNet(double retentionTime)
+        {
+            var minScanSummary = this.summary.ScanMetaData[this.MinScan];
+            var maxScanSummary = this.summary.ScanMetaData[this.MaxScan];
+
+            return (retentionTime - minScanSummary.Time) / (maxScanSummary.Time - minScanSummary.Time);
         }
     }
 }
