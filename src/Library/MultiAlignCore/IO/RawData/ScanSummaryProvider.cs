@@ -360,7 +360,7 @@
             }
             else
             {
-                var lowScanSummary = this.summary.ScanMetaData[this.knownScanNumbers[indexNearest]];
+                var lowScanSummary = this.summary.ScanMetaData[this.knownScanNumbers[indexNearest - 1]];
                 var highScanSummary = this.summary.ScanMetaData[this.knownScanNumbers[indexNearest]];
                 var lowScan = lowScanSummary.Scan;
                 var highScan = highScanSummary.Scan;
