@@ -6,11 +6,11 @@ namespace MultiAlignCore.Data.Features
 {
     public static class LcmsFeatureFilters
     {
-        public static List<T> FilterFeatures<T>(List<T> features, LcmsFeatureFilteringOptions options, Dictionary<int, double> scanTimes = null)
+        public static List<T> FilterFeatures<T>(List<T> features, LcmsFeatureFilteringOptions options, IScanSummaryProvider scanSummaryProvider = null)
             where T: UMCLight
         {
             IEnumerable<T> newFeatures;
-            if (scanTimes == null || !options.FilterOnMinutes)
+            if (scanSummaryProvider == null || !options.FilterOnMinutes)
             {
                 var minimumSize = options.FeatureLengthRangeScans.Minimum;
                 var maximumSize = options.FeatureLengthRangeScans.Maximum;
@@ -29,8 +29,8 @@ namespace MultiAlignCore.Data.Features
                 var maximumSize = options.FeatureLengthRangeMinutes.Maximum;
                 var minimumPoints = options.MinimumDataPoints;
 
-                var knownScanNumbers = scanTimes.Keys.ToList();
-                knownScanNumbers.Sort();
+                //var knownScanNumbers = scanTimes.Keys.ToList();
+                //knownScanNumbers.Sort();
 
                 // Scan Length
                 newFeatures = features.Where(x =>
@@ -41,11 +41,11 @@ namespace MultiAlignCore.Data.Features
                         if (x.ScanStart == 0)
                         {
                             //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
-                            size = GetScanTime(scanTimes, knownScanNumbers, x.ScanEnd);
+                            size = scanSummaryProvider.GetScanSummary(x.ScanEnd).Time;
                         }
                         else
                         {
-                            size = Math.Abs(GetScanTime(scanTimes, knownScanNumbers, x.ScanEnd) - GetScanTime(scanTimes, knownScanNumbers, x.ScanStart));
+                            size = Math.Abs(scanSummaryProvider.GetScanSummary(x.ScanEnd).Time - scanSummaryProvider.GetScanSummary(x.ScanStart).Time);
                         }
                         return size >= minimumSize && size <= maximumSize && x.Features.Count >= minimumPoints;
                     }
@@ -103,7 +103,7 @@ namespace MultiAlignCore.Data.Features
             return filteredMsFeatures.ToList();
         }
 
-
+        [Obsolete("I put this functionality into ScanSummaryProvider")]
         private static double GetScanTime(IReadOnlyDictionary<int, double> scanTimes, List<int> knownScanNumbers, int scanNumber)
         {
             double scanTime;
