@@ -607,6 +607,7 @@
     <Compile Include="IO\SequenceData\SequenceToMsnDAOHibernate.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
     <Compile Include="IO\TextFiles\BaseTextFileReader.cs" />
+    <Compile Include="IO\TextFiles\DeconToolsIsosFilterOptions.cs" />
     <Compile Include="IO\TextFiles\DtaFileWriter.cs" />
     <Compile Include="IO\TextFiles\IMsMsSpectraReader.cs" />
     <Compile Include="IO\TextFiles\IMsMsSpectraWriter.cs" />
