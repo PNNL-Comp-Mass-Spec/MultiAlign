@@ -7,9 +7,9 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="750"> <!--d:DataContext="{d:DesignInstance d:Type=alignment:AlignmentSettingsViewModel, IsDesignTimeCreatable=True}">-->
-    <!--<UserControl.DataContext>
+    <UserControl.DataContext>
         <alignment:AlignmentSettingsViewModel />
-    </UserControl.DataContext>-->
+    </UserControl.DataContext>
     <Grid>
         <DataGrid ItemsSource="{Binding DimensionSettings}" AutoGenerateColumns="False">
             <DataGrid.Columns>                
@@ -58,8 +58,10 @@
                                             <RowDefinition Height="25" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" FontSize="20">Reference Dataset</TextBlock>
                                         
-                                        
+                                        <ListView Grid.Row="1" ItemsSource="{Binding Datasets}" />
                                     </Grid>
                                 </xctk:DropDownButton.DropDownContent>
                             </xctk:DropDownButton>

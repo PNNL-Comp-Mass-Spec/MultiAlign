@@ -198,6 +198,7 @@
       <DependentUpon>DmsLookupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DMS\DmsLookupViewModel.cs" />
+    <Compile Include="DockingManagerInitializer.cs" />
     <Compile Include="Feature Finding\FeatureFindingSettings.xaml.cs">
       <DependentUpon>FeatureFindingSettings.xaml</DependentUpon>
     </Compile>
@@ -240,6 +241,8 @@
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="RogueProject.cs" />
+    <Compile Include="ViewSettings.cs" />
+    <Compile Include="ViewSettingsSerializer.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

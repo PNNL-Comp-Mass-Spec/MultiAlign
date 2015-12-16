@@ -1,31 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using MultiAlign.ViewModels.Charting;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.Features;
-using MultiAlignRogue.Utils;
-using MultiAlignRogue.ViewModels;
-
-namespace MultiAlignRogue.Clustering
+﻿namespace MultiAlignRogue.Clustering
 {
-    using System.Text.RegularExpressions;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.Messaging;
+    using MultiAlign.ViewModels.Charting;
+    using MultiAlignCore.Data;
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Extensions;
+    using MultiAlignCore.IO.Features;
+    using MultiAlignRogue.Utils;
+    using MultiAlignRogue.ViewModels;
+
+    using System.IO;
+    using System.Runtime.Serialization;
+    using System.Windows;
+    using System.Xml;
+    using System.Xml.Serialization;
 
     using MultiAlignCore.IO.RawData;
+
+    using Xceed.Wpf.AvalonDock.Layout;
 
     /// <summary>
     /// The view model for the ClusterView.
     /// </summary>
     public class ClusterViewModel : ViewModelBase
     {
+        /// <summary>
+        /// The name of the default layout file to use.
+        /// </summary>
+        private const string StandardLayoutFileName = "StandardLayout.xml";
+
+        /// <summary>
+        /// The path of the default layout file to use.
+        /// </summary>
+        private readonly string standardLayoutFilePath;
+
         /// <summary>
         /// Data access providers for reconstructing clusters.
         /// </summary>
@@ -67,6 +83,11 @@ namespace MultiAlignRogue.Clustering
         private string layoutFilePath;
 
         /// <summary>
+        /// The LayoutRoot for layout serialization.
+        /// </summary>
+        private LayoutRoot layoutRoot;
+
+        /// <summary>
         /// The selected MS/MS spectrum.
         /// </summary>
         private MSSpectra selectedMsMsSpectra;
@@ -75,7 +96,7 @@ namespace MultiAlignRogue.Clustering
         /// The MsMsSpectraViewModel.
         /// </summary>
         private MsMsSpectraViewModel msMsSpectraViewModel;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
@@ -107,6 +128,13 @@ namespace MultiAlignRogue.Clustering
             this.ShowChargeStateDistributionCommand = new GalaSoft.MvvmLight.Command.RelayCommand(this.ShowChargeStateDistributionImpl);
             this.ShowDatasetHistogramCommand = new RelayCommand(this.ShowDatasetHistogramImpl);
 
+            // Set up standard layout path
+            var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            if (!string.IsNullOrEmpty(assemblyPath))
+            {
+                this.standardLayoutFilePath = Path.Combine(assemblyPath, StandardLayoutFileName);
+            }
+
             // Listen for changes in selected cluster in ClusterViewModel.
             Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
                 this,
@@ -129,6 +157,7 @@ namespace MultiAlignRogue.Clustering
                 }
             });
 
+            // When the selected MSFeature changes, update MS/MS spectra
             Messenger.Default.Register<PropertyChangedMessage<MSFeatureLight>>(
                 this,
                 arg =>
@@ -146,6 +175,21 @@ namespace MultiAlignRogue.Clustering
                     {
                         this.SelectedMsMsSpectra = first;
                     } 
+                }
+            });
+
+            // Load layout.
+            this.layoutFilePath = "layout.xml";
+            this.LoadLayoutFile();
+
+            // When the LayoutRoot changes, save to the layout file.
+            Messenger.Default.Register<PropertyChangedMessage<LayoutRoot>>(
+                this,
+                arg =>
+            {
+                if (arg.Sender == this && arg.NewValue != null)
+                {
+                    this.SaveLayoutFile();
                 }
             });
 
@@ -259,6 +303,22 @@ namespace MultiAlignRogue.Clustering
         }
 
         /// <summary>
+        /// Gets or sets the LayoutRoot for layout serialization.
+        /// </summary>
+        public LayoutRoot LayoutRoot
+        {
+            get { return this.layoutRoot; }
+            set
+            {
+                if (this.layoutRoot != value)
+                {
+                    this.layoutRoot = value;
+                    this.RaisePropertyChanged("LayoutRoot", null, value, true);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the selected cluster.
         /// </summary>
         public ClusterMatch SelectedMatch
@@ -299,6 +359,54 @@ namespace MultiAlignRogue.Clustering
                 cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
                 this.XicPlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
                 this.ClusterFeaturePlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
+            }
+        }
+
+        /// <summary>
+        /// Saves the layout to the file.
+        /// </summary>
+        private void SaveLayoutFile()
+        {
+            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
+            var viewSettings = new ViewSettings
+            {
+                ClusterViewLayoutRoot = this.LayoutRoot,
+                ClusterViewerSettings = this.ClusterPlotViewModel.ClusterViewerSettings
+            };
+
+            var xmlSettings = new XmlWriterSettings { Indent = true, CloseOutput = true };
+
+            using (var writer = XmlWriter.Create(File.Open(this.layoutFilePath, FileMode.Create), xmlSettings))
+            {
+                viewSettingsSerializer.Serialize(writer, viewSettings);
+            }
+        }
+
+        /// <summary>
+        /// Loads the layout from file.
+        /// </summary>
+        private void LoadLayoutFile()
+        {
+            var filePath = (!string.IsNullOrEmpty(this.layoutFilePath) && File.Exists(this.layoutFilePath))
+                               ? this.layoutFilePath
+                               : this.standardLayoutFilePath;
+
+            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
+            var viewSettings = new ViewSettings();
+
+            using (var reader = File.Open(filePath, FileMode.Open))
+            {
+                try
+                {
+                    viewSettings = (ViewSettings)viewSettingsSerializer.Deserialize(reader);
+                    this.LayoutRoot = viewSettings.ClusterViewLayoutRoot;
+                    this.ClusterPlotViewModel.ClusterViewerSettings = viewSettings.ClusterViewerSettings;
+
+                }
+                catch (InvalidCastException)
+                {
+                    MessageBox.Show("Could not deserialize layout settings.");
+                }
             }
         }
 
