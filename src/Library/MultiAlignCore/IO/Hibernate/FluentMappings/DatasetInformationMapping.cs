@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             Map(x => x.DatasetName).Column("File_Name").Nullable();
             //Map(x => x.ParameterFile).Column("Parameter_File").Nullable();
             //Map(x => x.Path).Column("Directory_Path").Nullable();
-            Map(x => x.Alias).Column("Alias").Nullable();
+            Map(x => x.Name).Column("Name").Nullable();
             //Map(x => x.RawPath).Column("Raw_Path").Nullable();
             //Map(x => x.SequencePath).Column("Sequence_Path").Nullable();
             Map(x => x.IsBaseline).Column("Is_Baseline").Nullable();
