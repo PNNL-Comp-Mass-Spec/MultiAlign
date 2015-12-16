@@ -75,7 +75,7 @@
                         </DataGridTemplateColumn>
 
                         <DataGridTextColumn Width="25*"
-                                            Binding="{Binding Dataset.Alias}"
+                                            Binding="{Binding Dataset.Name}"
                                             Header="Dataset Name" />
                         <DataGridTextColumn Width="75*"
                                             Binding="{Binding Dataset.FeaturePath}"
