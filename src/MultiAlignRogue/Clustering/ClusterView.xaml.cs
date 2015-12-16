@@ -1,28 +1,15 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using GalaSoft.MvvmLight.Messaging;
-using Xceed.Wpf.AvalonDock.Layout.Serialization;
-
-namespace MultiAlignRogue.Clustering
+﻿namespace MultiAlignRogue.Clustering
 {
+    using System.IO;
+    using GalaSoft.MvvmLight.Messaging;
     using System.Windows;
-    
+    using Xceed.Wpf.AvalonDock.Layout;
+
     /// <summary>
     /// Interaction logic for ClusterView.xaml
     /// </summary>
     public partial class ClusterView : Window
     {
-        /// <summary>
-        /// The name of the default layout file to use.
-        /// </summary>
-        private const string StandardLayoutFileName = "StandardLayout.xml";
-
-        /// <summary>
-        /// The path of the default layout file to use.
-        /// </summary>
-        private string standardLayoutFilePath;
-
         /// <summary>
         /// Indicates whether the docking manager has loaded yet.
         /// </summary>
@@ -39,23 +26,11 @@ namespace MultiAlignRogue.Clustering
         private ClusterViewModel viewModel;
 
         /// <summary>
-        /// The path to the layout file.
-        /// </summary>
-        private string layoutFilePath;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ClusterView"/> class.
         /// </summary>
         public ClusterView()
         {
             this.InitializeComponent();
-
-            var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-
-            if (!string.IsNullOrEmpty(assemblyPath))
-            {
-                this.standardLayoutFilePath = Path.Combine(assemblyPath, StandardLayoutFileName);   
-            }
 
             this.isLoaded = false;
             this.viewModel = this.DataContext as ClusterViewModel;
@@ -79,35 +54,49 @@ namespace MultiAlignRogue.Clustering
             };
 
             // Listen to changes in file path in view model.
-            Messenger.Default.Register<PropertyChangedMessage<string>>(
+            Messenger.Default.Register<PropertyChangedMessage<LayoutRoot>>(
                 this,
                 args =>
             {
                 if (args.Sender == this.viewModel && 
-                    args.PropertyName == "LayoutFilePath" &&
-                    this.layoutFilePath != args.NewValue &&
+                    args.PropertyName == "LayoutRoot" &&
+                    this.AvDock.Layout != args.NewValue &&
                     this.isLoaded)
                 {
-                    this.LoadLayout();
+                    this.LoadLayout(args.NewValue);
                 }
             });
 
             // Scroll to selected item when SelectedItem is changed externally.
-            ClusterDataGrid.SelectionChanged += (o, e) =>
+            this.ClusterDataGrid.SelectionChanged += (o, e) =>
             {
-                object item = ClusterDataGrid.SelectedItem;
-                if (ClusterDataGrid.SelectedItem == null && selectedItem != null)
+                object item = this.ClusterDataGrid.SelectedItem;
+                if (this.ClusterDataGrid.SelectedItem == null && this.selectedItem != null)
                 {
-                    item = selectedItem;
+                    item = this.selectedItem;
                 }
 
-                selectedItem = item;
-                ClusterDataGrid.ScrollIntoView(item);
-                ClusterDataGrid.UpdateLayout();
+                this.selectedItem = item;
+                this.ClusterDataGrid.ScrollIntoView(item);
+                this.ClusterDataGrid.UpdateLayout();
             };
 
             // Serialize layout when window is closed.
-            this.AvDock.Unloaded += (s, e) => this.SaveLayout();
+            this.AvDock.Unloaded += (s, e) =>
+            {
+                this.SaveLayout();
+            };
+        }
+
+        /// <summary>
+        /// Initialize docking manager to layout.
+        /// </summary>
+        private void LoadLayout(LayoutRoot layout)
+        {
+            if (layout != null)
+            {
+                this.AvDock.Initialize(layout);
+            }
         }
 
         /// <summary>
@@ -115,41 +104,9 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void SaveLayout()
         {
-            using (var fs = File.Open(this.layoutFilePath, FileMode.Create))
+            if (this.viewModel != null)
             {
-                var xmlLayout = new XmlLayoutSerializer(AvDock);
-                xmlLayout.Serialize(fs);
-            }
-        }
-
-        /// <summary>
-        /// Deserialize layout from layoutFilePath.
-        /// </summary>
-        private void LoadLayout()
-        {
-            var path = this.layoutFilePath;
-
-            // If the layout file doesn't exist, use standard layout file.
-            if (!File.Exists(this.layoutFilePath) && File.Exists(this.standardLayoutFilePath))
-            {
-                path = this.standardLayoutFilePath;
-                ////this.SaveLayout();
-            }
-
-            var serializer = new XmlLayoutSerializer(AvDock);
-            using (var stream = new StreamReader(path))
-            {
-                serializer.LayoutSerializationCallback += (s, args) =>
-                {
-                    args.Content = this.FindName(args.Model.ContentId);
-                };
-                serializer.Deserialize(stream);
-            }
-
-            // If the layout file doesn't exist, create it.
-            if (!File.Exists(this.layoutFilePath))
-            {
-                this.SaveLayout();
+                this.viewModel.LayoutRoot = this.AvDock.Layout;
             }
         }
 
@@ -159,10 +116,9 @@ namespace MultiAlignRogue.Clustering
         private void LoadNewViewModel()
         {
             this.viewModel = this.DataContext as ClusterViewModel;
-            if (this.viewModel != null && this.layoutFilePath != this.viewModel.LayoutFilePath)
+            if (this.viewModel != null)
             {
-                this.layoutFilePath = this.viewModel.LayoutFilePath;
-                this.LoadLayout();
+                this.LoadLayout(this.viewModel.LayoutRoot);
             }
         }
     }

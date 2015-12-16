@@ -39,11 +39,8 @@ namespace MultiAlignRogue.Clustering
 
         public void CreateNewWindow(List<ClusterMatch> matches, ScanSummaryProviderCache provider)
         {
-            if (this.ClusterViewModel == null)
-            {
-                this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath, provider);
-                this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
-            }
+            this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath, provider);
+            this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
 
             var window = new ClusterView
             {

@@ -1,7 +1,5 @@
 ﻿namespace MultiAlignRogue.Alignment
 {
-    using MultiAlign.ViewModels.Datasets;
-
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
 
