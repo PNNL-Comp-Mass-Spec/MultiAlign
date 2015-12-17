@@ -74,8 +74,6 @@ namespace MultiAlignCore.IO
                     AnalysisOptionsDao = new AnalysisOptionsDAOHibernate(),
                 };
 
-            providers.AlignmentPointCache = new AlignmentDataPointDAOHibernate();
-
             return providers;
         }
 

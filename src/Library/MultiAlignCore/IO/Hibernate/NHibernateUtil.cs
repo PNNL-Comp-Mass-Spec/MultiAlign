@@ -274,7 +274,6 @@ namespace MultiAlignCore.IO.Hibernate
                 {
                     //Directory.CreateDirectory("Mappings");
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.AlignmentDataMapping>()                        /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.AlignmentDataPointMapping>()                   /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.ClusterToMassTagMapMapping>()                  /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatabaseSearchSequenceMapping>()               /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatasetInformationMapping>()                   /* .ExportTo("Mappings") */ ;

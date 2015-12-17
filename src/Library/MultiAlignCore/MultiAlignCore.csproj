@@ -359,7 +359,6 @@
     <Compile Include="Data\Index3D.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
     <Compile Include="Data\Alignment\ResidualData.cs" />
-    <Compile Include="Data\Alignment\AlignmentDataPoint.cs" />
     <Compile Include="Data\DatasetLoader.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
@@ -498,13 +497,11 @@
     <Compile Include="IO\Generic\JsonReader.cs" />
     <Compile Include="IO\Generic\JsonWriter.cs" />
     <Compile Include="IO\Hibernate\AlignmentDAOHibernate.cs" />
-    <Compile Include="IO\Hibernate\AlignmentDataPointDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\AnalysisOptionsDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\ClusterToMassTagMapDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\DatasetDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\DatasetToFactorDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\FactorDAOHibernate.cs" />
-    <Compile Include="IO\Hibernate\FluentMappings\AlignmentDataPointMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpAlignmentMatchMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\Options\AlignmentOptionsMapping.cs" />
     <Compile Include="IO\Hibernate\FluentMappings\Options\FeatureTolerancesMapping.cs" />

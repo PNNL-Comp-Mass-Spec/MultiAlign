@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             Table("T_LcmsWarpAlignmentMatches");
             Not.LazyLoad();
 
-            Id(x => x.Id).GeneratedBy.Assigned();
+            Id(x => x.Id).GeneratedBy.Native();
 
             Map(x => x.AligneeNetStart).Column("AligneeNetStart").Nullable();
             Map(x => x.AligneeNetEnd).Column("AligneeNetEnd").Nullable();
