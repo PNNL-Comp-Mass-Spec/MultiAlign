@@ -90,6 +90,25 @@ namespace MultiAlignCore.IO.Hibernate
             }
         }
 
+        /// These methods will be available to all of the DAOHibernate classes.
+        /// They are generic methods so that T can be replaced with the class type (Umc, MassTag, etc.)
+        /// e.g. If a Umc object is given to "Add(T t)", a Umc object will be stored in the Database
+        /// <summary>
+        ///     Adds an Object to the Database, or updates it if it has been previously added.
+        /// </summary>
+        /// <param name="t">Object to be added or updated</param>
+        public void AddOrUpdate(T t)
+        {
+            using (var session = GetSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    session.SaveOrUpdate(t);
+                    transaction.Commit();
+                }
+            }
+        }
+
         public int SessionBatchSize { get; set; }
 
         /// <summary>

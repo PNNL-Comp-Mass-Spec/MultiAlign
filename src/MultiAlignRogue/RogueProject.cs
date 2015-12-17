@@ -17,6 +17,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Gets or sets the settings for the cluster viewer.
         /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public ClusterViewerSettings ClusterViewerSettings { get; set; }
 
         /// <summary>

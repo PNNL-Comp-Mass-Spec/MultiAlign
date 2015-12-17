@@ -633,27 +633,18 @@ namespace MultiAlignRogue
             this.Analysis = new MultiAlignAnalysis
             {
                 DataProviders = this.SetupDataProviders(rogueProject.AnalysisPath, isNewProject),
-                Options = rogueProject.MultiAlignAnalysisOptions
             };
 
-            this.DataSelectionViewModel.Analysis = this.Analysis;
-            if (rogueProject.Datasets != null)
-            {
-                this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
-            }
+            var dbOptions = this.Analysis.DataProviders.AnalysisOptionsDao.FindAll().FirstOrDefault();
+            this.Analysis.Options = dbOptions ?? new MultiAlignAnalysisOptions();
 
+            this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(this.Analysis.DataProviders.DatasetCache.FindAll());
-            var dbOptions = this.Analysis.DataProviders.AnalysisOptionsDao.FindAll();
-            if (dbOptions.Count > 0)
-            {
-                this.Analysis.Options = dbOptions[0];
-            }
 
             this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
 
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
-            await this.UpdateDatasets();
 
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
 
@@ -668,6 +659,8 @@ namespace MultiAlignRogue
             }
 
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
+
+            await this.UpdateDatasets();
         }
 
         private void SaveProjectAs()
@@ -748,7 +741,7 @@ namespace MultiAlignRogue
             };
 
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
-            this.Analysis.DataProviders.AnalysisOptionsDao.Add(this.Analysis.Options);
+            this.Analysis.DataProviders.AnalysisOptionsDao.AddOrUpdate(this.Analysis.Options);
 
             var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
 
