@@ -729,20 +729,10 @@ namespace MultiAlignRogue
         {
             var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
             var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
-            ClusterViewerSettings clusterViewerSettings = null;
-            if (this.clusterViewFactory is ClusterViewFactory)
-            {
-                var cvf = (ClusterViewFactory)clusterViewFactory;
-                if (cvf.ClusterViewModel != null)
-                {
-                    clusterViewerSettings = cvf.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings;
-                }
-            }
 
             var rogueProject = new RogueProject
             {
                 MultiAlignAnalysisOptions = this.Analysis.Options,
-                ClusterViewerSettings = clusterViewerSettings ?? new ClusterViewerSettings(),
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
