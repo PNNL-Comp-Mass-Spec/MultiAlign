@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.NetCalibration
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using MultiAlignCore.Data;
-    using MultiAlignCore.Data.Features;
 
     public class LcmsWarpAlignmentScorer
     {
@@ -356,9 +353,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             else
             {
                 var calcVal = deltaNet;
-                if (Math.Abs(deltaNet) > options.NetTolerance)
+                if (Math.Abs(deltaNet) > this.options.NetTolerance)
                 {
-                    calcVal = options.NetTolerance;
+                    calcVal = this.options.NetTolerance;
                 }
                 matchScore -= 0.5 * (calcVal / this.statistics.NetStdDev) * (calcVal / this.statistics.NetStdDev);
                 matchScore -= 0.5 * this.statistics.Log2PiNetStdDevSq;
@@ -396,7 +393,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="matchesPerBaseline">Maximum width that an alignee dataset section can be expanded when warped.</param>
         private void InitializeMatchScoreMatrix(out double[,,] subsectionMatchScores, int aligneeSections, int baselineSections, int maxExpansionWidth)
         {
-            subsectionMatchScores = new double[options.NumTimeSections, baselineSections, maxExpansionWidth];
+            subsectionMatchScores = new double[this.options.NumTimeSections, baselineSections, maxExpansionWidth];
             for (var i = 0; i < this.options.NumTimeSections; i++)
             {
                 for (var j = 0; j < baselineSections; j++)

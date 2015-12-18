@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using PNNLOmics.Utilities;
 
@@ -116,6 +115,7 @@
                 throw new ArgumentException(string.Format("This requires at least {0} matches to produce meaningful results", RequiredMatches));
             }
 
+            // Calculate NET delta (difference between alignee and baseline NET).
             var massDeltas = new List<double>(matches.Count);
             var netDeltas = new List<double>(matches.Count);
             foreach (var match in matches)
@@ -126,8 +126,8 @@
                 netDeltas.Add(match.BaselineNet - match.Net);
             }
 
+            // TODO: Calculating all of this in one method is nasty and difficult to test. Break this method into several methods.
             double normalProb, u, muMass, muNet, massStd, netStd;
-
             MathUtilities.TwoDem(massDeltas, netDeltas, out normalProb, out u,
                 out muMass, out muNet, out massStd, out netStd);
 

@@ -1,4 +1,4 @@
-﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration
 {
     /// <summary>
     /// Enumeration of calibration types for LCMSWarping

@@ -9,6 +9,8 @@ using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
+
     /// <summary>
     /// Class which will use LCMSWarp to process alignment
     /// </summary>

@@ -1,7 +1,8 @@
-﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.NetCalibration
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using MultiAlignCore.Data.Features;
 
     /// <summary>

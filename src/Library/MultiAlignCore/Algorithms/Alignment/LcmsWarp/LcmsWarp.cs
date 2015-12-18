@@ -9,6 +9,8 @@ using PNNLOmics.Utilities;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
+
     /// <summary>
     /// Object which performs the LCMS Warping functionality
     /// </summary>
