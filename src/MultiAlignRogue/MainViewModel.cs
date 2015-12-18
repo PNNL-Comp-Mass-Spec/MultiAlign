@@ -645,7 +645,7 @@ namespace MultiAlignRogue
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             await this.UpdateDatasets();
 
-            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
+            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders);
 
             this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(this.Analysis);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);

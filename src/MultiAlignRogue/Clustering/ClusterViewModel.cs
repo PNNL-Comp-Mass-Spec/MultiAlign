@@ -102,9 +102,9 @@
         /// </summary>
         /// <param name="viewFactory">Factory for creating child windows.</param>
         /// <param name="matches">The clusters.</param>
-        /// <param name="layoutFilePath">Path to layout file.</param>
+        /// <param name="providers">Database access provider</param>
         /// <param name="rawProvider">Provider for LCMSRun for access to PBF files.</param>
-        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, string layoutFilePath, ScanSummaryProviderCache rawProvider)
+        public ClusterViewModel(IClusterViewFactory viewFactory, List<ClusterMatch> matches, FeatureDataAccessProviders providers, ScanSummaryProviderCache rawProvider)
         {
             this.viewFactory = viewFactory;
             this.providers = providers;
@@ -120,12 +120,11 @@
 
             this.Features = new ObservableCollection<UMCLightViewModel>();
             this.MsMsSpectra = new ObservableCollection<MSSpectra>();
-            this.LayoutFilePath = layoutFilePath;
 
             this.MsMsSpectraViewModel = new MsMsSpectraViewModel(new MSSpectra(), "MsMs Spectrum");
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
-            this.ShowChargeStateDistributionCommand = new GalaSoft.MvvmLight.Command.RelayCommand(this.ShowChargeStateDistributionImpl);
+            this.ShowChargeStateDistributionCommand = new RelayCommand(this.ShowChargeStateDistributionImpl);
             this.ShowDatasetHistogramCommand = new RelayCommand(this.ShowDatasetHistogramImpl);
 
             // Set up standard layout path
