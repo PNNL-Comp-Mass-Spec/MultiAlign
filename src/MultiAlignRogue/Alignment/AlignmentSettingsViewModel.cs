@@ -622,6 +622,7 @@ namespace MultiAlignRogue.Alignment
                 {
                     this.alignmentInformation.Add(alignment);
                 }
+                file.Dataset.AlignmentData = alignment;
                 
                 this.featureCache.CacheFeatures(features);
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;

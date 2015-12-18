@@ -11,6 +11,11 @@
     public class LcmsWarpSectionInfo
     {
         /// <summary>
+        /// Id value for the database, set when persisted
+        /// </summary>
+        public int Id { get; private set; }
+
+        /// <summary>
         /// A dictionary mapping a section index to the features in that section.
         /// </summary>
         private readonly Dictionary<int, List<UMCLight>> sectionToFeatures;
@@ -23,6 +28,13 @@
         {
             this.NumSections = numSections;
             this.sectionToFeatures = new Dictionary<int, List<UMCLight>>();
+        }
+
+        /// <summary>
+        /// Empty constructor for use by NHibernate
+        /// </summary>
+        private LcmsWarpSectionInfo()
+        {
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Data.Features;
 
 #endregion
 
@@ -24,6 +25,16 @@ namespace MultiAlignCore.Data.Alignment
         /// Property to hold the function for the alignment
         /// </summary>
         public LcmsWarpAlignmentFunction AlignmentFunction { get; set; }
+
+        /// <summary>
+        /// Alignment functions for the dataset, separated by separation type
+        /// </summary>
+        public Dictionary<FeatureLight.SeparationTypes, LcmsWarpResults> AlignmentFunctions { get; set; }
+
+        /// <summary>
+        /// The Alignment function used for mass warping
+        /// </summary>
+        public LcmsWarpResults MassAlignmentFunction { get; set; }
 
         public string AligneeDataset { get; set; }
         public bool BaselineIsAmtDB { get; set; }

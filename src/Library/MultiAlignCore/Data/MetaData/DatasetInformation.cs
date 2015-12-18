@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Annotations;
@@ -12,13 +13,9 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.MetaData
 {
-    using System.IO;
     using System.Linq;
-    using System.Text;
 
     using InformedProteomics.Backend.MassSpecData;
-
-    using MultiAlignCore.IO.RawData;
 
     /// <summary>
     ///     Contains information about a dataset used for analysis.r
@@ -75,6 +72,11 @@ namespace MultiAlignCore.Data.MetaData
         ///     Gets or sets
         /// </summary>
         public List<Factor> Factors { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the Alignment data
+        /// </summary>
+        public AlignmentData AlignmentData { get; set; }
 
         /// <summary>
         ///     Gets or sets the key used for access to the db.

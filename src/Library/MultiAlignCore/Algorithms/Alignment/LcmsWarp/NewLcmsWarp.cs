@@ -66,7 +66,12 @@
 
 
             // TODO: Populate alignment data.
-            var alignmentData = new AlignmentData();
+            var alignmentData = new AlignmentData
+            {
+                AlignmentFunctions = new Dictionary<FeatureLight.SeparationTypes, LcmsWarpResults>()
+            };
+            //var netAlignmentFunction = GetAlignmentFunction()
+            //alignmentData.AlignmentFunctions.Add();
 
             return alignmentData;
         }
@@ -131,7 +136,7 @@
             return warpedFeatures;
         }
 
-        /// <summary>0000000
+        /// <summary>
         /// Generates alignment functions for alignment between features in each separation dimension.
         /// Warps the elution value for each feature based on the alignment function.
         /// </summary>
