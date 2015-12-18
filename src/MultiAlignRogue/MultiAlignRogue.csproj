@@ -240,7 +240,6 @@
     <Compile Include="NewProjectWindow.xaml.cs">
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RogueProject.cs" />
     <Compile Include="ViewSettings.cs" />
     <Compile Include="ViewSettingsSerializer.cs" />
     <Page Include="Alignment\AlignmentView.xaml">

@@ -4,29 +4,24 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 
 using MultiAlign.Data;
-using MultiAlign.IO;
 using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.InputFiles;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue
 {
-    using System.Text;
     using System.Windows;
 
     using DMS;
@@ -597,12 +592,10 @@ namespace MultiAlignRogue
                 if (success)
                 {
                     this.ShowSplash = false;
-                    var rogueProject = newProjectViewModel.GetRogueProject();
-                    m_config.AnalysisName = Path.ChangeExtension(Path.GetFileName(newProjectViewModel.ProjectFilePath), "db3");
-                    rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
-                    await this.LoadRogueProject(rogueProject, true);
+                    m_config.AnalysisName = newProjectViewModel.ProjectFilePath;
+                    await this.LoadRogueProject(true, newProjectViewModel.Datasets.Select(x => x.Dataset).ToList());
                     
-                    this.Serialize(newProjectViewModel.ProjectFilePath);
+                    this.PersistProject();
 
                     lastInputDirectory = newProjectViewModel.LastInputDirectory;
                     
@@ -628,15 +621,21 @@ namespace MultiAlignRogue
 
         }
 
-        private async Task LoadRogueProject(RogueProject rogueProject, bool isNewProject)
+        private async Task LoadRogueProject(bool isNewProject, List<DatasetInformation> datasets = null)
         {
+            Directory.SetCurrentDirectory(this.outputDirectory);
             this.Analysis = new MultiAlignAnalysis
             {
-                DataProviders = this.SetupDataProviders(rogueProject.AnalysisPath, isNewProject),
+                DataProviders = this.SetupDataProviders(this.ProjectPath, isNewProject),
             };
 
             var dbOptions = this.Analysis.DataProviders.AnalysisOptionsDao.FindAll().FirstOrDefault();
             this.Analysis.Options = dbOptions ?? new MultiAlignAnalysisOptions();
+
+            if (datasets != null)
+            {
+                this.analysis.MetaData.Datasets.AddRange(datasets);
+            }
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(this.Analysis.DataProviders.DatasetCache.FindAll());
@@ -644,7 +643,7 @@ namespace MultiAlignRogue
             this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
 
             this.featureCache.Providers = this.Analysis.DataProviders;
-            this.m_config.AnalysisPath = rogueProject.AnalysisPath;
+            this.m_config.AnalysisPath = this.ProjectPath;
 
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders);
 
@@ -667,8 +666,8 @@ namespace MultiAlignRogue
         {
             var saveFileDialog = new SaveFileDialog
             {
-                DefaultExt = ".xml",
-                Filter = @"Supported Files|*.xml"
+                DefaultExt = ".db3",
+                Filter = @"Supported Files|*.db3"
             };
 
             if (!string.IsNullOrWhiteSpace(lastProjectDirectory))
@@ -682,17 +681,16 @@ namespace MultiAlignRogue
                 return;
             }
 
-            this.Serialize(saveFileDialog.FileName);
+            this.PersistProject();
 
             this.lastProjectDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-
         }
 
         private void SaveProject()
         {
             if (!string.IsNullOrWhiteSpace(this.ProjectPath))
             {
-                this.Serialize(this.ProjectPath);
+                this.PersistProject();
             }
         }
 
@@ -700,8 +698,8 @@ namespace MultiAlignRogue
         {
             var openFileDialog = new OpenFileDialog
             {
-                DefaultExt = ".xml",
-                Filter = @"Supported Files|*.xml"
+                DefaultExt = ".db3",
+                Filter = @"Supported Files|*.db3"
             };
 
             if (!string.IsNullOrWhiteSpace(outputDirectory))
@@ -716,63 +714,16 @@ namespace MultiAlignRogue
             }
 
 			this.ShowSplash = false;
-            var rogueProject = this.Deserialize(openFileDialog.FileName);
-            this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
-
-            if (string.IsNullOrWhiteSpace(rogueProject.LayoutFilePath))
-            {
-                rogueProject.LayoutFilePath = string.Format(@"{0}\Layout.xml", this.outputDirectory);
-            }
-
-            await this.LoadRogueProject(rogueProject, false);
+            this.outputDirectory = Path.GetDirectoryName(openFileDialog.FileName);
             this.ProjectPath = openFileDialog.FileName;
+
+            await this.LoadRogueProject(false);
         }
 
-        private void Serialize(string filePath)
+        private void PersistProject()
         {
-            var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
-            var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
-
-            var rogueProject = new RogueProject
-            {
-                MultiAlignAnalysisOptions = this.Analysis.Options,
-                Datasets = datasetInfoList,
-                AnalysisPath = this.m_config.AnalysisPath
-            };
-
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
             this.Analysis.DataProviders.AnalysisOptionsDao.AddOrUpdate(this.Analysis.Options);
-
-            var xmlSettings = new XmlWriterSettings() { Indent = true, CloseOutput = true };
-
-            using (var writer = XmlWriter.Create(File.Open(filePath, FileMode.Create), xmlSettings))
-            {
-                rogueProjectSerializer.WriteObject(writer, rogueProject);
-            }
-        }
-
-        private RogueProject Deserialize(string filePath)
-        {
-            var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
-            var rogueProject = new RogueProject();
-
-            using (var reader = File.Open(filePath, FileMode.Open))
-            {
-                try
-                {
-                    rogueProject = (RogueProject)rogueProjectSerializer.ReadObject(reader);
-                    this.Analysis.Options = rogueProject.MultiAlignAnalysisOptions;
-
-                }
-                catch (InvalidCastException)
-                {
-                    MessageBox.Show("Could not deserialize analysis options.");
-                }
-            }
-
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
-
-            return rogueProject;
         }
 
         private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)
