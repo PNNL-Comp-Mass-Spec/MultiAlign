@@ -88,6 +88,16 @@
         private LayoutRoot layoutRoot;
 
         /// <summary>
+        /// This stores the original layout for comparison to determine if it has changed.
+        /// </summary>
+        private bool layoutUpdated;
+
+        /// <summary>
+        /// This stores the original settings for comparison to determine if they have changed.
+        /// </summary>
+        private ClusterViewerSettings originalSettings;
+
+        /// <summary>
         /// The selected MS/MS spectrum.
         /// </summary>
         private MSSpectra selectedMsMsSpectra;
@@ -126,6 +136,9 @@
 
             this.ShowChargeStateDistributionCommand = new RelayCommand(this.ShowChargeStateDistributionImpl);
             this.ShowDatasetHistogramCommand = new RelayCommand(this.ShowDatasetHistogramImpl);
+
+            this.layoutUpdated = false;
+            this.originalSettings = new ClusterViewerSettings();
 
             // Set up standard layout path
             var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -180,17 +193,6 @@
             // Load layout.
             this.layoutFilePath = "layout.xml";
             this.LoadLayoutFile();
-
-            // When the LayoutRoot changes, save to the layout file.
-            Messenger.Default.Register<PropertyChangedMessage<LayoutRoot>>(
-                this,
-                arg =>
-            {
-                if (arg.Sender == this && arg.NewValue != null)
-                {
-                    this.SaveLayoutFile();
-                }
-            });
 
             if (this.Matches.Count > 0)
             {
@@ -334,6 +336,62 @@
         }
 
         /// <summary>
+        /// Saves the layout to the file.
+        /// </summary>
+        public void SaveLayoutFile()
+        {
+            if (!this.layoutUpdated &&
+                this.originalSettings.Equals(this.ClusterPlotViewModel.ClusterViewerSettings))
+            {
+                return;
+            }
+
+            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
+            var viewSettings = new ViewSettings
+            {
+                ClusterViewLayoutRoot = this.LayoutRoot,
+                ClusterViewerSettings = this.ClusterPlotViewModel.ClusterViewerSettings
+            };
+
+            var xmlSettings = new XmlWriterSettings { Indent = true, CloseOutput = true };
+
+            using (var writer = XmlWriter.Create(File.Open(this.layoutFilePath, FileMode.Create), xmlSettings))
+            {
+                viewSettingsSerializer.Serialize(writer, viewSettings);
+            }
+        }
+
+        /// <summary>
+        /// Loads the layout from file.
+        /// </summary>
+        public void LoadLayoutFile()
+        {
+            var filePath = (!string.IsNullOrEmpty(this.layoutFilePath) && File.Exists(this.layoutFilePath))
+                               ? this.layoutFilePath
+                               : this.standardLayoutFilePath;
+
+            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
+            var viewSettings = new ViewSettings();
+
+            using (var reader = File.Open(filePath, FileMode.Open))
+            {
+                try
+                {
+                    viewSettings = (ViewSettings)viewSettingsSerializer.Deserialize(reader);
+                    this.LayoutRoot = viewSettings.ClusterViewLayoutRoot;
+                    this.LayoutRoot.PropertyChanged += (o, e) => this.layoutUpdated = true;
+                    this.ClusterPlotViewModel.ClusterViewerSettings = viewSettings.ClusterViewerSettings;
+                    this.originalSettings = viewSettings.ClusterViewerSettings;
+
+                }
+                catch (InvalidCastException)
+                {
+                    MessageBox.Show("Could not deserialize layout settings.");
+                }
+            }
+        }
+
+        /// <summary>
         /// Event handler for SelectedCluster changed.
         /// </summary>
         /// <param name="args">Event arguments.</param>
@@ -358,54 +416,6 @@
                 cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
                 this.XicPlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
                 this.ClusterFeaturePlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
-            }
-        }
-
-        /// <summary>
-        /// Saves the layout to the file.
-        /// </summary>
-        private void SaveLayoutFile()
-        {
-            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
-            var viewSettings = new ViewSettings
-            {
-                ClusterViewLayoutRoot = this.LayoutRoot,
-                ClusterViewerSettings = this.ClusterPlotViewModel.ClusterViewerSettings
-            };
-
-            var xmlSettings = new XmlWriterSettings { Indent = true, CloseOutput = true };
-
-            using (var writer = XmlWriter.Create(File.Open(this.layoutFilePath, FileMode.Create), xmlSettings))
-            {
-                viewSettingsSerializer.Serialize(writer, viewSettings);
-            }
-        }
-
-        /// <summary>
-        /// Loads the layout from file.
-        /// </summary>
-        private void LoadLayoutFile()
-        {
-            var filePath = (!string.IsNullOrEmpty(this.layoutFilePath) && File.Exists(this.layoutFilePath))
-                               ? this.layoutFilePath
-                               : this.standardLayoutFilePath;
-
-            var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
-            var viewSettings = new ViewSettings();
-
-            using (var reader = File.Open(filePath, FileMode.Open))
-            {
-                try
-                {
-                    viewSettings = (ViewSettings)viewSettingsSerializer.Deserialize(reader);
-                    this.LayoutRoot = viewSettings.ClusterViewLayoutRoot;
-                    this.ClusterPlotViewModel.ClusterViewerSettings = viewSettings.ClusterViewerSettings;
-
-                }
-                catch (InvalidCastException)
-                {
-                    MessageBox.Show("Could not deserialize layout settings.");
-                }
             }
         }
 
