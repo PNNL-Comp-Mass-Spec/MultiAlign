@@ -107,6 +107,7 @@
             if (this.viewModel != null)
             {
                 this.viewModel.LayoutRoot = this.AvDock.Layout;
+                this.viewModel.SaveLayoutFile();
             }
         }
 

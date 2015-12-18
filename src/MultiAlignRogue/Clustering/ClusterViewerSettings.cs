@@ -44,5 +44,32 @@ namespace MultiAlignRogue.Clustering
         /// mass and net divisions should be displayed on the cluster plot.
         /// </summary>
         public bool ShowDivisionLines { get; set; }
+
+        /// <summary>
+        /// Override of the equals object for comparing by value.
+        /// </summary>
+        /// <param name="obj">The object to compare to.</param>
+        /// <returns>A value indicating whether the values of the two objects are equal.</returns>
+        public override bool Equals(object obj)
+        {
+            var rightSettings = obj as ClusterViewerSettings;
+            return rightSettings != null &&
+                   this.ShouldReducePoints == rightSettings.ShouldReducePoints &&
+                   this.NetDivisions == rightSettings.NetDivisions &&
+                   this.MassDivisions == rightSettings.MassDivisions &&
+                   this.PointsPerDivision == rightSettings.PointsPerDivision &&
+                   this.ShowDivisionLines == rightSettings.ShowDivisionLines;
+        }
+
+        /// <summary>
+        /// Override GetHashCode for value comparison.
+        /// </summary>
+        /// <returns>The hash code.</returns>
+        public override int GetHashCode()
+        {
+            return this.ShouldReducePoints.GetHashCode() * 23 ^ this.NetDivisions.GetHashCode() * 17
+                   ^ this.MassDivisions.GetHashCode() * 31 ^ this.PointsPerDivision.GetHashCode() * 47
+                   ^ this.ShowDivisionLines.GetHashCode() * 59;
+        }
     }
 }
