@@ -17,17 +17,11 @@ namespace MultiAlignRogue.Clustering
 
     public class ClusterViewFactory : IClusterViewFactory
     {
-        private readonly string layoutFilePath;
-
         private readonly FeatureDataAccessProviders providers;
 
-        private readonly ClusterViewerSettings clusterViewerSettings;
-
-        public ClusterViewFactory(FeatureDataAccessProviders providers, ClusterViewerSettings settings, string layoutFilePath = null)
+        public ClusterViewFactory(FeatureDataAccessProviders providers)
         {
             this.providers = providers;
-            this.layoutFilePath = layoutFilePath ?? "layout.xml";
-            this.clusterViewerSettings = settings;
         }
 
         public void CreateNewWindow()
@@ -39,8 +33,7 @@ namespace MultiAlignRogue.Clustering
 
         public void CreateNewWindow(List<ClusterMatch> matches, ScanSummaryProviderCache provider)
         {
-            this.ClusterViewModel = new ClusterViewModel(this, matches, providers, layoutFilePath, provider);
-            this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
+            this.ClusterViewModel = new ClusterViewModel(this, matches, providers, provider);
 
             var window = new ClusterView
             {

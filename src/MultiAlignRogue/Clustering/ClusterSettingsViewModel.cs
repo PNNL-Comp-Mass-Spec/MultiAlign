@@ -66,7 +66,7 @@ namespace MultiAlignRogue.Clustering
             this.Datasets = datasets;
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
-            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders, new ClusterViewerSettings());
+            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
 
             // When dataset state changes, update can executes.
             this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(this, args =>
