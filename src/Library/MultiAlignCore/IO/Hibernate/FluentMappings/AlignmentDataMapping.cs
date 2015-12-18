@@ -18,6 +18,9 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             Map(x => x.MassMean).Column("Mass_Mean").Nullable();
             Map(x => x.MassStandardDeviation).Column("Mass_Stdev").Nullable();
 
+            References(x => x.MassAlignmentFunction).Cascade.All().Nullable();
+            HasMany(x => x.AlignmentFunctions).AsMap(x => x.SeparationType).Cascade.AllDeleteOrphan();
+
             //<class name="AlignmentData" table="T_AlignmentData" lazy="false">
             //  <composite-id>
             //    <key-property name="DatasetID" column="Dataset_ID" type="int" />      

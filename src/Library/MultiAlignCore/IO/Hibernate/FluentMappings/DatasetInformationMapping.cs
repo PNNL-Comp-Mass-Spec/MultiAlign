@@ -25,6 +25,8 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //HasMany(x => x.InputFiles).Cascade.AllDeleteOrphan().Table("T_InputFiles");
             HasMany(x => x.InputFilesNHibernate).Cascade.AllDeleteOrphan().Table("T_InputFiles");
 
+            References(x => x.AlignmentData).Cascade.All();
+
             //<class name="DatasetInformation" table="T_Datasets" lazy="false">
             //  <composite-id>
             //    <key-property name="DatasetId"    column="Dataset_ID"     type="int" />

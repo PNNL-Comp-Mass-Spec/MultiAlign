@@ -29,7 +29,7 @@ namespace MultiAlignCore.Data.Alignment
         /// <summary>
         /// Alignment functions for the dataset, separated by separation type
         /// </summary>
-        public Dictionary<FeatureLight.SeparationTypes, LcmsWarpResults> AlignmentFunctions { get; set; }
+        public IDictionary<FeatureLight.SeparationTypes, LcmsWarpResults> AlignmentFunctions { get; set; }
 
         /// <summary>
         /// The Alignment function used for mass warping
