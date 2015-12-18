@@ -593,22 +593,17 @@ namespace MultiAlignRogue
                 {
                     this.ShowSplash = false;
                     m_config.AnalysisName = newProjectViewModel.ProjectFilePath;
+                    ProjectPath = newProjectViewModel.ProjectFilePath;
+                    this.outputDirectory = newProjectViewModel.OutputDirectory;
                     await this.LoadRogueProject(true, newProjectViewModel.Datasets.Select(x => x.Dataset).ToList());
                     
                     this.PersistProject();
 
                     lastInputDirectory = newProjectViewModel.LastInputDirectory;
-                    
-                    ProjectPath = newProjectViewModel.ProjectFilePath;
                     lastProjectDirectory = newProjectViewModel.LastProjectDirectory;
-
-                    Directory.SetCurrentDirectory(lastProjectDirectory);
-                    
-                    this.outputDirectory = newProjectViewModel.OutputDirectory;
                     this.lastOutputDirectory = newProjectViewModel.LastOutputDirectory;
 
                     RegistrySaveSettings();
-
                 }
 #if (!DEBUG)
             }
@@ -637,6 +632,13 @@ namespace MultiAlignRogue
                 this.analysis.MetaData.Datasets.AddRange(datasets);
             }
 
+            //Prevent updates of ViewModels (that we will recreate anyway) while loading datasets
+            this.clusterViewFactory = null;
+            this.DataLoadingSettingsViewModel = null;
+            this.FeatureFindingSettingsViewModel = null;
+            this.AlignmentSettingsViewModel = null;
+            this.StacSettingsViewModel = null;
+
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(this.Analysis.DataProviders.DatasetCache.FindAll());
 
@@ -644,6 +646,7 @@ namespace MultiAlignRogue
 
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = this.ProjectPath;
+            await this.UpdateDatasets();
 
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders);
 
@@ -659,7 +662,6 @@ namespace MultiAlignRogue
 
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
 
-            await this.UpdateDatasets();
         }
 
         private void SaveProjectAs()
