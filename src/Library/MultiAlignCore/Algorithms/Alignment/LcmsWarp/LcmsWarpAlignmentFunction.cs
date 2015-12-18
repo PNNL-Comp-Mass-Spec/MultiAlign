@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
+
     /// <summary>
     /// Object to house the Alignment Function from LCMS warping, including the
     /// calibration and alignment type

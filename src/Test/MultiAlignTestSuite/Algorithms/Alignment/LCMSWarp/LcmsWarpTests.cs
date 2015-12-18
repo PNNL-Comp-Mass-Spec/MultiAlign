@@ -17,6 +17,8 @@ using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 {
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
+
     [TestFixture]
     public sealed class LcmsWarpTests: TestBase 
     {

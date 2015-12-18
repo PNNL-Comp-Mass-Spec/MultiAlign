@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using MultiAlignCore.Algorithms.Regression;
-using MultiAlignCore.Data;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration
 {
+    using System.Collections.Generic;
+
+    using MultiAlignCore.Algorithms.Regression;
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
 
     /// <summary>
@@ -22,11 +22,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpCombinedRegression()
         {
-            RegressionType = LcmsWarpRegressionType.Hybrid;
-            _lsqFailed = false;
-            _central = new LcmsWarpCentralRegression();
-            _lsqReg = new LeastSquaresSplineRegressionModel();
-            _cubicSpline = new LcmsNaturalCubicSplineRegression();
+            this.RegressionType = LcmsWarpRegressionType.Hybrid;
+            this._lsqFailed = false;
+            this._central = new LcmsWarpCentralRegression();
+            this._lsqReg = new LeastSquaresSplineRegressionModel();
+            this._cubicSpline = new LcmsNaturalCubicSplineRegression();
         }
 
         public LcmsWarpRegressionType RegressionType { get; set; }
@@ -39,9 +39,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="outlierZscore"></param>
         public void SetLsqOptions(int numKnots, double outlierZscore)
         {
-            _cubicSpline.SetOptions(numKnots);
-            _lsqReg.SetOptions(numKnots);
-            _central.SetOutlierZScore(outlierZscore);
+            this._cubicSpline.SetOptions(numKnots);
+            this._lsqReg.SetOptions(numKnots);
+            this._central.SetOutlierZScore(outlierZscore);
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public void SetCentralRegressionOptions(int numXBins, int numYBins, int numJumps, double regZtolerance,
             LcmsWarpRegressionType regType)
         {
-            _central.SetOptions(numXBins, numYBins, numJumps, regZtolerance);
-            RegressionType = regType;
+            this._central.SetOptions(numXBins, numYBins, numJumps, regZtolerance);
+            this.RegressionType = regType;
         }
 
         /// <summary>
@@ -65,15 +65,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="matches"></param>
         public void CalculateRegressionFunction(List<RegressionPoint> matches)
         {
-            switch (RegressionType)
+            switch (this.RegressionType)
             {
                 case LcmsWarpRegressionType.Central:
-                    _central.CalculateRegressionFunction(matches);
+                    this._central.CalculateRegressionFunction(matches);
                     break;
                 default:
-                    _central.CalculateRegressionFunction(matches);
-                    _central.RemoveRegressionOutliers();
-                    _lsqFailed = !_cubicSpline.CalculateLsqRegressionCoefficients(_central.Points);
+                    this._central.CalculateRegressionFunction(matches);
+                    this._central.RemoveRegressionOutliers();
+                    this._lsqFailed = !this._cubicSpline.CalculateLsqRegressionCoefficients(this._central.Points);
                     break;
             }
         }
@@ -85,13 +85,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public double GetPredictedValue(double x)
         {
-            switch (RegressionType)
+            switch (this.RegressionType)
             {
                 case LcmsWarpRegressionType.Central:
-                    return _central.GetPredictedValue(x);
+                    return this._central.GetPredictedValue(x);
 
                 default:
-                    return !_lsqFailed ? _cubicSpline.GetPredictedValue(x) : _central.GetPredictedValue(x);
+                    return !this._lsqFailed ? this._cubicSpline.GetPredictedValue(x) : this._central.GetPredictedValue(x);
             }
         }
 

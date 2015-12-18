@@ -6,11 +6,6 @@
     public interface IAlignmentFunction
     {
         /// <summary>
-        /// Gets or sets a list of matches mapping alignee to baseline.
-        /// </summary>
-        List<LcmsWarpAlignmentMatch> Matches { get; set; }
-
-        /// <summary>
         /// Warp a value by the alignment function.
         /// </summary>
         /// <param name="value">The value to warp.</param>

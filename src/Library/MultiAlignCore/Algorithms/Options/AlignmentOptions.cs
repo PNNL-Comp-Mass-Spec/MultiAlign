@@ -10,6 +10,8 @@ using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Options
 {
+    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
+
     public class AlignmentOptions
     {
         public AlignmentOptions()
