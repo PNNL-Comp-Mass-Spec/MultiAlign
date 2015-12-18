@@ -13,6 +13,11 @@
     public class LcmsWarpNetAlignmentFunction : IAlignmentFunction
     {
         /// <summary>
+        /// Id value for the database, set when persisted
+        /// </summary>
+        public int Id { get; private set; }
+
+        /// <summary>
         /// Gets or sets the alignee section info for warping separation values.
         /// </summary>
         public LcmsWarpSectionInfo AligneeSections { get; set; }

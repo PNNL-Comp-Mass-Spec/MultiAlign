@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Id for use only by NHibernate; do not use, it is set when persisted.
         /// </summary>
-        public int Id { get; set; } // for storing in the database, set when stored.
+        public int Id { get; private set; } // for storing in the database, set when stored.
 
         /// <summary>
         /// Gets or sets the alignee section NET start.

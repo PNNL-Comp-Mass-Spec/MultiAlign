@@ -107,6 +107,6 @@ namespace MultiAlignCore.Algorithms.Options
         /// <summary>
         /// For NHibernate; set when the class is persisted or read
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; private set; }
     }
 }

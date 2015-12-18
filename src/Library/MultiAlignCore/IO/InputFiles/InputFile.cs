@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.InputFiles
         /// <summary>
         /// For use with NHibernate - automatically set upon persistence to the database.
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
         /// <summary>
         ///     Constructor.
