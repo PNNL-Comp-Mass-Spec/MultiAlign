@@ -71,7 +71,7 @@ namespace MultiAlignCore.IO
                 {
                     ScanSummaryDao = new ScanSummaryDAOHibernate(),
                     ScanSummaryProviderCache = new ScanSummaryProviderCache(),
-                    AnalysisOptionsDao = new AnalysisOptionsDAOHibernate(),
+                    OptionsDao = new OptionsDAOHibernate(),
                 };
 
             return providers;

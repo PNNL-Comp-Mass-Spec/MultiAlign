@@ -287,6 +287,7 @@ namespace MultiAlignCore.IO.Hibernate
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSFeatureToMSnFeatureMapMapping>()             /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSMSClusterMapMapping>()                       /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSSpectraMapping>()                            /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.OptionPairMapping>()                           /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.ParameterHibernateMappingMapping>()            /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.ProteinMapping>()                              /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.ScanSummaryMapping>()                          /* .ExportTo("Mappings") */ ;
@@ -294,19 +295,6 @@ namespace MultiAlignCore.IO.Hibernate
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.STACFDRMapping>()                              /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCClusterLightMapping>()                      /* .ExportTo("Mappings") */ ;
                     m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCLightMapping>()                             /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.AlignmentOptionsMapping>()             /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.FeatureTolerancesMapping>()            /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.FilterRangeMapping>()                  /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.InputDatabaseMapping>()                /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.LcmsClusteringOptionsMapping>()        /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.LcmsFeatureFilteringOptionsMapping>()  /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.LcmsFeatureFindingOptionsMapping>()    /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.LcmsWarpAlignmentOptionsMapping>()     /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.MassTagDatabaseOptionsMapping>()       /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.MsFeatureFilteringOptionsMapping>()    /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.MultiAlignAnalysisOptionsMapping>()    /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.SpectralOptionsMapping>()              /* .ExportTo("Mappings") */ ;
-                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.Options.StacOptionsMapping>()                  /* .ExportTo("Mappings") */ ;
                 });
 
             if (!File.Exists(dbLocation))

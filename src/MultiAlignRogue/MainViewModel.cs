@@ -16,6 +16,7 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Options;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
@@ -624,8 +625,8 @@ namespace MultiAlignRogue
                 DataProviders = this.SetupDataProviders(this.ProjectPath, isNewProject),
             };
 
-            var dbOptions = this.Analysis.DataProviders.AnalysisOptionsDao.FindAll().FirstOrDefault();
-            this.Analysis.Options = dbOptions ?? new MultiAlignAnalysisOptions();
+            var dbOptions = this.Analysis.DataProviders.OptionsDao.FindAll();
+            this.Analysis.Options = OptionsTransformer.ListToProperties(dbOptions);
 
             if (datasets != null)
             {
@@ -725,7 +726,7 @@ namespace MultiAlignRogue
         private void PersistProject()
         {
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
-            this.Analysis.DataProviders.AnalysisOptionsDao.AddOrUpdate(this.Analysis.Options);
+            this.Analysis.DataProviders.OptionsDao.AddAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
         }
 
         private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)

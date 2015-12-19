@@ -105,10 +105,5 @@ namespace MultiAlignCore.Algorithms.Options
         ///     Gets or sets the alignment spectral options
         /// </summary>
         public SpectralOptions SpectralOptions { get; set; }
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }
     }
 }

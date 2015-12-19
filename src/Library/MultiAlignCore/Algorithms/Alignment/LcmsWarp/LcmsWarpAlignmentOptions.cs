@@ -175,6 +175,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// The LCMSWarp regression type to use; based on MassCalibUseLsq
         /// </summary>
+        [MultiAlignCore.IO.Options.IgnoreOptionProperty]
         public LcmsWarpRegressionType RegressionType
         {
             get
@@ -232,10 +233,5 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
             SeparationTypes = new List<FeatureLight.SeparationTypes>();
         }
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }
     }
 }

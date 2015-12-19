@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public FeatureTolerances()
         {
-             Clear();
+            Clear();
         }
 
         #region Properties 
@@ -62,11 +62,6 @@ namespace MultiAlignCore.Algorithms
         /// Gets or sets the normalized elution time (NET) tolerance.
         /// </summary>
         public double Net { get; set; }
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }
         #endregion
 
         /// <summary>

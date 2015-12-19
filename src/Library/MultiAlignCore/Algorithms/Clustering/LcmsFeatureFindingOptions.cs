@@ -49,11 +49,6 @@
 
         public FeatureTolerances InstrumentTolerances { get; set; }
         public int               MaximumScanRange { get; set; }
-        public double            MaximumNetRange { get; set; }     
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }
-    }    
+        public double            MaximumNetRange { get; set; }
+    }
 }

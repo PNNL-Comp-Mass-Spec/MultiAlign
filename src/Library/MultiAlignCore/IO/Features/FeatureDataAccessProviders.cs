@@ -129,7 +129,7 @@ namespace MultiAlignCore.IO.Features
 
         public ScanSummaryProviderCache ScanSummaryProviderCache { get; set; }
 
-        public AnalysisOptionsDAOHibernate AnalysisOptionsDao { get; set; }
+        public OptionsDAOHibernate OptionsDao { get; set; }
 
         public IdentificationProviderCache IdentificationProviderCache { get; set; }
     }

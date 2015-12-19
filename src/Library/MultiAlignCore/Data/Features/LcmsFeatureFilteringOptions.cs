@@ -38,10 +38,5 @@ namespace MultiAlignCore.Data.Features
         /// Minimum number of data points for a good feature; used in conjunction with FeatureLengthRangeMinutes
         /// </summary>
         public double MinimumDataPoints { get; set; }
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }
     }
 }

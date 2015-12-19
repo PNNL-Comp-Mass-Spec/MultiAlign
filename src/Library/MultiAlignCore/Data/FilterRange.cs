@@ -18,10 +18,5 @@
 
         public double Minimum { get; set; }
         public double Maximum { get; set; }
-
-        /// <summary>
-        /// For NHibernate; set when the class is persisted or read
-        /// </summary>
-        public int Id { get; private set; }     
     }
 }
