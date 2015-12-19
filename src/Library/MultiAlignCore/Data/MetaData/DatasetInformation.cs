@@ -55,7 +55,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets or sets a mapping of scans to retention times 
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public Dictionary<int, double> ScanTimes { get; set; }
 
         /// <summary>
@@ -111,11 +110,10 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         /// Input File interface for use with NHibernate (IList does not have "AddRange")
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public IList<InputFile> InputFilesNHibernate
         {
             get { return this.InputFiles; }
-            set
+            private set
             {
                 var list = value as List<InputFile>;
                 this.InputFiles = list ?? new List<InputFile>(value);
@@ -125,7 +123,6 @@ namespace MultiAlignCore.Data.MetaData
             /// <summary>
         ///     Gets the raw file info.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public InputFile RawFile
         {
             get
@@ -138,7 +135,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets the path to the raw file.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public string RawPath
         {
             get
@@ -156,7 +152,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets the path to the sequence path.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public InputFile SequenceFile
         {
             get { return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Sequence); }
@@ -185,7 +180,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets the archive path.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public InputFile Features
         {
             get { return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Features); }
@@ -194,7 +188,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets the path to the raw file.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public string FeaturePath
         {
             get
@@ -212,7 +205,6 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Path to the scans file.
         /// </summary>
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public InputFile Scans
         {
             get { return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Scans); }
