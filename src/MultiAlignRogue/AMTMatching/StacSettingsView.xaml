@@ -1,13 +1,15 @@
 ﻿<UserControl x:Class="MultiAlignRogue.AMTMatching.StacSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
+             Background="White"
+             d:DataContext="{d:DesignInstance d:Type=amtMatching:StacSettingsViewModel,
+                                              IsDesignTimeCreatable=True}"
              d:DesignHeight="500"
              d:DesignWidth="500"
-             d:DataContext="{d:DesignInstance d:Type=amtMatching:StacSettingsViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -46,8 +48,6 @@
                          Grid.Column="0"
                          Height="25"
                          Margin="0,0,5,0"
-                         IsEnabled="{Binding ShouldAlignToAMT,
-                                             UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="True"
                          Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabaseServer.DatabaseName,
                                         UpdateSourceTrigger=PropertyChanged,
@@ -90,6 +90,12 @@
                 <Label Grid.Column="0"
                        HorizontalAlignment="Center"
                        Content="Mass Tolerance (ppm)" />
+
+                <!--  Net Tolerance  -->
+                <Label Grid.Row="0"
+                       Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       Content="NET Tolerance" />
                 <xctk:DoubleUpDown Grid.Row="1"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
@@ -99,12 +105,6 @@
                                                    Mode=TwoWay,
                                                    NotifyOnSourceUpdated=True,
                                                    UpdateSourceTrigger=PropertyChanged}" />
-
-                <!--  Net Tolerance  -->
-                <Label Grid.Row="0"
-                       Grid.Column="2"
-                       HorizontalAlignment="Center"
-                       Content="NET Tolerance" />
                 <xctk:DoubleUpDown Grid.Row="1"
                                    Grid.Column="2"
                                    HorizontalContentAlignment="Center"
@@ -143,7 +143,7 @@
                 <CheckBox Grid.Row="0"
                           Grid.Column="1"
                           VerticalAlignment="Center"
-                          IsChecked="{Binding ShouldUseSlic,
+                          IsChecked="{Binding ShouldCalculateSlic,
                                               Mode=TwoWay,
                                               UpdateSourceTrigger=PropertyChanged}">
                     Calculate SLiC
@@ -233,7 +233,7 @@
                      Height="25"
                      Visibility="{Binding ShouldShowTotalProgress,
                                           Converter={StaticResource BoolToVis}}"
-                     Value="{Binding AlignmentProgress}" />
+                     Value="{Binding TotalProgress}" />
         <!--  Buttons  -->
         <Button Grid.Row="9"
                 Width="125"

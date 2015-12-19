@@ -231,7 +231,7 @@ namespace MultiAlignRogue.AMTMatching
         /// <summary>
         /// Gets or sets a value indicating whether the histogram FDR should be calculated.
         /// </summary>
-        public bool CalcualteHistogramFdr
+        public bool CalculateHistogramFdr
         {
             get { return this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR; }
             set
@@ -316,7 +316,7 @@ namespace MultiAlignRogue.AMTMatching
                     ChargeStateList = chargeStates,
                     UsePriors = this.UsePriors,
                     ShouldCalculateSTAC = this.ShouldCalculateStac,
-                    ShouldCalculateHistogramFDR = this.CalcualteHistogramFdr,
+                    ShouldCalculateHistogramFDR = this.CalculateHistogramFdr,
                     ShouldCalculateShiftFDR = false,
                 },
             };

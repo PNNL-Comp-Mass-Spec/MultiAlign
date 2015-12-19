@@ -24,19 +24,9 @@ namespace MultiAlignRogue.AMTMatching
         {
             InitializeComponent();
 
-            this.Loaded += (o, e) => this.SetAmtTagRowHeight();
-            this.AmtTagDatabaseProgressBar.IsVisibleChanged += (o, e) => this.SetAmtTagRowHeight();
-        }
-
-        private void SetAmtTagRowHeight()
-        {
-            if (this.AmtTagDatabaseProgressBar.Visibility == Visibility.Visible)
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
-                this.AmtTagDatabaseRow.Height = new GridLength(85, GridUnitType.Pixel);
-            }
-            else
-            {
-                this.AmtTagDatabaseRow.Height = new GridLength(55, GridUnitType.Pixel);
+                this.Background = Brushes.Transparent;
             }
         }
     }
