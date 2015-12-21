@@ -5,20 +5,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Drawing;
+using MultiAlignTestSuite;
 using NUnit.Framework;
 
 #endregion
 
-namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
+namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
 {
-    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
-
     [TestFixture]
     public sealed class LcmsWarpTests: TestBase 
     {
@@ -235,6 +234,94 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
             PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
             PlotImageUtility.SaveImage(massHistogram,      directory + "_massHistogram.svg",      encoder);
+        }
+
+
+        [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
+        [TestCase(
+            @"C:\UnitTestFolder\dataset1.txt",
+            Ignore=true)]
+        public void TestCppSetReferenceFeatures(string baselinePath)
+        {
+            Console.WriteLine(@"I'm Testing!");
+
+            var rawBaselineData = File.ReadAllLines(baselinePath);
+
+            var baseline = new List<UMCLight>();
+
+            foreach (var line in rawBaselineData)
+            {
+                if (line != "")
+                {
+                    var parsed = line.Split(',');
+                    var data = new UMCLight
+                    {
+                        Net = Convert.ToDouble(parsed[0]),
+                        ChargeState = Convert.ToInt32(parsed[1]),
+                        Mz = Convert.ToDouble(parsed[2]),
+                        Scan = Convert.ToInt32(parsed[3]),
+                        MassMonoisotopic = Convert.ToDouble(parsed[4]),
+                        MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
+                        Id = Convert.ToInt32(parsed[6])
+                    };
+                    baseline.Add(data);
+                }
+            }
+
+            var oldStyle = new MultiAlignEngine.Alignment.clsAlignmentProcessor();
+            var oldBaseline = baseline.Select(baseData => new MultiAlignEngine.Features.clsUMC
+            {
+                Net = baseData.Net,
+                MZForCharge = baseData.Mz,
+                Scan = baseData.Scan,
+                Mass = baseData.MassMonoisotopic,
+                MassCalibrated = baseData.MassMonoisotopicAligned,
+                Id = baseData.Id
+            }).ToList();
+
+            oldStyle.SetReferenceDatasetFeatures(oldBaseline);
+            Console.WriteLine(@"Done testing");
+        }
+
+        [Test(Description = "Tests the old C++ version, to make sure it sets the alignee features correctly.")]
+        [TestCase(
+            @"C:\UnitTestFolder\dataset2.txt",
+            Ignore=true)]
+        public void TestSetAligneeFeatures(string aligneePath)
+        {
+            Console.WriteLine(@"I'm Testing!");
+            var rawFeaturesData = File.ReadAllLines(aligneePath);
+
+            var features = (from line in rawFeaturesData
+                where line != ""
+                select line.Split(',')
+                into parsed
+                select new UMCLight
+                {
+                    Net = Convert.ToDouble(parsed[0]),
+                    ChargeState = Convert.ToInt32(parsed[1]),
+                    Mz = Convert.ToDouble(parsed[2]),
+                    Scan = Convert.ToInt32(parsed[3]),
+                    MassMonoisotopic = Convert.ToDouble(parsed[4]),
+                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
+                    Id = Convert.ToInt32(parsed[6])
+                }).ToList();
+
+            var oldStyle = new MultiAlignEngine.Alignment.clsAlignmentProcessor();
+            var oldFeatures = features.Select(baseData => new MultiAlignEngine.Features.clsUMC
+            {
+                Net = baseData.Net,
+                MZForCharge = baseData.Mz,
+                Scan = baseData.Scan,
+                Mass = baseData.MassMonoisotopic,
+                MassCalibrated = baseData.MassMonoisotopicAligned,
+                Id = baseData.Id
+            }).ToList();
+
+            var oldMzBound = new MultiAlignEngine.Alignment.classAlignmentMZBoundary(0, 9999999.0);
+            oldStyle.SetAligneeDatasetFeatures(oldFeatures, oldMzBound);
+
+            Console.WriteLine(@"Done testing");
         }
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
