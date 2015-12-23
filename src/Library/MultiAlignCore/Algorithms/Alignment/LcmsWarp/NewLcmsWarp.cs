@@ -46,18 +46,12 @@
         /// <param name="alignee">The features to align.</param>
         /// <param name="progress">The progress reporter for the alignment process.</param>
         /// <returns>Information about the alignment.</returns>
-        /// <exception cref="ArgumentException">
-        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
-        /// </exception>
         public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
             // Enumerate features to lists.
             // Perform a deep copy of the LCMS features so that the original features are unaffected by the warp.
             var aligneeFeatures = alignee.Select(feature => new UMCLight(feature)).ToList();
             var baselineFeatures = baseline.ToList();
-
-            // Throw an exception if separation dimensions in basline and alignee features do not match.
-            this.CheckDimensionality(aligneeFeatures, baselineFeatures);
 
             // Warp mass if NET_MASS_WARP, otherwise only warp NET.
             var netMassWarp = this.options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP;
@@ -79,9 +73,6 @@
         /// <param name="alignee">The features to align.</param>
         /// <param name="progress">The progress reporter for the alignment process.</param>
         /// <returns>Information about the alignment.</returns>
-        /// <exception cref="ArgumentException">
-        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
-        /// </exception>
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
             // Convert baseline features to UMCLights.
@@ -219,26 +210,6 @@
             var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
 
             return alignmentFunction;
-        }
-
-        /// <summary>
-        /// This method checks to see if both alignee features and
-        /// reference features have the same separation dimensions.
-        /// </summary>
-        /// <param name="aligneeFeatures">The features that will be aligned.</param>
-        /// <param name="baselineFeatures">The reference dataset/database features.</param>
-        /// <exception cref="ArgumentException">
-        /// Throws an argument exception if the alignee and reference datasets do not have equivalent dimensionality.
-        /// </exception>
-        private void CheckDimensionality(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
-        {
-            foreach (var aligneeFeature in aligneeFeatures)
-            {
-                if (baselineFeatures.Any(baselineFeature => !aligneeFeature.CheckDimensionality(baselineFeature)))
-                {
-                    throw new ArgumentException("The dimensions of the alignee dataset and the reference dataset are not the same.");
-                }
-            }
         }
     }
 }
