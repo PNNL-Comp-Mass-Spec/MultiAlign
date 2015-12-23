@@ -67,11 +67,11 @@
         /// <summary>
         /// Gets the list of files required for each feature file type.
         /// </summary>
-        public static List<SupportedFileCombination> SupportedDatasetCombinations
+        public static List<SupportedFileCombination> SupportedFileCombinations
         {
             get
             {
-                if (supportedDatasetCombinations.Count < 1)
+                if (supportedFileCombinations.Count < 1)
                 {
                     // Decon tools:     FeatureFile && (Scans || Raw)
                     var deconCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_isos.csv"))
@@ -365,7 +365,7 @@
         /// <returns>The dataset combination.</returns>
         private SupportedFileCombination GetDatasetCombination(List<InputFile> files)
         {
-            var supportedComboMap = SupportedDatasetCombinations.ToDictionary(c => c.BaseType.Extension);
+            var supportedComboMap = SupportedFileCombinations.ToDictionary(c => c.BaseType.Extension);
             var featureFile = files.FirstOrDefault(file => file.FileType == InputFileType.Features);
 
             if (featureFile == null || !supportedComboMap.ContainsKey(featureFile.Extension))
