@@ -120,7 +120,12 @@ namespace MultiAlignCore.Data.MetaData
             }
         }
 
-            /// <summary>
+        /// <summary>
+        /// Gets the type of feature finder used for this dataset.
+        /// </summary>
+        public SupportedFileType DatasetType { get; set; }
+
+        /// <summary>
         ///     Gets the raw file info.
         /// </summary>
         public InputFile RawFile
