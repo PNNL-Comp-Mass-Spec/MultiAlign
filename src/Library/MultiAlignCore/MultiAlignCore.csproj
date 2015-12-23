@@ -403,8 +403,8 @@
     <Compile Include="Data\MetaData\DatasetPlotInformation.cs" />
     <Compile Include="Data\MetaData\DMSServerInformation.cs" />
     <Compile Include="Data\MetaData\IDataset.cs" />
-    <Compile Include="Data\MetaData\SupportedDatasetCombination.cs" />
-    <Compile Include="Data\MetaData\SupportedDatasetType.cs" />
+    <Compile Include="Data\MetaData\SupportedFileCombination.cs" />
+    <Compile Include="Data\MetaData\SupportedFileType.cs" />
     <Compile Include="Data\Peaks\Peak.cs" />
     <Compile Include="Data\Peaks\ProcessedPeak.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
