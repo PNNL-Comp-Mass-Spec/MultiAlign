@@ -34,7 +34,7 @@
         /// <summary>
         /// The list of datasets that can be used together.
         /// </summary>
-        private static readonly Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>> supportedDatasetCombinations = new Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>>();
+        private static readonly Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>> supportedDatasetCombinations;
 
         public DatasetLoader()
         {
@@ -43,6 +43,8 @@
 
         static DatasetLoader()
         {
+            supportedDatasetCombinations = new Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>>();
+
             supportedDatasetCombinations.Add(
                 SupportedDatasetTypes.DeconTools,
                 new List<SupportedDatasetTypes>
@@ -59,7 +61,7 @@
                 SupportedDatasetTypes.Promex,
             });
 
-            supportedDatasetCombinations.Add(SupportedDatasetTypes.DeconTools, new List<SupportedDatasetTypes>());
+            supportedDatasetCombinations.Add(SupportedDatasetTypes.LcImsFeatureFinder, new List<SupportedDatasetTypes>());
         }
 
         /// <summary>
