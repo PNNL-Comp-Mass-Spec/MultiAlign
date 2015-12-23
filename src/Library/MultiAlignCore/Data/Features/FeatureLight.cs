@@ -206,11 +206,6 @@ namespace MultiAlignCore.Data.Features
             throw new NotImplementedException();
         }
 
-        public virtual bool CheckDimensionality(FeatureLight features)
-        {
-            throw new NotImplementedException();
-        }
-
         #region Public Utility Functions
         /// <summary>
         /// Computes the mass difference in parts per million (ppm) for two given masses.
