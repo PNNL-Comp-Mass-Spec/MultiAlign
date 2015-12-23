@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text;
 
     using InformedProteomics.Backend.MassSpecData;
@@ -16,74 +17,116 @@
         /// <summary>
         /// The supported file types by MultiAlign.
         /// </summary>
-        private static readonly List<SupportedDatasetType> supportedTypes = new List<SupportedDatasetType>();
+        private static readonly List<SupportedFileType> supportedTypes = new List<SupportedFileType>();
+
+        public enum SupportedDatasetTypes
+        {
+            DeconTools,
+            LcImsFeatureFinder,
+            Promex
+        }
 
         /// <summary>
         /// The list of files required for each feature file type.
         /// </summary>
-        private static readonly List<SupportedDatasetCombination> supportedDatasetCombinations = new List<SupportedDatasetCombination>();
+        private static readonly List<SupportedFileCombination> supportedFileCombinations = new List<SupportedFileCombination>();
+
+        /// <summary>
+        /// The list of datasets that can be used together.
+        /// </summary>
+        private static readonly Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>> supportedDatasetCombinations = new Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>>();
 
         public DatasetLoader()
         {
             
         }
 
+        static DatasetLoader()
+        {
+            supportedDatasetCombinations.Add(
+                SupportedDatasetTypes.DeconTools,
+                new List<SupportedDatasetTypes>
+            {
+                SupportedDatasetTypes.DeconTools,
+                SupportedDatasetTypes.Promex,
+            });
+
+            supportedDatasetCombinations.Add(
+                SupportedDatasetTypes.Promex,
+                new List<SupportedDatasetTypes>
+            {
+                SupportedDatasetTypes.DeconTools,
+                SupportedDatasetTypes.Promex,
+            });
+
+            supportedDatasetCombinations.Add(SupportedDatasetTypes.DeconTools, new List<SupportedDatasetTypes>());
+        }
+
         /// <summary>
         /// Gets the list of files required for each feature file type.
         /// </summary>
-        public static List<SupportedDatasetCombination> SupportedDatasetCombinations
+        public static List<SupportedFileCombination> SupportedDatasetCombinations
         {
             get
             {
                 if (supportedDatasetCombinations.Count < 1)
                 {
                     // Decon tools:     FeatureFile && (Scans || Raw)
-                    var deconCombo = new SupportedDatasetCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_isos.csv"));
+                    var deconCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_isos.csv"))
+                    {
+                        DatasetType = SupportedDatasetTypes.DeconTools
+                    };
                     deconCombo.AtLeastOneOf.Add(InputFileType.Scans);
                     deconCombo.AtLeastOneOf.Add(InputFileType.Raw);
-                    supportedDatasetCombinations.Add(deconCombo);
+                    supportedFileCombinations.Add(deconCombo);
 
                     // Promex:          FeatureFile && Raw
-                    var promexCombo = new SupportedDatasetCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == ".ms1ft"));
+                    var promexCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == ".ms1ft"))
+                    {
+                        DatasetType = SupportedDatasetTypes.Promex
+                    };
                     promexCombo.RequiredTypes.Add(InputFileType.Raw);
-                    supportedDatasetCombinations.Add(promexCombo);
+                    supportedFileCombinations.Add(promexCombo);
 
                     // LC-IMS Feature Finder:       FeatureFile && Scans
-                    var lcimsCombo = new SupportedDatasetCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_LCMSFeatures.txt"));
+                    var lcimsCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_LCMSFeatures.txt"))
+                    {
+                        DatasetType = SupportedDatasetTypes.LcImsFeatureFinder
+                    };
                     lcimsCombo.RequiredTypes.Add(InputFileType.Scans);
                     lcimsCombo.OptionalTypes.Add(InputFileType.Raw);
-                    supportedDatasetCombinations.Add(lcimsCombo);
+                    supportedFileCombinations.Add(lcimsCombo);
                 }
 
-                return supportedDatasetCombinations;
+                return supportedFileCombinations;
             }
         }
 
         /// <summary>
         /// Gets the supported file types by multialign.
         /// </summary>
-        public static List<SupportedDatasetType> SupportedFileTypes
+        public static List<SupportedFileType> SupportedFileTypes
         {
             get
             {
                 if (supportedTypes.Count < 1)
                 {
-                    supportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv", InputFileType.Features));
-                    supportedTypes.Add(new SupportedDatasetType("Decon Tools scans", "_scans.csv", InputFileType.Scans));
-                    supportedTypes.Add(new SupportedDatasetType("Promex Features", ".ms1ft", InputFileType.Features));
-                    supportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt", InputFileType.Features));
-                    supportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
-                    supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
-                    supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence));
-                    supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
-                    supportedTypes.Add(new SupportedDatasetType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("Decon Tools Isos", "_isos.csv", InputFileType.Features));
+                    supportedTypes.Add(new SupportedFileType("Decon Tools scans", "_scans.csv", InputFileType.Scans));
+                    supportedTypes.Add(new SupportedFileType("Promex Features", ".ms1ft", InputFileType.Features));
+                    supportedTypes.Add(new SupportedFileType("LCMS Feature Finder", "_LCMSFeatures.txt", InputFileType.Features));
+                    supportedTypes.Add(new SupportedFileType("Sequest First Hit", ".fht", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));
 
                     // Add supported RAW file types.
                     foreach (var fileTypeInfo in MassSpecDataReaderFactory.MassSpecDataTypes)
                     {
                         foreach (var extension in fileTypeInfo.Item2)
                         {
-                            supportedTypes.Add(new SupportedDatasetType(fileTypeInfo.Item1, extension, InputFileType.Raw));
+                            supportedTypes.Add(new SupportedFileType(fileTypeInfo.Item1, extension, InputFileType.Raw));
                         }
                     }
                 }
@@ -204,7 +247,7 @@
             var validDatasets = new List<DatasetInformation>();
 
             // make sure we only show each message once.
-            var combinationTypes = new HashSet<SupportedDatasetCombination>();
+            var combinationTypes = new HashSet<SupportedFileCombination>();
             bool noFeatureFileFound = false;
 
             foreach (var dataset in datasets)
@@ -214,6 +257,7 @@
                 if (combo != null && combo.IsValid(dataset.InputFiles))
                 {   // Valid dataset.
                     validDatasets.Add(dataset);
+                    dataset.DatasetType = combo.DatasetType;
                 }
                 else if (combo != null && !combinationTypes.Contains(combo))
                 {   // Invalid dataset, add this combination type to show the message for it later.
@@ -228,6 +272,34 @@
             }
 
             return validDatasets;
+        }
+
+        /// <summary>
+        /// Checks to see if the types are compatible with the dataset.
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public static bool IsValidDatasetCombo(SupportedDatasetTypes dataset, IEnumerable<SupportedDatasetTypes> types)
+        {
+            return types.Aggregate(true, (current, type) => current & IsValidDatasetCombo(dataset, type));
+        }
+
+        /// <summary>
+        /// Checks to see if dataset2 is compatible with dataset1.
+        /// </summary>
+        /// <param name="dataset1"></param>
+        /// <param name="dataset2"></param>
+        /// <returns></returns>
+        private static bool IsValidDatasetCombo(SupportedDatasetTypes dataset1, SupportedDatasetTypes dataset2)
+        {
+            List<SupportedDatasetTypes> datasets;
+            if (supportedDatasetCombinations.TryGetValue(dataset1, out datasets))
+            {
+                return datasets.Contains(dataset2);
+            }
+
+            return false;
         }
 
         private List<InputFile> FindAdditionalDatasetFiles(InputFile inputFile)
@@ -264,7 +336,7 @@
             return additionalFiles;
         }
 
-        private string GetInvalidDatasetMessage(bool noFeatureFileFound, IEnumerable<SupportedDatasetCombination> datasetCombinations)
+        private string GetInvalidDatasetMessage(bool noFeatureFileFound, IEnumerable<SupportedFileCombination> datasetCombinations)
         {
             // Build error message. To avoid spamming the user, we'll show all error messages in one message box.
             var errorMessageBuilder = new StringBuilder();
@@ -289,7 +361,7 @@
         /// </summary>
         /// <param name="files">List of files to get dataset combination for.</param>
         /// <returns>The dataset combination.</returns>
-        private SupportedDatasetCombination GetDatasetCombination(List<InputFile> files)
+        private SupportedFileCombination GetDatasetCombination(List<InputFile> files)
         {
             var supportedComboMap = SupportedDatasetCombinations.ToDictionary(c => c.BaseType.Extension);
             var featureFile = files.FirstOrDefault(file => file.FileType == InputFileType.Features);
@@ -339,7 +411,7 @@
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private SupportedDatasetType GetSupportedDatasetType(string path)
+        private SupportedFileType GetSupportedDatasetType(string path)
         {
             var newPath = path.ToLower();
             foreach (var type in SupportedFileTypes)

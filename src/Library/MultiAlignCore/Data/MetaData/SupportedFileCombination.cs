@@ -8,9 +8,9 @@ namespace MultiAlignCore.Data.MetaData
 {
     using MultiAlignCore.IO.InputFiles;
 
-    public class SupportedDatasetCombination
+    public class SupportedFileCombination
     {
-        public SupportedDatasetCombination(SupportedDatasetType baseType)
+        public SupportedFileCombination(SupportedFileType baseType)
         {
             this.BaseType = baseType;
             this.RequiredTypes = new List<InputFileType>();
@@ -19,9 +19,14 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
+        /// Gets or sets the dataset that this is associated with.
+        /// </summary>
+        public DatasetLoader.SupportedDatasetTypes DatasetType { get; set; }
+
+        /// <summary>
         /// Gets the type of dataset that for this dataset combination.
         /// </summary>
-        public SupportedDatasetType BaseType { get; private set; }
+        public SupportedFileType BaseType { get; private set; }
 
         /// <summary>
         /// Gets the list of required file types for this combination.

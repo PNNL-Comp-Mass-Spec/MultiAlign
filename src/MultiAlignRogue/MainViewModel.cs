@@ -517,6 +517,12 @@ namespace MultiAlignRogue
                 MessageBox.Show(datasetLoader.ErrorMessage);
             }
 
+            if (!this.CheckDatasets(datasets))
+            {
+                MessageBox.Show("Datasets are incompatible.");
+                return;
+            }
+
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
             await this.UpdateDatasets();
@@ -532,9 +538,25 @@ namespace MultiAlignRogue
                 MessageBox.Show(datasetLoader.ErrorMessage);
             }
 
+            if (!this.CheckDatasets(datasets))
+            {
+                MessageBox.Show("Datasets are incompatible.");
+                return;
+            }
+
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
             await this.UpdateDatasets();
+        }
+
+        private bool CheckDatasets(IEnumerable<DatasetInformation> datasets)
+        {
+            if (this.Analysis.MetaData.Datasets.Count > 0)
+            {
+                return DatasetLoader.IsValidDatasetCombo(this.Analysis.MetaData.Datasets[0].DatasetType, datasets.Select(ds => ds.DatasetType));
+            }
+
+            return true;
         }
 
         #endregion

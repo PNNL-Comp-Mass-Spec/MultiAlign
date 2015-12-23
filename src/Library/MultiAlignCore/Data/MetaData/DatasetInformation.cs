@@ -107,6 +107,11 @@ namespace MultiAlignCore.Data.MetaData
         public List<InputFile> InputFiles { get; set; }
 
         /// <summary>
+        /// Gets the type of feature finder used for this dataset.
+        /// </summary>
+        public SupportedFileType DatasetType { get; set; }
+
+        /// <summary>
         ///     Gets the raw file info.
         /// </summary>
         [System.Runtime.Serialization.IgnoreDataMemberAttribute]
