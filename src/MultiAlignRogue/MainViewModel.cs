@@ -747,8 +747,10 @@ namespace MultiAlignRogue
 
         private void PersistProject()
         {
+            this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
             this.Analysis.DataProviders.OptionsDao.AddAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
+            this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
         }
 
         private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)

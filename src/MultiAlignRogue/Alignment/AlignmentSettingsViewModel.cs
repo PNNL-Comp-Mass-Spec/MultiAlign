@@ -584,7 +584,9 @@ namespace MultiAlignRogue.Alignment
                     continue;
                 }
 
+                this.analysis.DataProviders.DatabaseLock.EnterReadLock();
                 IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
+                this.analysis.DataProviders.DatabaseLock.ExitReadLock();
                 AlignmentData alignment;
 
                 totalProgressData.StepRange((100.0 * i++) / selectedFiles.Count);
@@ -624,7 +626,9 @@ namespace MultiAlignRogue.Alignment
                 }
                 file.Dataset.AlignmentData = alignment;
                 
+                this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                 this.featureCache.CacheFeatures(features);
+                this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());

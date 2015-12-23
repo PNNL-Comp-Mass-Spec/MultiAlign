@@ -283,7 +283,9 @@ namespace MultiAlignRogue.Clustering
                 var datasets = this.Datasets.Where(ds => ds.FeaturesFound).ToList();
                 foreach (var dataset in datasets)
                 {
+                    this.analysis.DataProviders.DatabaseLock.EnterReadLock();
                     features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
+                    this.analysis.DataProviders.DatabaseLock.ExitReadLock();
                     progData.Report(++i, datasets.Count);
                 }
 
@@ -335,9 +337,11 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
+                this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                 progData.StepRange(85);
                 providers.ClusterCache.ClearAllClusters();
                 providers.ClusterCache.AddAllStateless(clusters, clusterProgress);
+                this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
 
                 progData.StepRange(100);
                 providers.FeatureCache.UpdateAll(features, clusterProgress);

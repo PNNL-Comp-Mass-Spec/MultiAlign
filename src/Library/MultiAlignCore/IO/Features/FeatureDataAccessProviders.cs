@@ -12,6 +12,9 @@ using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO.Features
 {
+    using System;
+    using System.Threading;
+
     using MultiAlignCore.IO.RawData;
 
     /// <summary>
@@ -21,14 +24,18 @@ namespace MultiAlignCore.IO.Features
     {
         public FeatureDataAccessProviders()
         {
+            this.DatabaseLock = new ReaderWriterLockSlim();
             Synch = new object();
             this.ScanSummaryProviderCache = new ScanSummaryProviderCache();
             this.IdentificationProviderCache = new IdentificationProviderCache();
         }
 
+        public ReaderWriterLockSlim DatabaseLock { get; private set; }
+
         /// <summary>
         ///     Gets the object to synch on for concurrent access.
         /// </summary>
+        [Obsolete("Use DatabaseLock instead.")]
         public object Synch { get; private set; }
 
         /// <summary>
