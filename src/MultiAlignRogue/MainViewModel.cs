@@ -62,6 +62,8 @@ namespace MultiAlignRogue
 
         private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
+        private List<DatasetInformation> deletedDatasets = new List<DatasetInformation>();
+
         private string inputFilePath;
 
         private string projectPath;
@@ -482,6 +484,7 @@ namespace MultiAlignRogue
                         {
                             this.Datasets.Remove(vm);
                             this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
+                            this.deletedDatasets.Add(vm.Dataset);
                         }
                     }
                 };
@@ -643,6 +646,7 @@ namespace MultiAlignRogue
                 DataProviders = this.SetupDataProviders(this.ProjectPath, isNewProject),
             };
 
+            this.deletedDatasets.Clear();
             var dbOptions = this.Analysis.DataProviders.OptionsDao.FindAll();
             this.Analysis.Options = OptionsTransformer.ListToProperties(dbOptions);
 
@@ -745,6 +749,9 @@ namespace MultiAlignRogue
         {
             this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
+            this.Analysis.DataProviders.DatasetCache.DeleteAll(this.deletedDatasets);
+            // TODO: remove features and such from the database as well.
+            this.deletedDatasets.Clear();
             this.Analysis.DataProviders.OptionsDao.AddAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
             this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
         }

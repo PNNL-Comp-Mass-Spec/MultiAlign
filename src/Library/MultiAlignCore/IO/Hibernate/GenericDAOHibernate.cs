@@ -248,7 +248,28 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Deletes a Collection of Objects from the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be deleted</param>
+        /// <remarks>Use for deletes that need to cascade. Data must be loaded into the session for a cascading delete.</remarks>
         public void DeleteAll(ICollection<T> tCollection)
+        {
+            using (var session = GetSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    foreach (var t in tCollection)
+                    {
+                        session.Delete(t);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Deletes a Collection of Objects from the Database.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be deleted</param>
+        /// <remarks>Do not use to perform deletes that should cascade (will fail with an exception). Fails due to use of IStatelessSession.</remarks>
+        public void DeleteAllStateless(ICollection<T> tCollection)
         {
             using (var session = GetStatelessSession())
             {

@@ -17,6 +17,7 @@ namespace MultiAlignCore.IO
         void UpdateAll(ICollection<T> tList, IProgress<ProgressData> progress = null);
         void Delete(T t);
         void DeleteAll(ICollection<T> tList);
+        void DeleteAllStateless(ICollection<T> tList);
         T FindById(int id);
         List<T> FindAll();
     }
