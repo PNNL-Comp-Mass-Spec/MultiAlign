@@ -45,6 +45,8 @@ namespace MultiAlignRogue
         /// </summary>
         private string lastOutputDirectory;
 
+        private bool useProjectDirectory;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NewProjectViewModel"/> class.
         /// </summary>
@@ -148,7 +150,13 @@ namespace MultiAlignRogue
                 this.projectFilePath = value;
                 var projectFileDirectory = Path.GetDirectoryName(value);
 
-                if (string.IsNullOrWhiteSpace(this.outputDirectory) || (!this.outputDirectoryModified && this.outputDirectory == this.userDocuments))
+                if (this.UseProjectDirectory)
+                {
+                    this.OutputDirectory = projectFileDirectory;
+                    this.LastInputDirectory = projectFileDirectory;
+                }
+                else if (string.IsNullOrWhiteSpace(this.outputDirectory) ||
+                         (!this.outputDirectoryModified && this.outputDirectory == this.userDocuments))
                 {
                     this.OutputDirectory = projectFileDirectory;
                 }
@@ -190,6 +198,19 @@ namespace MultiAlignRogue
 
                 this.CreateCommand.RaiseCanExecuteChanged();
                 this.RaisePropertyChanged();
+            }
+        }
+
+        public bool UseProjectDirectory
+        {
+            get { return this.useProjectDirectory; }
+            set
+            {
+                if (this.useProjectDirectory != value)
+                {
+                    this.useProjectDirectory = value;
+                    this.RaisePropertyChanged();
+                }
             }
         }
 
