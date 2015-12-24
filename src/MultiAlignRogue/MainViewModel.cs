@@ -106,6 +106,7 @@ namespace MultiAlignRogue
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
 
             SelectFilesCommand = new RelayCommand(SelectFiles, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            CloseWindowCommand = new RelayCommand(PersistProject);
             SelectDirectoryCommand = new RelayCommand(SelectDirectory, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath) && !string.IsNullOrWhiteSpace(this.ProjectPath));
             SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms && !string.IsNullOrWhiteSpace(this.ProjectPath));
@@ -140,6 +141,11 @@ namespace MultiAlignRogue
         public RelayCommand SelectFilesCommand { get; private set; }
 
         /// <summary>
+        /// Gets a command for selecting files for a new dataset (scans, isos, raw).
+        /// </summary>
+        public RelayCommand CloseWindowCommand { get; private set; }
+
+        /// <summary>
         /// Gets a command for adding a dataset from DMS.
         /// </summary>
         public RelayCommand SearchDmsCommand { get; private set; }
@@ -155,22 +161,22 @@ namespace MultiAlignRogue
         public RelayCommand AddFolderCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command for creating a new <see cref="RogueProject" />.
+        /// Gets a command for creating a new project />.
         /// </summary>
         public RelayCommand CreateNewProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command for loading an existing <see cref="RogueProject" />.
+        /// Gets a command for loading an existing project />.
         /// </summary>
         public RelayCommand LoadProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command for saving the current <see cref="RogueProject" />.
+        /// Gets a command for saving the current project />.
         /// </summary>
         public RelayCommand SaveProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command for saving the current <see cref="RogueProject" />
+        /// Gets a command for saving the current project />
         /// in a new project file.
         /// </summary>
         public RelayCommand SaveAsProjectCommand { get; private set; }
