@@ -58,8 +58,6 @@ namespace MultiAlignRogue
         private ClusterSettingsViewModel clusterSettingsViewModel;
         private StacSettingsViewModel stacSettingsViewModel;
 
-        private TaskBarProgressSingleton taskBarProgressSingleton;
-
         private IClusterViewFactory clusterViewFactory;
 
         private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
@@ -120,8 +118,6 @@ namespace MultiAlignRogue
 
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
-
-            taskBarProgressSingleton = new TaskBarProgressSingleton();
 
             featureCache.Providers = Analysis.DataProviders;
             this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(Analysis);
@@ -928,15 +924,16 @@ namespace MultiAlignRogue
 
             if (filesSelected && alignmentChosen)
             {
-                TaskBarProgressSingleton.TakeTaskbarControl(this);
-                TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+                var taskBarProgress = TaskBarProgress.GetInstance();
+                taskBarProgress.TakeControl(this);
+                taskBarProgress.ShowProgress(this, true);
 
                 var progData = new ProgressData();
                 IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
                 {
                     var prog = progData.UpdatePercent(pd.Percent).Percent;
                     this.ProgressTracker = (int)prog;
-                    TaskBarProgressSingleton.SetTaskBarProgress(this, prog);
+                    taskBarProgress.SetProgress(this, prog);
                 });
 
                 progData.StepRange(50);
@@ -951,8 +948,8 @@ namespace MultiAlignRogue
                 ClusterSettingsViewModel.ClusterFeatures(totalProgress);
                 ShouldShowProgress = false;
 
-                TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
-                TaskBarProgressSingleton.ReleaseTaskbarControl(this);
+                taskBarProgress.ShowProgress(this, false);
+                taskBarProgress.ReleaseControl(this);
             }
             else if (!filesSelected)
             {

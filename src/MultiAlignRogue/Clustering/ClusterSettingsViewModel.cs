@@ -232,13 +232,14 @@ namespace MultiAlignRogue.Clustering
 
         internal void ClusterFeatures(IProgress<ProgressData> workflowProgress = null)
         {
-            TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+            var taskBarProgress = TaskBarProgress.GetInstance();
+            taskBarProgress.ShowProgress(this, true);
             workflowProgress = workflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
             {
                 this.progress.Report((int)pd.Percent);
                 this.ProgressPercent = pd.Percent;
-                TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
+                taskBarProgress.SetProgress(this, pd.Percent);
                 workflowProgress.Report(pd);
             });
 
@@ -431,7 +432,7 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
 
-            TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
+            taskBarProgress.ShowProgress(this, false);
             this.ShouldShowProgress = false;
         }
 

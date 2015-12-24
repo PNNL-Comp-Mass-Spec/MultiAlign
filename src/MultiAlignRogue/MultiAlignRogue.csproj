@@ -223,7 +223,7 @@
     </Compile>
     <Compile Include="Utils\PlotSavingViewModel.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
-    <Compile Include="Utils\TaskBarProgressSingleton.cs" />
+    <Compile Include="Utils\TaskBarProgress.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Compile Include="ViewModels\ChargeStateViewModel.cs" />
     <Compile Include="ViewModels\DatabaseSelectionViewModel.cs" />
