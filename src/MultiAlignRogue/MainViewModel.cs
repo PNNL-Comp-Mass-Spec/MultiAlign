@@ -80,6 +80,8 @@ namespace MultiAlignRogue
 
         private string lastOutputDirectory;
 
+        private bool useProjectDirectoryAuto;
+
         private int progressTracker;
 
         private bool shouldShowProgress;
@@ -604,6 +606,7 @@ namespace MultiAlignRogue
                 newProjectViewModel.LastInputDirectory = lastInputDirectory;
                 newProjectViewModel.LastProjectDirectory = lastProjectDirectory;
                 newProjectViewModel.LastOutputDirectory = lastOutputDirectory;
+                newProjectViewModel.UseProjectDirectory = useProjectDirectoryAuto;
 
                 newProjectViewModel.Success += (s, e) =>
                 {
@@ -631,6 +634,7 @@ namespace MultiAlignRogue
                     
                     this.outputDirectory = newProjectViewModel.OutputDirectory;
                     this.lastOutputDirectory = newProjectViewModel.LastOutputDirectory;
+                    this.useProjectDirectoryAuto = newProjectViewModel.UseProjectDirectory;
 
                     RegistrySaveSettings();
 
@@ -822,6 +826,7 @@ namespace MultiAlignRogue
             lastInputDirectory = RegistryReadValue("LastInputDirectory", currentDirectory);
             lastProjectDirectory = RegistryReadValue("LastProjectDirectory", currentDirectory);
             lastOutputDirectory = RegistryReadValue("LastOutputDirectory", currentDirectory);
+            useProjectDirectoryAuto = Convert.ToBoolean(RegistryReadValue("UseProjectDirectory", false.ToString()));
         }
 
         /// <summary>
@@ -835,6 +840,7 @@ namespace MultiAlignRogue
 
             RegistrySaveValue("LastProjectDirectory", lastProjectDirectory);
             RegistrySaveValue("LastOutputDirectory", lastOutputDirectory);
+            RegistrySaveValue("UseProjectDirectory", useProjectDirectoryAuto.ToString());
         }
 
         /// <summary>

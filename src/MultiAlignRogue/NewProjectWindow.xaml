@@ -85,6 +85,15 @@
             </Grid>
         </GroupBox>
 
+        <CheckBox Grid.Row="4"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseProjectDirectory,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+            Set input/output directories to the project directory
+        </CheckBox>
         <StackPanel Grid.Row="4"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
