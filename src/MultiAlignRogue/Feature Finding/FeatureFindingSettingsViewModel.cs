@@ -542,12 +542,13 @@ namespace MultiAlignRogue.Feature_Finding
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
 
-            TaskBarProgressSingleton.ShowTaskBarProgress(this, true);
+            var taskBarProgress = TaskBarProgress.GetInstance();
+            taskBarProgress.ShowProgress(this, true);
             workflowProgress = workflowProgress ?? new Progress<ProgressData>();
             IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd =>
             {
                 this.TotalProgress = pd.Percent;
-                TaskBarProgressSingleton.SetTaskBarProgress(this, pd.Percent);
+                taskBarProgress.SetProgress(this, pd.Percent);
                 workflowProgress.Report(pd);
             });
             var totalProgressData = new ProgressData(totalProgressRpt);
@@ -638,7 +639,7 @@ namespace MultiAlignRogue.Feature_Finding
 
             DatabaseIndexer.IndexFeatures(NHibernateUtil.Path);
 
-            TaskBarProgressSingleton.ShowTaskBarProgress(this, false);
+            taskBarProgress.ShowProgress(this, false);
             this.ShouldShowProgress = false;
         }
 
