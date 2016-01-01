@@ -7,6 +7,14 @@ namespace MultiAlignCore.IO.Options
     /// <summary>
     /// Used to transform between <see cref="MultiAlignAnalysisOptions"/> and List of <see cref="OptionPair"/>
     /// </summary>
+    /// <remarks>Will not work with Immutable types besides strings; the properties must have public set accessors for them to be properly set.
+    /// This means that Tuples and KeyValuePairs (and any collection than uses them, including 'Dictionary's and 'SortedLists').
+    /// 
+    /// This can store arrays to the database, but will not convert from collections to arrays; collections that need to be stored to the
+    /// database should be "ignored", and have a separate get/set property that converts the collection to/from an array.
+    /// This puts the control of how the collection is configured in the hands of the object.
+    /// The restriction on this is that the size of the collections should be small, generally less than 20 items.
+    /// If they are larger, it would probably be better to have them in their own table.</remarks>
     public static class OptionsTransformer
     {
         /// <summary>
@@ -56,8 +64,47 @@ namespace MultiAlignCore.IO.Options
                 // Get the type of the property
                 var propType = property.PropertyType;
 
+                // Array handling (only supported collection)
+                if (propType.IsArray)
+                {
+                    var array = property.GetValue(optionsClass) as Array;
+                    var nameBase = scope + property.Name + "#";
+                    if (array != null && array.Length > 0)
+                    {
+                        // TODO: Should this be changed to support an array of "object"?
+                        var arrayType = property.PropertyType.GetElementType();
+                        var isValueOrEnumType = false;
+                        var isMultiAlignClass = false;
+                        if (arrayType.IsValueType || arrayType.IsEnum || arrayType == typeof(string))
+                        {
+                            isValueOrEnumType = true;
+                        }
+                        else if (arrayType.IsClass && propType.FullName.StartsWith(optType.FullName.Substring(0, 15)))
+                        {
+                            isMultiAlignClass = true;
+                        }
+                        // TODO: Could handle arrays of arrays
+
+                        // Store the values of the array appropriately
+                        for (var i = 0; i < array.Length; i++)
+                        {
+                            var name = nameBase + i;
+                            if (isValueOrEnumType)
+                            {
+                                list.Add(new OptionPair(name, array.GetValue(i).ToString()));
+                            }
+                            else if (isMultiAlignClass)
+                            {
+                                if (array.GetValue(i) != null)
+                                {
+                                    GetProperties(list, array.GetValue(i), name + ".");
+                                }
+                            }
+                        }
+                    }
+                }
                 // basic types don't need additional special handling
-                if (propType.IsValueType || propType.IsEnum)
+                else if (propType.IsValueType || propType.IsEnum || propType == typeof(string))
                 {
                     var name = scope + property.Name;
                     var value = property.GetValue(optionsClass).ToString();
@@ -71,7 +118,14 @@ namespace MultiAlignCore.IO.Options
                         GetProperties(list, property.GetValue(optionsClass), scope + property.Name + ".");
                     }
                 }
-                // TODO: add handling for collections of basic types.
+                // Notify the developer when they try to use a non-supported type, like a generic collection.
+                else
+                {
+                    throw new NotSupportedException(
+                        "Object type not supported. If it is a generic collection, provide access with a property returning an array. " +
+                        "Add the 'IgnoreOptionProperty' attribute to ignore the failing property. Type info: Class '" +
+                        optionsClass.GetType().FullName + "', property '" + property.Name + "'.");
+                }
             }
         }
 
@@ -84,11 +138,13 @@ namespace MultiAlignCore.IO.Options
         private static object ParseProperties(Type optionsClass, IList<OptionPair> list)
         {
             // create a new object of type optionsClass
-            var options = optionsClass.Assembly.CreateInstance(optionsClass.FullName);
+            var options = Activator.CreateInstance(optionsClass);
 
             // break the dictionary down into layers
             var objDict = new Dictionary<string, List<OptionPair>>();
             var valDict = new Dictionary<string, string>();
+            var arrayValDict = new Dictionary<string, Dictionary<int, string>>();
+            var arrayObjDict = new Dictionary<string, Dictionary<int, List<OptionPair>>>();
             foreach (var option in list)
             {
                 // break off the first prefix, if there is one
@@ -101,23 +157,70 @@ namespace MultiAlignCore.IO.Options
                     subkey = basename.Substring(dot + 1);
                     basename = basename.Substring(0, dot);
 
-                    // store it as a separate list of items for the specified prefix
-                    if (!objDict.ContainsKey(basename))
+                    // Array of objects
+                    if (basename.Contains("#"))
                     {
-                        objDict.Add(basename, new List<OptionPair>());
+                        var hash = basename.IndexOf("#");
+                        var indexStr = basename.Substring(hash + 1);
+                        var index = Convert.ToInt32(indexStr);
+                        var name = basename.Substring(0, hash);
+
+                        if (!arrayObjDict.ContainsKey(name))
+                        {
+                            arrayObjDict.Add(name, new Dictionary<int, List<OptionPair>>());
+                        }
+                        if (!arrayObjDict[name].ContainsKey(index))
+                        {
+                            arrayObjDict[name].Add(index, new List<OptionPair>());
+                        }
+                        arrayObjDict[name][index].Add(new OptionPair(subkey, option.Value));
                     }
-                    objDict[basename].Add(new OptionPair(subkey, option.Value));
+                    // object
+                    else
+                    {
+                        // store it as a separate list of items for the specified prefix
+                        if (!objDict.ContainsKey(basename))
+                        {
+                            objDict.Add(basename, new List<OptionPair>());
+                        }
+                        objDict[basename].Add(new OptionPair(subkey, option.Value));
+                    }
                 }
                 // Not prefixed: is a basic type in this object
                 else
                 {
-                    if (valDict.ContainsKey(basename))
+                    // Array of basic types
+                    if (basename.Contains("#"))
                     {
-                        valDict[basename] = option.Value;
+                        var hash = basename.IndexOf("#");
+                        var indexStr = basename.Substring(hash + 1);
+                        var index = Convert.ToInt32(indexStr);
+                        var name = basename.Substring(0, hash);
+
+                        if (!arrayValDict.ContainsKey(name))
+                        {
+                            arrayValDict.Add(name, new Dictionary<int, string>());
+                        }
+                        if (!arrayValDict[name].ContainsKey(index))
+                        {
+                            arrayValDict[name][index] = option.Value;
+                        }
+                        else
+                        {
+                            arrayValDict[name].Add(index, option.Value);
+                        }
                     }
+                    // Basic type
                     else
                     {
-                        valDict.Add(basename, option.Value);
+                        if (valDict.ContainsKey(basename))
+                        {
+                            valDict[basename] = option.Value;
+                        }
+                        else
+                        {
+                            valDict.Add(basename, option.Value);
+                        }
                     }
                 }
             }
@@ -142,7 +245,39 @@ namespace MultiAlignCore.IO.Options
                 {
                     property.SetValue(options, ParseProperties(property.PropertyType, objDict[property.Name]));
                 }
-                // TODO: add handling for collections of basic types.
+                // Array of value/enum types
+                else if (arrayValDict.ContainsKey(property.Name))
+                {
+                    var count = arrayValDict[property.Name].Count;
+                    var type = property.PropertyType.GetElementType();
+                    var array = Array.CreateInstance(type, count);
+
+                    foreach (var item in arrayValDict[property.Name])
+                    {
+                        if (type.IsEnum)
+                        {
+                            array.SetValue(Enum.Parse(type, item.Value), item.Key);
+                        }
+                        else
+                        {
+                            array.SetValue(Convert.ChangeType(item.Value, type), item.Key);
+                        }
+                    }
+                    property.SetValue(options, Convert.ChangeType(array, property.PropertyType));
+                }
+                // Array of custom MultiAlign objects
+                else if (arrayObjDict.ContainsKey(property.Name))
+                {
+                    var count = arrayObjDict[property.Name].Count;
+                    var type = property.PropertyType.GetElementType();
+                    var array = Array.CreateInstance(type, count);
+
+                    foreach (var item in arrayObjDict[property.Name])
+                    {
+                        array.SetValue(ParseProperties(type, item.Value), item.Key);
+                    }
+                    property.SetValue(options, Convert.ChangeType(array, property.PropertyType));
+                }
             }
 
             return options;

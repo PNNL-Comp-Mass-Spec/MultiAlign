@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
@@ -189,7 +190,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
+        [MultiAlignCore.IO.Options.IgnoreOptionProperty]
         public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; }
+
+        public FeatureLight.SeparationTypes[] SeparationTypesArray
+        {
+            get { return SeparationTypes.ToArray(); }
+            set { SeparationTypes = value.ToList(); }
+        }
 
         /// <summary>
         /// Default constructor, initializes every value to commonly used values and flags
