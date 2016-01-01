@@ -82,45 +82,6 @@ namespace MultiAlignCore.IO.Hibernate
         /// </param>
         public static void CreateDatabase(String dbLocation)
         {
-            CreateDatabaseFluent(dbLocation);
-            return;
-            SetConfigurationDbLocation(dbLocation);
-            m_dbLocation = dbLocation;
-            m_sessionFactory = null;
-
-            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536", true))
-            {
-                conn.Open();
-                var optimizationCommands = new[]
-                {
-                    "PRAGMA journal_mode = OFF",
-                    "PRAGMA synchronous = OFF",
-                    "PRAGMA page_size = 65536"
-                };
-                foreach (var commandText in optimizationCommands)
-                {
-                    using (var command = conn.CreateCommand())
-                    {
-                        command.CommandText = commandText;
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                //var schemaExport = new SchemaExport(Configuration);
-                ////schemaExport.Execute(false, true, false, false, conn, null);
-                //schemaExport.Execute(false, true, false, conn, null);
-            }
-        }
-
-        /// <summary>
-        ///     Creates a SQLite database based on the hibernate config file.
-        /// </summary>
-        /// <param name="dbLocation">
-        ///     The file location of the database file to be created. The file should not exist before the
-        ///     database is created.
-        /// </param>
-        public static void CreateDatabaseFluent(String dbLocation)
-        {
             SetConfigurationDbLocation(dbLocation);
             m_dbLocation = dbLocation;
             m_sessionFactory = null;
@@ -137,9 +98,6 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="createIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
         public static void ConnectToDatabase(string databaseLocation, bool createIfMissing)
         {
-            ConnectToDatabaseFluent(databaseLocation, createIfMissing);
-            return;
-
             m_dbLocation = databaseLocation;
 
             // If the database does not exist, and we are trying to connect to it (not create)
@@ -165,39 +123,6 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Sets the location of the database file that the Hibernate Session should be attached to. If a Session already
-        ///     existed,
-        ///     it will be killed so that a new Session can be created that points to the new database location.
-        /// </summary>
-        /// <param name="databaseLocation">The file location of the database file.</param>
-        /// <param name="createIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
-        public static void ConnectToDatabaseFluent(string databaseLocation, bool createIfMissing)
-        {
-            m_dbLocation = databaseLocation;
-
-            // If the database does not exist, and we are trying to connect to it (not create)
-            // then we have a problem.
-            var exists = File.Exists(databaseLocation);
-            if (!exists && !createIfMissing)
-            {
-                throw new FileNotFoundException("The file does not exist.");
-            }
-
-            // Otherwise, make sure we have a closed session.
-            if (m_sessionFactory != null)
-            {
-                m_sessionFactory.Close();
-                m_sessionFactory = null;
-            }
-
-            // If the database is missing, and you want to create a database if it's missing, construct and open open it.
-            if (createIfMissing && !exists)
-            {
-                CreateDatabaseFluent(databaseLocation);
-            }
-        }
-
-        /// <summary>
         ///     SessionFactory object containing a get method that creates and returns a Hibernate SessionFactory if one does not
         ///     already exist
         ///     If a SessionFactory already exists, that object will be returned.
@@ -206,51 +131,8 @@ namespace MultiAlignCore.IO.Hibernate
         {
             get
             {
-                return SessionFactoryFluent;
                 if (m_sessionFactory == null)
                 {
-                    if (m_dbLocation != null)
-                    {
-                        SetConfigurationDbLocation(m_dbLocation);
-                    }
-                    //else
-                    //{
-                    //    var connectionString = Configuration.GetProperty("connection.connection_string");
-                    //    var fileLocation = connectionString.Split('=', ';')[1];
-                    //    if (!File.Exists(fileLocation))
-                    //    {
-                    //        CreateDatabase(fileLocation);
-                    //    }
-                    //}
-                    //Configuration.SetProperty("adonet.batch_size", "1000");
-                    //m_sessionFactory = Configuration.BuildSessionFactory();
-                }
-                return m_sessionFactory;
-            }
-        }
-
-        /// <summary>
-        ///     SessionFactory object containing a get method that creates and returns a Hibernate SessionFactory if one does not
-        ///     already exist
-        ///     If a SessionFactory already exists, that object will be returned.
-        /// </summary>
-        private static ISessionFactory SessionFactoryFluent
-        {
-            get
-            {
-                if (m_sessionFactory == null)
-                {
-                    //if (m_dbLocation == null)
-                    //{
-                    //    var connectionString = Configuration.GetProperty("connection.connection_string");
-                    //    var fileLocation = connectionString.Split('=', ';')[1];
-                    //    m_dbLocation = fileLocation;
-                    //    if (!File.Exists(fileLocation))
-                    //    {
-                    //        CreateDatabaseFluent(fileLocation);
-                    //        return m_sessionFactory;
-                    //    }
-                    //}
                     m_sessionFactory = GetFluentConfiguration(m_dbLocation).BuildSessionFactory();
                 }
                 return m_sessionFactory;

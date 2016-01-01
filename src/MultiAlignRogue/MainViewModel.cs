@@ -367,7 +367,7 @@ namespace MultiAlignRogue
         /// <summary>
         /// Select an input dataset file
         /// </summary>
-        public void SelectFiles()
+        public async void SelectFiles()
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -391,7 +391,7 @@ namespace MultiAlignRogue
             if (filePaths.Length == 0)
                 return;
 
-            this.AddDatasets(filePaths);
+            await this.AddDatasets(filePaths);
 
             this.lastInputDirectory = Path.GetDirectoryName(filePaths.First());
         }
@@ -420,7 +420,7 @@ namespace MultiAlignRogue
             this.AddFolderCommand.Execute(null);
         }
 
-        public void AddFolderDelegate()
+        public async void AddFolderDelegate()
         {
             if (string.IsNullOrEmpty(InputFilePath))
             {
@@ -436,10 +436,10 @@ namespace MultiAlignRogue
                 return;
             }
 
-            this.AddDatasets(InputFilePath);
+            await this.AddDatasets(InputFilePath);
         }
 
-        private void SearchDms()
+        private async void SearchDms()
         {
             var dmsLookupViewModel = new DmsLookupViewModel { OutputDirectory = this.outputDirectory };
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
@@ -463,7 +463,7 @@ namespace MultiAlignRogue
                     var filePaths = dataset.GetAvailableFiles();
                     if (filePaths.Count > 0)
                     {
-                        this.AddDatasets(filePaths);
+                        await this.AddDatasets(filePaths);
                     }
                 }
             }
