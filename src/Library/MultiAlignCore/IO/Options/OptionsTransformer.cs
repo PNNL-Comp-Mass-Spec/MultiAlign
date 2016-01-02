@@ -64,6 +64,15 @@ namespace MultiAlignCore.IO.Options
                 // Get the type of the property
                 var propType = property.PropertyType;
 
+                // Test to make sure the property has both get and set accessors
+                if (!(property.CanRead && property.CanWrite))
+                {
+                    throw new NotSupportedException(
+                        "Operation requires get and set accessors for all persisted properties. " +
+                        "Add the 'IgnoreOptionProperty' attribute to ignore the failing property. Property info: Class '" +
+                        optionsClass.GetType().FullName + "', property '" + property.Name + "'.");
+                }
+
                 // Array handling (only supported collection)
                 if (propType.IsArray)
                 {
