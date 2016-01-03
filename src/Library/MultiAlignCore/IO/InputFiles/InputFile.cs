@@ -52,6 +52,11 @@ namespace MultiAlignCore.IO.InputFiles
         }
 
         /// <summary>
+        /// Path to file, relative to project directory
+        /// </summary>
+        public string RelativePath { get; set; }
+
+        /// <summary>
         ///     Gets or sets the input file type.
         /// </summary>
         public InputFileType FileType { get; set; }

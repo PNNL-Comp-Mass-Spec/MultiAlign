@@ -68,6 +68,8 @@ namespace MultiAlignRogue
 
         private string projectPath;
 
+        private string projectDirectory;
+
         private string windowTitle;
 
         private string outputDirectory;
@@ -625,6 +627,7 @@ namespace MultiAlignRogue
                     this.ShowSplash = false;
                     m_config.AnalysisName = newProjectViewModel.ProjectFilePath;
                     ProjectPath = newProjectViewModel.ProjectFilePath;
+                    this.projectDirectory = Path.GetDirectoryName(projectPath) + Path.DirectorySeparatorChar;
                     this.outputDirectory = newProjectViewModel.OutputDirectory;
                     await this.LoadRogueProject(true, newProjectViewModel.Datasets.Select(x => x.Dataset).ToList());
                     
@@ -648,6 +651,12 @@ namespace MultiAlignRogue
 
         }
 
+        /// <summary>
+        /// Load a project
+        /// </summary>
+        /// <param name="isNewProject">If the project is a new one</param>
+        /// <param name="datasets">Datasets to add to the project, if it is a new project.</param>
+        /// <returns></returns>
         private async Task LoadRogueProject(bool isNewProject, List<DatasetInformation> datasets = null)
         {
             Directory.SetCurrentDirectory(this.outputDirectory);
@@ -673,7 +682,29 @@ namespace MultiAlignRogue
             this.StacSettingsViewModel = null;
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
-            this.Analysis.MetaData.Datasets.AddRange(this.Analysis.DataProviders.DatasetCache.FindAll());
+            var dbDatasets = this.Analysis.DataProviders.DatasetCache.FindAll();
+            // Resolve the relative paths
+            if (!string.IsNullOrWhiteSpace(this.projectDirectory))
+            {
+                foreach (var dataset in dbDatasets)
+                {
+                    foreach (var file in dataset.InputFiles)
+                    {
+                        if (!string.IsNullOrWhiteSpace(file.RelativePath))
+                        {
+                            var combined = Path.Combine(this.projectDirectory, file.RelativePath);
+                            var cleaned = Path.GetFullPath(combined);
+                            if (File.Exists(cleaned))
+                            {
+                                file.Path = cleaned;
+                            }
+                        }
+                        // TODO: show warning if file cannot be found.
+                        // TODO: OR disable redo of step that needs specified file, if file is only needed for e.g. feature finding
+                    }
+                }
+            }
+            this.Analysis.MetaData.Datasets.AddRange(dbDatasets);
 
             this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
 
@@ -751,12 +782,27 @@ namespace MultiAlignRogue
 			this.ShowSplash = false;
             this.outputDirectory = Path.GetDirectoryName(openFileDialog.FileName);
             this.ProjectPath = openFileDialog.FileName;
+            this.projectDirectory = Path.GetDirectoryName(openFileDialog.FileName) + Path.DirectorySeparatorChar;
 
             await this.LoadRogueProject(false);
         }
 
         private void PersistProject()
         {
+            if (string.IsNullOrWhiteSpace(this.projectDirectory))
+            {
+                this.projectDirectory = Path.GetDirectoryName(this.ProjectPath) + Path.DirectorySeparatorChar;
+            }
+            // Get the relative paths set up.
+            foreach (var dataset in this.Datasets.Select(d => d.Dataset))
+            {
+                foreach (var file in dataset.InputFiles)
+                {
+                    file.RelativePath = PathUtils.MakeRelativePath(this.projectDirectory, file.Path);
+                }
+            }
+
+            // Persist
             this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
             this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
             this.Analysis.DataProviders.DatasetCache.DeleteAll(this.deletedDatasets);
@@ -786,6 +832,8 @@ namespace MultiAlignRogue
             }
         }
         #endregion
+
+        #region Registry data
 
         /// <summary>
         /// Load settings from the registry
@@ -905,6 +953,8 @@ namespace MultiAlignRogue
 
             return false;
         }
+
+        #endregion
 
         private void RestoreDefaultSettings()
         {

@@ -319,7 +319,7 @@ namespace MultiAlignCore.Extensions
                     {
                         var singleInfo = information[feature.GroupId];
 
-                        if (singleInfo.RawFile != null && singleInfo.RawFile.Path != null)
+                        if (singleInfo.RawFile != null && !string.IsNullOrWhiteSpace(singleInfo.RawFile.Path))
                         {
                             // Make sure that we have a file.
                             if (!File.Exists(singleInfo.RawFile.Path))

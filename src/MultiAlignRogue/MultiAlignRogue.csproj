@@ -218,6 +218,7 @@
       <DependentUpon>DataLoadingSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DataLoadingSettingsViewModel.cs" />
+    <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="Utils\PlotSaving.xaml.cs">
       <DependentUpon>PlotSaving.xaml</DependentUpon>
     </Compile>
