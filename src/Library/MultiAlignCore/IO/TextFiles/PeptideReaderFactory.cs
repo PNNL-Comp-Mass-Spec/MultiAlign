@@ -25,6 +25,9 @@
                 case SequenceFileType.MSGF:
                     reader = new MsgfReader();
                     break;
+                case SequenceFileType.MsPathFinder:
+                    reader = new MsPathFinderReader();
+                    break;
                 case SequenceFileType.SkylineTransitionFile:
                     reader = new SkylineTransitionFileReader();
                     break;
@@ -59,6 +62,10 @@
             {
                 type = SequenceFileType.MSGFTsv;
             }
+            else if (lowerPath.EndsWith("_IcTda.tsv"))
+            {
+                type = SequenceFileType.MsPathFinder;
+            }
             return type;
         }
     }
@@ -72,6 +79,7 @@
         SEQUESTSynopsis,
         MSGF,
         MSGFTsv,
+        MsPathFinder,
         SkylineTransitionFile,
         XTandem,
         None

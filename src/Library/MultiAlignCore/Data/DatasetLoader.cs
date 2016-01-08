@@ -122,6 +122,7 @@
                     supportedTypes.Add(new SupportedFileType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence));
                     supportedTypes.Add(new SupportedFileType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
                     supportedTypes.Add(new SupportedFileType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));
+                    supportedTypes.Add(new SupportedFileType("MSPathFinder Results", "_IcTda.tsv", InputFileType.Sequence));
 
                     // Add supported RAW file types.
                     foreach (var fileTypeInfo in MassSpecDataReaderFactory.MassSpecDataTypes)
