@@ -576,6 +576,7 @@ namespace MultiAlignRogue.Feature_Finding
 
                 try
                 {
+                    this.analysis.DataProviders.DatabaseLock.EnterReadLock();
                     var features = this.featureCache.LoadDataset(
                         file.Dataset,
                         this.analysis.Options.MsFilteringOptions,
@@ -585,6 +586,7 @@ namespace MultiAlignRogue.Feature_Finding
                         analysis.DataProviders.ScanSummaryProviderCache,
                         analysis.DataProviders.IdentificationProviderCache,
                         progressRpt);
+                    this.analysis.DataProviders.DatabaseLock.ExitReadLock();
 
 
                     if (!this.featuresByDataset.ContainsKey(file.Dataset))
@@ -618,7 +620,9 @@ namespace MultiAlignRogue.Feature_Finding
                         }
 
                         progData.StepRange(100);
+                        this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                         this.featureCache.CacheFeatures(features, progressRpt);
+                        this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
                         stopWatch.Stop();
                         logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
                     }

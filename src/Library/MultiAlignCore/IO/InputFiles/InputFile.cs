@@ -14,6 +14,11 @@ namespace MultiAlignCore.IO.InputFiles
         private string m_path;
 
         /// <summary>
+        /// For use with NHibernate - automatically set upon persistence to the database.
+        /// </summary>
+        public int Id { get; private set; }
+
+        /// <summary>
         ///     Constructor.
         /// </summary>
         public InputFile()
@@ -45,6 +50,11 @@ namespace MultiAlignCore.IO.InputFiles
                 }
             }
         }
+
+        /// <summary>
+        /// Path to file, relative to project directory
+        /// </summary>
+        public string RelativePath { get; set; }
 
         /// <summary>
         ///     Gets or sets the input file type.

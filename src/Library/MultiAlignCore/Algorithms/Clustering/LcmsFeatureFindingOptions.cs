@@ -39,7 +39,7 @@
         public MsFeatureClusteringAlgorithmType FirstPassClusterer { get; set; }
         public GenericClusteringAlgorithmType SecondPassClusterer { get; set; }
 
-        public bool FindXics { get; set; }       
+        public bool FindXics { get; set; }
         public bool RefineXics { get; set; }
         public int SmoothingWindowSize { get; set; }
         public int SmoothingPolynomialOrder { get; set; }
@@ -49,6 +49,6 @@
 
         public FeatureTolerances InstrumentTolerances { get; set; }
         public int               MaximumScanRange { get; set; }
-        public double            MaximumNetRange { get; set; }     
-    }    
+        public double            MaximumNetRange { get; set; }
+    }
 }

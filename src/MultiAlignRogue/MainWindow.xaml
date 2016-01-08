@@ -5,6 +5,7 @@
         xmlns:amtMatching="clr-namespace:MultiAlignRogue.AMTMatching"
         xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
         x:Name="RogueMainWindow"
@@ -25,6 +26,11 @@
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo x:Name="taskBarItemInfo" />
     </Window.TaskbarItemInfo>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseWindowCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid Name="MainGrid">
 

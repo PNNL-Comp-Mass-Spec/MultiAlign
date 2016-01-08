@@ -19,11 +19,11 @@ namespace MultiAlignRogue
     using MessageBox = System.Windows.MessageBox;
 
     /// <summary>
-    /// View model for specifying the datasets and paths for a <see cref="RogueProject" />.
+    /// View model for specifying the datasets and paths for a project.
     /// </summary>
     public class NewProjectViewModel : ViewModelBase
     {
-        private string userDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private readonly string userDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         /// <summary>
         /// The path to the Rogue Project file.
@@ -215,20 +215,6 @@ namespace MultiAlignRogue
         }
 
         /// <summary>
-        /// Gets the <see cref="RogueProject" /> for the select dataset parameters.
-        /// </summary>
-        /// <returns>The <see cref="RogueProject" />.</returns>
-        public RogueProject GetRogueProject()
-        {
-            return new RogueProject
-            {
-                AnalysisPath = string.Format("{0}\\{1}", this.OutputDirectory, Path.ChangeExtension(Path.GetFileName(this.ProjectFilePath), ".db3")),
-                Datasets = new List<DatasetInformation>(this.Datasets.Select(x => x.Dataset)),
-                LayoutFilePath = string.Format("{0}\\Layout.xml", this.OutputDirectory)
-            };
-        }
-
-        /// <summary>
         /// Implementation for <see cref="BrowseProjectFilesCommand" />.
         /// Opens the file browser to select output file path.
         /// </summary>
@@ -236,8 +222,8 @@ namespace MultiAlignRogue
         {
             var saveFileDialog = new SaveFileDialog
             {
-                DefaultExt = ".xml",
-                Filter = @"Supported Files|*.xml"                
+                DefaultExt = ".db3",
+                Filter = @"Supported Files|*.db3"                
             };
 
             if (!string.IsNullOrWhiteSpace(this.LastProjectDirectory))

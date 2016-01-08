@@ -32,7 +32,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>ec718c66</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>337d2729</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -57,8 +57,8 @@
     <Reference Include="alglibnet2">
       <HintPath>..\..\..\lib\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="FluentNHibernate, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FluentNHibernate.2.0.1.0\lib\net40\FluentNHibernate.dll</HintPath>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
@@ -68,39 +68,40 @@
     <Reference Include="InformedProteomics.Backend">
       <HintPath>..\..\..\lib\InformedProteomics.Backend\InformedProteomics.Backend.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Mage, Version=1.4.5606.25460, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Mage\Mage.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.8.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.10.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MTDBFramework, Version=1.0.5655.19433, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
+      <HintPath>..\..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Core.1.0.0-unstable1886\lib\net45\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Core.1.0.0-unstable1966\lib\net45\OxyPlot.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1886\lib\net45\OxyPlot.Wpf.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1966\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot.Xps, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1886\lib\net45\OxyPlot.Xps.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1966\lib\net45\OxyPlot.Xps.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
@@ -118,8 +119,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data.SQLite, Version=1.0.97.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.97.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net45\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
@@ -135,32 +136,32 @@
   <ItemGroup>
     <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\IAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\IMassRegressionCalculator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentProcessor.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpAlignmentScorer.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCalibrationType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCentralRegression.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCombinedRegression.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatch.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatcher.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpPlotDataCreator.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpResults.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpStatistics.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\IMassRegressionCalculator.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCalibrationType.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCentralRegression.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCombinedRegression.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpMassAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetAlignmentFunction.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpMzCalibrator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpNetMassCalibrator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpNetMzCalibrator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetWarper.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpPlotDataCreator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpRegressionType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpResults.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpSectionInfo.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpStatistics.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpMzCalibrator.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\MassCalibrationFactory.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpAlignmentScorer.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetAlignmentFunction.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetWarper.cs" />
+    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpSectionInfo.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\NewAlignmentData.cs" />
     <Compile Include="Algorithms\Alignment\LcmsWarp\NewLcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointFinder.cs" />
@@ -506,6 +507,31 @@
     <Compile Include="IO\Hibernate\DatasetDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\DatasetToFactorDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\FactorDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\AlignmentDataMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\ClusterToMassTagMapMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\DatabaseSearchSequenceMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\DatasetInformationMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\DatasetToExperimentalFactorMapMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\ExperimentalFactorMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\InputFileMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpAlignmentMatchMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpNetAlignmentFunctionMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpResultsMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\LcmsWarpSectionInfoMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MassTagLightMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MassTagToProteinMapMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MSFeatureLightMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MSFeatureToMSnFeatureMapMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MSMSClusterMapMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\MSSpectraMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\OptionPairMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\ParameterHibernateMappingMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\ProteinMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\ScanSummaryMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\SequenceToMsnFeatureMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\STACFDRMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\UMCClusterLightMapping.cs" />
+    <Compile Include="IO\Hibernate\FluentMappings\UMCLightMapping.cs" />
     <Compile Include="IO\Hibernate\GenericDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\MassTagDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\MassTagMatchDAO.cs" />
@@ -514,6 +540,7 @@
     <Compile Include="IO\Hibernate\MSnFeatureDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\MSnFeatureToMSFeatureDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\NHibernateUtil.cs" />
+    <Compile Include="IO\Hibernate\OptionsDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\ProteinDAO.cs" />
     <Compile Include="IO\Hibernate\ScanSummaryDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\STACDAOHibernate.cs" />
@@ -550,6 +577,9 @@
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
     <Compile Include="IO\MTDB\SqliteMassTagDatabaseLoader.cs" />
+    <Compile Include="IO\Options\IgnoreOptionProperty.cs" />
+    <Compile Include="IO\Options\OptionPair.cs" />
+    <Compile Include="IO\Options\OptionsTransformer.cs" />
     <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterFileGroupAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
@@ -609,30 +639,6 @@
     <Compile Include="ICloneable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hibernate.cfg.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="IO\Hibernate\Mappings\ScanSummary.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\AlignmentData.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\Dataset.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\DatasetToFactor.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\Factor.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MassTag.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MSFeature.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MSMSClusterMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MSnFeatureToMSFeatureMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MsSpectra.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\Protein.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\StacFDR.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\UmcLight.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\UmcClusterLight.hbm.xml" />
-    <EmbeddedResource Include="IO\Parameters\Hibernate\ParameterHibernateMapping.hbm.xml" />
-    <EmbeddedResource Include="IO\SequenceData\Mappings\DatabaseSearchSequence.hbm.xml" />
-    <EmbeddedResource Include="IO\SequenceData\Mappings\SequenceToMsnFeature.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -655,12 +661,12 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

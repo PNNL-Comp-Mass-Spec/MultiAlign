@@ -90,6 +90,25 @@ namespace MultiAlignCore.IO.Hibernate
             }
         }
 
+        /// These methods will be available to all of the DAOHibernate classes.
+        /// They are generic methods so that T can be replaced with the class type (Umc, MassTag, etc.)
+        /// e.g. If a Umc object is given to "Add(T t)", a Umc object will be stored in the Database
+        /// <summary>
+        ///     Adds an Object to the Database, or updates it if it has been previously added.
+        /// </summary>
+        /// <param name="t">Object to be added or updated</param>
+        public void AddOrUpdate(T t)
+        {
+            using (var session = GetSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    session.SaveOrUpdate(t);
+                    transaction.Commit();
+                }
+            }
+        }
+
         public int SessionBatchSize { get; set; }
 
         /// <summary>
@@ -229,7 +248,28 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Deletes a Collection of Objects from the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be deleted</param>
+        /// <remarks>Use for deletes that need to cascade. Data must be loaded into the session for a cascading delete.</remarks>
         public void DeleteAll(ICollection<T> tCollection)
+        {
+            using (var session = GetSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    foreach (var t in tCollection)
+                    {
+                        session.Delete(t);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Deletes a Collection of Objects from the Database.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be deleted</param>
+        /// <remarks>Do not use to perform deletes that should cascade (will fail with an exception). Fails due to use of IStatelessSession.</remarks>
+        public void DeleteAllStateless(ICollection<T> tCollection)
         {
             using (var session = GetStatelessSession())
             {

@@ -10,6 +10,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     public class LcmsWarpAlignmentMatch : IComparable<LcmsWarpAlignmentMatch>
     {
         /// <summary>
+        /// Id for use only by NHibernate; do not use, it is set when persisted.
+        /// </summary>
+        public int Id { get; private set; } // for storing in the database, set when stored.
+
+        /// <summary>
         /// Gets or sets the alignee section NET start.
         /// </summary>
         public double AligneeNetStart { get; set; }

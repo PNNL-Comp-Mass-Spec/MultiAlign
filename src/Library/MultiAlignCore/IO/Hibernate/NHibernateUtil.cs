@@ -3,6 +3,8 @@
 using System;
 using System.Data.SQLite;
 using System.IO;
+using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
@@ -19,7 +21,7 @@ namespace MultiAlignCore.IO.Hibernate
     public static class NHibernateUtil
     {
         private static String m_dbLocation;
-        private static readonly Configuration Configuration;
+        //private static readonly Configuration Configuration;
         private static ISessionFactory m_sessionFactory;
 
         /// <summary>
@@ -27,9 +29,11 @@ namespace MultiAlignCore.IO.Hibernate
         /// </summary>
         static NHibernateUtil()
         {
-            Configuration = new Configuration();
-            Configuration.Configure();
-            Configuration.AddAssembly(typeof (NHibernateUtil).Assembly);
+            //Configuration = new Configuration();
+            //// Load configuration from hibernate.cfg.xml
+            //Configuration.Configure();
+            //Configuration.AddAssembly(typeof (NHibernateUtil).Assembly);
+            m_dbLocation = "Analysis.db3";
         }
 
         /// <summary>
@@ -82,28 +86,7 @@ namespace MultiAlignCore.IO.Hibernate
             m_dbLocation = dbLocation;
             m_sessionFactory = null;
 
-            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536", true))
-            {
-                conn.Open();
-                var optimizationCommands = new[]
-                {
-                    "PRAGMA journal_mode = OFF",
-                    "PRAGMA synchronous = OFF",
-                    "PRAGMA page_size = 65536"
-                };
-                foreach (var commandText in optimizationCommands)
-                {
-                    using (var command = conn.CreateCommand())
-                    {
-                        command.CommandText = commandText;
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                var schemaExport = new SchemaExport(Configuration);
-                //schemaExport.Execute(false, true, false, false, conn, null);
-                schemaExport.Execute(false, true, false, conn, null);
-            }
+            m_sessionFactory = GetFluentConfiguration(m_dbLocation).BuildSessionFactory();
         }
 
         /// <summary>
@@ -150,23 +133,92 @@ namespace MultiAlignCore.IO.Hibernate
             {
                 if (m_sessionFactory == null)
                 {
-                    if (m_dbLocation != null)
-                    {
-                        SetConfigurationDbLocation(m_dbLocation);
-                    }
-                    else
-                    {
-                        var connectionString = Configuration.GetProperty("connection.connection_string");
-                        var fileLocation = connectionString.Split('=', ';')[1];
-                        if (!File.Exists(fileLocation))
-                        {
-                            CreateDatabase(fileLocation);
-                        }
-                    }
-                    Configuration.SetProperty("adonet.batch_size", "1000");
-                    m_sessionFactory = Configuration.BuildSessionFactory();
+                    m_sessionFactory = GetFluentConfiguration(m_dbLocation).BuildSessionFactory();
                 }
                 return m_sessionFactory;
+            }
+        }
+
+        private static FluentConfiguration GetFluentConfiguration(string dbLocation, bool createIfMissing = true)
+        {
+            if (!File.Exists(dbLocation) && !createIfMissing)
+            {
+                throw new FileNotFoundException("The file does not exist.");
+            }
+
+            var conf = Fluently.Configure()
+                .Database(
+                    SQLiteConfiguration.Standard
+                        //.UsingFile(m_dbLocation) // Won't work because of the need for custom additions to the connection string
+                        .AdoNetBatchSize(1000)
+                        .ConnectionString("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536"))
+                .Mappings(m =>
+                {
+                    //Directory.CreateDirectory("Mappings");
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.AlignmentDataMapping>()                        /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ClusterToMassTagMapMapping>()                  /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatabaseSearchSequenceMapping>()               /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatasetInformationMapping>()                   /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.DatasetToExperimentalFactorMapMapping>()       /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ExperimentalFactorMapping>()                   /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.InputFileMapping>()                            /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.LcmsWarpAlignmentMatchMapping>()               /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MassTagLightMapping>()                         /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MassTagToProteinMapMapping>()                  /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSFeatureLightMapping>()                       /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSFeatureToMSnFeatureMapMapping>()             /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSMSClusterMapMapping>()                       /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.MSSpectraMapping>()                            /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.OptionPairMapping>()                           /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ParameterHibernateMappingMapping>()            /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ProteinMapping>()                              /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.ScanSummaryMapping>()                          /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.SequenceToMsnFeatureMapping>()                 /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.STACFDRMapping>()                              /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCClusterLightMapping>()                      /* .ExportTo("Mappings") */ ;
+                    m.FluentMappings.AddFromAssemblyOf<FluentMappings.UMCLightMapping>()                             /* .ExportTo("Mappings") */ ;
+                });
+
+            if (!File.Exists(dbLocation))
+            {
+                conf = conf.ExposeConfiguration(BuildSchemaNew);
+            }
+            else
+            {
+                conf = conf.ExposeConfiguration(BuildSchemaOpen);
+            }
+
+            return conf;
+        }
+
+        /// <summary>
+        /// Export the schema to a new database
+        /// </summary>
+        /// <param name="config"></param>
+        private static void BuildSchemaNew(Configuration config)
+        {
+            new SchemaExport(config).Create(false, true);
+        }
+
+        /// <summary>
+        /// Validate or update the schema in an existing database
+        /// </summary>
+        /// <param name="config"></param>
+        private static void BuildSchemaOpen(Configuration config)
+        {
+            try
+            {
+                // Try to validate the schema. If it is correct, we can use it as is.
+                new SchemaValidator(config).Validate();
+                //config.SetProperty("adonet.batch_size", "100");
+            }
+            catch (HibernateException)
+            {
+                // Validation failed; we need to update the schema.
+                // If this fails, we need to report an error.
+                // If we are supposed to append, then only 'update' the schema
+                // This will also create if it does not exist
+                new SchemaUpdate(config).Execute(false, true);
             }
         }
 
@@ -176,8 +228,9 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="dbLocation">The file location of the database file</param>
         private static void SetConfigurationDbLocation(string dbLocation)
         {
-            Configuration.SetProperty("connection.connection_string",
-                "Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536");
+            m_dbLocation = dbLocation;
+            //Configuration.SetProperty("connection.connection_string",
+            //    "Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536");
         }
 
         public static string Connection

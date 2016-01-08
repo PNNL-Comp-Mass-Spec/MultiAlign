@@ -59,7 +59,10 @@
                                             : this.WarpNet(aligneeFeatures, baselineFeatures, true);
 
             // TODO: Change this to return the new alignment data object.
-            var aData = new AlignmentData();
+            var aData = new AlignmentData
+            {
+                AlignmentFunctions = new Dictionary<FeatureLight.SeparationTypes, LcmsWarpResults>()
+            };
             return aData;
         }
 

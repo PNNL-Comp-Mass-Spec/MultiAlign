@@ -1,6 +1,7 @@
 ﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     using System.Collections.Generic;
+    using MultiAlignCore.Data.Features;
 
     /// <summary>
     /// This class represents the LCMSWarp results for a single dimension.
@@ -10,6 +11,22 @@
     /// </summary>
     public class LcmsWarpResults
     {
+        /// <summary>
+        /// Id value for the database, set when persisted
+        /// </summary>
+        public int Id { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the alignment function which can warp values from
+        /// an unaligned dataset to an aligned one.
+        /// </summary>
+        public IAlignmentFunction AlignmentFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the separation type for these results
+        /// </summary>
+        public FeatureLight.SeparationTypes SeparationType { get; set; }
+
         /// <summary>
         /// Gets or sets the the error histogram from the alignment
         /// </summary>
@@ -40,10 +57,9 @@
         /// </summary>
         public double Kurtosis { get; set; }
 
-        /// <summary>
-        /// Gets or sets the alignment function which can warp values from
-        /// an unaligned dataset to an aligned one.
-        /// </summary>
-        public IAlignmentFunction AlignmentFunction { get; set; }
+        public LcmsWarpResults()
+        {
+            this.SeparationType = FeatureLight.SeparationTypes.LC;
+        }
     }
 }

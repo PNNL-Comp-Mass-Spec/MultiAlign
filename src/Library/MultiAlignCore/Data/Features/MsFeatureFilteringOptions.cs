@@ -32,7 +32,7 @@ namespace MultiAlignCore.Data.Features
         public double MinimumDeisotopingScore   { get; set; }
         public bool ShouldUseMzFilter           { get; set; }
         public bool ShouldUseIntensityFilter    { get; set; }
-        public bool ShouldUseChargeFilter        { get; set; }  
-        public bool ShouldUseDeisotopingFilter  { get; set; }        
+        public bool ShouldUseChargeFilter        { get; set; }
+        public bool ShouldUseDeisotopingFilter { get; set; }
     }
 }

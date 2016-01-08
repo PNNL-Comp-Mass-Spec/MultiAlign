@@ -60,6 +60,11 @@ namespace MultiAlignCore.IO.InputFiles
         public string UserName { get; set; }
         public string Password { get; set; }
 
+        /// <summary>
+        /// For NHibernate; set when the class is persisted or read
+        /// </summary>
+        public int Id { get; private set; }
+
         #region Methods
 
         /// <summary>

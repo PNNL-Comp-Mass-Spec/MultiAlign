@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
@@ -176,6 +177,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// The LCMSWarp regression type to use; based on MassCalibUseLsq
         /// </summary>
+        [MultiAlignCore.IO.Options.IgnoreOptionProperty]
         public LcmsWarpRegressionType RegressionType
         {
             get
@@ -188,7 +190,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
         }
 
-        public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; } 
+        [MultiAlignCore.IO.Options.IgnoreOptionProperty]
+        public List<FeatureLight.SeparationTypes> SeparationTypes { get; set; }
+
+        public FeatureLight.SeparationTypes[] SeparationTypesArray
+        {
+            get { return SeparationTypes.ToArray(); }
+            set { SeparationTypes = value.ToList(); }
+        }
 
         /// <summary>
         /// Default constructor, initializes every value to commonly used values and flags

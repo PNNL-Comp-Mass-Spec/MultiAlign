@@ -56,11 +56,9 @@ namespace MultiAlignTestSuite.Drawing
                 var pointList = new List<ScatterPoint>();
                 for (var i = 0; i < totalPoints; i++)
                 {
-                    var point = new ScatterPoint
-                    {
-                        X = random.NextDouble(),
-                        Y = random.NextDouble()
-                    };
+                    var xPos = random.NextDouble();
+                    var yPos = random.NextDouble();
+                    var point = new ScatterPoint(xPos, yPos);
                     pointList.Add(point);
                 }
                 Console.WriteLine();

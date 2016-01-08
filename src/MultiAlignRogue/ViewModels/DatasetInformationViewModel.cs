@@ -110,16 +110,17 @@ namespace MultiAlignRogue.ViewModels
 
                     this.IsLoadingRawData = value == DatasetStates.LoadingRawData;
 
-                    if (this.StateChanged != null)
+                    this.ShouldShowProgress = (value == DatasetStates.LoadingRawData) ||
+                          (value == DatasetStates.FindingFeatures) ||
+                          (value == DatasetStates.PersistingFeatures) ||
+                          ((value == DatasetStates.Aligning) ||
+                          (value == DatasetStates.PersistingAlignment));
+
+                    var isFinishedState = !this.ShouldShowProgress;
+                    if (isFinishedState && this.StateChanged != null)
                     {
                         this.StateChanged(this, EventArgs.Empty);
                     }
-
-                    this.ShouldShowProgress = (value == DatasetStates.LoadingRawData) ||
-                                              (value == DatasetStates.FindingFeatures) ||
-                                              (value == DatasetStates.PersistingFeatures) ||
-                                              ((value == DatasetStates.Aligning) ||
-                                              (value == DatasetStates.PersistingAlignment));
 
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("AligningLabelColor");

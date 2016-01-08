@@ -165,6 +165,11 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
+        public void DeleteAllStateless(ICollection<UMCLight> tList)
+        {
+            throw new NotImplementedException();
+        }
+
         public UMCLight FindById(int id)
         {
             throw new NotImplementedException();
