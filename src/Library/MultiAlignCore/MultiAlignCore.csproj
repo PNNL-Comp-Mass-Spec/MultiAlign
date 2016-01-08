@@ -588,6 +588,7 @@
     <Compile Include="IO\TextFiles\MsgfTabDelimitedReader.cs" />
     <Compile Include="IO\TextFiles\MsgfReader.cs" />
     <Compile Include="IO\TextFiles\MsMsFileWriterFactory.cs" />
+    <Compile Include="IO\TextFiles\MsPathFinderReader.cs" />
     <Compile Include="IO\TextFiles\PeptideReaderFactory.cs" />
     <Compile Include="IO\TextFiles\PromexFileReader.cs" />
     <Compile Include="IO\TextFiles\ScansFileReader.cs" />
