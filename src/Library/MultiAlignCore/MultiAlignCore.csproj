@@ -76,16 +76,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Mage\Mage.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.9.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.10.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MTDBFramework, Version=1.0.5655.19433, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
@@ -93,15 +93,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Core.1.0.0-unstable1904\lib\net45\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Core.1.0.0-unstable1966\lib\net45\OxyPlot.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1904\lib\net45\OxyPlot.Wpf.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1966\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot.Xps, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1904\lib\net45\OxyPlot.Xps.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.1.0.0-unstable1966\lib\net45\OxyPlot.Xps.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
