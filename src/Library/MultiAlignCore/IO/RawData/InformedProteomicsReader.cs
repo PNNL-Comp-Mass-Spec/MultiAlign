@@ -26,21 +26,6 @@ namespace MultiAlignCore.IO.RawData
         /// </summary>
         private readonly DatasetSummary _summary;
 
-        /// <summary>
-        /// The total number of scans.
-        /// </summary>
-        private int _totalScans;
-
-        /// <summary>
-        /// The lowest scan number.
-        /// </summary>
-        private int _minScan;
-
-        /// <summary>
-        /// The highest scan number.
-        /// </summary>
-        private int _maxScan;
-
         public InformedProteomicsReader(int groupId, string dataFilePath)
         {
             this.GroupId = groupId;
