@@ -62,7 +62,7 @@
             {
                 type = SequenceFileType.MSGFTsv;
             }
-            else if (lowerPath.EndsWith("_IcTda.tsv"))
+            else if (lowerPath.EndsWith("_ictda.tsv"))
             {
                 type = SequenceFileType.MsPathFinder;
             }
