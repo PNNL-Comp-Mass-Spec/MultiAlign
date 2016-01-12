@@ -16,6 +16,7 @@ using NHibernate.Util;
 namespace MultiAlignRogue.Feature_Finding
 {
     using System;
+    using System.CodeDom;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -564,20 +565,24 @@ namespace MultiAlignRogue.Feature_Finding
                 var progData = new ProgressData();
 
                 var fileInstance = file;
-                var progressRpt = new Progress<ProgressData>(pd =>
-                {
-                    fileInstance.Progress = progData.UpdatePercent(pd.Percent).Percent;
+                var progressRpt = new Progress<ProgressData>(
+                    pd =>
+                        {
+                            fileInstance.Progress = progData.UpdatePercent(pd.Percent).Percent;
 
-                    // Report file progress
-                    totalProgressData.Report(fileInstance.Progress);
-                });
+                            // Report file progress
+                            totalProgressData.Report(fileInstance.Progress);
+                        });
 
                 progData.StepRange(30);
 
+                IList<UMCLight> features;
+
+                // Load features from the database.
                 try
                 {
                     this.analysis.DataProviders.DatabaseLock.EnterReadLock();
-                    var features = this.featureCache.LoadDataset(
+                    features = this.featureCache.LoadDataset(
                         file.Dataset,
                         this.analysis.Options.MsFilteringOptions,
                         this.analysis.Options.LcmsFindingOptions,
@@ -586,54 +591,74 @@ namespace MultiAlignRogue.Feature_Finding
                         analysis.DataProviders.ScanSummaryProviderCache,
                         analysis.DataProviders.IdentificationProviderCache,
                         progressRpt);
-                    this.analysis.DataProviders.DatabaseLock.ExitReadLock();
-
-
-                    if (!this.featuresByDataset.ContainsKey(file.Dataset))
-                    {
-                        this.featuresByDataset.Add(file.Dataset, new List<UMCLight>());
-                    }
-
-                    this.featuresByDataset[file.Dataset] = features;
-
-                    file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
-                    ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-
-                    using (var logger = new StreamWriter("nhibernate_stats.txt", true))
-                    {
-                        logger.WriteLine();
-                        var stopWatch = new Stopwatch();
-                        stopWatch.Start();
-
-                        var scanSumProvider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(file.Dataset.DatasetId);
-                        if (scanSumProvider.IsBackedByFile)
-                        {
-                            var ssDao = this.analysis.DataProviders.ScanSummaryDao;
-                            ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
-
-                            // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
-                            ssDao.AddAllStateless(scanSumProvider.GetScanSummaries().Select(summ =>
-                            {
-                                summ.DatasetId = file.Dataset.DatasetId;
-                                return summ;
-                            }).ToList());
-                        }
-
-                        progData.StepRange(100);
-                        this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
-                        this.featureCache.CacheFeatures(features, progressRpt);
-                        this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
-                        stopWatch.Stop();
-                        logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
-                    }
-
                 }
-
-                catch (Exception ex)
+                catch (Exception ex) // TODO: Figure out which exception should actually be caught here
                 {
                     MessageBox.Show("File loading error: " + ex.Message);
                     file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
                     continue;
+                }
+                finally
+                {   // Always close read lock, even during failure condition so we don't have a recursive lock error.
+                    this.analysis.DataProviders.DatabaseLock.ExitReadLock();
+                }
+
+                if (!this.featuresByDataset.ContainsKey(file.Dataset))
+                {
+                    this.featuresByDataset.Add(file.Dataset, new List<UMCLight>());
+                }
+
+                this.featuresByDataset[file.Dataset] = features;
+
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
+                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+
+                // TODO: We were using this log file to track speed changes for writing the database. We probably don't need it anymore.
+                using (var logger = new StreamWriter("nhibernate_stats.txt", true))
+                {
+                    logger.WriteLine();
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+                    var scanSumProvider =
+                        this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
+                            file.Dataset.DatasetId);
+                    if (scanSumProvider.IsBackedByFile)
+                    {
+                        var ssDao = this.analysis.DataProviders.ScanSummaryDao;
+                        ssDao.DeleteByDatasetId(file.Dataset.DatasetId);
+
+                        // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
+                        ssDao.AddAllStateless(
+                            scanSumProvider.GetScanSummaries().Select(
+                                summ =>
+                                    {
+                                        summ.DatasetId = file.Dataset.DatasetId;
+                                        return summ;
+                                    }).ToList());
+                    }
+
+                    progData.StepRange(100);
+
+                    // Cache features to database.
+                    try
+                    {
+                        this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
+                        this.featureCache.CacheFeatures(features, progressRpt);
+                    }
+                    catch (Exception ex) // TODO: Figure out which exception should actually be caught here
+                    {
+                        MessageBox.Show("could not persist features to database: " + ex.Message);
+                        file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
+                        continue;
+                    }
+                    finally
+                    {   // Always close write lock, even during failure condition so we don't have a recursive lock error.
+                        this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
+                    }
+
+                    stopWatch.Stop();
+                    logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
                 }
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
