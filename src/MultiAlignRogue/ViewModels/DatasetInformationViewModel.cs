@@ -116,7 +116,9 @@ namespace MultiAlignRogue.ViewModels
                           ((value == DatasetStates.Aligning) ||
                           (value == DatasetStates.PersistingAlignment));
 
-                    var isFinishedState = !this.ShouldShowProgress;
+                    var isFinishedState = !this.ShouldShowProgress &&
+                                          value != DatasetInformationViewModel.DatasetStates.Loaded &&
+                                          value != DatasetInformationViewModel.DatasetStates.LoadingRawData;
                     if (isFinishedState && this.StateChanged != null)
                     {
                         this.StateChanged(this, EventArgs.Empty);

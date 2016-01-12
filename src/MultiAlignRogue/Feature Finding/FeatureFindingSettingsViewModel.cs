@@ -7,7 +7,6 @@ using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.RawData;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
@@ -33,6 +32,9 @@ namespace MultiAlignRogue.Feature_Finding
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Features;
 
+    using NHibernate;
+
+    using NHibernateUtil = MultiAlignCore.IO.Hibernate.NHibernateUtil;
 
     public class FeatureFindingSettingsViewModel : ViewModelBase
     {
@@ -646,9 +648,13 @@ namespace MultiAlignRogue.Feature_Finding
                         this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                         this.featureCache.CacheFeatures(features, progressRpt);
                     }
+                    catch (NonUniqueObjectException ex)
+                    {
+                        MessageBox.Show("Could not completely persist features: " + ex.Message);
+                    }
                     catch (Exception ex) // TODO: Figure out which exception should actually be caught here
                     {
-                        MessageBox.Show("could not persist features to database: " + ex.Message);
+                        MessageBox.Show("Could not persist features to database: " + ex.Message);
                         file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
                         continue;
                     }

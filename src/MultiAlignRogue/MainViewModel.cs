@@ -803,13 +803,20 @@ namespace MultiAlignRogue
             }
 
             // Persist
-            this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
-            this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
-            this.Analysis.DataProviders.DatasetCache.DeleteAll(this.deletedDatasets);
-            // TODO: remove features and such from the database as well.
-            this.deletedDatasets.Clear();
-            this.Analysis.DataProviders.OptionsDao.AddAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
-            this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
+            try
+            {
+                this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
+                this.Analysis.DataProviders.DatasetCache.AddAll(this.Datasets.Select(d => d.Dataset).ToList());
+                this.Analysis.DataProviders.DatasetCache.DeleteAll(this.deletedDatasets);
+                // TODO: remove features and such from the database as well.
+                this.deletedDatasets.Clear();
+                this.Analysis.DataProviders.OptionsDao.AddAll(
+                    OptionsTransformer.PropertiesToList(this.Analysis.Options));
+            }
+            finally
+            {
+                this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
+            }
         }
 
         private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)
