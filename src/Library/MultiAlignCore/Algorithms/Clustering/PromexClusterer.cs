@@ -14,7 +14,17 @@ namespace MultiAlignCore.Algorithms.Clustering
 {
     public class PromexClusterer : IClusterer<UMCLight, UMCClusterLight>
     {
-        private Dictionary<Tuple<int, int>, UMCLight> featureMap; 
+        private Dictionary<Tuple<int, int>, UMCLight> featureMap;
+
+        private Dictionary<int, int> promexToMultiAlignDatasetIdMap;
+
+        private Dictionary<int, int> multiAlignToPromexDatasetIdMap; 
+
+        public PromexClusterer()
+        {
+            this.promexToMultiAlignDatasetIdMap = new Dictionary<int, int>();
+            this.multiAlignToPromexDatasetIdMap = new Dictionary<int, int>();
+        }
 
         public ScanSummaryProviderCache Readers { get; set; }
 
@@ -29,7 +39,6 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// These are not actually used by the Promex clusterer right now.
         /// </summary>
         public FeatureClusterParameters<UMCLight> Parameters { get; set; }
-
 
         public List<UMCClusterLight> Cluster(List<UMCLight> data, List<UMCClusterLight> clusters, IProgress<ProgressData> progress = null)
         {
@@ -129,16 +138,31 @@ namespace MultiAlignCore.Algorithms.Clustering
                                     umcLight.NetStart,
                                     umcLight.NetEnd)
             {
-                DataSetId = umcLight.GroupId,
+                DataSetId = this.GetPromexDatasetId(umcLight.GroupId),
                 FeatureId = umcLight.Id,
             };
         }
 
         private UMCLight GetUMC(LcMsFeature lcmsFeature)
         {
-            var key = new Tuple<int, int>(lcmsFeature.DataSetId, lcmsFeature.FeatureId);
+            var key = new Tuple<int, int>(this.promexToMultiAlignDatasetIdMap[lcmsFeature.DataSetId], lcmsFeature.FeatureId);
             var umc = this.featureMap[key];
             return umc;
+        }
+
+        private int GetPromexDatasetId(int multiAlignDatasetId)
+        {
+            if (!this.multiAlignToPromexDatasetIdMap.ContainsKey(multiAlignDatasetId))
+            {
+                var maxPromexId = this.promexToMultiAlignDatasetIdMap.Keys.Any() ? 
+                                  this.promexToMultiAlignDatasetIdMap.Keys.Max() :
+                                  -1;
+                var promexId = maxPromexId + 1;
+                this.multiAlignToPromexDatasetIdMap.Add(multiAlignDatasetId, promexId);
+                this.promexToMultiAlignDatasetIdMap.Add(promexId, multiAlignDatasetId);
+            }
+
+            return this.multiAlignToPromexDatasetIdMap[multiAlignDatasetId];
         }
 
         /// <summary>
