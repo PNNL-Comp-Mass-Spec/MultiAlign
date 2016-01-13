@@ -376,7 +376,7 @@
             var massZ = massDelta / this.statistics.MassStdDev;
             var netZ = netDelta / this.statistics.NetStdDev;
             var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ))) / (2 * Math.PI * this.statistics.NetStdDev * this.statistics.MassStdDev);
-            var likelihood = (normProb * this.statistics.NormalProbability + ((1 - this.statistics.NormalProbability) * this.statistics.Mu));
+            var likelihood = (normProb * this.statistics.NormalProbability + ((1 - this.statistics.NormalProbability) * this.statistics.FalseHitProbDensity));
             if (likelihood < MinMassNetLikelihood)
             {
                 likelihood = MinMassNetLikelihood;
