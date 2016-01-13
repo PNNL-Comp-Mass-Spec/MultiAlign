@@ -46,6 +46,11 @@ namespace MultiAlignCore.Data
         #region Properties
 
         /// <summary>
+        /// Gets or sets the name of the analysis.
+        /// </summary>
+        public string AnalysisName { get; set; }
+
+        /// <summary>
         ///     Objects that access data from the databases.
         /// </summary>
         public FeatureDataAccessProviders DataProviders { get; set; }

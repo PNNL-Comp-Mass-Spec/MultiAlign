@@ -359,7 +359,7 @@ namespace MultiAlignRogue.Clustering
                 try
                 {
                     // Write to file
-                    this.WriteClusterData("crosstab.tsv", clusters);
+                    this.WriteClusterData(string.Format("{0}_crosstab.tsv", this.analysis.AnalysisName), clusters);
                 }
                 catch (Exception ex)
                 {

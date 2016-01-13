@@ -261,8 +261,6 @@ namespace MultiAlignRogue
                 if (this.projectPath != value)
                 {
                     this.projectPath = value;
-                    var fileName = Path.GetFileNameWithoutExtension(this.projectPath);
-                    this.WindowTitle = string.Format("MultiAlign Rogue ({0})", fileName);
                     this.SaveProjectCommand.RaiseCanExecuteChanged();
                     this.SaveAsProjectCommand.RaiseCanExecuteChanged();
                     this.SelectFilesCommand.RaiseCanExecuteChanged();
@@ -664,6 +662,10 @@ namespace MultiAlignRogue
             {
                 DataProviders = this.SetupDataProviders(this.ProjectPath, isNewProject),
             };
+
+            var fileName = Path.GetFileNameWithoutExtension(this.projectPath);
+            this.Analysis.AnalysisName = fileName;
+            this.WindowTitle = string.Format("MultiAlign Rogue ({0})", fileName);
 
             this.deletedDatasets.Clear();
             var dbOptions = this.Analysis.DataProviders.OptionsDao.FindAll();
