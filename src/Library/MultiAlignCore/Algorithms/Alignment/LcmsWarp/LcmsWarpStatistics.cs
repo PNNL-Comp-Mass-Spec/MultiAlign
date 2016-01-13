@@ -27,9 +27,9 @@
         private double netStdDev;
 
         /// <summary>
-        /// The multivariate mean of both NET and mass.
+        /// The probability density for false hits.
         /// </summary>
-        public double Mu { get; set; }
+        public double FalseHitProbDensity { get; set; }
 
         /// <summary>
         /// Gets or sets the mass standard deviation.
@@ -126,17 +126,24 @@
                 netDeltas.Add(match.BaselineNet - match.Net);
             }
 
-            // TODO: Calculating all of this in one method is nasty and difficult to test. Break this method into several methods.
-            double normalProb, u, muMass, muNet, massStd, netStd;
-            MathUtilities.TwoDem(massDeltas, netDeltas, out normalProb, out u,
-                out muMass, out muNet, out massStd, out netStd);
+            // Two dimensional expectation maximization
+            double normalProbability, falseHitProbDensity, muMass, muNet, massStdDev, netStdDev;
+            MathUtilities.TwoDem(
+                                 massDeltas,
+                                 netDeltas,
+                                 out normalProbability,
+                                 out falseHitProbDensity,
+                                 out muMass,
+                                 out muNet,
+                                 out massStdDev,
+                                 out netStdDev);
 
             var statistics = new LcmsWarpStatistics
             {
-                MassStdDev = massStd,
-                NetStdDev = netStd,
-                Mu = u,
-                NormalProbability = normalProb
+                MassStdDev = massStdDev,
+                NetStdDev = netStdDev,
+                FalseHitProbDensity = falseHitProbDensity,
+                NormalProbability = normalProbability
             };
 
             return statistics;
