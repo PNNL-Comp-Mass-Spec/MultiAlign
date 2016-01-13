@@ -342,7 +342,7 @@ namespace MultiAlignRogue.AMTMatching
             try
             {
                 // Write to file
-                this.WriteClusterData("clustermatches.tsv", matches, clusterIdMap, progress);
+                this.WriteClusterData("crosstab.tsv", matches, clusterIdMap, progress);
             }
             catch (Exception ex)
             {

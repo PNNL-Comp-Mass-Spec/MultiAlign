@@ -16,6 +16,7 @@ namespace MultiAlignRogue.Clustering
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
@@ -355,6 +356,20 @@ namespace MultiAlignRogue.Clustering
                     }
                 }
 
+                try
+                {
+                    // Write to file
+                    this.WriteClusterData("crosstab.tsv", clusters);
+                }
+                catch (Exception ex)
+                {
+                    var errMsg = "Error writing results to text file: " + ex.Message;
+                    Logger.PrintMessage(errMsg);
+
+                    // Todo: Add this: if (!GlobalSettings.AutomatedAnalysisMode)
+                    MessageBox.Show(errMsg);
+                }
+
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
@@ -461,10 +476,10 @@ namespace MultiAlignRogue.Clustering
                 var massTag = massTagMap[match.MassTagId];
                 var cluster = clusterMap[match.ClusterId];
                 matches.Add(new ClusterMatch
-                                {
-                                    Cluster = cluster,
-                                    MassTag = massTag,
-                                });
+                {
+                    Cluster = cluster,
+                    MassTag = massTag,
+                });
             }
 
             // Add clusters without mass tag matches
@@ -476,14 +491,73 @@ namespace MultiAlignRogue.Clustering
                 {
                     usedClusters.Add(cluster.Id);
                     matches.Add(new ClusterMatch
-                                    {
-                                        Cluster = cluster,
-                                        MassTag = new MassTagLight()
-                                    });
+                    {
+                        Cluster = cluster,
+                        MassTag = new MassTagLight()
+                    });
                 }
             }
 
             return matches;
+        }
+
+        /// <summary>
+        /// Writes cluster data to a comma-separated values file.
+        /// </summary>
+        /// <param name="path">The path to the CSV file to write.</param>
+        /// <param name="matches">The cluster-mass tag matches to write.</param>
+        /// <param name="clusterIdMap">Dictionary mapping cluster IDs to clusters.</param>
+        /// <param name="progress">Progress reporter.</param>
+        private void WriteClusterData(string path, IEnumerable<UMCClusterLight> clusters)
+        {
+            //var progData = new ProgressData { ProgressObj = progress };
+            int i = 1;
+
+            using (var writer = File.CreateText(path))
+            {
+                // Headers
+                writer.Write("Cluster Id\tMass\tNET\t");
+
+                // Find unique datasets.
+                var datasetHash = new HashSet<int>();
+                foreach (var cluster in clusters)
+                {
+                    foreach (var feature in cluster.Features)
+                    {
+                        if (!datasetHash.Contains(feature.GroupId))
+                        {
+                            datasetHash.Add(feature.GroupId);
+                        }
+                    }
+                }
+
+                // Write dataset headers
+                foreach (var dataset in datasetHash)
+                {
+                    writer.Write("{0}_Abundance\t", dataset);
+                }
+
+                writer.WriteLine();
+
+                // Write dataset level abundances.
+                foreach (var cluster in clusters)
+                {
+                    // Write cluster information
+                    writer.Write(
+                        "{0}\t{1}\t{2}\t",
+                        cluster.Id,
+                        cluster.MassMonoisotopic,
+                        cluster.Net);
+
+                    foreach (var dataset in datasetHash)
+                    {
+                        var datasetAbundance = cluster.UmcList.Where(umc => umc.GroupId == dataset).Sum(umc => umc.AbundanceSum);
+                        writer.Write("{0}\t", datasetAbundance);
+                    }
+
+                    writer.WriteLine();
+                }
+            }
         }
     }
 }
