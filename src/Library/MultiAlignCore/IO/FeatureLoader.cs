@@ -115,17 +115,17 @@ namespace MultiAlignCore.IO
             var progData = new ProgressData(progress);
             var internalProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
-            if (msmsFeatures.Count > 0)
-            {
-                progData.StepRange(1);
-                Providers.MSnFeatureCache.AddAll(msmsFeatures, internalProgress);
-            }
+            ////if (msmsFeatures.Count > 0)
+            ////{
+            ////    progData.StepRange(1);
+            ////    Providers.MSnFeatureCache.AddAll(msmsFeatures, internalProgress);
+            ////}
 
-            if (matches.Count > 0)
-            {
-                progData.StepRange(2);
-                Providers.MSFeatureToMSnFeatureCache.AddAll(matches, internalProgress);
-            }
+            ////if (matches.Count > 0)
+            ////{
+            ////    progData.StepRange(2);
+            ////    Providers.MSFeatureToMSnFeatureCache.AddAll(matches, internalProgress);
+            ////}
 
             if (sequenceMaps.Count > 0)
             {
