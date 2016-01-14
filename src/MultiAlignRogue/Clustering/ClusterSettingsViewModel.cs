@@ -531,8 +531,11 @@ namespace MultiAlignRogue.Clustering
                     }
                 }
 
+                var datasets = datasetHash.ToList();
+                datasets.Sort();
+
                 // Write dataset headers
-                foreach (var dataset in datasetHash)
+                foreach (var dataset in datasets)
                 {
                     writer.Write("{0}_Abundance\t", dataset);
                 }
@@ -549,7 +552,7 @@ namespace MultiAlignRogue.Clustering
                         cluster.MassMonoisotopic,
                         cluster.Net);
 
-                    foreach (var dataset in datasetHash)
+                    foreach (var dataset in datasets)
                     {
                         var datasetAbundance = cluster.UmcList.Where(umc => umc.GroupId == dataset).Sum(umc => umc.AbundanceSum);
                         writer.Write("{0}\t", datasetAbundance);
