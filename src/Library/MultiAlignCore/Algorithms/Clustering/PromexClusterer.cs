@@ -16,12 +16,15 @@ namespace MultiAlignCore.Algorithms.Clustering
     {
         private Dictionary<Tuple<int, int>, UMCLight> featureMap;
 
-        private Dictionary<int, int> promexToMultiAlignDatasetIdMap;
+        private readonly Dictionary<int, int> promexToMultiAlignDatasetIdMap;
 
-        private Dictionary<int, int> multiAlignToPromexDatasetIdMap; 
+        private readonly Dictionary<int, int> multiAlignToPromexDatasetIdMap;
+
+        private int maxFeatureId;
 
         public PromexClusterer()
         {
+            this.maxFeatureId = 0;
             this.promexToMultiAlignDatasetIdMap = new Dictionary<int, int>();
             this.multiAlignToPromexDatasetIdMap = new Dictionary<int, int>();
         }
@@ -47,6 +50,13 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         public List<UMCClusterLight> Cluster(List<UMCLight> data, IProgress<ProgressData> progress = null)
         {
+            if (data.Count == 0)
+            {
+                return new List<UMCClusterLight>();
+            }
+
+            this.maxFeatureId = data.Select(d => d.Id).Max();
+
             this.featureMap = new Dictionary<Tuple<int, int>, UMCLight>();
             foreach (var feature in data)
             {
@@ -78,8 +88,12 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             // Perform clustering
             lcmsFeatureAligner.AlignFeatures();
+
+            // Fill in mising features using noise.
+            lcmsFeatureAligner.RefineAbundance();
+
             var clusteredFeatures = lcmsFeatureAligner.GetAlignedFeatures();
-            
+
             // Convert InformedProteomics clusters to UMCClusterLight
             int clustId = 0;
             var clusters = new List<UMCClusterLight>();
@@ -95,7 +109,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                 {
                     Id = clustId++,
                 };
-                
+
+                int datasetId = 0;  // Promex doesn't keep track of which dataset noise features belong to, so we need to.
                 foreach (var feature in cluster)
                 {
                     if (feature == null)
@@ -103,6 +118,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                         continue;
                     }
 
+                    feature.DataSetId = datasetId++;
                     var umc = this.GetUMC(feature);
                     umcCluster.AddChildFeature(umc);
                     umc.SetParentFeature(umcCluster);
@@ -145,8 +161,27 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         private UMCLight GetUMC(LcMsFeature lcmsFeature)
         {
-            var key = new Tuple<int, int>(this.promexToMultiAlignDatasetIdMap[lcmsFeature.DataSetId], lcmsFeature.FeatureId);
-            var umc = this.featureMap[key];
+            UMCLight umc;
+            if (lcmsFeature.FeatureId == 0)
+            {   // Promex clusterer added a new noise feature (filled in missing data for a cluster.
+                umc = new UMCLight
+                {
+                    GroupId = lcmsFeature.DataSetId,
+                    Id = ++this.maxFeatureId,
+                    Abundance = lcmsFeature.Abundance,
+                    AbundanceSum = lcmsFeature.Abundance,
+                    Net = (lcmsFeature.MinNet + lcmsFeature.MaxNet) / 2,
+                    ChargeState = (lcmsFeature.MinCharge + lcmsFeature.MaxCharge) / 2,
+                    MassMonoisotopic = lcmsFeature.Mass,
+                    MassMonoisotopicAligned = lcmsFeature.Mass,
+                };
+            }
+            else
+            {   // Clustered existing feature.
+                var key = new Tuple<int, int>(this.promexToMultiAlignDatasetIdMap[lcmsFeature.DataSetId], lcmsFeature.FeatureId);
+                umc = this.featureMap[key];
+            }
+
             return umc;
         }
 
