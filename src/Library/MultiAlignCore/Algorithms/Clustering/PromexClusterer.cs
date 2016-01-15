@@ -50,6 +50,8 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         public List<UMCClusterLight> Cluster(List<UMCLight> data, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+
             if (data.Count == 0)
             {
                 return new List<UMCClusterLight>();
@@ -90,7 +92,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             lcmsFeatureAligner.AlignFeatures();
 
             // Fill in mising features using noise.
-            lcmsFeatureAligner.RefineAbundance();
+            lcmsFeatureAligner.RefineAbundance(-30, progress);
 
             var clusteredFeatures = lcmsFeatureAligner.GetAlignedFeatures();
 
