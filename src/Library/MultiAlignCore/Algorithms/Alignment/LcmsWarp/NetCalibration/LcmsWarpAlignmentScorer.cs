@@ -6,17 +6,21 @@
 
     using MultiAlignCore.Data;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LcmsWarpAlignmentScorer
     {
+
         private const double MinMassNetLikelihood = 1e-4;
 
         /// <summary>
-        /// The LcmsWarp parameters.
+        /// The user configuration options for this run of LcmsWarp.
         /// </summary>
         private readonly LcmsWarpAlignmentOptions options;
 
         /// <summary>
-        /// Multivariate statistical information needed for match score calculation with mass and NET.
+        /// Statistics information used for calculating match scores.
         /// </summary>
         private readonly LcmsWarpStatistics statistics;
 
@@ -26,7 +30,21 @@
         /// </summary>
         private readonly bool includeMassInMatchScore;
 
-        public LcmsWarpAlignmentScorer(LcmsWarpAlignmentOptions options, bool includeMassInMatchScore, LcmsWarpStatistics statistics)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LcmsWarpAlignmentScorer"/> class. 
+        /// </summary>
+        /// <param name="options">The user configuration options for this run of LcmsWarp.</param>
+        /// <param name="includeMassInMatchScore">
+        /// A value that indicates whether mass difference should be accounted for
+        /// when calculating a section match score.
+        /// </param>
+        /// <param name="statistics">
+        /// Statistics information used for calculating match scores.
+        /// </param>
+        public LcmsWarpAlignmentScorer(
+                                       LcmsWarpAlignmentOptions options,
+                                       bool includeMassInMatchScore,
+                                       LcmsWarpStatistics statistics)
         {
             this.options = options;
             this.includeMassInMatchScore = includeMassInMatchScore;
@@ -47,17 +65,42 @@
 
         /// <summary>
         /// Goes through the matched features and determines the probability
-        /// of each that the match is correct
+        /// of each that the match is correct.
         /// </summary>
-        public LcmsWarpNetAlignmentFunction GetAlignment(LcmsWarpSectionInfo aligneeSections, LcmsWarpSectionInfo baselineSections, List<LcmsWarpFeatureMatch> matches)
+        /// <param name="aligneeSections">The alignee section info.</param>
+        /// <param name="baselineSections">The baseline section info.</param>
+        /// <param name="matches"></param>
+        /// <returns>Alignment function with alignment matches matching alignee to baseline sections.</returns>
+        public LcmsWarpNetAlignmentFunction GetAlignment(
+            LcmsWarpSectionInfo aligneeSections,
+            LcmsWarpSectionInfo baselineSections,
+            List<LcmsWarpFeatureMatch> matches)
         {
-            var matchScores =  this.ComputeSectionMatchScoreMatrix(aligneeSections, baselineSections, matches);
-            var alignmentScores = this.ComputeAlignmentScoreMatrix(matchScores);
+            this.MatchScoreMatrix = this.ComputeSectionMatchScoreMatrix(aligneeSections, baselineSections, matches);
+            var alignmentScoreMatrices = this.ComputeAlignmentScoreMatrix(this.MatchScoreMatrix);
+            this.AlignmentScoreMatrix = alignmentScoreMatrices.AlignmentScoreMatrix;
 
-            throw new NotImplementedException();
+            var alignmentMatches = this.CalculateAlignmentFunction(
+                this.AlignmentScoreMatrix,
+                alignmentScoreMatrices.BestPreviousIndices,
+                aligneeSections,
+                baselineSections);
+
+            return new LcmsWarpNetAlignmentFunction { AligneeSections = aligneeSections, Matches = alignmentMatches, };
         }
 
-        public double[,,] ComputeSectionMatchScoreMatrix(LcmsWarpSectionInfo aligneeSections, LcmsWarpSectionInfo baselineSections, List<LcmsWarpFeatureMatch> matches)
+        /// <summary>
+        /// Compute match score for each possible match between 
+        /// alignee section -> (baseline section + expansion width).
+        /// </summary>
+        /// <param name="aligneeSections">The alignee section info.</param>
+        /// <param name="baselineSections">The baseline section info.</param>
+        /// <param name="matches">Alignee to baseline feature matches.</param>
+        /// <returns>Matrix where each value is the score of the particular section match.</returns>
+        private double[,,] ComputeSectionMatchScoreMatrix(
+                                                          LcmsWarpSectionInfo aligneeSections,
+                                                          LcmsWarpSectionInfo baselineSections,
+                                                          List<LcmsWarpFeatureMatch> matches)
         {
             // Initialize score matrix.
             double[,,] subsectionMatchScores;
@@ -74,28 +117,38 @@
                 // Group matches by alignee feature to get only matches with unique alignee features.
                 var uniqueSectionMatches = sectionMatches.GroupBy(match => match.AligneeFeature.Id).ToList();
 
-                for (var baselineSectionStart = 0; baselineSectionStart < baselineSections.NumSections; baselineSectionStart++)
+                for (var baselineSectionStart = 0;
+                     baselineSectionStart < baselineSections.NumSections;
+                     baselineSectionStart++)
                 {
                     var baselineStartNet = baselineSections.GetSectionStartNet(baselineSectionStart);
-                    var endSection = Math.Min(baselineSectionStart + this.options.MaxExpansionWidth, baselineSections.NumSections);
+                    var endSection = Math.Min(
+                        baselineSectionStart + this.options.MaxExpansionWidth,
+                        baselineSections.NumSections);
 
                     // Each alignee section can expand to (ContractionFactor)^2 baseline sections, so we want to compute
                     // a match score for each possible size from 1 to (ContractionFactor)^2
-                    for (var baselineSectionEnd = baselineSectionStart; baselineSectionEnd < endSection; baselineSectionEnd++)
+                    for (var baselineSectionEnd = baselineSectionStart;
+                         baselineSectionEnd < endSection;
+                         baselineSectionEnd++)
                     {
                         var baselineEndNet = baselineSections.GetSectionEndNet(baselineSectionEnd);
 
                         // For each unique alignee feature match group, find the minimum NET difference between the match NET and the transformed NET.
-                        var deltas = uniqueSectionMatches.Select(
-                                                                 group =>
-                                                                    group.Min(match => this.GetDelta(match.Net,
-                                                                                                     baselineStartNet,
-                                                                                                     baselineEndNet,
-                                                                                                     aligneeSections)))
-                                                         .ToList();
+                        var deltas =
+                            uniqueSectionMatches.Select(
+                                group =>
+                                group.Min(
+                                    match => this.GetDelta(match.Net, baselineStartNet, baselineEndNet, aligneeSections)))
+                                .ToList();
 
                         var selectedMatches = uniqueSectionMatches.Select(group => group.FirstOrDefault()).ToList();
-                        subsectionMatchScores[aligneeSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(selectedMatches, deltas);
+                        subsectionMatchScores[
+                            aligneeSection,
+                            baselineSectionStart,
+                            baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(
+                                selectedMatches,
+                                deltas);
                     }
                 }
             }
@@ -103,12 +156,19 @@
             return subsectionMatchScores;
         }
 
-        public double[,,] ComputeAlignmentScoreMatrix(double[,,] sectionMatchScores)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sectionMatchScores"></param>
+        /// <returns></returns>
+        private AlignmentScoreMatrices ComputeAlignmentScoreMatrix(double[,,] sectionMatchScores)
         {
             double[,,] alignmentScores;
             this.InitializeMatchScoreMatrix(out alignmentScores);
 
-            var bestPreviousIndex = new Index3D[this.options.NumTimeSections, this.options.NumBaselineSections, this.options.MaxExpansionWidth];
+            var bestPreviousIndex =
+                new Index3D[this.options.NumTimeSections, this.options.NumBaselineSections,
+                    this.options.MaxExpansionWidth];
 
             // Initialize scores to - inf, best previous index to -1
             for (var i = 0; i < this.options.NumTimeSections; i++)
@@ -129,7 +189,8 @@
             }
             else
             {
-                unmatchedScore -= (0.5 * (this.options.NetTolerance * this.options.NetTolerance) / (this.statistics.NetStdDev * this.statistics.NetStdDev));
+                unmatchedScore -= (0.5 * (this.options.NetTolerance * this.options.NetTolerance)
+                                   / (this.statistics.NetStdDev * this.statistics.NetStdDev));
             }
             if (this.includeMassInMatchScore)
             {
@@ -152,8 +213,8 @@
             {
                 for (var sectionWidth = 0; sectionWidth < this.options.MaxExpansionWidth; sectionWidth++)
                 {
-                    alignmentScores[section, 0, sectionWidth] = sectionMatchScores[section, 0, sectionWidth] +
-                                                                   unmatchedScore * numUnmatchedMsFeatures;
+                    alignmentScores[section, 0, sectionWidth] = sectionMatchScores[section, 0, sectionWidth]
+                                                                + unmatchedScore * numUnmatchedMsFeatures;
                 }
 
                 // TODO: Make numFeaturesInSections available to this method.
@@ -170,8 +231,9 @@
                         var bestPreviousAlignmentIndex = new Index3D();
 
                         for (var previousBaselineSection = baselineSection - 1;
-                            previousBaselineSection >= baselineSection - this.options.MaxExpansionWidth - this.options.MaxTimeDistortion;
-                            previousBaselineSection--)
+                             previousBaselineSection
+                             >= baselineSection - this.options.MaxExpansionWidth - this.options.MaxTimeDistortion;
+                             previousBaselineSection--)
                         {
                             if (previousBaselineSection < 0)
                             {
@@ -184,15 +246,24 @@
                             }
                             var previousBaselineSectionWidth = maxWidth;
 
-                            if (!(alignmentScores[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1] > currentBestScore))
-                                continue;
+                            if (
+                                !(alignmentScores[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1
+                                      ] > currentBestScore)) continue;
 
-                            currentBestScore = alignmentScores[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1];
-                            bestPreviousAlignmentIndex.Set(section - 1, previousBaselineSection, previousBaselineSectionWidth - 1);
+                            currentBestScore =
+                                alignmentScores[section - 1, previousBaselineSection, previousBaselineSectionWidth - 1];
+                            bestPreviousAlignmentIndex.Set(
+                                section - 1,
+                                previousBaselineSection,
+                                previousBaselineSectionWidth - 1);
                         }
                         if (Math.Abs(currentBestScore - double.MinValue) > double.Epsilon)
                         {
-                            alignmentScores[section, baselineSection, sectionWidth] = currentBestScore + sectionMatchScores[section, baselineSection, sectionWidth];
+                            alignmentScores[section, baselineSection, sectionWidth] = currentBestScore
+                                                                                      + sectionMatchScores[
+                                                                                          section,
+                                                                                            baselineSection,
+                                                                                            sectionWidth];
                             bestPreviousIndex[section, baselineSection, sectionWidth].Set(bestPreviousAlignmentIndex);
                         }
                         else
@@ -203,7 +274,11 @@
                 }
             }
 
-            return alignmentScores;
+            return new AlignmentScoreMatrices
+            {
+                AlignmentScoreMatrix = alignmentScores,
+                BestPreviousIndices = bestPreviousIndex
+            };
         }
 
         /// <summary>
@@ -211,14 +286,23 @@
         /// was found. This function steps through the matrix of best indices (bestPreviousIndices) and creates an LcmsWarpAlignmentMatch
         /// for each mapping of alignee section to baseline section.
         /// </summary>
-        /// <param name="bestPreviousIndices">
-        /// Each element of this matrix stores the best index of the best matching of the previous alignee section.
+        /// <param name="alignmentScores">
+        /// The matrix containing scores for every possible alignment between alignee section,
+        /// baseline section, and baseline section width.
         /// </param>
+        /// <param name="bestPreviousIndices">
+        /// For a given cell, the value of the cell indicates the index of the next
+        /// alignee section -> (baseline section + expansion facctor) mapping, for
+        /// back tracking to determine the ideal alignment function.
+        /// </param>
+        /// <param name="aligneeSections">The alignee section information.</param>
+        /// <param name="baselineSections">The baseline section information.</param>
         /// <returns>List of matches mapping alignee section -> baseline sections.</returns>
-        public List<LcmsWarpAlignmentMatch> CalculateAlignmentFunction(double[,,] alignmentScores,
-                                                                       Index3D[,,] bestPreviousIndices,
-                                                                       LcmsWarpSectionInfo aligneeSections,
-                                                                       LcmsWarpSectionInfo baselineSections)
+        public List<LcmsWarpAlignmentMatch> CalculateAlignmentFunction(
+            double[,,] alignmentScores,
+            Index3D[,,] bestPreviousIndices,
+            LcmsWarpSectionInfo aligneeSections,
+            LcmsWarpSectionInfo baselineSections)
         {
             // For the last alignee section, find the index of the best baseline section and baseline section width.
             var lastAligneeSection = this.options.NumTimeSections - 1;
@@ -240,7 +324,9 @@
 
             // Step backwards through the alignment matrix to find the best baseline section and baseline section width for each alignee section.
             var alignmentFunction = new List<LcmsWarpAlignmentMatch>();
-            for (var alignIndex = bestAlignmentIndex; alignIndex.IsValid(bestPreviousIndices); alignIndex = bestPreviousIndices[alignIndex.X, alignIndex.Y, alignIndex.Z])
+            for (var alignIndex = bestAlignmentIndex;
+                 alignIndex.IsValid(bestPreviousIndices);
+                 alignIndex = bestPreviousIndices[alignIndex.X, alignIndex.Y, alignIndex.Z])
             {
                 var ascore = alignmentScores[alignIndex.X, alignIndex.Y, alignIndex.Z];
                 var mscore = alignmentScores[alignIndex.X, alignIndex.Y, alignIndex.Z];
@@ -265,11 +351,12 @@
         /// <param name="aligneeSections">The alignee section information.</param>
         /// <param name="baselineSections">The baseline section information.</param>
         /// <returns>Object that stores a matching between an alignee section and baseline section.</returns>
-        public LcmsWarpAlignmentMatch CreateMatch(Index3D index,
-                                                  double alignmentScore,
-                                                  double matchScore,
-                                                  LcmsWarpSectionInfo aligneeSections,
-                                                  LcmsWarpSectionInfo baselineSections)
+        public LcmsWarpAlignmentMatch CreateMatch(
+            Index3D index,
+            double alignmentScore,
+            double matchScore,
+            LcmsWarpSectionInfo aligneeSections,
+            LcmsWarpSectionInfo baselineSections)
         {
             var section = index.X;
             var baselineSection = index.Y;
@@ -313,6 +400,7 @@
         /// Compute match scores for this section: log(P(match of alignee section to baseline section))
         /// Does this within the Net Tolerance of the LCMSWarper
         /// </summary>
+        /// <param name="uniqueSectionMatches"></param>
         /// <param name="deltaNets"></param>
         /// <returns></returns>
         private double ComputeSectionMatchScore(List<LcmsWarpFeatureMatch> uniqueSectionMatches, List<double> deltaNets)
@@ -336,7 +424,6 @@
         /// The difference in NET between the alignee feature's NET and the alignee feature's NET
         /// warped to a baseline section.
         /// </param>
-        /// <param name="netStdDev">The standard deviation of NETs for all alignee features.</param>
         /// <returns>The match score. </returns>
         private double GetFeatureMatchScore(LcmsWarpFeatureMatch match, double deltaNet)
         {
@@ -376,8 +463,10 @@
         {
             var massZ = massDelta / this.statistics.MassStdDev;
             var netZ = netDelta / this.statistics.NetStdDev;
-            var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ))) / (2 * Math.PI * this.statistics.NetStdDev * this.statistics.MassStdDev);
-            var likelihood = (normProb * this.statistics.NormalProbability + ((1 - this.statistics.NormalProbability) * this.statistics.FalseHitProbDensity));
+            var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ)))
+                           / (2 * Math.PI * this.statistics.NetStdDev * this.statistics.MassStdDev);
+            var likelihood = (normProb * this.statistics.NormalProbability
+                              + ((1 - this.statistics.NormalProbability) * this.statistics.FalseHitProbDensity));
             if (likelihood < MinMassNetLikelihood)
             {
                 likelihood = MinMassNetLikelihood;
@@ -391,7 +480,9 @@
         /// <param name="subsectionMatchScores">The match score matrix to initialize.</param>
         private void InitializeMatchScoreMatrix(out double[,,] subsectionMatchScores)
         {
-            subsectionMatchScores = new double[this.options.NumTimeSections, this.options.NumBaselineSections, this.options.MaxExpansionWidth];
+            subsectionMatchScores =
+                new double[this.options.NumTimeSections, this.options.NumBaselineSections,
+                    this.options.MaxExpansionWidth];
             for (var i = 0; i < this.options.NumTimeSections; i++)
             {
                 for (var j = 0; j < this.options.NumBaselineSections; j++)
@@ -402,6 +493,26 @@
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// A class for holding the results of the LcmsWarp Alignment score calculator.
+        /// </summary>
+        private class AlignmentScoreMatrices
+        {
+            /// <summary>
+            /// Gets the matrix containing scores for every possible alignment between alignee section,
+            /// baseline section, and baseline section width.
+            /// </summary>
+            public double[,,] AlignmentScoreMatrix { get; set; }
+
+            /// <summary>
+            /// Gets or sets a matrix such that for a given cell,
+            /// the value of the cell indicates the index of the next
+            /// alignee section -> (baseline section + expansion facctor) mapping, for
+            /// back tracking to determine the ideal alignment function.
+            /// </summary>
+            public Index3D[,,] BestPreviousIndices { get; set; }
         }
     }
 }

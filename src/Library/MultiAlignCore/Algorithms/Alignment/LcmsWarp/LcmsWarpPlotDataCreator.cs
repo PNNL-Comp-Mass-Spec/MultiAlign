@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
+    using System;
+    using System.Collections.Generic;
     using MultiAlignCore.Algorithms.Statistics;
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.Features;

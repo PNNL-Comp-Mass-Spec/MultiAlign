@@ -182,12 +182,18 @@
 
             // Warp features.
             var warpedFeatures = massCalibrations.GetWarpedFeatures(aligneeFeatures).ToList();
-            var massAlignmentResult = new LcmsWarpResults { AlignmentFunction = massCalibrations };
 
             // Calculate histograms/plots for mass alignment
-            massAlignmentResult.ErrorHistogram = LcmsWarpPlotDataCreator.GetMassErrorHistogram(matches, 10);
+            var massErrorHistogram = LcmsWarpPlotDataCreator.GetMassErrorHistogram(matches, 10);
 
-            // Second pass NET warp: Perform warp that scores matches in mass AND net
+            // Create results object
+            var massAlignmentResult = new LcmsWarpResults
+            {
+                AlignmentFunction = massCalibrations,
+                ErrorHistogram = massErrorHistogram,
+            };
+
+            // Second pass NET warp: Perform warp that scores matches in mass AND NET
             var netMassWarpedSecondPass = this.WarpNet(warpedFeatures, baselineFeatures, true);
 
             // Add mass alignment results to existing alignment results from the NET alignment.
