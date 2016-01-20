@@ -1,7 +1,7 @@
 ﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     using System.Collections.Generic;
-    using MultiAlignCore.Data.Features;
+    using Data.Features;
 
     /// <summary>
     /// This class represents the LCMSWarp results for a single dimension.
@@ -11,6 +11,14 @@
     /// </summary>
     public class LcmsWarpResults
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LcmsWarpResults"/> class. 
+        /// </summary>
+        public LcmsWarpResults()
+        {
+            this.SeparationType = FeatureLight.SeparationTypes.LC;
+        }
+
         /// <summary>
         /// Id value for the database, set when persisted
         /// </summary>
@@ -35,12 +43,12 @@
         /// <summary>
         /// Gets or sets the alignment score heat map.
         /// </summary>
-        public double[,] HeatScores { get; set; }
+        public double[,] AlignmentScoreHeatMap { get; set; }
 
         /// <summary>
-        /// Gets or sets the mean for this dimension.
+        /// Gets or sets the two-dimensional statistics for this dimension + mass dimension.
         /// </summary>
-        public double Mean { get; set; }
+        public LcmsWarpStatistics Statistics { get; set; }
 
         /// <summary>
         /// Gets or sets the RSquared for the line fit to this dimension.
@@ -51,15 +59,5 @@
         /// Gets or sets the slope for the line fit to this dimension.
         /// </summary>
         public double Slope { get; set; }
-
-        /// <summary>
-        /// Gets or sets the kurtosis (gaussian fit score) for this dimension.
-        /// </summary>
-        public double Kurtosis { get; set; }
-
-        public LcmsWarpResults()
-        {
-            this.SeparationType = FeatureLight.SeparationTypes.LC;
-        }
     }
 }

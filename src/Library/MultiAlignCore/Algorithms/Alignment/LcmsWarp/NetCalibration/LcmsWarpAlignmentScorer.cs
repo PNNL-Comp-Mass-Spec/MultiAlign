@@ -26,26 +26,24 @@
         /// </summary>
         private readonly bool includeMassInMatchScore;
 
-        /// <summary>
-        /// Number of sections for baseline dataset.
-        /// Calculated as NumTimSections * ContractionFactor
-        /// </summary>
-        private readonly int numBaselineSections;
-
-        /// <summary>
-        /// Maximum width that an alignee dataset section can be expanded when warped.
-        /// </summary>
-        private readonly int maxExpansionWidth;
-
         public LcmsWarpAlignmentScorer(LcmsWarpAlignmentOptions options, bool includeMassInMatchScore, LcmsWarpStatistics statistics)
         {
             this.options = options;
             this.includeMassInMatchScore = includeMassInMatchScore;
             this.statistics = statistics;
-
-            this.numBaselineSections = this.options.NumTimeSections * this.options.ContractionFactor;
-            this.maxExpansionWidth = this.options.ContractionFactor * this.options.ContractionFactor;
         }
+
+        /// <summary>
+        /// Gets a matrix containing the match score between each alignee section,
+        /// baseline section, and baseline section width.
+        /// </summary>
+        public double[,,] MatchScoreMatrix { get; private set; }
+
+        /// <summary>
+        /// Gets the matrix containing scores for every possible alignment between alignee section,
+        /// baseline section, and baseline section width.
+        /// </summary>
+        public double[,,] AlignmentScoreMatrix { get; private set; }
 
         /// <summary>
         /// Goes through the matched features and determines the probability
@@ -63,7 +61,7 @@
         {
             // Initialize score matrix.
             double[,,] subsectionMatchScores;
-            this.InitializeMatchScoreMatrix(out subsectionMatchScores, this.options.NumTimeSections, this.numBaselineSections, this.maxExpansionWidth);
+            this.InitializeMatchScoreMatrix(out subsectionMatchScores);
 
             for (int aligneeSection = 0; aligneeSection < aligneeSections.NumSections; aligneeSection++)
             {
@@ -79,7 +77,7 @@
                 for (var baselineSectionStart = 0; baselineSectionStart < baselineSections.NumSections; baselineSectionStart++)
                 {
                     var baselineStartNet = baselineSections.GetSectionStartNet(baselineSectionStart);
-                    var endSection = Math.Min(baselineSectionStart + this.maxExpansionWidth, baselineSections.NumSections);
+                    var endSection = Math.Min(baselineSectionStart + this.options.MaxExpansionWidth, baselineSections.NumSections);
 
                     // Each alignee section can expand to (ContractionFactor)^2 baseline sections, so we want to compute
                     // a match score for each possible size from 1 to (ContractionFactor)^2
@@ -88,9 +86,16 @@
                         var baselineEndNet = baselineSections.GetSectionEndNet(baselineSectionEnd);
 
                         // For each unique alignee feature match group, find the minimum NET difference between the match NET and the transformed NET.
-                        var deltas = uniqueSectionMatches.Select(group => group.Min(match => this.GetDelta(match.Net, baselineStartNet, baselineEndNet, aligneeSections)));
+                        var deltas = uniqueSectionMatches.Select(
+                                                                 group =>
+                                                                    group.Min(match => this.GetDelta(match.Net,
+                                                                                                     baselineStartNet,
+                                                                                                     baselineEndNet,
+                                                                                                     aligneeSections)))
+                                                         .ToList();
 
-                        ////subsectionMatchScores[aligneeSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(uniqueSectionMatches, deltas);
+                        var selectedMatches = uniqueSectionMatches.Select(group => group.FirstOrDefault()).ToList();
+                        subsectionMatchScores[aligneeSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = this.ComputeSectionMatchScore(selectedMatches, deltas);
                     }
                 }
             }
@@ -101,16 +106,16 @@
         public double[,,] ComputeAlignmentScoreMatrix(double[,,] sectionMatchScores)
         {
             double[,,] alignmentScores;
-            this.InitializeMatchScoreMatrix(out alignmentScores, this.options.NumTimeSections, this.numBaselineSections, this.maxExpansionWidth);
+            this.InitializeMatchScoreMatrix(out alignmentScores);
 
-            var bestPreviousIndex = new Index3D[this.options.NumTimeSections, this.numBaselineSections, this.maxExpansionWidth];
+            var bestPreviousIndex = new Index3D[this.options.NumTimeSections, this.options.NumBaselineSections, this.options.MaxExpansionWidth];
 
             // Initialize scores to - inf, best previous index to -1
             for (var i = 0; i < this.options.NumTimeSections; i++)
             {
-                for (var j = 0; j < this.numBaselineSections; j++)
+                for (var j = 0; j < this.options.NumBaselineSections; j++)
                 {
-                    for (var k = 0; k < this.maxExpansionWidth; k++)
+                    for (var k = 0; k < this.options.MaxExpansionWidth; k++)
                     {
                         bestPreviousIndex[i, j, k] = new Index3D();
                     }
@@ -128,26 +133,24 @@
             }
             if (this.includeMassInMatchScore)
             {
-                //Assumes that for the unmatched, the masses were also off at mass tolerance, so use the same threshold from NET
+                // Assumes that for the unmatched, the masses were also off at mass tolerance, so use the same threshold from NET
                 unmatchedScore *= 2;
             }
 
-            // TODO: This only sets all values in the first section to 0; should other sections be set to 0?
-            for (var baselineSection = 0; baselineSection < this.numBaselineSections; baselineSection++)
+            for (var baselineSection = 0; baselineSection < this.options.NumBaselineSections; baselineSection++)
             {
-                //Assume everything that was matched was past 3 standard devs in net.
-                for (var sectionWidth = 0; sectionWidth < this.maxExpansionWidth; sectionWidth++)
+                // Assume everything that was matched was past 3 standard devs in net.
+                for (var sectionWidth = 0; sectionWidth < this.options.MaxExpansionWidth; sectionWidth++)
                 {
-                    //no need to multiply with msSection because its 0
+                    // no need to multiply with msSection because its 0
                     alignmentScores[0, baselineSection, sectionWidth] = 0;
                 }
             }
 
-            // TODO: This only sets the values for the first baseline section for each section. Should others be affected? (appears they are filled in by the following code)
             var numUnmatchedMsFeatures = 0;
             for (var section = 0; section < this.options.NumTimeSections; section++)
             {
-                for (var sectionWidth = 0; sectionWidth < this.maxExpansionWidth; sectionWidth++)
+                for (var sectionWidth = 0; sectionWidth < this.options.MaxExpansionWidth; sectionWidth++)
                 {
                     alignmentScores[section, 0, sectionWidth] = sectionMatchScores[section, 0, sectionWidth] +
                                                                    unmatchedScore * numUnmatchedMsFeatures;
@@ -159,15 +162,15 @@
 
             for (var section = 1; section < this.options.NumTimeSections; section++)
             {
-                for (var baselineSection = 1; baselineSection < this.numBaselineSections; baselineSection++)
+                for (var baselineSection = 1; baselineSection < this.options.NumBaselineSections; baselineSection++)
                 {
-                    for (var sectionWidth = 0; sectionWidth < this.maxExpansionWidth; sectionWidth++)
+                    for (var sectionWidth = 0; sectionWidth < this.options.MaxExpansionWidth; sectionWidth++)
                     {
                         var currentBestScore = double.MinValue;
                         var bestPreviousAlignmentIndex = new Index3D();
 
                         for (var previousBaselineSection = baselineSection - 1;
-                            previousBaselineSection >= baselineSection - this.maxExpansionWidth - this.options.MaxTimeDistortion;
+                            previousBaselineSection >= baselineSection - this.options.MaxExpansionWidth - this.options.MaxTimeDistortion;
                             previousBaselineSection--)
                         {
                             if (previousBaselineSection < 0)
@@ -175,9 +178,9 @@
                                 break;
                             }
                             var maxWidth = baselineSection - previousBaselineSection;
-                            if (maxWidth > this.maxExpansionWidth)
+                            if (maxWidth > this.options.MaxExpansionWidth)
                             {
-                                maxWidth = this.maxExpansionWidth;
+                                maxWidth = this.options.MaxExpansionWidth;
                             }
                             var previousBaselineSectionWidth = maxWidth;
 
@@ -221,10 +224,10 @@
             var lastAligneeSection = this.options.NumTimeSections - 1;
             var bestScore = double.MinValue;
             var bestAlignmentIndex = new Index3D();
-            for (var baselineSection = 0; baselineSection < this.numBaselineSections; baselineSection++)
+            for (var baselineSection = 0; baselineSection < this.options.NumBaselineSections; baselineSection++)
             {
                 // Everything past this section would have remained unmatched.
-                for (var sectionWidth = 0; sectionWidth < this.maxExpansionWidth; sectionWidth++)
+                for (var sectionWidth = 0; sectionWidth < this.options.MaxExpansionWidth; sectionWidth++)
                 {
                     var alignmentScore = alignmentScores[lastAligneeSection, baselineSection, sectionWidth];
                     if (alignmentScore > bestScore)
@@ -307,7 +310,7 @@
         }
 
         /// <summary>
-        /// Compute match scores for this section: log(P(match of ms section to MSMS section))
+        /// Compute match scores for this section: log(P(match of alignee section to baseline section))
         /// Does this within the Net Tolerance of the LCMSWarper
         /// </summary>
         /// <param name="deltaNets"></param>
@@ -334,9 +337,7 @@
         /// warped to a baseline section.
         /// </param>
         /// <param name="netStdDev">The standard deviation of NETs for all alignee features.</param>
-        /// <returns>
-        /// The match score.
-        /// </returns>
+        /// <returns>The match score. </returns>
         private double GetFeatureMatchScore(LcmsWarpFeatureMatch match, double deltaNet)
         {
             var featureMonoMass = match.AligneeFeature.MassMonoisotopic;
@@ -388,17 +389,14 @@
         /// Initialize default match scores to negative infinity.
         /// </summary>
         /// <param name="subsectionMatchScores">The match score matrix to initialize.</param>
-        /// <param name="aligneeSections">Number of sections for alignee dataset.</param>
-        /// <param name="baselineSections">Number of sections for baseline dataset.</param>
-        /// <param name="matchesPerBaseline">Maximum width that an alignee dataset section can be expanded when warped.</param>
-        private void InitializeMatchScoreMatrix(out double[,,] subsectionMatchScores, int aligneeSections, int baselineSections, int maxExpansionWidth)
+        private void InitializeMatchScoreMatrix(out double[,,] subsectionMatchScores)
         {
-            subsectionMatchScores = new double[this.options.NumTimeSections, baselineSections, maxExpansionWidth];
+            subsectionMatchScores = new double[this.options.NumTimeSections, this.options.NumBaselineSections, this.options.MaxExpansionWidth];
             for (var i = 0; i < this.options.NumTimeSections; i++)
             {
-                for (var j = 0; j < baselineSections; j++)
+                for (var j = 0; j < this.options.NumBaselineSections; j++)
                 {
-                    for (var k = 0; k < maxExpansionWidth; k++)
+                    for (var k = 0; k < this.options.MaxExpansionWidth; k++)
                     {
                         subsectionMatchScores[i, j, k] = double.NegativeInfinity;
                     }

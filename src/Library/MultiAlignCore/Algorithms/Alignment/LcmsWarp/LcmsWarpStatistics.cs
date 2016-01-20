@@ -32,6 +32,11 @@
         public double FalseHitProbDensity { get; set; }
 
         /// <summary>
+        /// Gets or sets the mean of the values in the mass dimension.
+        /// </summary>
+        public double MassMean { get; set; }
+
+        /// <summary>
         /// Gets or sets the mass standard deviation.
         /// </summary>
         public double MassStdDev
@@ -47,6 +52,7 @@
         /// <summary>
         /// Gets the variance in the mass dimension.
         /// </summary>
+        [IO.Options.IgnoreOptionProperty]
         public double MassVariance
         {
             get { return this.MassStdDev * this.MassStdDev; }
@@ -56,6 +62,11 @@
         /// Gets the calculations of log[2pi * (StdDev)^2]
         /// </summary>
         public double Log2PiMassStdDevSq { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the mean in the NET dimension.
+        /// </summary>
+        public double NetMean { get; set; }
 
         /// <summary>
         /// Gets or sets the NET standard deviation.
@@ -73,6 +84,7 @@
         /// <summary>
         /// Gets the variance in the NET dimension.
         /// </summary>
+        [IO.Options.IgnoreOptionProperty]
         public double NetVariance
         {
             get { return this.NetStdDev * this.NetStdDev; }
@@ -103,6 +115,24 @@
         /// NET feature matches.
         /// </summary>
         public double NetRSquared { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mass kurtosis.
+        /// </summary>
+        [IO.Options.IgnoreOptionProperty]
+        public double MassKurtosis
+        {
+            get { return Math.Pow(this.MassMean, 4) / Math.Pow(this.MassStdDev, 4); }
+        }
+
+        /// <summary>
+        /// Gets or sets the NET kurtosis.
+        /// </summary>
+        [IO.Options.IgnoreOptionProperty]
+        public double NetKurtosis
+        {
+            get { return Math.Pow(this.NetMean, 4) / Math.Pow(this.NetStdDev, 4); }
+        }
 
         /// <summary>
         /// Calculates the Standard deviations of the matches.
@@ -136,7 +166,7 @@
                                  out muMass,
                                  out muNet,
                                  out massStdDev,
-                                 out netStdDev);
+                                 out netStdDev) ;
 
             var statistics = new LcmsWarpStatistics
             {

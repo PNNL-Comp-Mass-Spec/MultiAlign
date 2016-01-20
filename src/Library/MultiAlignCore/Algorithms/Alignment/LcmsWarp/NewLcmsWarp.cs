@@ -113,19 +113,37 @@
                 // Get matches for given separation dimension
                 var matches = featureMatcher.GetMatchesAs(separationType);
 
-                // Calculate the alignment for the current separation dimension.
-                var alignmentFunction = this.GetAlignmentFunction(
-                                                                  matches,
-                                                                  aligneeFeatures,
-                                                                  baselineFeatures,
-                                                                  includeMassInMatchScore);
+                // Calculate two dimensional statistics for mass and the current separation dimension.
+                var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
+
+                // Calculate alignee sections
+                var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
+                aligneeSections.InitSections(aligneeFeatures);
+
+                // Calculate baseline sections
+                var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
+                baselineSections.InitSections(baselineFeatures);
+
+                // Generate alignment function, only score sections based on NET.
+                var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
+                var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
                 alignmentFunction.SeparationType = separationType;
+
+                // Create alignment score heatmap
+                var alignmentScoreHeatMap = LcmsWarpPlotDataCreator.GetAlignmentHeatMap(
+                        alignmentScorer.AlignmentScoreMatrix,
+                        true,
+                        this.options.NumTimeSections,
+                        this.options.NumBaselineSections,
+                        this.options.MaxExpansionWidth);
 
                 // Warp the values in the features for this separation type
                 warpedFeatures = alignmentFunction.GetWarpedFeatures(warpedFeatures).ToList();
                 var dimensionResults = new LcmsWarpResults
                 {
                     AlignmentFunction = alignmentFunction,
+                    Statistics = statistics,
+                    AlignmentScoreHeatMap = alignmentScoreHeatMap
                 };
 
                 results.Add(separationType, dimensionResults);
@@ -166,8 +184,8 @@
             var warpedFeatures = massCalibrations.GetWarpedFeatures(aligneeFeatures).ToList();
             var massAlignmentResult = new LcmsWarpResults { AlignmentFunction = massCalibrations };
 
-            // TODO: calculate histograms/plots for mass alignment
-            ////massAlignmentResult.ErrorHistogram - LcmsWarpPlotDataCreator.
+            // Calculate histograms/plots for mass alignment
+            massAlignmentResult.ErrorHistogram = LcmsWarpPlotDataCreator.GetMassErrorHistogram(matches, 10);
 
             // Second pass NET warp: Perform warp that scores matches in mass AND net
             var netMassWarpedSecondPass = this.WarpNet(warpedFeatures, baselineFeatures, true);
@@ -175,41 +193,6 @@
             // Add mass alignment results to existing alignment results from the NET alignment.
             netMassWarpedSecondPass.MassAlignment = massAlignmentResult;
             return netMassWarpedSecondPass;
-        }
-
-        /// <summary>
-        /// Get alignment function for a single separation for a set of alignee features.
-        /// </summary>
-        /// <param name="matches">The matched features.</param>
-        /// <param name="aligneeFeatures">The features to warp.</param>
-        /// <param name="baselineFeatures">The features to warp to.</param>
-        /// <param name="includeMassInMatchScore">
-        /// Should mass be considered when scoring a match between an alignee feature and baseline feature?
-        /// </param>
-        /// <returns>The features with all values for the given separation dimension warped.</returns>
-        /// <returns></returns>
-        private LcmsWarpNetAlignmentFunction GetAlignmentFunction(
-                                                                  List<LcmsWarpFeatureMatch> matches,
-                                                                  List<UMCLight> aligneeFeatures,
-                                                                  List<UMCLight> baselineFeatures,
-                                                                  bool includeMassInMatchScore)
-        {
-            // Calculate two dimensional statistics for mass and the current separation dimension.
-            var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
-
-            // Calculate alignee sections
-            var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
-            aligneeSections.InitSections(aligneeFeatures);
-
-            // Calculate baseline sections
-            var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
-            baselineSections.InitSections(baselineFeatures);
-
-            // Generate alignment function, only score sections based on NET.
-            var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
-            var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
-
-            return alignmentFunction;
         }
     }
 }
