@@ -22,9 +22,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public int NumTimeSections { get; set; }
 
         /// <summary>
+        /// Number of sections to divide the baseline dataset NET values into.
+        /// Calculated as NumTimSections * ContractionFactor
+        /// </summary>
+        public int NumBaselineSections { get; private set; }
+
+        /// <summary>
         /// Contraction factor for the alignment
         /// </summary>
         public int ContractionFactor { get; set; }
+
+        /// <summary>
+        /// Maximum width that an alignee dataset section can be expanded when warped.
+        /// </summary>
+        public int MaxExpansionWidth { get; private set; }
 
         /// <summary>
         /// Max time distortion at which to filter afterwards
@@ -205,8 +216,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarpAlignmentOptions()
         {
             NumTimeSections = 100; // 100 in VIPER
+            NumBaselineSections = this.NumTimeSections * this.ContractionFactor;
             TopFeatureAbundancePercent = 0;
             ContractionFactor = 3; //   3 in VIPER
+            MaxExpansionWidth = this.ContractionFactor * this.ContractionFactor;
             MaxTimeDistortion = 10; //  10 in VIPER
             MaxPromiscuity = 3; //   2 in VIPER
             UsePromiscuousPoints = false;
