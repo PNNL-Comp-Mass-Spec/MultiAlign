@@ -198,12 +198,49 @@ namespace MultiAlignCore.Data.Features
 
         public virtual double GetSeparationValue(SeparationTypes type)
         {
-            throw new NotImplementedException();
+            double value = 0.0;
+            switch (type)
+            {
+                case SeparationTypes.LC:
+                    value = this.Net;
+                    break;
+                case SeparationTypes.DriftTime:
+                    value = this.DriftTime;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return value;
         }
 
-        public virtual void SetSeparationValue(SeparationTypes type, double value)
+        public virtual void SetSeparationValue(SeparationTypes type, double value, bool aligned = false)
         {
-            throw new NotImplementedException();
+            switch (type)
+            {
+                case SeparationTypes.LC:
+                    if (aligned)
+                    {
+                        this.NetAligned = value;
+                    }
+                    else
+                    {
+                        this.Net = value;
+                    }
+                    break;
+                case SeparationTypes.DriftTime:
+                    if (aligned)
+                    {
+                        this.DriftTimeAligned = value;
+                    }
+                    else
+                    {
+                        this.DriftTime = value;
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         #region Public Utility Functions
