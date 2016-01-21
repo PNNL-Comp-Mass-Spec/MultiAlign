@@ -654,20 +654,12 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         private void DisplayAlignment()
         {
-            var files = this.Datasets.Where(x => x.IsSelected && x.IsAligned);
+            var files = this.Datasets.Where(x => x.IsSelected && x.IsAligned && !x.IsBaseline);
             var alignments = files.SelectMany(file => this.alignmentInformation.Where(x => x.DatasetID == file.DatasetId))
+                                  .Where(alignment => alignment != null)
                                   .Select(alignment => new AlignmentViewModel(alignment));
 
             this.alignmentWindowFactory.CreateNewWindow(alignments);
-
-            //if (alignments != null)
-            //{
-
-            //}
-            //else
-            //{
-            //    MessageBox.Show(String.Format("No alignment to show for {0}", file.Dataset.DatasetName));
-            //}
         }
 
         /// <summary>
