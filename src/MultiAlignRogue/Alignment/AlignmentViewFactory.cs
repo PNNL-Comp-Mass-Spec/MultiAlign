@@ -1,5 +1,7 @@
 ﻿namespace MultiAlignRogue.Alignment
 {
+    using System.Collections.Generic;
+
     using MultiAlignCore.Data.Alignment;
 
     class AlignmentViewFactory : IAlignmentWindowFactory
@@ -8,12 +10,14 @@
         {
 
         }
-        public void CreateNewWindow(AlignmentData alignment)
+
+        public void CreateNewWindow(IEnumerable<AlignmentViewModel> alignments)
         {
-            AlignmentView window = new AlignmentView()
+            AlignmentView window = new AlignmentView
             {
-                DataContext = new AlignmentViewModel(alignment)
+                DataContext = alignments
             };
+
             window.Show();
         }
     }

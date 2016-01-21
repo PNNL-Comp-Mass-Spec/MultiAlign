@@ -8,7 +8,7 @@
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Drawing;
 
-    class AlignmentViewModel
+    public class AlignmentViewModel
     {
         public BitmapImage HeatmapImage { get; private set; }
         public BitmapImage NetScanImage { get; private set; }
@@ -16,7 +16,7 @@
         public BitmapImage NetHistogram { get; private set; }
         public BitmapImage MassMzImage { get; private set; }
         public BitmapImage MassScanImage { get; private set; }
-        public String WindowTitle { get; private set; }
+        public string WindowTitle { get; private set; }
         
         public AlignmentViewModel()
         {
@@ -25,7 +25,7 @@
 
         public AlignmentViewModel(AlignmentData alignment)
         {
-            this.WindowTitle = String.Format("{0} Alignment Data",alignment.AligneeDataset);
+            this.WindowTitle = string.Format("{0} Alignment Data",alignment.AligneeDataset);
 
             var plots = new AlignmentPlotCreator(alignment);
             
