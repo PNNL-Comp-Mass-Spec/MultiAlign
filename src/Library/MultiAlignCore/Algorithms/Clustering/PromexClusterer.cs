@@ -142,7 +142,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         {
             var lcmsRun = this.GetLcMsRun(umcLight.GroupId);
             return new LcMsFeature(
-                                    umcLight.MassMonoisotopic,
+                                    umcLight.MassMonoisotopicAligned,
                                     umcLight.ChargeState,
                                     umcLight.Mz,
                                     umcLight.Scan,
