@@ -60,6 +60,9 @@ namespace MultiAlignCore.IO.MTDB
                 case MassTagDatabaseFormat.DelimitedTextFile:
                     loader = new MetaSampleDatbaseLoader(databaseDefinition.LocalPath, options);
                     break;
+                case MassTagDatabaseFormat.LiquidResultsFile:
+                    loader = new LiquidResultsFileLoader(databaseDefinition.LocalPath);
+                    break;
             }
             return loader;
         }

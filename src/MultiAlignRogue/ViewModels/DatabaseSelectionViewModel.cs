@@ -1,6 +1,7 @@
 ﻿namespace MultiAlignRogue.ViewModels
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
@@ -9,6 +10,8 @@
     using GalaSoft.MvvmLight.Command;
 
     using InformedProteomics.Backend.Utils;
+
+    using Microsoft.Win32;
 
     using MultiAlign.ViewModels.Databases;
     using MultiAlign.ViewModels.IO;
@@ -38,9 +41,9 @@
         private MultiAlignAnalysis analysis;
 
         /// <summary>
-        /// The selected database server.
+        /// The selected database information.
         /// </summary>
-        private DmsDatabaseServerViewModel selectedDatabaseServer;
+        private InputDatabase selectedDatabase;
 
         /// <summary>
         /// A value that indicates whether the mass tag progress bar
@@ -62,6 +65,7 @@
             this.ShowMassTagProgress = false;
             this.Analysis = new MultiAlignAnalysis();
             this.SelectAMTCommand = new RelayCommand(async () => await this.SelectAMTAsync());
+            this.SelectTextFileCommand = new RelayCommand(this.SelectTextFile);
         }
 
         /// <summary>
@@ -71,14 +75,17 @@
         public ICommand SelectAMTCommand { get; private set; }
 
         /// <summary>
+        /// Gets a command that opens a file dialog that allows the user to 
+        /// select a path to a mass tag text file.
+        /// </summary>
+        public ICommand SelectTextFileCommand { get; private set; }
+
+        /// <summary>
         /// Gets the singleton instance of this class.
         /// </summary>
         public static DatabaseSelectionViewModel Instance
         {
-            get
-            {
-                return instance ?? (instance = new DatabaseSelectionViewModel());
-            }
+            get { return instance ?? (instance = new DatabaseSelectionViewModel()); }
         }
 
         /// <summary>
@@ -98,17 +105,17 @@
         }
 
         /// <summary>
-        /// Gets the selected database server.
+        /// Gets the selected database information.
         /// </summary>
-        public DmsDatabaseServerViewModel SelectedDatabaseServer
+        public InputDatabase SelectedDatabase
         {
-            get { return this.selectedDatabaseServer; }
+            get { return this.selectedDatabase; }
             private set
             {
-                if (this.selectedDatabaseServer != value)
+                if (this.selectedDatabase != value)
                 {
-                    this.selectedDatabaseServer = value;
-                    this.RaisePropertyChanged("SelectedDatabaseServer", null, value, true);
+                    this.selectedDatabase = value;
+                    this.RaisePropertyChanged("SelectedDatabase", null, value, true);
                 }
             }
         }
@@ -180,7 +187,7 @@
         /// <returns>The <see cref="Task" />.</returns>
         public async Task LoadMassTagDatabase(InputDatabase inputDatabase)
         {
-            this.SelectedDatabaseServer = new DmsDatabaseServerViewModel(inputDatabase);
+            this.SelectedDatabase = inputDatabase;
             await this.AddMassTagsAsync();
         }
 
@@ -192,9 +199,9 @@
         private async Task SelectAMTAsync()
         {
             this.SelectAMT();
-            if (this.SelectedDatabaseServer != null)
+            if (this.SelectedDatabase != null)
             {
-                this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabaseServer.Database;
+                this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabase;
                 await this.AddMassTagsAsync();
             }
         }
@@ -213,14 +220,11 @@
             var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
             var databases = loader.LoadDatabases();
 
+            DmsDatabaseServerViewModel selectedDatabaseServer = null;
+
             foreach (var database in databases)
             {
                 databaseView.AddDatabase(database);
-            }
-
-            if (this.SelectedDatabaseServer != null)
-            {
-                databaseView.SelectedDatabase = this.SelectedDatabaseServer;
             }
 
             var result = dmsWindow.ShowDialog();
@@ -228,9 +232,38 @@
             {
                 if (databaseView.SelectedDatabase != null)
                 {
-                    this.SelectedDatabaseServer = databaseView.SelectedDatabase;
+                    selectedDatabaseServer = databaseView.SelectedDatabase;
+                    this.SelectedDatabase = selectedDatabaseServer.Database;
+                    this.SelectedDatabase.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
                 }
             }
+        }
+
+        /// <summary>
+        /// Opens a file dialog that allows the user to select a path to a mass tag text file.
+        /// </summary>
+        private void SelectTextFile()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = @"Supported Files|*.csv"
+            };
+
+            var result = openFileDialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            this.SelectedDatabase = new InputDatabase
+            {
+                DatabaseName = Path.GetFileNameWithoutExtension(openFileDialog.FileName),
+                LocalPath = openFileDialog.FileName,
+
+                // TODO: I am hardcoding Liquid results format for now, but we need a way to differentiate these files
+                DatabaseFormat = MassTagDatabaseFormat.LiquidResultsFile,
+            };
         }
 
         /// <summary>
@@ -248,9 +281,7 @@
         private void AddMassTags()
         {
             var loadProgress = new Progress<ProgressData>(pd => this.MassTagLoadProgress = pd.Percent);
-            var database = this.SelectedDatabaseServer.Database;
-            this.Analysis.MetaData.Database = database;
-            this.Analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
+            this.Analysis.MetaData.Database = this.SelectedDatabase;
             this.Analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(
                                         this.analysis.MetaData.Database,
                                         this.analysis.Options.MassTagDatabaseOptions);

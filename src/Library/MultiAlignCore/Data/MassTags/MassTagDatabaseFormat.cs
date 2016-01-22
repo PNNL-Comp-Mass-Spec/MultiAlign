@@ -33,6 +33,11 @@ namespace MultiAlignCore.Data.MassTags
         DelimitedTextFile,
 
         /// <summary>
+        /// Results from Liquid lipid MS/MS search.
+        /// </summary>
+        LiquidResultsFile,
+
+        /// <summary>
         ///     APE created databases
         /// </summary>
         [Obsolete] Ape,

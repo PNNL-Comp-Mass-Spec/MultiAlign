@@ -166,7 +166,7 @@ namespace MultiAlignRogue.Alignment
                 this,
                 args =>
                 {
-                    if (args.Sender is DatabaseSelectionViewModel && args.PropertyName == "SelectedDatabaseServer")
+                    if (args.Sender is DatabaseSelectionViewModel && args.PropertyName == "SelectedDatabase")
                     {
                         ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                     }

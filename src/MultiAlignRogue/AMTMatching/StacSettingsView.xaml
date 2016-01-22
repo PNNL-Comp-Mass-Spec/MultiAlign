@@ -49,7 +49,7 @@
                          Height="25"
                          Margin="0,0,5,0"
                          IsReadOnly="True"
-                         Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabaseServer.DatabaseName,
+                         Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabase.DatabaseName,
                                         UpdateSourceTrigger=PropertyChanged,
                                         Mode=TwoWay,
                                         NotifyOnSourceUpdated=True}"

@@ -565,6 +565,7 @@
     <Compile Include="IO\MTDB\DriftTimeTextFileDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\IDatabaseServerLoader.cs" />
     <Compile Include="IO\MTDB\IMTDBLoader.cs" />
+    <Compile Include="IO\MTDB\LiquidResultsFileLoader.cs" />
     <Compile Include="IO\MTDB\MageDmsDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoader.cs" />

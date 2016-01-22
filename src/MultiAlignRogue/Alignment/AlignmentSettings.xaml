@@ -104,7 +104,7 @@
                              IsEnabled="{Binding ShouldAlignToAMT,
                                                  UpdateSourceTrigger=PropertyChanged}"
                              IsReadOnly="True"
-                             Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabaseServer.DatabaseName,
+                             Text="{Binding Path=DatabaseSelectionViewModel.SelectedDatabase.DatabaseName,
                                             UpdateSourceTrigger=PropertyChanged,
                                             Mode=TwoWay,
                                             NotifyOnSourceUpdated=True}"
