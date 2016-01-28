@@ -61,7 +61,7 @@
             int lineCount = 0;
             foreach (var line in File.ReadLines(this.filePath))
             {
-                var parts = line.Split(',');
+                var parts = line.Split('\t');
                 if (lineCount++ == 0)
                 {   // Header line, store header indices
                     for (int i = 0; i < parts.Length; i++)
@@ -105,6 +105,8 @@
                     PeptideSequence = formula,
                     Net = net,
                     NetAligned = net,
+                    NetAverage = net,
+                    NetPredicted = net,
                     MassMonoisotopic = mass,
                     MassMonoisotopicAligned = mass
                 });
@@ -136,7 +138,7 @@
         /// <exception cref="FormatException">Throws a format exception when there are missing headers.</exception>
         private void DetectMissingHeaders(Dictionary<string, int> headers)
         {
-            var missingHeaders = this.RequiredHeaders.Select(header => !headers.Keys.Contains(header)).ToList();
+            var missingHeaders = this.RequiredHeaders.Where(header => !headers.Keys.Contains(header)).ToList();
             if (missingHeaders.Any())
             {
                 var errorString = missingHeaders.Aggregate(

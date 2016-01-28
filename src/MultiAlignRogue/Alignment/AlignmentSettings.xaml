@@ -46,11 +46,13 @@
                         <ColumnDefinition Width="30" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="35" />
                     </Grid.ColumnDefinitions>
 
                     <!--  Reference Dataset  -->
                     <Label Grid.Row="0"
                            Grid.Column="1"
+                           Grid.ColumnSpan="2"
                            Height="24"
                            VerticalAlignment="Top"
                            Content="Baseline" />
@@ -65,7 +67,7 @@
                                  ToolTip="Align to a Baseline Dataset" />
                     <ComboBox Grid.Row="1"
                               Grid.Column="1"
-                              Grid.ColumnSpan="2"
+                              Grid.ColumnSpan="3"
                               VerticalAlignment="Top"
                               DisplayMemberPath="Dataset.DatasetName"
                               IsEnabled="{Binding ShouldAlignToBaseline,
@@ -78,7 +80,7 @@
                     <ProgressBar Name="AmtTagDatabaseProgressBar"
                                  Grid.Row="2"
                                  Grid.Column="1"
-                                 Grid.ColumnSpan="2"
+                                 Grid.ColumnSpan="3"
                                  Height="25"
                                  Visibility="{Binding Path=DatabaseSelectionViewModel.ShowMassTagProgress,
                                                       Converter={StaticResource BoolToVis}}"
@@ -109,12 +111,23 @@
                                             Mode=TwoWay,
                                             NotifyOnSourceUpdated=True}"
                              TextWrapping="Wrap" />
+                    
+                    <!-- Select Database Server -->
                     <Button Grid.Row="3"
                             Grid.Column="2"
                             Command="{Binding Path=DatabaseSelectionViewModel.SelectAMTCommand}"
                             Content="Select Database"
                             IsEnabled="{Binding ShouldAlignToAMT,
                                                 UpdateSourceTrigger=PropertyChanged}" />
+                    
+                    <!-- Select Database file -->
+                    <Button Grid.Row="3"
+                            Grid.Column="3"
+                            Width="33"
+                            HorizontalAlignment="Right"
+                            Command="{Binding DatabaseSelectionViewModel.SelectTextFileCommand}"
+                            IsEnabled="{Binding ShouldAlignToAMT,
+                                                UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </GroupBox>
 

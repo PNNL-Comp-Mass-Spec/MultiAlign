@@ -65,7 +65,7 @@
             this.ShowMassTagProgress = false;
             this.Analysis = new MultiAlignAnalysis();
             this.SelectAMTCommand = new RelayCommand(async () => await this.SelectAMTAsync());
-            this.SelectTextFileCommand = new RelayCommand(this.SelectTextFile);
+            this.SelectTextFileCommand = new RelayCommand(async () => await this.SelectTextFileAsync());
         }
 
         /// <summary>
@@ -240,14 +240,29 @@
         }
 
         /// <summary>
+        /// Opens a file dialog that allows the user to select a path to a mass tag text file,
+        /// and then adding it to the analysis database asynchronously.
+        /// </summary>
+        /// <returns>The <see cref="Task" />.</returns>
+        private async Task SelectTextFileAsync()
+        {
+            this.SelectTextFile();
+            if (this.SelectedDatabase != null)
+            {
+                this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabase;
+                await this.AddMassTagsAsync();
+            }
+        }
+
+        /// <summary>
         /// Opens a file dialog that allows the user to select a path to a mass tag text file.
         /// </summary>
         private void SelectTextFile()
         {
             var openFileDialog = new OpenFileDialog
             {
-                DefaultExt = ".csv",
-                Filter = @"Supported Files|*.csv"
+                DefaultExt = ".tsv",
+                Filter = @"Supported Files|*.tsv"
             };
 
             var result = openFileDialog.ShowDialog();
