@@ -116,8 +116,9 @@ namespace MultiAlignCore.IO.Options
                 else if (propType.IsValueType || propType.IsEnum || propType == typeof(string))
                 {
                     var name = scope + property.Name;
-                    var value = property.GetValue(optionsClass).ToString();
-                    list.Add(new OptionPair(name, value));
+                    var value = property.GetValue(optionsClass);
+                    var valueStr = value == null ? null : value.ToString();
+                    list.Add(new OptionPair(name, valueStr));
                 }
                 // if it's a class in the namespace of "MultiAlignCore.xyz", we want to do special handling
                 else if (propType.IsClass && propType.FullName.StartsWith(optType.FullName.Substring(0, 15)))
