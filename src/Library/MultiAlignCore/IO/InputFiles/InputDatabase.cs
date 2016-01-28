@@ -18,9 +18,12 @@ namespace MultiAlignCore.IO.InputFiles
         /// </summary>
         public InputDatabase()
         {
-            DatabaseServer = null;
-            DatabaseName = null;
-            LocalPath = null;
+            DatabaseServer = string.Empty;
+            DatabaseName = string.Empty;
+            LocalPath = string.Empty;
+            Organism = string.Empty;
+            Description = string.Empty;
+            
             DatabaseFormat = MassTagDatabaseFormat.None;
 
             UserName = "mtuser";

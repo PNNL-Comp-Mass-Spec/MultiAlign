@@ -99,7 +99,7 @@ namespace MultiAlign.Data
                         isStepValid = false;
                         break;
                     case MassTagDatabaseFormat.MassTagSystemSql:
-                        if (database.DatabaseName == null || database.DatabaseServer == null)
+                        if (string.IsNullOrWhiteSpace(database.DatabaseName) || string.IsNullOrWhiteSpace(database.DatabaseServer))
                         {
                             isStepValid = false;
                             errorMessage = "The database or server was not set.";
