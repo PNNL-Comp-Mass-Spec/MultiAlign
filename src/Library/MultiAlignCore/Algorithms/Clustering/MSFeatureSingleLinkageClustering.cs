@@ -42,7 +42,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public List<U> Cluster(List<T> rawMSFeatures, IProgress<ProgressData> progress = null)
         {
             var progressData = new ProgressData(progress);
-            var centroidType  = ClusterCentroidRepresentation.Mean;
+            var centroidType  = ClusterCentroidRepresentation.Apex;
             List<U> features                            = null;
             
             var featureIDToClusterID = new Dictionary<int, int>();

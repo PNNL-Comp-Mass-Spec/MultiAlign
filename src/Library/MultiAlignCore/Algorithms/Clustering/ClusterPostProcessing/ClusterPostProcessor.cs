@@ -94,7 +94,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
             }
 
             var clusters = umcToClusterHash.Values.Distinct().ToList();
-            clusters.ForEach(refinedCluster => refinedCluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
+            clusters.ForEach(refinedCluster => refinedCluster.CalculateStatistics());
             return clusters;
         }
     }

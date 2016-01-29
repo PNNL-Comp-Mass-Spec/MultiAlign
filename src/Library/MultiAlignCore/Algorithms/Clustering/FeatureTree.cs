@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             {
                 var feature = new U {Id = id++};
                 m_features.ForEach(feature.AddChildFeature);
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                feature.CalculateStatistics();
                 features.Add(feature);
             }
 

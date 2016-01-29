@@ -19,7 +19,7 @@ namespace MultiAlignCore.Data.Features
         /// Calcualte the statistics for the given cluster.
         /// </summary>
         /// <param name="centroid"></param>
-        void CalculateStatistics(ClusterCentroidRepresentation centroid);
+        void CalculateStatistics(ClusterCentroidRepresentation centroid = ClusterCentroidRepresentation.Apex);
 
         /// <summary>
         /// Gets a list of child features.

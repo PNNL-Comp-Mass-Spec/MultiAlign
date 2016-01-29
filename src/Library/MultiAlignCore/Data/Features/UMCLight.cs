@@ -205,7 +205,7 @@ namespace MultiAlignCore.Data.Features
         /// Calculates the centroid and other statistics about the cluster.
         /// </summary>
         /// <param name="centroid"></param>
-        public void CalculateStatistics(ClusterCentroidRepresentation centroid)
+        public void CalculateStatistics(ClusterCentroidRepresentation centroid = ClusterCentroidRepresentation.Apex)
         {
             if (MsFeatures == null)
                 throw new NullReferenceException("The UMC list was not set to an object reference.");
@@ -290,7 +290,20 @@ namespace MultiAlignCore.Data.Features
                         DriftTime          = Convert.ToSingle(driftTime[median]);
                     }                                        
                     break;
-                    
+                case ClusterCentroidRepresentation.Apex:
+                    double apexNet = 0;
+                    double apexAbundance = 0;
+                    foreach (var msFeature in this.MsFeatures)
+                    {
+                        if (msFeature.Abundance >= apexAbundance)
+                        {
+                            apexNet = msFeature.Net;
+                            apexAbundance = msFeature.Abundance;
+                        }
+
+                        this.Net = apexNet;
+                    }
+                    break;
             }
             if ((numUmCs % 2) == 1)
             {

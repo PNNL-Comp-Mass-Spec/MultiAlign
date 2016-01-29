@@ -125,7 +125,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     progressData.Status = "Creating Xics";
                     progressData.StepRange(90);
                     features = this.CreateXics(features, internalProgress);
-                    features.ForEach(feature => feature.CalculateStatistics(ClusterCentroidRepresentation.Median));
+                    features.ForEach(feature => feature.CalculateStatistics());
                     stopWatch.Stop();
                     logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);  
                 }

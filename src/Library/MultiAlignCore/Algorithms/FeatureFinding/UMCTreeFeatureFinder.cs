@@ -98,7 +98,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     continue;
                 feature.Net = (provider.GetScanSummary(feature.Scan).Time - minScanTime) /
                               (maxScanTime - minScanTime);
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                feature.CalculateStatistics();
                 feature.Id = id++;
                 newFeatures.Add(feature);
                 //Sets the width of the feature to be the width of the peak, not the width of the tails
