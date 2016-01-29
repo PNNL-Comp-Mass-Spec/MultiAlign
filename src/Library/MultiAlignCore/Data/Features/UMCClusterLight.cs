@@ -40,7 +40,9 @@ namespace MultiAlignCore.Data.Features
             DriftTime			= umc.DriftTime;
             Id					= umc.Id;
             Net       = umc.NetAligned;
-            MassMonoisotopic    = umc.MassMonoisotopicAligned;                        
+	        NetAligned = umc.NetAligned;
+            MassMonoisotopic    = umc.MassMonoisotopicAligned;
+	        MassMonoisotopicAligned = umc.MassMonoisotopic;                        
             MsMsCount           = umc.MsMsCount;
             AddChildFeature(umc);            
         }		
