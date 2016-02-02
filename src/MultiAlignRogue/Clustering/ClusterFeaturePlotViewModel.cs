@@ -143,13 +143,15 @@ namespace MultiAlignRogue.Clustering
             var netRange = maxNet - minNet;
             var massRange = maxMass - minMass;
 
+            var ppm = massRange / maxMass * 1e6;
+
             var verticalAnnotation = new LineAnnotation
             {
                 X = maxNet + (0.05 * netRange),
                 MinimumY = Math.Max(minMass - (0.05 * massRange), 0),
                 MaximumY = maxMass + (0.05 * massRange),
                 TextColor = OxyColors.Gray,
-                Text = massRange.ToString("0.###"),
+                Text = string.Format("{0} ({1} ppm)", massRange.ToString("0.###"), ppm.ToString("0.###")),
                 TextOrientation = AnnotationTextOrientation.Vertical,
                 LineStyle = LineStyle.Dash,
                 Type = LineAnnotationType.Vertical,
