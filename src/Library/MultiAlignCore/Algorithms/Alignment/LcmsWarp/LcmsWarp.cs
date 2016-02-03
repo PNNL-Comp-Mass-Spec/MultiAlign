@@ -675,7 +675,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public IEnumerable<UMCLight> GetFeatureCalibratedMassesAndAlignedNets()
         {
-            return _features.Select(x => new UMCLight
+            return _features.OrderBy(x => x.Id).Select(x => new UMCLight
             {
                 Id = x.Id,
                 MassMonoisotopicAligned = x.MassMonoisotopicAligned,

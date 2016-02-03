@@ -153,7 +153,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     // Update the data without stomping the data that shouldn't change.
                     // TODO: Are we updating the right data???
-                    data[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
+                    data[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
+                                                                                                                     : data[i].MassMonoisotopic;
                     data[i].NetAligned = point.NetAligned;
                     data[i].NetStart = point.NetStart;
                     data[i].NetEnd = point.NetEnd;
