@@ -86,8 +86,12 @@ namespace MultiAlignRogue.Clustering
 
             this.DistanceMetrics = new ObservableCollection<DistanceMetric>();
             Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => this.DistanceMetrics.Add(x));
-            this.CentroidRepresentations = new ObservableCollection<ClusterCentroidRepresentation>();
-            Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => this.CentroidRepresentations.Add(x));
+            this.CentroidRepresentations = new ObservableCollection<ClusterCentroidRepresentation>
+            {
+                ClusterCentroidRepresentation.Mean,
+                ClusterCentroidRepresentation.Median
+            };
+
             this.ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
             Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
 
