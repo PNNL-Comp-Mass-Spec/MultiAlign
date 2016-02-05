@@ -132,8 +132,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Alignment. 
         /// </summary>
         /// <param name="data"></param>
-        public void ApplyNetMassFunctionToAligneeDatasetFeatures(List<UMCLight> data)
+        public List<UMCLight> ApplyNetMassFunctionToAligneeDatasetFeatures(List<UMCLight> data)
         {
+            var sortedData = data.OrderBy(x => x.Id).ToList();
+
             IEnumerable<UMCLight> featureData;
 
             if (_aligningToMassTagDb)
@@ -153,24 +155,26 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     // Update the data without stomping the data that shouldn't change.
                     // TODO: Are we updating the right data???
-                    data[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
-                                                                                                                     : data[i].MassMonoisotopic;
-                    data[i].NetAligned = point.NetAligned;
-                    data[i].NetStart = point.NetStart;
-                    data[i].NetEnd = point.NetEnd;
-                    data[i].DriftTime = point.DriftTime;
+                    sortedData[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
+                                                                                                                     : sortedData[i].MassMonoisotopic;
+                    sortedData[i].NetAligned = point.NetAligned;
+                    sortedData[i].NetStart = point.NetStart;
+                    sortedData[i].NetEnd = point.NetEnd;
+                    sortedData[i].DriftTime = point.DriftTime;
                     if (!_aligningToMassTagDb)
                     {
-                        data[i].ScanAligned = point.ScanAligned;
-                        data[i].DriftTimeAligned = point.DriftTimeAligned;
+                        sortedData[i].ScanAligned = point.ScanAligned;
+                        sortedData[i].DriftTimeAligned = point.DriftTimeAligned;
                     }
                 }
                 else
                 {
-                    data.Add(point);
+                    sortedData.Add(point);
                 }
                 i++;
             }
+
+            return sortedData;
         }
 
         /// <summary>

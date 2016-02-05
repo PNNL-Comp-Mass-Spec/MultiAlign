@@ -215,7 +215,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             // Correct the features (updates MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
-            alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
+            umcLights = alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
 
             // Find min/max scan for meta-data
             var minScanBaseline = int.MaxValue;
