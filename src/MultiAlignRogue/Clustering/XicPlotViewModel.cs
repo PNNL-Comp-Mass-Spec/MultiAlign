@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.Serialization.Configuration;
-using System.Text;
-using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using InformedProteomics.Backend.MassFeature;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.IO;
-using MultiAlignRogue.Utils;
-using MultiAlignRogue.ViewModels;
-using NHibernate.Util;
-using OxyPlot;
-using OxyPlot.Annotations;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-
-namespace MultiAlignRogue.Clustering
+﻿namespace MultiAlignRogue.Clustering
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.Messaging;
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO;
+    using MultiAlignRogue.Utils;
+    using MultiAlignRogue.ViewModels;
+    using NHibernate.Util;
+    using OxyPlot;
+    using OxyPlot.Annotations;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+
     using InformedProteomics.Backend.Data.Spectrometry;
 
-    using MultiAlignCore.Data;
     using MultiAlignCore.IO.RawData;
 
     public class XicPlotViewModel : PlotViewModelBase
@@ -42,7 +35,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Provider for LCMSRun for access to PBF files.
         /// </summary>
-        private ScanSummaryProviderCache rawProvider;
+        private readonly ScanSummaryProviderCache rawProvider;
 
         /// <summary>
         /// The retention time axis.
@@ -96,9 +89,10 @@ namespace MultiAlignRogue.Clustering
 
             this.xaxis = new LinearAxis
             {
-                Title = "Retention Time",
+                Title = "NET",
                 Position = AxisPosition.Bottom,
                 AbsoluteMinimum = 0,
+                AbsoluteMaximum = 1.0,
                 Minimum = 0,
             };
 
@@ -119,7 +113,7 @@ namespace MultiAlignRogue.Clustering
                 {
                     this.ScaleYAxis();
                 }
-            };
+            }; 
 
             this.SavePlotCommand = new RelayCommand(this.SavePlot);
 
@@ -255,7 +249,6 @@ namespace MultiAlignRogue.Clustering
                     chargeHash.Add(feature.UMCLight.ChargeState);
                 }
 
-                var scanDataProvider = this.rawProvider.GetScanSummaryProvider(feature.UMCLight.GroupId);
                 var msfeatures = this.GetXic(feature.UMCLight);
                 if (msfeatures.Count == 0)
                 {
@@ -267,10 +260,8 @@ namespace MultiAlignRogue.Clustering
 
                 foreach (var msfeature in msfeatures)
                 {
-                    var scanSum = scanDataProvider.GetScanSummary(msfeature.Scan);
-                    var rt = scanSum.Time;
-                    minX = Math.Min(minX, rt);
-                    maxX = Math.Max(maxX, rt);
+                    minX = Math.Min(minX, msfeature.Net);
+                    maxX = Math.Max(maxX, msfeature.Net);
                     minY = Math.Min(minY, msfeature.Abundance);
                     maxY = Math.Max(maxY, msfeature.Abundance);
                 }
@@ -285,6 +276,8 @@ namespace MultiAlignRogue.Clustering
                 var color = this.Colors[i++ % this.Colors.Count];
                 var series = new LineSeries
                 {
+                    ItemsSource = msfeatures,
+                    Mapping = dataPoint => new DataPoint(((MSFeatureLight)dataPoint).Net, ((MSFeatureLight)dataPoint).Abundance),
                     Title = string.Format("{0}({1}+) ID({2})", dsInfo.DatasetName, feature.UMCLight.ChargeState, feature.UMCLight.Id),
                     Color = color,
                     MarkerType = MarkerType.Circle,
@@ -296,10 +289,6 @@ namespace MultiAlignRogue.Clustering
                                "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
                                "{3}: {4:0.###E0}" + Environment.NewLine
                 };
-
-                msfeatures.ForEach(point => series.Points.Add(new DataPoint(
-                                                 scanDataProvider.GetScanSummary(point.Scan).Time,
-                                                 point.Abundance)));
 
                 this.XicPlotModel.Series.Add(series);
             }
@@ -336,10 +325,14 @@ namespace MultiAlignRogue.Clustering
             var minY = Double.NegativeInfinity;
             foreach (var series in this.XicPlotModel.Series.OfType<LineSeries>())
             {
-                foreach (var point in series.Points.Where(p => p.X >= minX && p.X <= maxX))
+                foreach (var point in series.ItemsSource)
                 {
-                    maxY = Math.Max(maxY, point.Y);
-                    minY = Math.Min(minY, point.Y);
+                    var msFeature = point as MSFeatureLight;
+                    if (msFeature != null && msFeature.Net >= minX && msFeature.Net <= maxX)
+                    {
+                        maxY = Math.Max(maxY, msFeature.Abundance);
+                        minY = Math.Min(minY, msFeature.Abundance);
+                    }
                 }
             }
 
@@ -392,7 +385,7 @@ namespace MultiAlignRogue.Clustering
                     if (lineSeries != null && lineSeries.ItemsSource.Any())
                     {
                         var msfeature = lineSeries.ItemsSource.First() as MSFeatureLight;
-                        if (msfeature != null && umcLightViewModel.UMCLight.MsFeatures.Contains(msfeature))
+                        if (msfeature != null && msfeature.GroupId == umcLightViewModel.UMCLight.GroupId)
                         {
                             lineSeries.IsVisible = arg.NewValue;
                         }
@@ -446,6 +439,7 @@ namespace MultiAlignRogue.Clustering
                     {
                         GroupId = feature.GroupId,
                         Scan = xicPoint.ScanNum,
+                        Net = ipr.GetScanSummary(xicPoint.ScanNum).Net,
                         Abundance = xicPoint.Intensity,
                         ChargeState = feature.ChargeState,
                     });
@@ -466,13 +460,11 @@ namespace MultiAlignRogue.Clustering
             }
 
             this.XicPlotModel.Annotations.Clear();
-            var scanDataProvider = this.rawProvider.GetScanSummaryProvider(this.SelectedMsFeature.GroupId);
-            var elutionTime = scanDataProvider.GetScanSummary(this.SelectedMsFeature.Scan).Time;
             var annotation = new LineAnnotation
             {
-                X = elutionTime,
+                X = this.SelectedMsFeature.Net,
                 TextColor = OxyColors.Gray,
-                Text = elutionTime.ToString("0.###"),
+                Text = this.SelectedMsFeature.Net.ToString("0.###"),
                 TextOrientation = AnnotationTextOrientation.Vertical,
                 LineStyle = LineStyle.Dash,
                 Type = LineAnnotationType.Vertical,
