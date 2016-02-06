@@ -15,7 +15,7 @@ using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
-    public class ClusterFeaturePlotViewModel : ViewModelBase
+    public class ClusterFeaturePlotViewModel : PlotViewModelBase
     {
         private readonly LinearAxis clusterFeaturePlotXaxis;
 
@@ -93,28 +93,33 @@ namespace MultiAlignRogue.Clustering
             var trackerFormatString = "{1}: {2:0.###}" + Environment.NewLine +
                                       "{3}: {4:0.###}";
 
-            var unselectedFeatures = this.Features.Where(feat => !feat.Selected).ToArray();
-            var unselectedSeries = new ScatterSeries
+            foreach (var datasetFeatures in this.Features.GroupBy(feat => feat.UMCLight.GroupId))
             {
-                ItemsSource = unselectedFeatures,
-                MarkerFill = OxyColors.Red,
-                TrackerFormatString = trackerFormatString,
-            };
-            if (unselectedFeatures.Length > 0)
-            {
-                this.ClusterFeaturePlotModel.Series.Add(unselectedSeries);
-            }
+                var unselectedFeatures = datasetFeatures.Where(feat => !feat.Selected).ToArray();
+                var color = this.Colors[datasetFeatures.Key % this.Colors.Count];
+                var unselectedColor = color.ChangeSaturation(0.5);
+                if (unselectedFeatures.Any())
+                {
+                    var unselectedSeries = new ScatterSeries
+                    {
+                        ItemsSource = unselectedFeatures,
+                        MarkerFill = unselectedColor,
+                        TrackerFormatString = trackerFormatString,
+                    };
+                    this.ClusterFeaturePlotModel.Series.Add(unselectedSeries);
+                }
 
-            var selectedFeatures = this.Features.Where(feat => feat.Selected).ToArray();
-            var selectedSeries = new ScatterSeries
-            {
-                ItemsSource = selectedFeatures,
-                MarkerFill = OxyColors.Gold,
-                TrackerFormatString = trackerFormatString
-            };
-            if (selectedFeatures.Length > 0)
-            {
-                this.ClusterFeaturePlotModel.Series.Add(selectedSeries);
+                var selectedFeatures = datasetFeatures.Where(feat => feat.Selected).ToArray();
+                if (selectedFeatures.Any())
+                {
+                    var selectedSeries = new ScatterSeries
+                    {
+                        ItemsSource = selectedFeatures,
+                        MarkerFill = color,
+                        TrackerFormatString = trackerFormatString
+                    };
+                    this.ClusterFeaturePlotModel.Series.Add(selectedSeries);
+                }
             }
 
             if (setAnnotation)
