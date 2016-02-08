@@ -97,7 +97,7 @@ namespace MultiAlignRogue.Clustering
             {
                 var unselectedFeatures = datasetFeatures.Where(feat => !feat.Selected).ToArray();
                 var color = this.Colors[datasetFeatures.Key % this.Colors.Count];
-                var unselectedColor = color.ChangeSaturation(0.5);
+                var unselectedColor = color.ChangeSaturation(0.25);
                 if (unselectedFeatures.Any())
                 {
                     var unselectedSeries = new ScatterSeries
