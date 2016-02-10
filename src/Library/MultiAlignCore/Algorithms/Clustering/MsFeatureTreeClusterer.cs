@@ -190,7 +190,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         {
             // If they are in mass range...
             var mzDiff = FeatureLight.ComputeMassPPMDifference(featureX.MassMonoisotopic, featureY.MassMonoisotopic);
-            if (Math.Abs(mzDiff) < Tolerances.Mass && featureX.ChargeState != featureY.ChargeState)
+            if (Math.Abs(mzDiff) < Tolerances.Mass && featureX.ChargeState == featureY.ChargeState)
             {
                 // otherwise make sure that our scan value is within range
                 var scanDiff = featureX.Net - featureY.Net;                

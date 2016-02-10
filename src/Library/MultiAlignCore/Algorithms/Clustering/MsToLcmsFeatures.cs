@@ -73,7 +73,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                                                             monoSort,
                                                             monoDiff,
                                                             MassComparison.Monoisotopic,
-                                                            this.options.InstrumentTolerances.Net);   
+                                                            this.options.InstrumentTolerances.Mass);   
             }
             else
             {

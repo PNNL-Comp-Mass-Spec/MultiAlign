@@ -20,11 +20,15 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             Map(x => x.MassMonoisotopicAligned).Column("Mass_Aligned").Nullable();
             Map(x => x.Net).Column("NET").Nullable();
             Map(x => x.NetAligned).Column("NET_Aligned").Nullable();
+            Map(x => x.NetStart).Column("NET_Start").Nullable();
+            Map(x => x.NetEnd).Column("NET_End").Nullable();
             Map(x => x.Mz).Column("MZ").Nullable();
             Map(x => x.Scan).Column("Scan_LC").Nullable();
             Map(x => x.ScanStart).Column("Scan_LC_Start").Nullable();
             Map(x => x.ScanEnd).Column("Scan_LC_End").Nullable();
             Map(x => x.ChargeState).Column("Charge").Nullable();
+            Map(x => x.MinCharge).Column("MinCharge").Nullable();
+            this.Map(x => x.MaxCharge).Column("MaxCharge").Nullable();
             Map(x => x.Abundance).Column("Abundance_Max").Nullable();
             Map(x => x.AbundanceSum).Column("Abundance_Sum").Nullable();
             Map(x => x.DriftTime).Column("Drift_Time").Nullable();

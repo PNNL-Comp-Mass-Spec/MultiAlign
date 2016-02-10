@@ -594,12 +594,12 @@ namespace MultiAlignRogue.Feature_Finding
                         analysis.DataProviders.IdentificationProviderCache,
                         progressRpt);
                 }
-                catch (Exception ex) // TODO: Figure out which exception should actually be caught here
-                {
-                    MessageBox.Show("File loading error: " + ex.Message);
-                    file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
-                    continue;
-                }
+                //catch (Exception ex) // TODO: Figure out which exception should actually be caught here
+                //{
+                //    MessageBox.Show("File loading error: " + ex.Message);
+                //    file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
+                //    continue;
+                //}
                 finally
                 {   // Always close read lock, even during failure condition so we don't have a recursive lock error.
                     this.analysis.DataProviders.DatabaseLock.ExitReadLock();

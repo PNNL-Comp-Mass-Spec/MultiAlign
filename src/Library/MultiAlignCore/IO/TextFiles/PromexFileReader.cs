@@ -48,6 +48,8 @@ namespace MultiAlignCore.IO.TextFiles
                     Abundance = feature.Abundance,
                     AbundanceSum = feature.Abundance,
                     ChargeState = chargeState,
+                    MinCharge = feature.MinCharge,
+                    MaxCharge = feature.MaxCharge,
                     Net = feature.Net,
                     NetAligned = feature.Net,
                     NetStart = feature.MinNet,

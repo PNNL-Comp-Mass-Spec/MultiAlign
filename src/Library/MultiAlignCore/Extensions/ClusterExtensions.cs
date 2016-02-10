@@ -44,6 +44,10 @@ namespace MultiAlignCore.Extensions
                 cluster.Features.Clear();
 
                 var features = providers.FeatureCache.FindByClusterID(cluster.Id);
+                if (features == null || features.Count == 0)
+                {
+                    return;
+                }
 
                 var totalSpectra = 0;
                 var totalIdentified = 0;

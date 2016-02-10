@@ -35,6 +35,8 @@ namespace MultiAlignCore.Data.Features
             ScanEnd     = Scan;
             ScanStart   = Scan;
             MsMsCount   = 0;
+		    this.MinCharge = 1;
+		    this.MaxCharge = 1;
 
             if (MsFeatures == null)
                 MsFeatures = new List<MSFeatureLight>();
@@ -78,6 +80,8 @@ namespace MultiAlignCore.Data.Features
             ScanStart                          = feature.ScanStart;
             Score                              = feature.Score;
             SpectralCount                      = feature.SpectralCount;
+            MinCharge                          = feature.MinCharge;
+            MaxCharge                          = feature.MaxCharge;
             // UmcCluster                      = feature.UmcCluster;
             
             // Charge state and Isotopic Chromatograms
@@ -114,6 +118,16 @@ namespace MultiAlignCore.Data.Features
         /// Gets or sets the latest normalized elution time for the feature.
         /// </summary>
         public double NetEnd { get; set; }
+
+        /// <summary>
+        /// Gets or sets the minimum charge state.
+        /// </summary>
+        public int MinCharge { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum charge state.
+        /// </summary>
+        public int MaxCharge { get; set; }
 
         /// <summary>
         /// Gets or sets the predicted scan number after alignment.
@@ -240,6 +254,9 @@ namespace MultiAlignCore.Data.Features
                     ChargeState      = feature.ChargeState;
                     representativeMz = feature.Mz;
                 }
+
+                this.MinCharge = Math.Min(this.MinCharge, feature.ChargeState);
+                this.MaxCharge = Math.Max(this.MaxCharge, feature.ChargeState);
 
                 net.Add(feature.Net);
                 mass.Add(feature.MassMonoisotopic);
