@@ -5,7 +5,7 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:viewModels="clr-namespace:MultiAlignRogue.ViewModels"
-        xmlns:converters="clr-namespace:MultiAlign.Converters;assembly=MultiAlign"
+        xmlns:converters="clr-namespace:MultiAlignRogue.Converters"
         Title="Cluster Viewer" Height="1000" Width="1250">
     <Window.Resources>
         <converters:DoubleToStringConverter Precision="3" x:Key="DoubleToString" />
@@ -13,7 +13,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="Tools">

@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
-using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Data.Features;
 using NHibernate.Util;
 using OxyPlot.Annotations;

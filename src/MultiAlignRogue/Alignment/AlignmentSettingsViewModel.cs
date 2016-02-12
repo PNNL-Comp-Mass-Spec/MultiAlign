@@ -1,6 +1,7 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
 using NHibernate.Mapping.ByCode;
 using MultiAlignCore.Algorithms.Options;
+using MultiAlignRogue.AMTMatching;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -16,9 +17,6 @@ namespace MultiAlignRogue.Alignment
     using GalaSoft.MvvmLight.Messaging;
 
     using InformedProteomics.Backend.Utils;
-
-    using MultiAlign.Data;
-    using MultiAlign.ViewModels.Databases;
 
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Alignment.LcmsWarp;

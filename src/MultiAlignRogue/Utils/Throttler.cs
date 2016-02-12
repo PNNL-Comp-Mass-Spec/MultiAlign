@@ -4,8 +4,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using MultiAlign.Data;
-
     public class Throttler
     {
         private readonly TimeSpan timeSpan;

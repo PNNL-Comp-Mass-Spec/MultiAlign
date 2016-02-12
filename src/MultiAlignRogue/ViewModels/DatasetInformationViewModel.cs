@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
-using MultiAlign.Commands.Datasets;
-using MultiAlign.Commands.Plotting;
-using MultiAlign.ViewModels.Plotting;
+using GalaSoft.MvvmLight.Command;
 using MultiAlignCore.Data.MetaData;
-using NHibernate.Mapping;
-using Xceed.Wpf.DataGrid.Views;
+using MultiAlignRogue.Utils;
 
 namespace MultiAlignRogue.ViewModels
 {
     using System.Windows.Input;
     using System.Windows.Media;
-
-    using MultiAlign.Commands;
-    using MultiAlign.Data;
 
     public class DatasetInformationViewModel : ViewModelBase
     {
@@ -46,44 +40,24 @@ namespace MultiAlignRogue.ViewModels
         {
             m_information = information;
             var data = information.PlotData;
-            PlotData = new ObservableCollection<PlotViewModel>();
 
-            RequestRemovalCommand = new BaseCommand(
+            RequestRemovalCommand = new RelayCommand(
                 () =>
                 {
                     if (RemovalRequested != null)
                     {
                         RemovalRequested(this, EventArgs.Empty);
                     }
-                }, s => !this.DoingWork);
+                }, () => !this.DoingWork);
 
             this.SetDatasetState();
-
-            if (data != null)
-            {
-                PlotData.Add(new PlotViewModel(data.Alignment,
-                    "Alignment",
-                    new PictureDisplayCommand(data.Alignment, "Alignment" + information.DatasetName)));
-                PlotData.Add(new PlotViewModel(data.Features,
-                    "Features",
-                    new FeatureDisplayCommand(information)));
-
-                PlotData.Add(new PlotViewModel(data.MassErrorHistogram, "Mass Error Histogram"));
-                PlotData.Add(new PlotViewModel(data.NetErrorHistogram, "NET Error Histogram"));
-                PlotData.Add(new PlotViewModel(data.MassScanResidual, "Mass vs Scan Residuals"));
-                PlotData.Add(new PlotViewModel(data.MassMzResidual, "Mass vs m/z Residuals"));
-                PlotData.Add(new PlotViewModel(data.NetResiduals, "NET Residuals"));
-            }
-
-
-            ModifyDatasetCommand = new ShowDatasetDetailCommand();
         }
 
         public event EventHandler RemovalRequested;
 
         public event EventHandler StateChanged;
 
-        public BaseCommand RequestRemovalCommand { get; private set; }
+        public RelayCommand RequestRemovalCommand { get; private set; }
 
         private DatasetStates datasetState;
         public DatasetStates DatasetState
@@ -233,7 +207,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.isFindingFeatures != value)
                 {
                     this.isFindingFeatures = value;
-                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("DoingWork");
@@ -272,7 +246,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.isAligning != value)
                 {
                     this.isAligning = value;
-                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
                     this.RaisePropertyChanged("AligningLabelColor");
                     this.RaisePropertyChanged("DoingWork");
@@ -311,7 +285,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.isLoadingRawData != value)
                 {
                     this.isLoadingRawData = value;
-                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
                     this.RaisePropertyChanged("DoingWork");
                 }
@@ -405,8 +379,6 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
-        public ObservableCollection<PlotViewModel> PlotData { get; private set; }
-
         public bool ShouldExpand
         {
             get { return m_expand; }
@@ -434,7 +406,6 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
-        public ICommand ModifyDatasetCommand { get; set; }
         public event EventHandler Selected;
 
         private void SetDatasetState()

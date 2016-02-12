@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
@@ -8,9 +7,6 @@ using MultiAlignCore.IO.Features;
 
 namespace MultiAlignRogue.Clustering
 {
-    using System.Linq;
-
-    using MultiAlignCore.Data;
     using MultiAlignCore.IO.RawData;
 
     using MultiAlignRogue.Utils;

@@ -10,8 +10,6 @@ using GalaSoft.MvvmLight.Command;
 using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 
-using MultiAlign.Data;
-using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
@@ -41,8 +39,6 @@ namespace MultiAlignRogue
     {
         #region Private Data Members
         private MultiAlignAnalysis analysis;
-
-        public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
 
         private readonly Throttler serializerThrottler;
 
@@ -106,8 +102,6 @@ namespace MultiAlignRogue
             this.WindowTitle = "MultiAlign Rogue";
 
             this.serializerThrottler = new Throttler(TimeSpan.FromSeconds(1));
-
-            DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
 
             SelectFilesCommand = new RelayCommand(SelectFiles, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             CloseWindowCommand = new RelayCommand(PersistProject);
@@ -424,14 +418,12 @@ namespace MultiAlignRogue
         {
             if (string.IsNullOrEmpty(InputFilePath))
             {
-                ApplicationStatusMediator.SetStatus("Select a folder path first. File -> Select Files");
                 MessageBox.Show("Select a folder path first. File -> Select Files");
                 return;
             }
 
             if (!Directory.Exists(InputFilePath))
             {
-                ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 MessageBox.Show("The directory specified does not exist.");
                 return;
             }
@@ -683,7 +675,6 @@ namespace MultiAlignRogue
             this.AlignmentSettingsViewModel = null;
             this.StacSettingsViewModel = null;
 
-            this.DataSelectionViewModel.Analysis = this.Analysis;
             var dbDatasets = this.Analysis.DataProviders.DatasetCache.FindAll();
             // Resolve the relative paths
             if (!string.IsNullOrWhiteSpace(this.projectDirectory))

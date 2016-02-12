@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Shell;
-using MultiAlign.Data;
 
 namespace MultiAlignRogue.Utils
 {

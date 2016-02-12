@@ -9,7 +9,6 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
-    using MultiAlign.ViewModels.Charting;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Extensions;
@@ -103,11 +102,6 @@
         private MSSpectra selectedMsMsSpectra;
 
         /// <summary>
-        /// The MsMsSpectraViewModel.
-        /// </summary>
-        private MsMsSpectraViewModel msMsSpectraViewModel;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
         /// <param name="viewFactory">Factory for creating child windows.</param>
@@ -131,7 +125,6 @@
             this.Features = new ObservableCollection<UMCLightViewModel>();
             this.MsMsSpectra = new ObservableCollection<MSSpectra>();
 
-            this.MsMsSpectraViewModel = new MsMsSpectraViewModel(new MSSpectra(), "MsMs Spectrum");
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
             this.ShowChargeStateDistributionCommand = new RelayCommand(this.ShowChargeStateDistributionImpl);
@@ -246,28 +239,8 @@
                 if (this.selectedMsMsSpectra != value)
                 {
                     this.selectedMsMsSpectra = value;
-                    if (this.selectedMsMsSpectra != null)
-                    {
-                        this.MsMsSpectraViewModel = new MsMsSpectraViewModel(this.selectedMsMsSpectra, "MS/MS Spectrum");
-                    }
 
                     this.RaisePropertyChanged("SelectedMsMsSpectra", null, value, true);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the MsMsSpectraViewModel.
-        /// </summary>
-        public MsMsSpectraViewModel MsMsSpectraViewModel
-        {
-            get { return this.msMsSpectraViewModel; }
-            private set
-            {
-                if (this.msMsSpectraViewModel != value)
-                {
-                    this.msMsSpectraViewModel = value;
-                    this.RaisePropertyChanged();
                 }
             }
         }

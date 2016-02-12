@@ -1,27 +1,19 @@
-﻿namespace MultiAlignRogue.ViewModels
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using InformedProteomics.Backend.Utils;
+using Microsoft.Win32;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.IO.MTDB;
+
+namespace MultiAlignRogue.AMTMatching
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Input;
-
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
-
-    using InformedProteomics.Backend.Utils;
-
-    using Microsoft.Win32;
-
-    using MultiAlign.ViewModels.Databases;
-    using MultiAlign.ViewModels.IO;
-    using MultiAlign.Windows.Viewers.Databases;
-
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MassTags;
-    using MultiAlignCore.IO.InputFiles;
-    using MultiAlignCore.IO.MTDB;
-
     /// <summary>
     /// Singleton view model for selecting AMT tag database and loading it
     /// into the analysis database.

@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Messaging;
 using InformedProteomics.Backend.Utils;
-using MultiAlign.Data;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;

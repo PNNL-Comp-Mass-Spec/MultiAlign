@@ -164,10 +164,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Applications\MultiAlign\MultiAlign.csproj">
-      <Project>{6ec23ccc-4f36-47bf-b997-f0a5727822a5}</Project>
-      <Name>MultiAlign</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>

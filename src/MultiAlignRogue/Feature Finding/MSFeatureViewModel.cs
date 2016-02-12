@@ -1,7 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using MultiAlign.Windows.Plots;
 using MultiAlignCore.Data.Features;
-using NHibernate.Mapping;
 using OxyPlot.Annotations;
 
 namespace MultiAlignRogue.Feature_Finding
@@ -15,8 +13,6 @@ namespace MultiAlignRogue.Feature_Finding
     using MultiAlignCore.Data.MetaData;
 
     using MultiAlignRogue.Utils;
-
-    using NHibernate.Linq.Functions;
 
     using OxyPlot;
     using OxyPlot.Axes;

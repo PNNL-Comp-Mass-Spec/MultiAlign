@@ -1,9 +1,8 @@
-﻿namespace MultiAlignRogue.Alignment
-{
-    using System;
-    using System.Windows.Media.Imaging;
+﻿using MultiAlignRogue.Utils;
 
-    using MultiAlign.Data;
+namespace MultiAlignRogue.Alignment
+{
+    using System.Windows.Media.Imaging;
 
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Drawing;

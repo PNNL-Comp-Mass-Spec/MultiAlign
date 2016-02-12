@@ -165,6 +165,20 @@
       <DependentUpon>MultiDimensionalAlignmentSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Alignment\AlignmentDimensionSettingsViewModel.cs" />
+    <Compile Include="AMTMatching\DatabaseDesignTimeDataViewModel.cs" />
+    <Compile Include="AMTMatching\DatabaseSearchToolView.xaml.cs">
+      <DependentUpon>DatabaseSearchToolView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AMTMatching\DatabaseSearchToolWindow.xaml.cs">
+      <DependentUpon>DatabaseSearchToolWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AMTMatching\DatabaseSelectionViewModel.cs" />
+    <Compile Include="AMTMatching\DatabasesViewModel.cs" />
+    <Compile Include="AMTMatching\DmsDatabaseServerViewModel.cs" />
+    <Compile Include="AMTMatching\MassTagDatabaseOptionsViewModel.cs" />
+    <Compile Include="AMTMatching\MassTagOptionsView.xaml.cs">
+      <DependentUpon>MassTagOptionsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AMTMatching\StacSettingsView.xaml.cs">
       <DependentUpon>StacSettingsView.xaml</DependentUpon>
     </Compile>
@@ -194,6 +208,7 @@
       <DependentUpon>UmcClusterDatasetHistogram.xaml</DependentUpon>
     </Compile>
     <Compile Include="Clustering\XicPlotViewModel.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -220,6 +235,7 @@
       <DependentUpon>DataLoadingSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DataLoadingSettingsViewModel.cs" />
+    <Compile Include="Utils\ImageConverter.cs" />
     <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="Utils\PlotSaving.xaml.cs">
       <DependentUpon>PlotSaving.xaml</DependentUpon>
@@ -227,9 +243,9 @@
     <Compile Include="Utils\PlotSavingViewModel.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="Utils\TaskBarProgress.cs" />
+    <Compile Include="Utils\ThreadSafeDispatcher.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Compile Include="ViewModels\ChargeStateViewModel.cs" />
-    <Compile Include="ViewModels\DatabaseSelectionViewModel.cs" />
     <Compile Include="ViewModels\DatasetInformationViewModel.cs" />
     <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -256,6 +272,18 @@
     <Page Include="Alignment\MultiDimensionalAlignmentSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AMTMatching\DatabaseSearchToolView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AMTMatching\DatabaseSearchToolWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AMTMatching\MassTagOptionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="AMTMatching\StacSettingsView.xaml">
       <SubType>Designer</SubType>
@@ -343,10 +371,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Applications\MultiAlign\MultiAlign.csproj">
-      <Project>{6ec23ccc-4f36-47bf-b997-f0a5727822a5}</Project>
-      <Name>MultiAlign</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GridApps\MultiAlignChargeStateProcessor\MultiAlignChargeStateProcessor.csproj">
       <Project>{553f0f69-e2cc-4ab5-ba2c-0c0604265e36}</Project>
       <Name>MultiAlignChargeStateProcessor</Name>
@@ -361,13 +385,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="StandardLayout.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\database-32.png" />
+    <Resource Include="Resources\molecule.png" />
+    <Resource Include="Resources\server-32.png" />
+    <Resource Include="Resources\text-file-3-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />

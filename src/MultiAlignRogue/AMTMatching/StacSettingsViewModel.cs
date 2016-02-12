@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using MultiAlignCore.IO;
+using MultiAlignRogue.Utils;
 
 namespace MultiAlignRogue.AMTMatching
 {
@@ -17,8 +18,6 @@ namespace MultiAlignRogue.AMTMatching
     using GalaSoft.MvvmLight.Messaging;
 
     using InformedProteomics.Backend.Utils;
-
-    using MultiAlign.Data;
 
     using MultiAlignCore.Algorithms.FeatureMatcher;
     using MultiAlignCore.Algorithms.FeatureMatcher.Data;

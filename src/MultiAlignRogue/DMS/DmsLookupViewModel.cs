@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using GalaSoft.MvvmLight.Messaging;
+using MultiAlignRogue.Utils;
 using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue.DMS
@@ -24,8 +25,6 @@ namespace MultiAlignRogue.DMS
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-
-    using MultiAlign.Data;
 
     using Ookii.Dialogs;
 

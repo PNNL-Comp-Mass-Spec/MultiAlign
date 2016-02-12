@@ -25,8 +25,6 @@ namespace MultiAlignRogue.Feature_Finding
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
 
-    using MultiAlign.Data;
-
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO;
