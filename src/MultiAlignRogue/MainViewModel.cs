@@ -782,6 +782,11 @@ namespace MultiAlignRogue
 
         private void PersistProject()
         {
+            if (this.Analysis.DataProviders == null)
+            {
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(this.projectDirectory))
             {
                 this.projectDirectory = Path.GetDirectoryName(this.ProjectPath) + Path.DirectorySeparatorChar;
