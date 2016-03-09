@@ -540,7 +540,8 @@ namespace MultiAlignRogue.Clustering
                 // Write dataset headers
                 foreach (var dataset in datasets)
                 {
-                    writer.Write("{0}_Abundance\t", dataset);
+                    var name = this.analysis.MetaData.Datasets.Single(x => x.DatasetId == dataset).Name;
+                    writer.Write("{0}_Abundance\t", name);
                 }
 
                 writer.WriteLine();
