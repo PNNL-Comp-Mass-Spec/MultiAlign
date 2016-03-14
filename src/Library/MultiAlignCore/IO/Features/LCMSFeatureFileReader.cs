@@ -41,7 +41,7 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Saves the data from a UMC csv file to an array of clsUMC Objects.
         /// </summary>
-        protected override sealed List<UMCLight> SaveDataToUmcList()
+        protected sealed override List<UMCLight> SaveDataToUmcList()
         {
             var umcList = new List<UMCLight>();
             var previousId = -99;

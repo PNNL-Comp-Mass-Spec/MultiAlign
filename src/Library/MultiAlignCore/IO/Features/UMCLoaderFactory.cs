@@ -69,9 +69,10 @@ namespace MultiAlignCore.IO.Features
                     features = featureCache.FindByDatasetId(dataset.DatasetId);
                     break;
                 case ".MS1FT":
-                    if (provider != null && provider is InformedProteomicsReader)
+                    var proteomicsReader = provider as InformedProteomicsReader;
+                    if (proteomicsReader != null)
                     {
-                        var promexReader = new PromexFileReader(provider as InformedProteomicsReader, dataset.DatasetId);
+                        var promexReader = new PromexFileReader(proteomicsReader);
                         features = promexReader.ReadFile(dataset.Features.Path).ToList();   
                     }
                     break;

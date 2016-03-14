@@ -209,6 +209,11 @@
     </Compile>
     <Compile Include="Clustering\XicPlotViewModel.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
+    <Compile Include="DataLoading\DatasetLoaderViewModelBase.cs" />
+    <Compile Include="DataLoading\DatasetLoaderViewModelFactory.cs" />
+    <Compile Include="DataLoading\DeconToolsLoaderViewModel.cs" />
+    <Compile Include="DataLoading\LcImsFeatureFinderLoaderViewModel.cs" />
+    <Compile Include="DataLoading\PromexLoaderViewModel.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -396,6 +401,7 @@
     <Resource Include="Resources\server-32.png" />
     <Resource Include="Resources\text-file-3-32.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

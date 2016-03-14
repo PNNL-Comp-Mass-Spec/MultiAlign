@@ -1,32 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InformedProteomics.Backend.Data.Biology;
-using InformedProteomics.Backend.Data.Spectrometry;
-using InformedProteomics.Backend.MassFeature;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.IO.RawData;
-
-namespace MultiAlignCore.IO.TextFiles
+﻿namespace MultiAlignCore.IO.TextFiles
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using InformedProteomics.Backend.Data.Biology;
+    using InformedProteomics.Backend.MassFeature;
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.RawData;
+    using MultiAlignCore.IO.DatasetLoaders;
+
     public class PromexFileReader : ITextFileReader<UMCLight>
     {
+        /// <summary>
+        /// Spectra provider.
+        /// </summary>
         private readonly InformedProteomicsReader reader;
 
-        private readonly int datasetId;
+        private readonly IFeatureFilter<UMCLight> featureFilter; 
 
-        public PromexFileReader(InformedProteomicsReader reader, int datasetId)
+        public PromexFileReader(InformedProteomicsReader reader, IFeatureFilter<UMCLight> featureFilter = null)
         {
             this.reader = reader;
-            this.datasetId = datasetId;
+            this.featureFilter = featureFilter;
         }
 
         public IEnumerable<UMCLight> ReadFile(string fileLocation)
         {
-            var features = LcMsFeatureAlignment.LoadProMexResult(this.datasetId, fileLocation,
+            var features = LcMsFeatureAlignment.LoadProMexResult(this.reader.GroupId, fileLocation,
                 this.reader.LcMsRun);
 
             var umcLights = new List<UMCLight> { Capacity = features.Count };
@@ -42,7 +42,7 @@ namespace MultiAlignCore.IO.TextFiles
                 var umcLight = new UMCLight
                 {
                     Id = umcId++,
-                    GroupId = this.datasetId,
+                    GroupId = this.reader.GroupId,
                     ScanStart = feature.MinScanNum,
                     ScanEnd = feature.MaxScanNum,
                     Abundance = feature.Abundance,
@@ -65,7 +65,7 @@ namespace MultiAlignCore.IO.TextFiles
                     umcLight.AddChildFeature(new MSFeatureLight
                     {
                         Id = msId++,
-                        GroupId = this.datasetId,
+                        GroupId = this.reader.GroupId,
                         Scan = feature.MinScanNum,
                         Abundance = feature.Abundance,
                         ChargeState = chargestate,
@@ -78,7 +78,7 @@ namespace MultiAlignCore.IO.TextFiles
                     umcLight.AddChildFeature(new MSFeatureLight
                     {
                         Id = msId++,
-                        GroupId = this.datasetId,
+                        GroupId = this.reader.GroupId,
                         Scan = feature.MaxScanNum,
                         Abundance = feature.Abundance,
                         ChargeState = chargestate,
@@ -90,7 +90,10 @@ namespace MultiAlignCore.IO.TextFiles
 
                 //umcLight.CalculateStatistics(ClusterCentroidRepresentation.Median);
 
-                umcLights.Add(umcLight);
+                if (this.featureFilter == null || this.featureFilter.ShouldKeepFeature(umcLight))
+                {
+                    umcLights.Add(umcLight);
+                }
             }
 
             return umcLights;

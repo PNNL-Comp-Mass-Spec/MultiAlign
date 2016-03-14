@@ -362,6 +362,7 @@
     <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Data\DataLoadingOptions.cs" />
+    <Compile Include="Data\Features\ElutionTimePoint.cs" />
     <Compile Include="Data\Index3D.cs" />
     <Compile Include="Data\Alignment\AlignmentData.cs" />
     <Compile Include="Data\Alignment\ResidualData.cs" />
@@ -484,6 +485,13 @@
     <Compile Include="IO\Clusters\UMCClusterMsmsSpectraWriter.cs" />
     <Compile Include="IO\Clusters\UMCClusterMsmsWriter.cs" />
     <Compile Include="IO\Clusters\UMCClusterScanWriter.cs" />
+    <Compile Include="IO\DatasetLoaders\DatasetLoaderFactory.cs" />
+    <Compile Include="IO\DatasetLoaders\DeconToolsFilter.cs" />
+    <Compile Include="IO\DatasetLoaders\DeconToolsLoader.cs" />
+    <Compile Include="IO\DatasetLoaders\IDatasetLoader.cs" />
+    <Compile Include="IO\DatasetLoaders\IFeatureFilter.cs" />
+    <Compile Include="IO\DatasetLoaders\LcImsFeatureFilter.cs" />
+    <Compile Include="IO\DatasetLoaders\PromexFilter.cs" />
     <Compile Include="IO\Datasets\IDatasetDAO.cs" />
     <Compile Include="IO\Datasets\IDatasetToFactorMapDAO.cs" />
     <Compile Include="IO\Factors\MAGEFactorAdapter.cs" />
@@ -607,6 +615,7 @@
     <Compile Include="IO\TextFiles\BaseTextFileReader.cs" />
     <Compile Include="IO\TextFiles\DeconToolsIsosFilterOptions.cs" />
     <Compile Include="IO\TextFiles\DtaFileWriter.cs" />
+    <Compile Include="IO\TextFiles\FeatureFileReaderFactory.cs" />
     <Compile Include="IO\TextFiles\IMsMsSpectraReader.cs" />
     <Compile Include="IO\TextFiles\IMsMsSpectraWriter.cs" />
     <Compile Include="IO\TextFiles\IPeptideFileReader.cs" />

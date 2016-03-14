@@ -31,7 +31,7 @@ namespace MultiAlignTestSuite.IO
         {
             const int datasetId = 0;
             var reader = new InformedProteomicsReader(datasetId, pbf1);
-            var promexFileReader = new PromexFileReader(reader, datasetId);
+            var promexFileReader = new PromexFileReader(reader);
             var features =
                 promexFileReader.ReadFile(ms1ft1);
             Console.WriteLine(features.Count());
@@ -45,15 +45,15 @@ namespace MultiAlignTestSuite.IO
             var reader2 = provider.GetScanSummaryProvider(pbf2, 1) as InformedProteomicsReader;
             var reader3 = provider.GetScanSummaryProvider(pbf3, 2) as InformedProteomicsReader;
 
-            var promexFileReader1 = new PromexFileReader(reader1, 0);
+            var promexFileReader1 = new PromexFileReader(reader1);
             var features1 =
                 promexFileReader1.ReadFile(ms1ft1);
 
-            var promexFileReader2 = new PromexFileReader(reader2, 1);
+            var promexFileReader2 = new PromexFileReader(reader2);
             var features2 =
                 promexFileReader2.ReadFile(ms1ft2);
 
-            var promexFileReader3 = new PromexFileReader(reader3, 2);
+            var promexFileReader3 = new PromexFileReader(reader3);
             var features3 =
                 promexFileReader3.ReadFile(ms1ft3);
 
@@ -77,7 +77,7 @@ namespace MultiAlignTestSuite.IO
             // Read using MultiAlign to Promex adapters
             var provider = new ScanSummaryProviderCache();
             var reader1 = provider.GetScanSummaryProvider(pbf1, 0) as InformedProteomicsReader;
-            var promexFileReader = new PromexFileReader(reader1, 0);
+            var promexFileReader = new PromexFileReader(reader1);
             var features = promexFileReader.ReadFile(ms1ft1).ToList();
 
             var lcmsRun = PbfLcMsRun.GetLcMsRun(pbf1);
@@ -103,10 +103,10 @@ namespace MultiAlignTestSuite.IO
             var provider = new ScanSummaryProviderCache();
             var reader1 = provider.GetScanSummaryProvider(pbf1, 0) as InformedProteomicsReader;
             var reader2 = provider.GetScanSummaryProvider(pbf2, 1) as InformedProteomicsReader;
-            var promexFileReader1 = new PromexFileReader(reader1, 0);
+            var promexFileReader1 = new PromexFileReader(reader1);
             var features1 = promexFileReader1.ReadFile(ms1ft1);
 
-            var promexFileReader2 = new PromexFileReader(reader2, 1);
+            var promexFileReader2 = new PromexFileReader(reader2);
             var features2 =
                 promexFileReader2.ReadFile(ms1ft2);
 
