@@ -399,7 +399,8 @@ namespace MultiAlignRogue.AMTMatching
                 // Write dataset headers
                 foreach (var dataset in datasetHash)
                 {
-                    writer.Write("Dataset {0} Abundance\t", dataset);
+                    var name = this.analysis.MetaData.Datasets.Single(x => x.DatasetId == dataset).Name;
+                    writer.Write("{0} Abundance\t", name);
                 }
 
                 writer.WriteLine();
