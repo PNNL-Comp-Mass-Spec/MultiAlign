@@ -151,6 +151,7 @@ namespace MultiAlignCore.IO.Hibernate
                     SQLiteConfiguration.Standard
                         //.UsingFile(m_dbLocation) // Won't work because of the need for custom additions to the connection string
                         .AdoNetBatchSize(1000)
+                        //.ShowSql()
                         .ConnectionString("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536"))
                 .Mappings(m =>
                 {

@@ -74,6 +74,9 @@ namespace MultiAlignCore.IO
                     command.CommandText = "CREATE INDEX idx_msLcmsfeature_id on T_MSFeatures(LCMS_FEATURE_ID ASC)";
                     command.ExecuteNonQuery();
 
+                    command.CommandText = "CREATE INDEX idx_lcmsFeature_dataset_id on T_LCMS_Features(Dataset_ID ASC)";
+                    command.ExecuteNonQuery();
+
                     // Feature Indexes for MS and MSn
                     command.CommandText = "CREATE INDEX idx_msfeature_id on T_MSFeatures(FEATURE_ID ASC)";
                     command.ExecuteNonQuery();
@@ -123,6 +126,9 @@ namespace MultiAlignCore.IO
                 {
                     // Feature Index for UMC
                     command.CommandText = "DROP INDEX IF EXISTS idx_lcmsFeature_id";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DROP INDEX IF EXISTS idx_lcmsFeature_dataset_id";
                     command.ExecuteNonQuery();
 
                     command.CommandText = "DROP INDEX IF EXISTS idx_msLcmsfeature_id";
