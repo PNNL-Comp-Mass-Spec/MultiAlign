@@ -489,7 +489,7 @@ namespace MultiAlignRogue
                     }
                 };
 
-                viewmodel.StateChanged += (s, e) => this.serializerThrottler.Run(this.SaveProject);
+                viewmodel.StateChanged += (s, e) => this.SaveProject();
                 Datasets.Add(viewmodel);
             }
 
