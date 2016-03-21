@@ -38,6 +38,11 @@ namespace MultiAlignCore.IO.Features
         [Obsolete("Use DatabaseLock instead.")]
         public object Synch { get; private set; }
 
+        public IDisposable GetManagedSession()
+        {
+            return new DaoSessionManager();
+        }
+
         /// <summary>
         ///     Constructor.
         /// </summary>

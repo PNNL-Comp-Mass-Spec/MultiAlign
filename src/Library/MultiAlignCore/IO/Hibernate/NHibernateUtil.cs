@@ -13,6 +13,8 @@ using NHibernate.Tool.hbm2ddl;
 
 namespace MultiAlignCore.IO.Hibernate
 {
+    using NHibernate.Context;
+
     /// <summary>
     ///     Hibernate Session Factory that will create a session if one does not already exist.
     ///     To create a session, Hibernate will need to be configured.
@@ -34,6 +36,7 @@ namespace MultiAlignCore.IO.Hibernate
             //Configuration.Configure();
             //Configuration.AddAssembly(typeof (NHibernateUtil).Assembly);
             m_dbLocation = "Analysis.db3";
+            currentSession = null;
         }
 
         /// <summary>
@@ -44,14 +47,26 @@ namespace MultiAlignCore.IO.Hibernate
             get { return m_dbLocation; }
         }
 
+        private static ISession currentSession;
+
+        public static ISession GetOrCreateSession()
+        {
+            if (currentSession == null || !currentSession.IsOpen)
+            {
+                currentSession = SessionFactory.GetCurrentSession();
+            }
+
+            return currentSession;
+        }
+
         /// <summary>
         ///     Returns a session that is created from the SessionFactory. If a session already existed, it will return the
         ///     existing Session, not create a new one.
         /// </summary>
         /// <returns>ISession object for the current hibernate session</returns>
-        public static ISession OpenSession()
+        public static ISession GetSession()
         {
-            return SessionFactory.OpenSession();
+            return currentSession;
         }
 
         /// <summary>
@@ -63,7 +78,6 @@ namespace MultiAlignCore.IO.Hibernate
         {
             return SessionFactory.OpenStatelessSession();
         }
-
 
         /// <summary>
         ///     Closes a session.

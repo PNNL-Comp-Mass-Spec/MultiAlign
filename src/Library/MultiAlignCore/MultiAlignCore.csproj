@@ -504,6 +504,7 @@
     <Compile Include="IO\Generic\JsonWriter.cs" />
     <Compile Include="IO\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\ClusterToMassTagMapDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\DaoSessionManager.cs" />
     <Compile Include="IO\Hibernate\DatasetDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\DatasetToFactorDAOHibernate.cs" />
     <Compile Include="IO\Hibernate\FactorDAOHibernate.cs" />

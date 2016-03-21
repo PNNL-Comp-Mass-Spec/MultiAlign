@@ -42,11 +42,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// <returns>A configured Hibernate ISession</returns>
         protected ISession GetSession()
         {
-            if (m_session == null || !m_session.IsOpen)
-            {
-                m_session = NHibernateUtil.OpenSession();
-            }
-            return m_session;
+            return NHibernateUtil.GetSession();
         }
 
         /// <summary>
@@ -80,13 +76,11 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="t">Object to be added</param>
         public void Add(T t)
         {
-            using (var session = GetSession())
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Save(t);
-                    transaction.Commit();
-                }
+                session.Save(t);
+                transaction.Commit();
             }
         }
 
@@ -99,13 +93,11 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="t">Object to be added or updated</param>
         public void AddOrUpdate(T t)
         {
-            using (var session = GetSession())
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.SaveOrUpdate(t);
-                    transaction.Commit();
-                }
+                session.SaveOrUpdate(t);
+                transaction.Commit();
             }
         }
 
@@ -118,31 +110,35 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be added</param>
         public virtual void AddAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
-            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
-            using (var session = GetSession())
+            if (this.ShouldUseStateless())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
-                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
-                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
-                    int i = 0;
-                    foreach (var t in tCollection)
-                    {
-                        session.SaveOrUpdate(t); //If we don't want to keep the unaligned features
-                        if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
-                        {
-                            progressData.Report(i, tCollection.Count);
-                        }
+                this.AddAllStateless(tCollection, progress);
+                return;
+            }
 
-                        i++;
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
+                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
+                int i = 0;
+                foreach (var t in tCollection)
+                {
+                    session.SaveOrUpdate(t); //If we don't want to keep the unaligned features
+                    if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
+                    {
+                        progressData.Report(i, tCollection.Count);
                     }
 
-                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
-                    progressData.StepRange(100);
-                    transaction.Commit();
-                    progressData.Report(100);
+                    i++;
                 }
+
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
+                progressData.StepRange(100);
+                transaction.Commit();
+                progressData.Report(100);
             }
         }
 
@@ -154,29 +150,27 @@ namespace MultiAlignCore.IO.Hibernate
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
+                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
+                int i = 0;
+                session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
+                foreach (var t in tCollection)
                 {
-                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
-                    int i = 0;
-                    session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
-                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
-                    foreach (var t in tCollection)
+                    session.Insert(t); //If we don't want to keep the unaligned features
+
+                    if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
                     {
-                        session.Insert(t); //If we don't want to keep the unaligned features
-
-                        if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
-                        {
-                            progressData.Report(i, tCollection.Count);
-                        }
-
-                        i++;
+                        progressData.Report(i, tCollection.Count);
                     }
-                    session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
-                    progressData.StepRange(100);
-                    transaction.Commit();
-                    progressData.Report(100);
+
+                    i++;
                 }
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
+                progressData.StepRange(100);
+                transaction.Commit();
+                progressData.Report(100);
             }
         }
 
@@ -186,13 +180,31 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="t">Object to be updated</param>
         public void Update(T t)
         {
-            using (var session = GetSession())
+            if (this.ShouldUseStateless())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Update(t);
-                    transaction.Commit();
-                }
+                this.UpdateStateless(t);
+                return;
+            }
+
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                session.Update(t);
+                transaction.Commit();
+            }
+        }
+
+        /// <summary>
+        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// </summary>
+        /// <param name="t">Object to be updated</param>
+        public void UpdateStateless(T t)
+        {
+            using (var session = this.GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                session.Update(t);
+                transaction.Commit();
             }
         }
 
@@ -202,29 +214,63 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be updated</param>
         public void UpdateAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
-            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
-            using (var session = GetStatelessSession())
+            if (this.ShouldUseStateless())
             {
-                using (var transaction = session.BeginTransaction())
+                this.UpdateAllStateless(tCollection, progress);
+                return;
+            }
+
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
+                int i = 0;
+                foreach (var t in tCollection)
                 {
-                    var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
-                    int i = 0;
-                    foreach (var t in tCollection)
+                    session.Update(t);
+
+                    if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
                     {
-                        session.Update(t);
-
-                        if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
-                        {
-                            progressData.Report(i, tCollection.Count);
-                        }
-
-                        i++;
+                        progressData.Report(i, tCollection.Count);
                     }
 
-                    progressData.StepRange(100);
-                    transaction.Commit();
-                    progressData.Report(100);
+                    i++;
                 }
+
+                progressData.StepRange(100);
+                transaction.Commit();
+                progressData.Report(100);
+            }
+        }
+
+        /// <summary>
+        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be updated</param>
+        public void UpdateAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        {
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
+            using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
+                int i = 0;
+                foreach (var t in tCollection)
+                {
+                    session.Update(t);
+
+                    if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
+                    {
+                        progressData.Report(i, tCollection.Count);
+                    }
+
+                    i++;
+                }
+
+                progressData.StepRange(100);
+                transaction.Commit();
+                progressData.Report(100);
             }
         }
 
@@ -234,13 +280,32 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="t">Object to be deleted</param>
         public void Delete(T t)
         {
-            using (var session = GetSession())
+            if (this.ShouldUseStateless())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Delete(t);
-                    transaction.Commit();
-                }
+                this.DeleteStateless(t);
+                return;
+            }
+
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                session.Delete(t);
+                transaction.Commit();
+            }
+        }
+
+        /// <summary>
+        ///     Deletes an Object from the Database.
+        /// </summary>
+        /// <param name="t">Object to be deleted</param>
+        public void DeleteStateless(T t)
+        {
+            if (this.ShouldUseStateless()) this.DeleteStateless(t);
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                session.Delete(t);
+                transaction.Commit();
             }
         }
 
@@ -251,16 +316,20 @@ namespace MultiAlignCore.IO.Hibernate
         /// <remarks>Use for deletes that need to cascade. Data must be loaded into the session for a cascading delete.</remarks>
         public void DeleteAll(ICollection<T> tCollection)
         {
-            using (var session = GetSession())
+            if (this.ShouldUseStateless())
             {
-                using (var transaction = session.BeginTransaction())
+                this.DeleteAllStateless(tCollection);
+                return;
+            }
+
+            using (var session = this.GetSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                foreach (var t in tCollection)
                 {
-                    foreach (var t in tCollection)
-                    {
-                        session.Delete(t);
-                    }
-                    transaction.Commit();
+                    session.Delete(t);
                 }
+                transaction.Commit();
             }
         }
 
@@ -272,15 +341,13 @@ namespace MultiAlignCore.IO.Hibernate
         public void DeleteAllStateless(ICollection<T> tCollection)
         {
             using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
+                foreach (var t in tCollection)
                 {
-                    foreach (var t in tCollection)
-                    {
-                        session.Delete(t);
-                    }
-                    transaction.Commit();
+                    session.Delete(t);
                 }
+                transaction.Commit();
             }
         }
 
@@ -291,7 +358,24 @@ namespace MultiAlignCore.IO.Hibernate
         /// <returns>The Object found</returns>
         public T FindById(int id)
         {
-            return GetSession().Load<T>(id);
+            if (this.ShouldUseStateless()) return this.FindByIdStateless(id);
+            using (var session = this.GetSession())
+            {
+                return session.Load<T>(id);
+            }
+        }
+
+        /// <summary>
+        ///     Finds an Object in the Database that matches the given ID value.
+        /// </summary>
+        /// <param name="id">The ID value to be searched for</param>
+        /// <returns>The Object found</returns>
+        public T FindByIdStateless(int id)
+        {
+            using (var session = this.GetSession())
+            {
+                return session.Load<T>(id);
+            }
         }
 
         /// <summary>
@@ -318,7 +402,9 @@ namespace MultiAlignCore.IO.Hibernate
         protected List<T> FindByCriteria(List<ICriterion> criterionList)
         {   
             List<T> list = null;
-            using (var session = GetSession())
+            if (this.ShouldUseStateless()) return this.FindByCriteriaStateless(criterionList);
+
+            using (var session = this.GetSession())
             {
                 var crit = session.CreateCriteria(GetPersistentType());
                 if (criterionList != null)
@@ -333,30 +419,62 @@ namespace MultiAlignCore.IO.Hibernate
             return list;
         }
 
+        /// <summary>
+        ///     This method take in a List of Hibernate Criterion and executes all of them at once to return
+        ///     a list of Objects. This is a generic method, so the Object type returned will depend on which
+        ///     DAOHibernate class was used to call this method.
+        ///     Criterion will limit what Objects will be returned from the Database. An example of a Criterion:
+        ///     ICriterion criterion = Expression.Eq("Mass", mass);
+        ///     This Criterion will limit the Objects returned to Objects that equal the given mass.
+        ///     To return a List of Objects that will contain every single Object of that type in the Database,
+        ///     simply pass in an empty list of Criterion.
+        /// </summary>
+        /// <param name="criterionList">A list of Hibernate ICriterion - refer to Hibernate docs</param>
+        /// <returns>A List of T Objects</returns>
+        protected List<T> FindByCriteriaStateless(List<ICriterion> criterionList)
+        {
+            List<T> list = null;
+            using (var session = this.GetStatelessSession())
+            {
+                var crit = session.CreateCriteria(GetPersistentType());
+                if (criterionList != null)
+                {
+                    foreach (var c in criterionList)
+                    {
+                        crit.Add(c);
+                    }
+                }
+                list = (List<T>)crit.List<T>();
+            }
+            return list;
+        }
+
         protected void DeleteAllFromTable(string tableName)
         {
             using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    var query = session.CreateSQLQuery(string.Format("DELETE FROM {0}", tableName));
-                    query.ExecuteUpdate();
-                    transaction.Commit();
-                }
+                var query = session.CreateSQLQuery(string.Format("DELETE FROM {0}", tableName));
+                query.ExecuteUpdate();
+                transaction.Commit();
             }
         }
 
         protected void DeleteByCriteria(string tableName, string keyName, int value)
         {
             using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    var query = session.CreateSQLQuery(string.Format("DELETE FROM {0} WHERE {1} = {2}", tableName, keyName, value));
-                    query.ExecuteUpdate();
-                    transaction.Commit();
-                }
+                var query = session.CreateSQLQuery(string.Format("DELETE FROM {0} WHERE {1} = {2}", tableName, keyName, value));
+                query.ExecuteUpdate();
+                transaction.Commit();
             }
+        }
+
+        private bool ShouldUseStateless()
+        {
+            var session = this.GetSession();
+            return (session == null || !session.IsOpen);
         }
 
         #endregion
