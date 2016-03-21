@@ -1,25 +1,20 @@
-﻿using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
-using InformedProteomics.Backend.Utils;
-using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.RawData;
-using MultiAlignRogue.Utils;
-using MultiAlignRogue.ViewModels;
-using NHibernate.Util;
-
-namespace MultiAlignRogue.Feature_Finding
+﻿namespace MultiAlignRogue.Feature_Finding
 {
     using System;
-    using System.CodeDom;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Windows;
+    using InformedProteomics.Backend.Utils;
+    using MultiAlignCore.Algorithms.Clustering;
+    using MultiAlignCore.Algorithms.Options;
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.RawData;
+    using MultiAlignRogue.Utils;
+    using MultiAlignRogue.ViewModels;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -38,13 +33,9 @@ namespace MultiAlignRogue.Feature_Finding
     {
         private readonly MultiAlignAnalysis analysis;
 
-        private readonly FeatureLoader featureCache;
-
         private readonly IFeatureWindowFactory msFeatureWindowFactory;
 
-        private readonly IProgress<int> progress;
-
-        private readonly string[] _timeOptions = { "Minutes", "Scans" };
+        private readonly string[] timeOptions = { "Minutes", "Scans" };
 
         private readonly Dictionary<DatasetInformation, IList<UMCLight>> featuresByDataset;
 
@@ -56,22 +47,16 @@ namespace MultiAlignRogue.Feature_Finding
         /// Cosntructor
         /// </summary>
         /// <param name="analysis"></param>
-        /// <param name="featureCache"></param>
         /// <param name="datasets"></param>
         /// <param name="msFeatureWindowFactory"></param>
-        /// <param name="progressReporter"></param>
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
-                                               FeatureLoader featureCache,
                                                ObservableCollection<DatasetInformationViewModel> datasets,
-                                               IFeatureWindowFactory msFeatureWindowFactory = null,
-                                               IProgress<int> progressReporter = null)
+                                               IFeatureWindowFactory msFeatureWindowFactory = null)
         {
             this.analysis = analysis;
-            this.featureCache = featureCache;
             this.Datasets = datasets;
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
-            this.progress = progressReporter ?? new Progress<int>();
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.featuresByDataset = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.MsFeatureClusterers = new ObservableCollection<MsFeatureClusteringAlgorithmType>(
@@ -92,19 +77,19 @@ namespace MultiAlignRogue.Feature_Finding
                 {
                     ThreadSafeDispatcher.Invoke(() =>
                     {
-                        this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
-                        this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                        this.FindMsFeaturesCommand.RaiseCanExecuteChanged();
+                        this.PlotMsFeaturesCommand.RaiseCanExecuteChanged();
                         this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
                     });
                 }
             });
 
-            this.FindMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.LoadMSFeaturesAsync(),
+            this.FindMsFeaturesCommand = new RelayCommand(
+                                        async () => await this.LoadMsFeaturesAsync(),
                                         () => this.Datasets.Any(ds => ds.IsSelected && !ds.IsFindingFeatures));
 
-            this.PlotMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(false),
+            this.PlotMsFeaturesCommand = new RelayCommand(
+                                        async () => await this.PlotMsFeatures(false),
                                         () => this.Datasets.Any(
                                                 ds =>
                                                     ds.DatasetState >
@@ -112,7 +97,7 @@ namespace MultiAlignRogue.Feature_Finding
                                                     ds.IsSelected));
 
             this.PlotAlignedFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(true),
+                                        async () => await this.PlotMsFeatures(true),
                                         () => this.Datasets.Any(ds => ds.IsAligned));
 
             this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
@@ -126,9 +111,9 @@ namespace MultiAlignRogue.Feature_Finding
 
         public RelayCommand FeatureFindingDefaultsCommand { get; private set; }
 
-        public RelayCommand FindMSFeaturesCommand { get; private set; }
+        public RelayCommand FindMsFeaturesCommand { get; private set; }
 
-        public RelayCommand PlotMSFeaturesCommand { get; private set; }
+        public RelayCommand PlotMsFeaturesCommand { get; private set; }
 
         public RelayCommand PlotAlignedFeaturesCommand { get; private set; }
 
@@ -147,15 +132,15 @@ namespace MultiAlignRogue.Feature_Finding
 
         public string[] TimeOptions
         {
-            get { return _timeOptions; }
+            get { return this.timeOptions; }
         }
 
         public string TreatAsTimeOrScan
         {
-            get { return FilterOnMinutes ? "Minutes" : "Scans"; }
+            get { return this.FilterOnMinutes ? "Minutes" : "Scans"; }
             set
             {
-                FilterOnMinutes = value.Equals("Minutes");
+                this.FilterOnMinutes = value.Equals("Minutes");
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged("MinimumFeatureLength");
                 this.RaisePropertyChanged("MaximumFeatureLength");
@@ -185,27 +170,27 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        private bool canCreateXics = false;
+        private bool canCreateXics;
 
         public double MinimumFeatureLength
         {
             get
             {
-                if (FilterOnMinutes)
+                if (this.FilterOnMinutes)
                 {
-                    return MinimumFeatureLengthMinutes;
+                    return this.MinimumFeatureLengthMinutes;
                 }
-                return MinimumFeatureLengthScans;
+                return this.MinimumFeatureLengthScans;
             }
             set
             {
-                if (FilterOnMinutes)
+                if (this.FilterOnMinutes)
                 {
-                    MinimumFeatureLengthMinutes = value;
+                    this.MinimumFeatureLengthMinutes = value;
                 }
                 else
                 {
-                    MinimumFeatureLengthScans = value;
+                    this.MinimumFeatureLengthScans = value;
                 }
                 this.RaisePropertyChanged();
             }
@@ -215,21 +200,21 @@ namespace MultiAlignRogue.Feature_Finding
         {
             get
             {
-                if (FilterOnMinutes)
+                if (this.FilterOnMinutes)
                 {
-                    return MaximumFeatureLengthMinutes;
+                    return this.MaximumFeatureLengthMinutes;
                 }
-                return MaximumFeatureLengthScans;
+                return this.MaximumFeatureLengthScans;
             }
             set
             {
-                if (FilterOnMinutes)
+                if (this.FilterOnMinutes)
                 {
-                    MaximumFeatureLengthMinutes = value;
+                    this.MaximumFeatureLengthMinutes = value;
                 }
                 else
                 {
-                    MaximumFeatureLengthScans = value;
+                    this.MaximumFeatureLengthScans = value;
                 }
                 this.RaisePropertyChanged();
             }
@@ -526,21 +511,21 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public async Task LoadMSFeaturesAsync()
+        public async Task LoadMsFeaturesAsync()
         {
             await Task.Run(() => this.LoadFeatures());
         }
 
         internal void LoadFeatures(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
         {
+            var featureCache = new FeatureLoader { Providers = this.analysis.DataProviders };
             this.ShouldShowProgress = true;
-            this.featureCache.Providers = this.analysis.DataProviders;
             var selectedFiles = workFlowDatasets ?? this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
-                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-                ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.PlotMsFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.FindMsFeaturesCommand.RaiseCanExecuteChanged());
             }
 
             var taskBarProgress = TaskBarProgress.GetInstance();
@@ -582,22 +567,16 @@ namespace MultiAlignRogue.Feature_Finding
                 try
                 {
                     this.analysis.DataProviders.DatabaseLock.EnterReadLock();
-                    features = this.featureCache.LoadDataset(
+                    features = featureCache.LoadDataset(
                         file.Dataset,
                         this.analysis.Options.MsFilteringOptions,
                         this.analysis.Options.LcmsFindingOptions,
                         this.analysis.Options.LcmsFilteringOptions,
                         this.analysis.Options.DataLoadOptions,
-                        analysis.DataProviders.ScanSummaryProviderCache,
-                        analysis.DataProviders.IdentificationProviderCache,
+                        this.analysis.DataProviders.ScanSummaryProviderCache,
+                        this.analysis.DataProviders.IdentificationProviderCache,
                         progressRpt);
                 }
-                //catch (Exception ex) // TODO: Figure out which exception should actually be caught here
-                //{
-                //    MessageBox.Show("File loading error: " + ex.Message);
-                //    file.DatasetState = DatasetInformationViewModel.DatasetStates.Loaded;
-                //    continue;
-                //}
                 finally
                 {   // Always close read lock, even during failure condition so we don't have a recursive lock error.
                     this.analysis.DataProviders.DatabaseLock.ExitReadLock();
@@ -611,7 +590,7 @@ namespace MultiAlignRogue.Feature_Finding
                 this.featuresByDataset[file.Dataset] = features;
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
-                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.PlotMsFeaturesCommand.RaiseCanExecuteChanged());
 
                 // TODO: We were using this log file to track speed changes for writing the database. We probably don't need it anymore.
                 using (var logger = new StreamWriter("nhibernate_stats.txt", true))
@@ -644,7 +623,7 @@ namespace MultiAlignRogue.Feature_Finding
                     try
                     {
                         this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
-                        this.featureCache.CacheFeatures(features, progressRpt);
+                        featureCache.CacheFeatures(features, progressRpt);
                     }
                     catch (NonUniqueObjectException ex)
                     {
@@ -666,7 +645,7 @@ namespace MultiAlignRogue.Feature_Finding
                 }
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
-                ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.FindMsFeaturesCommand.RaiseCanExecuteChanged());
                 file.Progress = 0;
             }
 
@@ -676,7 +655,7 @@ namespace MultiAlignRogue.Feature_Finding
             this.ShouldShowProgress = false;
         }
 
-        public async Task PlotMSFeatures(bool showAlignedFeatures)
+        public async Task PlotMsFeatures(bool showAlignedFeatures)
         {
             try
             {
@@ -702,6 +681,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         private async Task<Dictionary<DatasetInformation, IList<UMCLight>>> GetFeatures(IEnumerable<DatasetInformationViewModel> datasets)
         {
+            var featureCache = new FeatureLoader { Providers = this.analysis.DataProviders };
             var datasetFeatures = new Dictionary<DatasetInformation, IList<UMCLight>>();
             foreach (var file in datasets)
             {   // Select only datasets with features.
@@ -715,7 +695,7 @@ namespace MultiAlignRogue.Feature_Finding
                     var fileInstance = file;
                     feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
                             fileInstance.Dataset,
-                            this.featureCache.Providers.FeatureCache));
+                            featureCache.Providers.FeatureCache));
                     this.featuresByDataset.Add(file.Dataset, feat);
                 }
 
@@ -732,46 +712,46 @@ namespace MultiAlignRogue.Feature_Finding
         {
             var defaultOptions = new MultiAlignAnalysisOptions();
 
-            MassResolution = defaultOptions.InstrumentTolerances.Mass;
-            FragmentationTolerance = defaultOptions.InstrumentTolerances.FragmentationWindowSize;
+            this.MassResolution = defaultOptions.InstrumentTolerances.Mass;
+            this.FragmentationTolerance = defaultOptions.InstrumentTolerances.FragmentationWindowSize;
 
-            MinimumMz = defaultOptions.MsFilteringOptions.MzRange.Minimum;
-            MaximumMz = defaultOptions.MsFilteringOptions.MzRange.Maximum;
-            ShouldUseMzFilter = defaultOptions.MsFilteringOptions.ShouldUseMzFilter;
+            this.MinimumMz = defaultOptions.MsFilteringOptions.MzRange.Minimum;
+            this.MaximumMz = defaultOptions.MsFilteringOptions.MzRange.Maximum;
+            this.ShouldUseMzFilter = defaultOptions.MsFilteringOptions.ShouldUseMzFilter;
 
-            MinimumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Minimum;
-            MaximumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Maximum;
-            ShouldUseChargeStateFilter = defaultOptions.MsFilteringOptions.ShouldUseChargeFilter;
+            this.MinimumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Minimum;
+            this.MaximumCharge = defaultOptions.MsFilteringOptions.ChargeRange.Maximum;
+            this.ShouldUseChargeStateFilter = defaultOptions.MsFilteringOptions.ShouldUseChargeFilter;
 
-            FilterOnMinutes = defaultOptions.LcmsFilteringOptions.FilterOnMinutes;
-            MinimumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
-            MaximumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
+            this.FilterOnMinutes = defaultOptions.LcmsFilteringOptions.FilterOnMinutes;
+            this.MinimumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
+            this.MaximumFeatureLength = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
 
-            MinimumFeatureLengthMinutes = MinimumFeatureLength;
-            MaximumFeatureLengthMinutes = MaximumFeatureLength;
+            this.MinimumFeatureLengthMinutes = this.MinimumFeatureLength;
+            this.MaximumFeatureLengthMinutes = this.MaximumFeatureLength;
 
-            MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
-            MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
+            this.MinimumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
+            this.MaximumFeatureLengthScans = defaultOptions.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
 
-            MinimumFeatureDataPoints = defaultOptions.LcmsFilteringOptions.MinimumDataPoints;
+            this.MinimumFeatureDataPoints = defaultOptions.LcmsFilteringOptions.MinimumDataPoints;
 
-            MinimumDeisotopingScore = defaultOptions.MsFilteringOptions.MinimumDeisotopingScore;
-            ShouldUseDeisotopingFilter = defaultOptions.MsFilteringOptions.ShouldUseDeisotopingFilter;
+            this.MinimumDeisotopingScore = defaultOptions.MsFilteringOptions.MinimumDeisotopingScore;
+            this.ShouldUseDeisotopingFilter = defaultOptions.MsFilteringOptions.ShouldUseDeisotopingFilter;
 
-            MinimumIntensity = defaultOptions.MsFilteringOptions.MinimumIntensity;
-            ShouldUseIntensityFilter = defaultOptions.MsFilteringOptions.ShouldUseIntensityFilter;
+            this.MinimumIntensity = defaultOptions.MsFilteringOptions.MinimumIntensity;
+            this.ShouldUseIntensityFilter = defaultOptions.MsFilteringOptions.ShouldUseIntensityFilter;
 
-            FirstPassClusterer = defaultOptions.LcmsFindingOptions.FirstPassClusterer;
-            ShouldCreateXics = defaultOptions.LcmsFindingOptions.FindXics;
+            this.FirstPassClusterer = defaultOptions.LcmsFindingOptions.FirstPassClusterer;
+            this.ShouldCreateXics = defaultOptions.LcmsFindingOptions.FindXics;
 
-            XicRelativeIntensityThreshold = defaultOptions.LcmsFindingOptions.XicRelativeIntensityThreshold;
-            ShouldRefineXics = defaultOptions.LcmsFindingOptions.RefineXics;
+            this.XicRelativeIntensityThreshold = defaultOptions.LcmsFindingOptions.XicRelativeIntensityThreshold;
+            this.ShouldRefineXics = defaultOptions.LcmsFindingOptions.RefineXics;
 
-            ShouldPerformSecondPassClustering = defaultOptions.LcmsFindingOptions.SecondPassClustering;
-            SecondPassClusterer = defaultOptions.LcmsFindingOptions.SecondPassClusterer;
+            this.ShouldPerformSecondPassClustering = defaultOptions.LcmsFindingOptions.SecondPassClustering;
+            this.SecondPassClusterer = defaultOptions.LcmsFindingOptions.SecondPassClusterer;
 
-            SmoothingWindowSize = defaultOptions.LcmsFindingOptions.SmoothingWindowSize;
-            SmoothingPolynomialOrder = defaultOptions.LcmsFindingOptions.SmoothingPolynomialOrder;
+            this.SmoothingWindowSize = defaultOptions.LcmsFindingOptions.SmoothingWindowSize;
+            this.SmoothingPolynomialOrder = defaultOptions.LcmsFindingOptions.SmoothingPolynomialOrder;
         }
 
         /// <summary>
@@ -783,8 +763,8 @@ namespace MultiAlignRogue.Feature_Finding
         {
             if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
             {   // Make sure that this message is for DatasetInformationViewModel.IsSelected
-                this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
-                this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.FindMsFeaturesCommand.RaiseCanExecuteChanged();
+                this.PlotMsFeaturesCommand.RaiseCanExecuteChanged();
                 this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
 
                 // Add an event listener to update CanCreateXics whenever the Datasets collection changes
