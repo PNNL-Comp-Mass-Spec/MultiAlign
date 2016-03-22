@@ -180,7 +180,10 @@ namespace MultiAlignRogue.AMTMatching
         public async Task LoadMassTagDatabase(InputDatabase inputDatabase)
         {
             this.SelectedDatabase = inputDatabase;
-            await this.AddMassTagsAsync();
+            if (this.analysis.Options.AlignmentOptions.InputDatabase.DatabaseName != inputDatabase.DatabaseName)
+            {
+                await this.AddMassTagsAsync();
+            }
         }
 
         /// <summary>

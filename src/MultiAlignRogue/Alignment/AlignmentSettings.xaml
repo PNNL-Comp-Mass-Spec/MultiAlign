@@ -316,7 +316,7 @@
                                        Increment="1.0"
                                        Maximum="1200"
                                        Minimum="60"
-                                       Value="{Binding Path=ImageDPI,
+                                       Value="{Binding Path=ImageDpi,
                                                        Mode=TwoWay,
                                                        NotifyOnSourceUpdated=True,
                                                        UpdateSourceTrigger=PropertyChanged}" />

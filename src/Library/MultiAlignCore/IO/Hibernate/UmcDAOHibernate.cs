@@ -121,10 +121,13 @@ namespace MultiAlignCore.IO.Hibernate
 
         public int FindMaxCharge()
         {
-            var data = GetSession().CreateCriteria(typeof (UMCLight))
-                .SetProjection(Projections.Max("ChargeState"))
-                .UniqueResult();
-            return Convert.ToInt32(data);
+            using (var session = this.GetSession())
+            {
+                var data = session.CreateCriteria(typeof (UMCLight))
+                    .SetProjection(Projections.Max("ChargeState"))
+                    .UniqueResult();
+                return Convert.ToInt32(data);
+            }
         }
 
         /// <summary>

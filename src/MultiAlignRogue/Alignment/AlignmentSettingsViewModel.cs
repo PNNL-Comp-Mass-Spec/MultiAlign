@@ -1,9 +1,4 @@
-﻿using MultiAlignCore.Algorithms.Alignment;
-using NHibernate.Mapping.ByCode;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignRogue.AMTMatching;
-
-namespace MultiAlignRogue.Alignment
+﻿namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
@@ -19,31 +14,29 @@ namespace MultiAlignRogue.Alignment
     using InformedProteomics.Backend.Utils;
 
     using MultiAlignCore.Algorithms;
+    using MultiAlignCore.Algorithms.Alignment;
     using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+    using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Hibernate;
+    using MultiAlignRogue.AMTMatching;
 
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;
 
     public class AlignmentSettingsViewModel : ViewModelBase
     {
-        private const int DEFAULT_IMAGE_DPI = 96;
-        private const int DEFAULT_IMAGE_WIDTH = 1024;
-        private const int DEFAULT_IMAGE_HEIGHT = 768;
+        private const int DefaultImageDpi = 96;
+        private const int DefaultImageWidth = 1024;
+        private const int DefaultImageHeight = 768;
 
         /// <summary>
         /// The analysis information to run alignment on.
         /// </summary>
         private readonly MultiAlignAnalysis analysis;
-
-        /// <summary>
-        /// The cache for loading features from the analysis database.
-        /// </summary>
-        private readonly FeatureLoader featureCache;
 
         /// <summary>
         /// Factory for creating windows related to alignment (such as alignment plot windows).
@@ -88,34 +81,31 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// DPI of saved images
         /// </summary>
-        private double imageDPI = DEFAULT_IMAGE_DPI;
+        private double imageDpi = DefaultImageDpi;
 
         /// <summary>
         /// Pixel width of saved images
         /// </summary>
-        private double imageWidth = DEFAULT_IMAGE_WIDTH;
+        private double imageWidth = DefaultImageWidth;
 
         /// <summary>
         /// Pixel height of saved images
         /// </summary>
-        private double imageHeight = DEFAULT_IMAGE_HEIGHT;
+        private double imageHeight = DefaultImageHeight;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlignmentSettingsViewModel"/> class.
         /// </summary>
         /// <param name="analysis">The analysis information to run alignment on.</param>
-        /// <param name="featureCache">The cache for loading features from the analysis database.</param>
         /// <param name="datasets">List of all potential datasets to run alignment on.</param>
         /// <param name="alignmentWindowFactory">
         /// Factory for creating windows related to alignment (such as alignment plot windows).
         /// </param>
         public AlignmentSettingsViewModel(MultiAlignAnalysis analysis,
-                                          FeatureLoader featureCache,
                                           ObservableCollection<DatasetInformationViewModel> datasets,
                                           IAlignmentWindowFactory alignmentWindowFactory = null)
         {
             this.analysis = analysis;
-            this.featureCache = featureCache;
             this.Datasets = datasets;
             if (analysis.MetaData.BaselineDataset != null)
             {
@@ -424,14 +414,14 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// DPI of saved images
         /// </summary>
-        public double ImageDPI
+        public double ImageDpi
         {
-            get { return this.imageDPI; }
+            get { return this.imageDpi; }
             set
             {
-                if (!this.imageDPI.Equals(value))
+                if (!this.imageDpi.Equals(value))
                 {
-                    this.imageDPI = value;
+                    this.imageDpi = value;
                     this.RaisePropertyChanged();
                 }
             }
@@ -491,21 +481,21 @@ namespace MultiAlignRogue.Alignment
         {
             var defaultOptions = new MultiAlignAnalysisOptions();
 
-            ShouldAlignToAMT = defaultOptions.AlignmentOptions.AlignToAMT;
+            this.ShouldAlignToAMT = defaultOptions.AlignmentOptions.AlignToAMT;
 
-            SelectedAlignmentAlgorithm = defaultOptions.AlignmentOptions.AlignmentAlgorithm;
-            SelectedCalibrationType = defaultOptions.AlignmentOptions.AlignmentType;
+            this.SelectedAlignmentAlgorithm = defaultOptions.AlignmentOptions.AlignmentAlgorithm;
+            this.SelectedCalibrationType = defaultOptions.AlignmentOptions.AlignmentType;
 
-            AlignmentContractionFactor = defaultOptions.AlignmentOptions.ContractionFactor;
-            AlignmentNumTimeSections = defaultOptions.AlignmentOptions.NumTimeSections;
-            MinObservationCount = defaultOptions.MassTagDatabaseOptions.MinimumObservationCountFilter;
+            this.AlignmentContractionFactor = defaultOptions.AlignmentOptions.ContractionFactor;
+            this.AlignmentNumTimeSections = defaultOptions.AlignmentOptions.NumTimeSections;
+            this.MinObservationCount = defaultOptions.MassTagDatabaseOptions.MinimumObservationCountFilter;
 
-            DatabaseSelectionViewModel.MassTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Mass;
-            DatabaseSelectionViewModel.NetTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Net;
+            this.DatabaseSelectionViewModel.MassTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Mass;
+            this.DatabaseSelectionViewModel.NetTolerance = defaultOptions.LcmsClusteringOptions.InstrumentTolerances.Net;
 
-            imageDPI = DEFAULT_IMAGE_DPI;
-            imageWidth = DEFAULT_IMAGE_WIDTH;
-            imageHeight = DEFAULT_IMAGE_HEIGHT;
+            this.imageDpi = DefaultImageDpi;
+            this.imageWidth = DefaultImageWidth;
+            this.imageHeight = DefaultImageHeight;
         }
 
         /// <summary>
@@ -528,8 +518,8 @@ namespace MultiAlignRogue.Alignment
             var taskBarProgress = TaskBarProgress.GetInstance();
             taskBarProgress.ShowProgress(this, true);
 
-            //Update algorithms and providers
-            this.featureCache.Providers = this.analysis.DataProviders;
+            // Update algorithms and providers
+            var featureCache = new FeatureLoader { Providers = this.analysis.DataProviders };
             this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
 
             ////this.algorithms.DatabaseAligner.Progress += aligner_Progress;
@@ -540,7 +530,7 @@ namespace MultiAlignRogue.Alignment
 
             if (this.ShouldAlignToBaseline)
             {
-                baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
+                baselineFeatures = featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Baseline;
                 var priorAlignment = (from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x).ToList();
                 if (priorAlignment.Any())
@@ -584,7 +574,7 @@ namespace MultiAlignRogue.Alignment
                 }
 
                 this.analysis.DataProviders.DatabaseLock.EnterReadLock();
-                IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
+                IList<UMCLight> features = featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
                 this.analysis.DataProviders.DatabaseLock.ExitReadLock();
                 AlignmentData alignment;
 
@@ -626,7 +616,7 @@ namespace MultiAlignRogue.Alignment
                 file.Dataset.AlignmentData = alignment;
                 
                 this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
-                this.featureCache.CacheFeatures(features);
+                featureCache.CacheFeatures(features);
                 this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -679,7 +669,7 @@ namespace MultiAlignRogue.Alignment
                     }
                     var path = System.IO.Path.Combine(dirPath, "Alignment_");
 
-                    plots.SavePlots(path, this.ImageWidth, this.ImageHeight, this.ImageDPI);
+                    plots.SavePlots(path, this.ImageWidth, this.ImageHeight, this.ImageDpi);
                 }
                 else
                 {
