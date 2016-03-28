@@ -475,7 +475,7 @@
                     }
                 };
 
-                viewmodel.StateChanged += (s, e) => this.UpdateProject();
+                viewmodel.StateChanged += (s, e) => this.PersistProject();
                 this.Datasets.Add(viewmodel);
             }
 
