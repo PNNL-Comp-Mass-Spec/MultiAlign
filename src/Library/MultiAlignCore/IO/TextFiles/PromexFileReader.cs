@@ -26,8 +26,7 @@
 
         public IEnumerable<UMCLight> ReadFile(string fileLocation)
         {
-            var features = LcMsFeatureAlignment.LoadProMexResult(this.reader.GroupId, fileLocation,
-                this.reader.LcMsRun);
+            var features = LcMsFeatureAlignment.LoadProMexResult(this.reader.GroupId, fileLocation, this.reader.LcMsRun);
 
             var umcLights = new List<UMCLight> { Capacity = features.Count };
 
@@ -56,7 +55,8 @@
                     NetEnd = feature.MaxNet,
                     MassMonoisotopic = feature.Mass,
                     MassMonoisotopicAligned = feature.Mass,
-                    Mz = mz
+                    Mz = mz,
+                    AverageDeconFitScore =  feature.Score,
                 };
 
                 for (int chargestate = feature.MinCharge; chargestate <= feature.MaxCharge; chargestate++)

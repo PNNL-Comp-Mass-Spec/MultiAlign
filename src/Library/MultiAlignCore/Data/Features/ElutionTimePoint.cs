@@ -1,14 +1,31 @@
 ﻿namespace MultiAlignCore.Data.Features
 {
-    using System;
-
     using MultiAlignCore.Data;
+
+    /// <summary>
+    /// An enum that represents the names of the units that can be used to represent elution times.
+    /// </summary>
+    public enum ElutionUnitNames
+    {
+        /// <summary>
+        /// The actual elution time in minutes.
+        /// </summary>
+        Minutes,
+
+        /// <summary>
+        /// The normalized elution time.
+        /// </summary>
+        Net,
+
+        /// <summary>
+        /// The number of scans.
+        /// </summary>
+        Scans,
+    }
 
     public interface IElutionTimePoint
     {
         double Value { get; set; }
-
-        FeatureLight.SeparationTypes SeparationType { get; set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -50,9 +67,12 @@
 
     public class NetTimePoint : IElutionTimePoint
     {
-        public double Value { get; set; }
+        public NetTimePoint(double value = 0.0)
+        {
+            this.Value = value;
+        }
 
-        public FeatureLight.SeparationTypes SeparationType { get; set; }
+        public double Value { get; set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -77,11 +97,7 @@
             //                        and then compare the scan summary to
             //                        the left and to the right to find the closest.
             var maxLcScan = scanSummaryProvider.MaxScan;
-            return new ScanTimePoint
-            {
-                Value = (int)(this.Value * maxLcScan),
-                SeparationType = this.SeparationType
-            };
+            return new ScanTimePoint((int)(this.Value * maxLcScan));
         }
 
         /// <summary>
@@ -94,11 +110,6 @@
         /// <returns>The converted elution time point.</returns>
         public NetTimePoint ToNet(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             return this;
         }
 
@@ -116,19 +127,18 @@
             var scanSummary = scanSummaryProvider.GetScanSummary(maxLcScan);
             var elutionTime = this.Value * scanSummary.Time;
 
-            return new ElutionTimePoint
-            {
-                Value = elutionTime,
-                SeparationType = this.SeparationType
-            };
+            return new ElutionTimePoint(elutionTime);
         }
     }
 
     public class ElutionTimePoint : IElutionTimePoint
     {
-        public double Value { get; set; }
+        public ElutionTimePoint(double value = 0.0)
+        {
+            this.Value = value;
+        }
 
-        public FeatureLight.SeparationTypes SeparationType { get; set; }
+        public double Value { get; set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -147,11 +157,6 @@
         /// </remarks>
         public ScanTimePoint ToScan(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             return this.ToNet(scanSummaryProvider).ToScan(scanSummaryProvider);
         }
 
@@ -165,18 +170,9 @@
         /// <returns>The converted elution time point.</returns>
         public NetTimePoint ToNet(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             var maxScanSummary = scanSummaryProvider.GetScanSummary(scanSummaryProvider.MaxScan);
             var minScanSummary = scanSummaryProvider.GetScanSummary(scanSummaryProvider.MinScan);
-            return new NetTimePoint
-            {
-                Value = (this.Value - minScanSummary.Time) / (maxScanSummary.Time - minScanSummary.Time),
-                SeparationType = this.SeparationType
-            };
+            return new NetTimePoint((this.Value - minScanSummary.Time) / (maxScanSummary.Time - minScanSummary.Time));
         }
 
         /// <summary>
@@ -189,20 +185,20 @@
         /// <returns>The converted elution time point.</returns>
         public ElutionTimePoint ToElutionTime(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             return this;
         }
     }
 
     public class ScanTimePoint : IElutionTimePoint
     {
-        public double Value { get; set; }
+        public ScanTimePoint(int value = 0)
+        {
+            this.Value = value;
+        }
 
-        public FeatureLight.SeparationTypes SeparationType { get; set; }
+        public int ScanValue { get { return (int)this.Value; } }
+
+        public double Value { get; set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -214,11 +210,6 @@
         /// <returns>The converted elution time point.</returns>
         public ScanTimePoint ToScan(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             return this;
         }
 
@@ -232,18 +223,8 @@
         /// <returns>The converted elution time point.</returns>
         NetTimePoint IElutionTimePoint.ToNet(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             var scanSummary = scanSummaryProvider.GetScanSummary((int)this.Value);
-            return new NetTimePoint
-            {
-                Value = scanSummary.Net,
-                SeparationType = this.SeparationType
-
-            };
+            return new NetTimePoint(scanSummary.Net);
         }
 
         /// <summary>
@@ -256,18 +237,41 @@
         /// <returns>The converted elution time point.</returns>
         public ElutionTimePoint ToElutionTime(IScanSummaryProvider scanSummaryProvider)
         {
-            if (this.SeparationType == FeatureLight.SeparationTypes.DriftTime)
-            {
-                throw new ArgumentException("Conversions on IMS time points not currently supported.");
-            }
-
             var scanSummary = scanSummaryProvider.GetScanSummary((int)this.Value);
-            return new ElutionTimePoint
-            {
-                Value = scanSummary.Time,
-                SeparationType = this.SeparationType
-
-            };
+            return new ElutionTimePoint(scanSummary.Time);
         }
+    }
+
+    /// <summary>
+    /// A container for a range of values between minimum and maximum.
+    /// This container requires both values to be of a certain type.
+    /// </summary>
+    public class ElutionTimeRange<T> where T : IElutionTimePoint
+    {
+        /// <summary>
+        /// All possible elution time units.
+        /// </summary>
+        public static readonly System.Type[] ElutionTimePointTypes =
+        {
+            typeof(ScanTimePoint),
+            typeof(NetTimePoint),
+            typeof(ElutionTimePoint)
+        };
+
+        public ElutionTimeRange(T minValue, T maxValue)
+        {
+            this.MinValue = minValue;
+            this.MaxValue = maxValue;
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum elution time point.
+        /// </summary>
+        public T MinValue { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the maximum elution time point.
+        /// </summary>
+        public T MaxValue { get; set; }
     }
 }
