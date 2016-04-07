@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         public bool                          ShouldSeparateCharge { get; set; }
         public DistanceMetric                DistanceFunction { get; set; }
-        public LcmsFeatureClusteringAlgorithmType       LcmsFeatureClusteringAlgorithm { get; set; }
+        public ClusteringAlgorithmTypes       LcmsFeatureClusteringAlgorithm { get; set; }
         public ClusterCentroidRepresentation ClusterCentroidRepresentation { get; set; }
         public FeatureTolerances InstrumentTolerances { get; set; }
 

@@ -1,40 +1,15 @@
 ﻿namespace MultiAlignRogue.DataLoading
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Collections.ObjectModel;
-
-    using GalaSoft.MvvmLight.Messaging;
-
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.DatasetLoaders;
+
+    using MultiAlignRogue.Utils;
 
     /// <summary>
     /// View model for selecting loading and filtering settings for Promex datasets.
     /// </summary>
     public sealed class PromexLoaderViewModel : DatasetLoaderViewModelBase
     {
-        /// <summary>
-        /// The default time ranges to display for each type of unit.
-        /// </summary>
-        private readonly Dictionary<ElutionUnitNames, Tuple<double, double>> defaultElutionRangeValues;
-
-        /// <summary>
-        /// The default elution length values for each type of unit.
-        /// </summary>
-        private readonly Dictionary<ElutionUnitNames, Tuple<double, double>> defaultElutionLengthValues;
-
-        /// <summary>
-        /// The type of elution unit to use for the elution time range.
-        /// </summary>
-        private ElutionUnitNames selectedElutionTimeUnit;
-
-        /// <summary>
-        /// The type of unit for the elution length.
-        /// </summary>
-        private ElutionUnitNames selectedElutionLengthUnit;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PromexLoaderViewModel" /> class. 
         /// </summary>
@@ -44,63 +19,17 @@
             this.PromexLoader = loader;
             this.SupportedDatasetType = MultiAlignCore.Data.DatasetLoader.SupportedDatasetTypes.Promex;
 
-            this.ElutionTimeUnits = new ObservableCollection<ElutionUnitNames>
-            {
-                ElutionUnitNames.Net,
-                ElutionUnitNames.Scans,
-                ElutionUnitNames.Minutes,
-            };
+            this.ElutionTimeRange = new ElutionTimeRangeViewModel(loader.ElutionTimeRange);
 
-            // Set the default time ranges to display for each type of unit.
-            this.defaultElutionRangeValues = new Dictionary<ElutionUnitNames, Tuple<double, double>>
+            this.ElutionLengthRange = new ElutionTimeRangeViewModel(loader.ElutionLengthRange)
             {
-                { ElutionUnitNames.Net, new Tuple<double, double>(0.0, 1.0) },
-                { ElutionUnitNames.Scans, new Tuple<double, double>(0, 10000) },
-                { ElutionUnitNames.Minutes, new Tuple<double, double>(0, 90) },
-            };
-
-            // Set the default elution length values for each type of unit.
-            this.defaultElutionLengthValues = new Dictionary<ElutionUnitNames, Tuple<double, double>>
-            {
-                { ElutionUnitNames.Net, new Tuple<double, double>(0.01, 0.2) },
-                { ElutionUnitNames.Scans, new Tuple<double, double>(3, 20) },
-                { ElutionUnitNames.Minutes, new Tuple<double, double>(1, 5) },
-            };
-
-            // Update the elution range values when the elution range unit changes.
-            this.MessengerInstance.Register<PropertyChangedMessage<ElutionUnitNames>>(this,
-                msg =>
-            {
-                var values = this.defaultElutionRangeValues[msg.NewValue];
-                IElutionTimePoint minValue;
-                IElutionTimePoint maxValue;
-                switch (msg.NewValue)
+                DefaultElutionRangeValues =
                 {
-                    case ElutionUnitNames.Minutes:
-                        minValue = new ElutionTimePoint(values.Item1);
-                        maxValue = new ElutionTimePoint(values.Item2);
-                        break;
-                    case ElutionUnitNames.Scans:
-                        minValue = new ScanTimePoint((int)values.Item1);
-                        maxValue = new ScanTimePoint((int)values.Item2);
-                        break;
-                    default:
-                        minValue = new NetTimePoint(values.Item1);
-                        maxValue = new NetTimePoint(values.Item2);
-                        break;
+                    [ElutionUnitNames.Scans] = new ElutionTimeRange<IElutionTimePoint>(new ScanTimePoint(3), new ScanTimePoint(20)),
+                    [ElutionUnitNames.Minutes] = new ElutionTimeRange<IElutionTimePoint>(new ElutionTimePoint(0.06), new ElutionTimePoint(20)),
+                    [ElutionUnitNames.Net] = new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(0.01), new NetTimePoint(0.1))
                 }
-
-                this.PromexLoader.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(minValue, maxValue);
-            });
-
-            // Update the elution length values when the elution length unit changes.
-            this.MessengerInstance.Register<PropertyChangedMessage<ElutionUnitNames>>(this,
-                msg =>
-            {
-                var values = this.defaultElutionLengthValues[msg.NewValue];
-                this.MinElutionLength = values.Item1;
-                this.MaxElutionLength = values.Item2;
-            });
+            };
         }
 
         /// <summary>
@@ -116,13 +45,8 @@
         }
 
         /// <summary>
-        /// Gets the names of the possible elution time units.
-        /// </summary>
-        public ObservableCollection<ElutionUnitNames> ElutionTimeUnits { get; private set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
-        /// normalized elution range falls outside of <see cref="MinElutionTime" /> and <see cref="MaxElutionTime" />.
+        /// normalized elution range falls outside of <see cref="ElutionTimeRange" />.
         /// </summary>
         public bool UseTimeRangeFilter
         {
@@ -138,75 +62,13 @@
         }
 
         /// <summary>
-        /// Gets or sets the minimum elution time of features to retain.
+        /// Gets the view model for selecting the minimum and maximum elution time to retain.
         /// </summary>
-        public double MinElutionTime
-        {
-            get { return this.PromexLoader.ElutionTimeRange.MinValue.Value; }
-            set
-            {
-                if (!this.PromexLoader.ElutionTimeRange.MinValue.Value.Equals(value))
-                {
-                    this.PromexLoader.ElutionTimeRange.MinValue.Value = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum elution time of features to retain.
-        /// </summary>
-        public double MaxElutionTime
-        {
-            get { return this.PromexLoader.ElutionTimeRange.MaxValue.Value; }
-            set
-            {
-                if (!this.PromexLoader.ElutionTimeRange.MaxValue.Value.Equals(value))
-                {
-                    this.PromexLoader.ElutionTimeRange.MaxValue.Value = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the type of elution unit to use for the elution time range.
-        /// </summary>
-        public ElutionUnitNames SelectedElutionTimeUnit
-        {
-            get { return this.selectedElutionTimeUnit; }
-            set
-            {
-                if (this.selectedElutionTimeUnit != value)
-                {
-                    var oldValue = this.selectedElutionTimeUnit;
-                    this.selectedElutionTimeUnit = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedElutionTimeUnit), oldValue, value, true);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the type of unit for the elution length.
-        /// </summary>
-        public ElutionUnitNames SelectedElutionLengthUnit
-        {
-            get { return this.selectedElutionLengthUnit; }
-            set
-            {
-                if (this.selectedElutionLengthUnit != value)
-                {
-                    var oldValue = this.selectedElutionLengthUnit;
-                    this.selectedElutionLengthUnit = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedElutionLengthUnit), oldValue, value, true);
-                }
-            }
-        }
+        public ElutionTimeRangeViewModel ElutionTimeRange { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
-        /// normalized elution length falls outside of <see cref="MinElutionLength" /> and
-        /// <see cref="MaxElutionLength" />.
+        /// normalized elution length falls outside of <see cref="ElutionLengthRange" />.
         /// </summary>
         public bool UseNetLengthFilter
         {
@@ -222,36 +84,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the minimum normalized elution length of the features.
+        /// Gets the view model for selecting the minimum and maximum lengths of features to retain.
         /// </summary>
-        public double MinElutionLength
-        {
-            get { return this.PromexLoader.MinElutionLength; }
-            set
-            {
-                if (!this.PromexLoader.MinElutionLength.Equals(value))
-                {
-                    this.PromexLoader.MinElutionLength = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum normalized elution length of the features.  
-        /// </summary>
-        public double MaxElutionLength
-        {
-            get { return this.PromexLoader.MaxElutionLength; }
-            set
-            {
-                if (!this.PromexLoader.MaxElutionLength.Equals(value))
-                {
-                    this.PromexLoader.MaxElutionLength = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
+        public ElutionTimeRangeViewModel ElutionLengthRange { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
@@ -330,6 +165,56 @@
                 if (this.PromexLoader.MaxChargeState != value)
                 {
                     this.PromexLoader.MaxChargeState = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the features should be filtered by abundance.
+        /// </summary>
+        /// <remarks>True when the abundance filter should be used because AbundanceMinimum is less than AbundanceMaximum and AbundanceMaximum is greater than 0.</remarks>
+        public bool UseAbundanceFilter
+        {
+            get { return this.PromexLoader.UseAbundanceFilter; }
+            set
+            {
+                if (this.PromexLoader.UseAbundanceFilter != value)
+                {
+                    this.PromexLoader.UseAbundanceFilter = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum abundance value.
+        /// </summary>
+        public double MinimumAbundance
+        {
+            get { return this.PromexLoader.MinimumAbundance; }
+            set
+            {
+                if (!this.PromexLoader.MinimumAbundance.Equals(value))
+                {
+                    this.PromexLoader.MinimumAbundance = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum abundance value.
+        /// </summary>
+        /// <remarks>If 0 or negative, abundance filtering is not applied.  Filtering is also skipped if AbundanceMinimum > AbundanceMaximum</remarks>
+        public double MaximumAbundance
+        {
+            get { return this.PromexLoader.MaximumAbundance; }
+            set
+            {
+                if (!this.PromexLoader.MaximumAbundance.Equals(value))
+                {
+                    this.PromexLoader.MaximumAbundance = value;
                     this.RaisePropertyChanged();
                 }
             }

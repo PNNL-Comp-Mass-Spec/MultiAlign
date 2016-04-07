@@ -16,16 +16,6 @@
     public class ElutionTimeRangeViewModel : ViewModelBase
     {
         /// <summary>
-        /// The default time ranges to display for each type of unit.
-        /// </summary>
-        private readonly Dictionary<ElutionUnitNames, ElutionTimeRange<IElutionTimePoint>> defaultElutionRangeValues;
-
-        /// <summary>
-        /// The default minimum, maximum, and increment values for each elution unit.
-        /// </summary>
-        private readonly Dictionary<ElutionUnitNames, Tuple<double, double, double>> elutionRangeExtremaValues;
-
-        /// <summary>
         /// The type of elution unit to use for the elution time range.
         /// </summary>
         private ElutionUnitNames selectedElutionTimeUnit;
@@ -51,6 +41,8 @@
         /// <param name="timeRange">The time range model that this view model edits.</param>
         public ElutionTimeRangeViewModel(ElutionTimeRange<IElutionTimePoint> timeRange)
         {
+            this.MessengerInstance = new Messenger();
+
             this.ElutionTimeRange = timeRange;
 
             this.ElutionTimeUnits = new ObservableCollection<ElutionUnitNames>
@@ -66,7 +58,7 @@
             this.MaxElutionTime = this.ElutionTimeRange.MaxValue.Value;
 
             // Set the default time ranges to display for each type of unit.
-            this.defaultElutionRangeValues = new Dictionary<ElutionUnitNames, ElutionTimeRange<IElutionTimePoint>>
+            this.DefaultElutionRangeValues = new Dictionary<ElutionUnitNames, ElutionTimeRange<IElutionTimePoint>>
             {
                 { ElutionUnitNames.Net, new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(), new NetTimePoint(1.0)) },
                 { ElutionUnitNames.Scans, new ElutionTimeRange<IElutionTimePoint>(new ScanTimePoint(), new ScanTimePoint(10000)) },
@@ -74,7 +66,7 @@
             };
 
             // Default minimum, maximum, and increment value for each type of unit.
-            this.elutionRangeExtremaValues = new Dictionary<ElutionUnitNames, Tuple<double, double, double>>
+            this.ElutionRangeExtremaValues = new Dictionary<ElutionUnitNames, Tuple<double, double, double>>
             {
                 { ElutionUnitNames.Net, new Tuple<double, double, double>(0, 1.0, 0.01) },
                 { ElutionUnitNames.Scans, new Tuple<double, double, double>(0, 100000, 1) },
@@ -86,12 +78,12 @@
                 msg =>
             {
                 // Set default values for the selected unit
-                var elutionTimeRange = this.defaultElutionRangeValues[msg.NewValue];
+                var elutionTimeRange = this.DefaultElutionRangeValues[msg.NewValue];
                 this.ElutionTimeRange.MinValue = elutionTimeRange.MinValue;
                 this.ElutionTimeRange.MaxValue = elutionTimeRange.MaxValue;
 
                 // Set extrema for the selected unit
-                var elutionRangeExtrema = this.elutionRangeExtremaValues[msg.NewValue];
+                var elutionRangeExtrema = this.ElutionRangeExtremaValues[msg.NewValue];
                 this.ElutionRangeAbsoluteMinimum = elutionRangeExtrema.Item1;
                 this.ElutionRangeAbsoluteMaximum = elutionRangeExtrema.Item2;
                 this.ElutionRangeIncrement = elutionRangeExtrema.Item3;
@@ -100,6 +92,16 @@
                 this.RaisePropertyChanged(nameof(this.MaxElutionTime));
             });
         }
+
+        /// <summary>
+        /// Gets the default time ranges to display for each type of unit.
+        /// </summary>
+        public Dictionary<ElutionUnitNames, ElutionTimeRange<IElutionTimePoint>> DefaultElutionRangeValues { get; private set; }
+
+        /// <summary>
+        /// The default minimum, maximum, and increment values for each elution unit.
+        /// </summary>
+        public Dictionary<ElutionUnitNames, Tuple<double, double, double>> ElutionRangeExtremaValues { get; private set; }
 
         /// <summary>
         /// Gets the model elution time range.

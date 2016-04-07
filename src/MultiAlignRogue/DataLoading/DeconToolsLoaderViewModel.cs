@@ -1,14 +1,12 @@
 ﻿namespace MultiAlignRogue.DataLoading
 {
-    using System;
-    using System.Linq;
-
-    using System.Collections.ObjectModel;
-
     using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.IO.DatasetLoaders;
 
+    using MultiAlignRogue.Clustering;
     using MultiAlignRogue.Utils;
+
+    using NHibernate.Util;
 
     /// <summary>
     /// View model for selecting loading and filtering settings for DeconTools datasets.
@@ -22,11 +20,13 @@
         public DeconToolsLoaderViewModel(DeconToolsLoader loader)
         {
             this.DeconToolsLoader = loader;
-
             this.ElutionTimeRange = new ElutionTimeRangeViewModel(this.DeconToolsLoader.ElutionTimeRange);
 
-            this.MsFeatureClusterers = new ObservableCollection<MsFeatureClusteringAlgorithmType>(
-                    Enum.GetValues(typeof(MsFeatureClusteringAlgorithmType)).Cast<MsFeatureClusteringAlgorithmType>());
+            // Set up clustering settings
+            this.ClustererSettings = new ClusterAlgorithmSettingsViewModel(this.DeconToolsLoader.ClusteringOptions);
+            this.ClustererSettings.ClusteringAlgorithmTypes.Clear();
+            ClusteringAlgorithms.MsFeatureClusteringAlgorithms.ForEach(
+                                algorithm => this.ClustererSettings.ClusteringAlgorithmTypes.Add(algorithm));
         }
 
         /// <summary>
@@ -36,27 +36,6 @@
         {
             get { return this.DatasetLoader as DeconToolsLoader; }
             set { this.DatasetLoader = value; }
-        }
-
-        /// <summary>
-        /// Gets a list of the possible clustering algorithms used for clustering MSFeatures -> LCMSFeatures.
-        /// </summary>
-        public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the type of clustering algorithm to use create LCMS features from DeconTools results.
-        /// </summary>
-        public MsFeatureClusteringAlgorithmType ClustererType
-        {
-            get { return this.DeconToolsLoader.ClustererType; }
-            set
-            {
-                if (this.DeconToolsLoader.ClustererType != value)
-                {
-                    this.DeconToolsLoader.ClustererType = value;
-                    this.RaisePropertyChanged();
-                }
-            }
         }
 
         /// <summary>
@@ -311,6 +290,12 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the settings for the clustering algorithm used to cluster
+        /// MS features into LCMS features.
+        /// </summary>
+        public ClusterAlgorithmSettingsViewModel ClustererSettings { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the RAW file should be read.

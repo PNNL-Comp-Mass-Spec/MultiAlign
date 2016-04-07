@@ -875,12 +875,12 @@ namespace MultiAlignCore.Algorithms
             if (m_config.options.ContainsKey("-centroid"))
             {
                 Logger.PrintMessage("Building centroid clusterer");
-                builder.BuildClusterer(LcmsFeatureClusteringAlgorithmType.Centroid);
+                builder.BuildClusterer(ClusteringAlgorithmTypes.AverageLinkage);
             }
             else if (m_config.options.ContainsKey("-singlelinkage"))
             {
                 Logger.PrintMessage("Building single linkage clusterer");
-                builder.BuildClusterer(LcmsFeatureClusteringAlgorithmType.SingleLinkage);
+                builder.BuildClusterer(ClusteringAlgorithmTypes.SingleLinkage);
             }
             else
             {

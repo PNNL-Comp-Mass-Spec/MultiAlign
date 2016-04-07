@@ -23,8 +23,8 @@
         {
             InstrumentTolerances = new FeatureTolerances();
 
-            this.FirstPassClusterer = MsFeatureClusteringAlgorithmType.SingleLinkage;
-            this.SecondPassClusterer = GenericClusteringAlgorithmType.BinarySearchTree;
+            this.FirstPassClusterer = ClusteringAlgorithmTypes.SingleLinkage;
+            this.SecondPassClusterer = ClusteringAlgorithmTypes.BinarySearchTree;
             this.FindXics = true;
             this.RefineXics = true;
             this.SmoothingWindowSize = 5;
@@ -36,8 +36,8 @@
             MaximumNetRange = .005;
         }
 
-        public MsFeatureClusteringAlgorithmType FirstPassClusterer { get; set; }
-        public GenericClusteringAlgorithmType SecondPassClusterer { get; set; }
+        public ClusteringAlgorithmTypes FirstPassClusterer { get; set; }
+        public ClusteringAlgorithmTypes SecondPassClusterer { get; set; }
 
         public bool FindXics { get; set; }
         public bool RefineXics { get; set; }

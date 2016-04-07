@@ -37,9 +37,9 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         /// <param name="clusterType"></param>
         /// <returns></returns>
-        public void BuildClusterer(LcmsFeatureClusteringAlgorithmType clusterType)
+        public void BuildClusterer(ClusteringAlgorithmTypes clusterType)
         {
-            m_provider.Clusterer = ClusterFactory.Create(clusterType);
+            m_provider.Clusterer = ClusterFactory.CreateLcmsFeatureClusterer(clusterType);
         }
 
         /// <summary>

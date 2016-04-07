@@ -33,7 +33,7 @@ namespace MultiAlign.ViewModels.Wizard
         public AnalysisOptionsViewModel(MultiAlignAnalysisOptions options)
         {
             m_options = options;
-            ClusteringAlgorithms = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
+            ClusteringAlgorithms = new ObservableCollection<ClusteringAlgorithmTypes>();
             AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>();
             FeatureFindingAlgorithms = new ObservableCollection<FeatureFinderType>();
 
@@ -81,8 +81,8 @@ namespace MultiAlign.ViewModels.Wizard
             SaveOptionsCommand = new BaseCommand(SaveCurrentParameters);
             LoadExistingCommand = new BaseCommand(LoadExistingParameters);
 
-            Enum.GetValues(typeof (LcmsFeatureClusteringAlgorithmType))
-                .Cast<LcmsFeatureClusteringAlgorithmType>()
+            Enum.GetValues(typeof (ClusteringAlgorithmTypes))
+                .Cast<ClusteringAlgorithmTypes>()
                 .ToList()
                 .ForEach(x => ClusteringAlgorithms.Add(x));
             Enum.GetValues(typeof (FeatureAlignmentType))
@@ -389,11 +389,11 @@ namespace MultiAlign.ViewModels.Wizard
 
         #region Algorithms
 
-        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringAlgorithms { get; set; }
+        public ObservableCollection<ClusteringAlgorithmTypes> ClusteringAlgorithms { get; set; }
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; set; }
         public ObservableCollection<FeatureFinderType> FeatureFindingAlgorithms { get; set; }
 
-        public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
+        public ClusteringAlgorithmTypes SelectedLcmsFeatureClusteringAlgorithm
         {
             get { return m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
             set

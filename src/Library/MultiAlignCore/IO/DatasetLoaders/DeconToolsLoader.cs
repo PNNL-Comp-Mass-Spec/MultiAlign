@@ -8,6 +8,7 @@
 
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Clustering;
+    using MultiAlignCore.Algorithms.Distance;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.Features;
@@ -38,7 +39,7 @@
         /// <summary>
         /// Gets or sets the type of clustering algorithm to use create LCMS features from DeconTools results.
         /// </summary>
-        public MsFeatureClusteringAlgorithmType ClustererType { get; set; }
+        public LcmsClusteringOptions ClusteringOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the elution time range to limit features in.
@@ -92,7 +93,7 @@
             var msFeatures = reader.ReadFile(dataset.FeaturePath, this.Filter).ToList();
 
             // (3) Cluster features
-            var clusterer = ClusterFactory.Create(this.ClustererType);
+            var clusterer = ClusterFactory.CreateMsFeatureClusterer(this.ClusteringOptions.LcmsFeatureClusteringAlgorithm);
             var lcmsFeatures = clusterer.Cluster(msFeatures, progress);
 
             // Further filtering of LCMS features.
@@ -111,7 +112,14 @@
         {
             this.Filter.RetoreDefaults();
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(this.Filter.ScanRange.MinValue, this.Filter.ScanRange.MaxValue);
-            this.ClustererType = MsFeatureClusteringAlgorithmType.SingleLinkage;
+            this.ClusteringOptions = new LcmsClusteringOptions
+            {
+                LcmsFeatureClusteringAlgorithm = ClusteringAlgorithmTypes.SingleLinkage,
+                DistanceFunction = DistanceMetric.Euclidean,
+                ClusterCentroidRepresentation = ClusterCentroidRepresentation.Median,
+                ShouldSeparateCharge = false,
+            };
+
             this.ShouldLoadRawData = true;
             this.ShouldPersistMsFeatures = false;
         }

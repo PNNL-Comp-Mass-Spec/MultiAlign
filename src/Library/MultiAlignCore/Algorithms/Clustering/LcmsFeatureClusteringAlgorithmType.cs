@@ -1,29 +1,42 @@
 namespace MultiAlignCore.Algorithms.Clustering
 {    
-    public enum LcmsFeatureClusteringAlgorithmType
+    public enum ClusteringAlgorithmTypes
     {
         AverageLinkage,
         SingleLinkage,
         Centroid,
         Prims,
         Promex,
+        BinarySearchTree
     }
 
-    public enum MsFeatureClusteringAlgorithmType
+    public class ClusteringAlgorithms
     {
-        AverageLinkage,
-        SingleLinkage,
-        Centroid,
-        Prims,
-        BinarySearchTree,
-    }
+        public static readonly ClusteringAlgorithmTypes[] LcmsFeatureClusteringAlgorithms =
+        {
+            ClusteringAlgorithmTypes.AverageLinkage,
+            ClusteringAlgorithmTypes.SingleLinkage, 
+            ClusteringAlgorithmTypes.Centroid,
+            ClusteringAlgorithmTypes.Prims,
+            ClusteringAlgorithmTypes.Promex
+        };
 
-    public enum GenericClusteringAlgorithmType
-    {
-        AverageLinkage,
-        SingleLinkage,
-        Centroid,
-        Prims,
-        BinarySearchTree,
+        public static readonly ClusteringAlgorithmTypes[] MsFeatureClusteringAlgorithms =
+        {
+            ClusteringAlgorithmTypes.AverageLinkage,
+            ClusteringAlgorithmTypes.SingleLinkage,
+            ClusteringAlgorithmTypes.Centroid,
+            ClusteringAlgorithmTypes.Prims,
+            ClusteringAlgorithmTypes.BinarySearchTree
+        };
+
+        public static readonly ClusteringAlgorithmTypes[] GenericClusteringAlgorithms =
+        {
+            ClusteringAlgorithmTypes.AverageLinkage,
+            ClusteringAlgorithmTypes.SingleLinkage,
+            ClusteringAlgorithmTypes.Centroid,
+            ClusteringAlgorithmTypes.Prims,
+            ClusteringAlgorithmTypes.BinarySearchTree
+        };
     }
 }

@@ -59,10 +59,10 @@
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.featuresByDataset = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            this.MsFeatureClusterers = new ObservableCollection<MsFeatureClusteringAlgorithmType>(
-                                       Enum.GetValues(typeof(MsFeatureClusteringAlgorithmType)).Cast<MsFeatureClusteringAlgorithmType>());
-            this.LcmsFeatureClusterers = new ObservableCollection<GenericClusteringAlgorithmType>(
-                           Enum.GetValues(typeof(GenericClusteringAlgorithmType)).Cast<GenericClusteringAlgorithmType>());
+            this.MsFeatureClusterers = new ObservableCollection<ClusteringAlgorithmTypes>(
+                                       Enum.GetValues(typeof(ClusteringAlgorithmTypes)).Cast<ClusteringAlgorithmTypes>());
+            this.LcmsFeatureClusterers = new ObservableCollection<ClusteringAlgorithmTypes>(
+                           Enum.GetValues(typeof(ClusteringAlgorithmTypes)).Cast<ClusteringAlgorithmTypes>());
 
             this.CanCreateXics = datasets.Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path, dataset.DatasetId))
                                         .Any(reader => reader is ISpectraProvider);
@@ -105,9 +105,9 @@
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
-        public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; }
+        public ObservableCollection<ClusteringAlgorithmTypes> MsFeatureClusterers { get; private set; }
 
-        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; private set; }
+        public ObservableCollection<ClusteringAlgorithmTypes> LcmsFeatureClusterers { get; private set; }
 
         public RelayCommand FeatureFindingDefaultsCommand { get; private set; }
 
@@ -459,7 +459,7 @@
             }
         }
 
-        public MsFeatureClusteringAlgorithmType FirstPassClusterer
+        public ClusteringAlgorithmTypes FirstPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.FirstPassClusterer; }
             set
@@ -472,7 +472,7 @@
             }
         }
 
-        public GenericClusteringAlgorithmType SecondPassClusterer
+        public ClusteringAlgorithmTypes SecondPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.SecondPassClusterer; }
             set

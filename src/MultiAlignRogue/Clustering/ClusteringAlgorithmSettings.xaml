@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
+             d:DataContext="{d:DesignInstance d:Type=clustering:ClusterAlgorithmSettingsViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -40,13 +42,12 @@
         <ComboBox Grid.Row="1"
                   Grid.Column="0"
                   Height="25"
-                  ItemsSource="{Binding ClusteringMethods}"
-                  SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}" />
+                  ItemsSource="{Binding ClusteringAlgorithmTypes}"
+                  SelectedItem="{Binding SelectedClusteringAlgorithm}" />
         <ComboBox Grid.Row="1"
                   Grid.Column="2"
                   Height="25"
-                  IsEnabled="{Binding ShouldEnableClustererSettings}"
-                  ItemsSource="{Binding DistanceMetrics}"
+                  ItemsSource="{Binding DistanceFunctions}"
                   SelectedItem="{Binding SelectedDistanceFunction}" />
 
         <!--  Centroid Representation  -->
@@ -59,9 +60,8 @@
         <ComboBox Grid.Row="4"
                   Grid.Column="0"
                   Height="25"
-                  IsEnabled="{Binding ShouldEnableClustererSettings}"
-                  ItemsSource="{Binding CentroidRepresentations}"
-                  SelectedItem="{Binding SelectedCentroidMethod}" />
+                  ItemsSource="{Binding ClusterCentroidRepresentations}"
+                  SelectedItem="{Binding SelectedClusterCentroidRepresentation}" />
 
         <CheckBox Grid.Row="4"
                   Grid.Column="2"
@@ -69,10 +69,9 @@
                   VerticalAlignment="Center"
                   Content="Separate by Charge"
                   FontWeight="Bold"
-                  IsChecked="{Binding ShouldSeparateByCharge,
+                  IsChecked="{Binding ShouldSeparateCharge,
                                       Mode=TwoWay,
-                                      UpdateSourceTrigger=PropertyChanged}"
-                  IsEnabled="{Binding ShouldEnableClustererSettings}" />
+                                      UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Cluster refinement options  -->
         <GroupBox Grid.Row="6"

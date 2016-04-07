@@ -3,10 +3,238 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MultiAlignRogue.DataLoading"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:dataLoading="clr-namespace:MultiAlignRogue.DataLoading"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance d:Type=dataLoading:PromexLoaderViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <!-- Filter Settings -->
+    <GroupBox>
+        <GroupBox.Header>
+            <TextBlock FontWeight="Bold">Filter Settings</TextBlock>
+        </GroupBox.Header>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="40*" />
+                <ColumnDefinition Width="30*" />
+                <ColumnDefinition Width="15*" />
+                <ColumnDefinition Width="30*" />
+                <ColumnDefinition Width="30*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Isotopic Fit Filter -->
+            <CheckBox Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseLikelihoodRatioFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                Minimum Likelihood Ratio
+            </CheckBox>
+            <xctk:DoubleUpDown Grid.Row="0"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="0.05"
+                           Maximum="1"
+                           Minimum="0"
+                           Value="{Binding MinLikelihoodRatio,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
             
-    </Grid>
+            <!-- Charge State Filter -->
+            <CheckBox Grid.Row="1"                 
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      Margin="7,0,0,0"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding UseChargeStateFilter,                                   
+                                          Mode=TwoWay,
+                                          NotifyOnSourceUpdated=True,
+                                          UpdateSourceTrigger=PropertyChanged}">
+                Charge states from
+            </CheckBox>
+            <xctk:DoubleUpDown Grid.Row="1"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Maximum="{Binding MaxChargeState,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding MinChargeState,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="1"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            to
+            </TextBlock>
+            <xctk:DoubleUpDown Grid.Row="1"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="1"
+                           Minimum="{Binding MinChargeState,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding MaxChargeState,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Abundance Filter -->
+            <CheckBox Grid.Row="2"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseAbundanceFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                Abundance filter
+            </CheckBox>
+            <xctk:DoubleUpDown Grid.Row="2"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Maximum="{Binding MaximumAbundance,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding MinimumAbundance,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="2"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            to
+            </TextBlock>
+            <xctk:DoubleUpDown Grid.Row="2"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="{Binding MinimumAbundance,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding MaximumAbundance,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Time Range Filter -->
+            <CheckBox Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseTimeRangeFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                Time Filter
+            </CheckBox>
+            <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionTimeRange.ElutionRangeAbsoluteMinimum, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionTimeRange.MaxElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionTimeRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionTimeRange.MinElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="3"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                to
+            </TextBlock>
+            <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionTimeRange.MinElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionTimeRange.ElutionRangeAbsoluteMaximum, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionTimeRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionTimeRange.MaxElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+            <ComboBox Grid.Row="3"
+                          Grid.Column="5"
+                          Margin="5,0,0,0"
+                          Height="25"
+                          ItemsSource="{Binding ElutionTimeRange.ElutionTimeUnits}"
+                          SelectedItem="{Binding ElutionTimeRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Time Length Filter -->
+            <CheckBox Grid.Row="4"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseNetLengthFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                Feature Length Filter
+            </CheckBox>
+            <xctk:DoubleUpDown Grid.Row="4"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionLengthRange.ElutionRangeAbsoluteMinimum, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionLengthRange.MaxElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionLengthRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionLengthRange.MinElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="4"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                to
+            </TextBlock>
+            <xctk:DoubleUpDown Grid.Row="4"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionLengthRange.MinElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionLengthRange.ElutionRangeAbsoluteMaximum, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionLengthRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionLengthRange.MaxElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+            <ComboBox Grid.Row="4"
+                          Grid.Column="5"
+                          Margin="5,0,0,0"
+                          Height="25"
+                          ItemsSource="{Binding ElutionLengthRange.ElutionTimeUnits}"
+                          SelectedItem="{Binding ElutionLengthRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+        </Grid>
+    </GroupBox>
 </UserControl>

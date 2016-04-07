@@ -31,6 +31,10 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
 
+    using PNNLOmics.Algorithms.FeatureClustering;
+
+    using LcmsClusteringOptions = MultiAlignCore.Algorithms.Clustering.LcmsClusteringOptions;
+
     public class ClusterSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;
@@ -53,7 +57,7 @@ namespace MultiAlignRogue.Clustering
 
         public ObservableCollection<DistanceMetric> DistanceMetrics { get; private set; }
         public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }
-        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; private set; }
+        public ObservableCollection<ClusteringAlgorithmTypes> ClusteringMethods { get; private set; }
 
         public ClusterSettingsViewModel(
                                         MultiAlignAnalysis analysis,
@@ -91,8 +95,8 @@ namespace MultiAlignRogue.Clustering
                 ClusterCentroidRepresentation.Median
             };
 
-            this.ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
-            Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
+            this.ClusteringMethods = new ObservableCollection<ClusteringAlgorithmTypes>();
+            Enum.GetValues(typeof(ClusteringAlgorithmTypes)).Cast<ClusteringAlgorithmTypes>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
 
             this.PostProcessingComparisonType = new ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType>(
                 Enum.GetValues(typeof(ClusterPostProcessingOptions.ClusterComparisonType)).Cast<ClusterPostProcessingOptions.ClusterComparisonType>());
@@ -108,7 +112,7 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
-        public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
+        public ClusteringAlgorithmTypes SelectedLcmsFeatureClusteringAlgorithm
         {
             get { return this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
             set
@@ -223,7 +227,7 @@ namespace MultiAlignRogue.Clustering
         {
             get
             {
-                return this.SelectedLcmsFeatureClusteringAlgorithm != LcmsFeatureClusteringAlgorithmType.Promex;
+                return this.SelectedLcmsFeatureClusteringAlgorithm != ClusteringAlgorithmTypes.Promex;
             }
         }
 

@@ -41,26 +41,20 @@
         public bool UseTimeRangeFilter { get; set; }
 
         /// <summary>
-        /// Gets or sets the minimum and maximum normalized elution time to retain.
+        /// Gets or sets the minimum and maximum elution time to retain.
         /// </summary>
         public ElutionTimeRange<IElutionTimePoint> ElutionTimeRange { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
-        /// normalized elution length falls outside of <see cref="MinElutionLength" /> and
-        /// <see cref="MaxElutionLength" />.
+        /// normalized elution length falls outside of <see cref="ElutionLengthRange" />.
         /// </summary>
         public bool UseNetLengthFilter { get; set; }
 
         /// <summary>
-        /// Gets or sets the minimum normalized elution length of the features.
+        /// Gets or sets the minimum and maximum lengths of features to retain.
         /// </summary>
-        public double MinElutionLength { get; set; }
-
-        /// <summary>
-        /// Gets or sets the maximum normalized elution length of the features.
-        /// </summary>
-        public double MaxElutionLength { get; set; }
+        public ElutionTimeRange<IElutionTimePoint> ElutionLengthRange { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
@@ -90,6 +84,23 @@
         public int MaxChargeState { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the features should be filtered by abundance.
+        /// </summary>
+        /// <remarks>True when the abundance filter should be used because AbundanceMinimum is less than AbundanceMaximum and AbundanceMaximum is greater than 0.</remarks>
+        public bool UseAbundanceFilter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the minimum abundance value.
+        /// </summary>
+        public double MinimumAbundance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum abundance value.
+        /// </summary>
+        /// <remarks>If 0 or negative, abundance filtering is not applied.  Filtering is also skipped if AbundanceMinimum > AbundanceMaximum</remarks>
+        public double MaximumAbundance { get; set; }
+
+        /// <summary>
         /// Get the features from the list that pass all filters.
         /// </summary>
         /// <param name="features">The feature list to filter.</param>
@@ -115,7 +126,7 @@
 
             var elutionRange = feature.NetEnd - feature.NetStart;
             keepFeature &= !this.UseNetLengthFilter ||
-                           (elutionRange >= this.MinElutionLength && elutionRange <= this.MaxElutionLength);
+                           (elutionRange >= this.ElutionLengthRange.MinValue.Value && elutionRange <= this.ElutionLengthRange.MaxValue.Value);
 
             return keepFeature;
         }
@@ -129,11 +140,14 @@
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(), new NetTimePoint(1));
 
             this.UseNetLengthFilter = false;
-            this.MinElutionLength = 0.01;
-            this.MaxElutionLength = 0.2;
+            this.ElutionLengthRange = new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(0.01), new NetTimePoint(0.2));
 
             this.UseLikelihoodRatioFilter = false;
             this.MinLikelihoodRatio = 0;
+
+            this.UseAbundanceFilter = false;
+            this.MinimumAbundance = 0;
+            this.MaximumAbundance = 99999;
 
             this.UseChargeStateFilter = false;
             this.MinChargeState = 1;
@@ -155,6 +169,9 @@
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(
                                         this.ElutionTimeRange.MinValue.ToNet(spectraProvider),
                                         this.ElutionTimeRange.MaxValue.ToNet(spectraProvider));
+            this.ElutionLengthRange = new ElutionTimeRange<IElutionTimePoint>(
+                                        this.ElutionLengthRange.MinValue.ToNet(spectraProvider),
+                                        this.ElutionLengthRange.MaxValue.ToNet(spectraProvider));
 
             // Read and filter feature file.
             var promexFileReader = new PromexFileReader(spectraProvider as InformedProteomicsReader, this);

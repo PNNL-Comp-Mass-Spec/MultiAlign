@@ -179,7 +179,7 @@
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Clustering</TextBlock>
             </GroupBox.Header>
-            <clustering:ClusteringAlgorithmSettings />
+            <clustering:ClusteringAlgorithmSettings DataContext="{Binding ClustererSettings}" />
         </GroupBox>
 
         <!-- Raw Data/Persistence -->

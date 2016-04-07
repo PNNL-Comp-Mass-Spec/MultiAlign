@@ -11,24 +11,24 @@ namespace MultiAlignCore.Algorithms
 
     public static class ClusterFactory
     {
-        public static Clustering.IClusterer<UMCLight, UMCClusterLight> Create(LcmsFeatureClusteringAlgorithmType clusterType)
+        public static Clustering.IClusterer<UMCLight, UMCClusterLight> CreateLcmsFeatureClusterer(ClusteringAlgorithmTypes clusterType)
         {
             Clustering.IClusterer<UMCLight, UMCClusterLight> clusterer = null;
             switch (clusterType)
             {
-                case LcmsFeatureClusteringAlgorithmType.AverageLinkage:
+                case ClusteringAlgorithmTypes.AverageLinkage:
                     clusterer = new Clustering.UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
-                case LcmsFeatureClusteringAlgorithmType.Centroid:
+                case ClusteringAlgorithmTypes.Centroid:
                     clusterer = new Clustering.UMCCentroidClusterer<UMCLight, UMCClusterLight>();
                     break;
-                case LcmsFeatureClusteringAlgorithmType.SingleLinkage:
+                case ClusteringAlgorithmTypes.SingleLinkage:
                     clusterer = new Clustering.UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
-                case LcmsFeatureClusteringAlgorithmType.Prims:
+                case ClusteringAlgorithmTypes.Prims:
                     clusterer = new Clustering.UMCPrimsClustering<UMCLight, UMCClusterLight>();
                     break;
-                case LcmsFeatureClusteringAlgorithmType.Promex:
+                case ClusteringAlgorithmTypes.Promex:
                     clusterer = new Clustering.PromexClusterer();
                     break;
             }
@@ -36,61 +36,28 @@ namespace MultiAlignCore.Algorithms
             return clusterer;
         }
 
-        public static Clustering.IClusterer<MSFeatureLight, UMCLight> Create(
-            MsFeatureClusteringAlgorithmType clusterType)
+        public static Clustering.IClusterer<MSFeatureLight, UMCLight> CreateMsFeatureClusterer(ClusteringAlgorithmTypes clusterType)
         {
             Clustering.IClusterer<MSFeatureLight, UMCLight> clusterer = null;
             switch (clusterType)
             {
-                case MsFeatureClusteringAlgorithmType.AverageLinkage:
+                case ClusteringAlgorithmTypes.AverageLinkage:
                     clusterer = new Clustering.UMCAverageLinkageClusterer<MSFeatureLight, UMCLight>();
                     break;
-                case MsFeatureClusteringAlgorithmType.SingleLinkage:
+                case ClusteringAlgorithmTypes.SingleLinkage:
                     clusterer = new Clustering.MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>();
                     break;
-                case MsFeatureClusteringAlgorithmType.Centroid:
+                case ClusteringAlgorithmTypes.Centroid:
                     clusterer = new Clustering.UMCCentroidClusterer<MSFeatureLight, UMCLight>();
                     break;
-                case MsFeatureClusteringAlgorithmType.Prims:
+                case ClusteringAlgorithmTypes.Prims:
                     clusterer = new Clustering.UMCPrimsClustering<MSFeatureLight, UMCLight>();
                     break;
-                case MsFeatureClusteringAlgorithmType.BinarySearchTree:
+                case ClusteringAlgorithmTypes.BinarySearchTree:
                     clusterer = new Clustering.MsFeatureTreeClusterer<MSFeatureLight, UMCLight>();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("clusterType");
-            }
-
-            return clusterer;
-        }
-    }
-
-    public class GenericClusterFactory<T, U>
-        where T : FeatureLight, IChildFeature<U>, new()
-        where U : FeatureLight, IFeatureCluster<T>, new()
-    {
-        public IClusterer<T, U> Create(GenericClusteringAlgorithmType clusterType)
-        {
-            IClusterer<T, U> clusterer = null;
-            switch (clusterType)
-            {
-                case GenericClusteringAlgorithmType.AverageLinkage:
-                    clusterer = new UMCAverageLinkageClusterer<T, U>();
-                    break;
-                case GenericClusteringAlgorithmType.Centroid:
-                    clusterer = new UMCCentroidClusterer<T, U>();
-                    break;
-                case GenericClusteringAlgorithmType.SingleLinkage:
-                    clusterer = new UMCSingleLinkageClusterer<T, U>();
-                    break;
-                case GenericClusteringAlgorithmType.Prims:
-                    clusterer = new UMCPrimsClustering<T, U>();
-                    break;
-                case GenericClusteringAlgorithmType.BinarySearchTree:
-                    clusterer = new Clustering.MsFeatureTreeClusterer<T, U>();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(string.Format("Cannot create generic {0} clusterer.", clusterType));
+                    throw new ArgumentOutOfRangeException();
             }
 
             return clusterer;
