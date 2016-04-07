@@ -14,7 +14,7 @@ namespace MultiAlignRogue.DataLoading
     {
         public LcImsFeatureFinderLoaderViewModel(LcImsFeatureFilter loader)
         {
-            
+            this.SupportedDatasetType = MultiAlignCore.Data.DatasetLoader.SupportedDatasetTypes.LcImsFeatureFinder;
         }
     }
 }

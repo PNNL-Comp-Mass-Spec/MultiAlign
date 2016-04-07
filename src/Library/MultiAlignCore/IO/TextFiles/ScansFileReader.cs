@@ -5,6 +5,8 @@ using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.TextFiles
 {
+    using MultiAlignCore.IO.DatasetLoaders;
+
     public class ScansFileReader : BaseTextFileReader<ScanSummary>
     {
         #region Column constants
@@ -82,7 +84,7 @@ namespace MultiAlignCore.IO.TextFiles
             return columnMap;
         }
 
-        protected override IEnumerable<ScanSummary> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping)
+        protected override IEnumerable<ScanSummary> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping, IFeatureFilter<ScanSummary> filter = null)
         {
             var scans = new List<ScanSummary>();
             string line;

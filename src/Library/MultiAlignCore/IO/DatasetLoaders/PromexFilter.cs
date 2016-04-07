@@ -31,7 +31,7 @@
             this.dataAccessProviders = dataAccessProviders;
 
             // Initialize all values with their defaults.
-            this.ResetDefaults();
+            this.RestoreDefaults();
         }
 
         /// <summary>
@@ -123,7 +123,7 @@
         /// <summary>
         /// Reset all settings to their default settings.
         /// </summary>
-        public void ResetDefaults()
+        public void RestoreDefaults()
         {
             this.UseTimeRangeFilter = false;
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(), new NetTimePoint(1));

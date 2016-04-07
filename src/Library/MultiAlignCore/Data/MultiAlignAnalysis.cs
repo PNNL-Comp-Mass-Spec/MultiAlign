@@ -14,6 +14,10 @@ using MultiAlignCore.IO.Features;
 
 namespace MultiAlignCore.Data
 {
+    using System.Linq;
+
+    using MultiAlignCore.IO.DatasetLoaders;
+
     public class MultiAlignAnalysis : IDisposable
     {
         #region Constructor
@@ -49,6 +53,11 @@ namespace MultiAlignCore.Data
         /// Gets or sets the name of the analysis.
         /// </summary>
         public string AnalysisName { get; set; }
+
+        /// <summary>
+        /// The path to the analysis file.
+        /// </summary>
+        public string AnalysisPath { get; set; }
 
         /// <summary>
         ///     Objects that access data from the databases.
@@ -94,6 +103,49 @@ namespace MultiAlignCore.Data
         ///     Gets or sets the mass tag database.
         /// </summary>
         public MassTagDatabase MassTagDatabase { get; set; }
+
+        public IList<IDatasetLoader> GetDatasetLoaders(IEnumerable<DatasetInformation> datasets)
+        {
+            var datasetLoaders = new HashSet<IDatasetLoader>();
+            foreach (var dataset in datasets)
+            {
+                var datasetLoader = this.GetDatasetLoader(dataset);
+                if (!datasetLoaders.Contains(datasetLoader))
+                {
+                    datasetLoaders.Add(datasetLoader);
+                }
+            }
+
+            return datasetLoaders.ToList();
+        }
+
+        public IDatasetLoader GetDatasetLoader(DatasetInformation dataset)
+        {
+            var path = dataset.FeaturePath;
+            IDatasetLoader loader;
+            if (path.EndsWith(".ms1ft"))
+            {
+                loader = this.Options.DatasetLoaders.FirstOrDefault(l => l  is PromexFilter) ??
+                         new PromexFilter(this.DataProviders);
+            }
+            else if (path.EndsWith("_LCMSFeatures.txt"))
+            {
+                loader = this.Options.DatasetLoaders.FirstOrDefault(l => l is DeconToolsLoader) ??
+                         new LcImsFeatureFilter(this.DataProviders);
+            }
+            else
+            {
+                loader = this.Options.DatasetLoaders.FirstOrDefault(l => l is DeconToolsLoader) ??
+                         new DeconToolsLoader(this.DataProviders);
+            }
+
+            if (!this.Options.DatasetLoaders.Contains(loader))
+            {
+                this.Options.DatasetLoaders.Add(loader);
+            }
+
+            return loader;
+        }
 
         #endregion
     }

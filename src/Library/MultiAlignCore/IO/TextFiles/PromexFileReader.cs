@@ -24,7 +24,7 @@
             this.featureFilter = featureFilter;
         }
 
-        public IEnumerable<UMCLight> ReadFile(string fileLocation)
+        public IEnumerable<UMCLight> ReadFile(string fileLocation, IFeatureFilter<UMCLight> filter = null)
         {
             var features = LcMsFeatureAlignment.LoadProMexResult(this.reader.GroupId, fileLocation, this.reader.LcMsRun);
 
@@ -99,7 +99,7 @@
             return umcLights;
         }
 
-        public IEnumerable<UMCLight> ReadFile(TextReader textReader)
+        public IEnumerable<UMCLight> ReadFile(TextReader textReader, IFeatureFilter<UMCLight> filter = null)
         {
             throw new NotImplementedException();
         }

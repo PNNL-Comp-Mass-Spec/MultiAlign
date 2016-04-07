@@ -132,7 +132,6 @@ namespace MultiAlignCore.IO.Features
 
                 default:
                     var reader = new MsFeatureLightFileReader {Delimiter = ','};
-                    reader.IsosFilteroptions = isosFilterOptions;
                     var newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);
                     UpdateStatus("Loaded features from the CSV files.");

@@ -1,0 +1,197 @@
+﻿<UserControl x:Class="MultiAlignRogue.DataLoading.DeconToolsLoadSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MultiAlignRogue.DataLoading"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
+             d:DataContext="{d:DesignInstance d:Type=local:DeconToolsLoaderViewModel, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150" />
+            <RowDefinition Height="270" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        
+        <!-- Filter Settings -->
+        <GroupBox Grid.Row="0">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Filter Settings</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="40*" />
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="15*" />
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="30*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Isotopic Fit Filter -->
+                <CheckBox Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseIsotopicFitFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                    Maximum Isotopic Fit
+                </CheckBox>
+                <xctk:DoubleUpDown Grid.Row="0"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="0.05"
+                           Maximum="1"
+                           Minimum="0"
+                           Value="{Binding MaximumIsotopicFit,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+                
+                <!-- Abundance Filter -->
+                <CheckBox Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseAbundanceFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                    Abundance filter
+                </CheckBox>
+                <xctk:DoubleUpDown Grid.Row="1"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Value="{Binding MinimumAbundance,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Row="1"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            to
+                </TextBlock>
+                <xctk:DoubleUpDown Grid.Row="1"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Minimum="0"
+                           Value="{Binding MaximumAbundance,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Time Range Filter -->
+                <CheckBox Grid.Row="2"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseTimeRangeFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                    Time Filter
+                </CheckBox>
+                <xctk:DoubleUpDown Grid.Row="2"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionTimeRange.ElutionRangeAbsoluteMinimum, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionTimeRange.MaxElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionTimeRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionTimeRange.MinElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Row="2"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                to
+                </TextBlock>
+                <xctk:DoubleUpDown Grid.Row="2"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionTimeRange.MinElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionTimeRange.ElutionRangeAbsoluteMaximum, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionTimeRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionTimeRange.MaxElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+                <ComboBox Grid.Row="2"
+                          Grid.Column="5"
+                          Margin="5,0,0,0"
+                          Height="25"
+                          ItemsSource="{Binding ElutionTimeRange.ElutionTimeUnits}"
+                          SelectedItem="{Binding ElutionTimeRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Data point filter -->
+                <CheckBox Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseDataCountFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                    Maximum Data Points
+                </CheckBox>
+                <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Maximum="10000000"
+                           Minimum="0"
+                           Value="{Binding MaximumDataPoints,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+            </Grid>
+        </GroupBox>
+        
+        <!-- Clustering -->
+        <GroupBox Grid.Row="1">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Clustering</TextBlock>
+            </GroupBox.Header>
+            <clustering:ClusteringAlgorithmSettings />
+        </GroupBox>
+
+        <!-- Raw Data/Persistence -->
+        <Grid Grid.Row="2" Margin="0,7,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" IsChecked="{Binding LoadRawData,
+                                                          Mode=TwoWay,
+                                                          UpdateSourceTrigger=PropertyChanged}">Load Raw Data</CheckBox>
+            <CheckBox Grid.Column="1" IsChecked="{Binding ShouldPersistMsFeatures}">Persist MS features to database</CheckBox>
+        </Grid>
+    </Grid>
+</UserControl>

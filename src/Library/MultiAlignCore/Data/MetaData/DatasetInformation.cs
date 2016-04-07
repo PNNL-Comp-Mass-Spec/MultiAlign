@@ -17,6 +17,8 @@ namespace MultiAlignCore.Data.MetaData
 
     using InformedProteomics.Backend.MassSpecData;
 
+    using MultiAlignCore.IO.DatasetLoaders;
+
     /// <summary>
     ///     Contains information about a dataset used for analysis.r
     /// </summary>
@@ -125,6 +127,28 @@ namespace MultiAlignCore.Data.MetaData
         /// </summary>
         public DatasetLoader.SupportedDatasetTypes DatasetType { get; set; }
 
+        public InputFile ScansFile
+        {
+            get
+            {
+                return this.InputFiles.FirstOrDefault(InputFile => InputFile.FileType == InputFileType.Scans);
+            }
+        }
+
+        public string ScansFilePath
+        {
+            get
+            {
+                var scansFile = this.ScansFile;
+                if (scansFile != null)
+                {
+                    return scansFile.Path;
+                }
+
+                return null;
+            }
+        }
+
         /// <summary>
         ///     Gets the raw file info.
         /// </summary>
@@ -160,6 +184,31 @@ namespace MultiAlignCore.Data.MetaData
         public InputFile SequenceFile
         {
             get { return this.InputFiles.FirstOrDefault(inputFile => inputFile.FileType == InputFileType.Sequence); }
+        }
+
+        /// <summary>
+        /// Gets the supported dataset type based on the type of feature file.
+        /// </summary>
+        public DatasetLoader.SupportedDatasetTypes SupportedDatasetType
+        {
+            get
+            {
+                DatasetLoader.SupportedDatasetTypes supportedDatasetType;
+                if (this.FeaturePath.EndsWith(".ms1ft"))
+                {
+                    supportedDatasetType = DatasetLoader.SupportedDatasetTypes.Promex;
+                }
+                else if (this.FeaturePath.EndsWith("_LCMSFeatures.txt"))
+                {
+                    supportedDatasetType = DatasetLoader.SupportedDatasetTypes.LcImsFeatureFinder;
+                }
+                else
+                {
+                    supportedDatasetType = DatasetLoader.SupportedDatasetTypes.DeconTools;
+                }
+
+                return supportedDatasetType;
+            }
         }
 
         /// <summary>

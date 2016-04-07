@@ -119,7 +119,7 @@ namespace MultiAlignCore.IO.Options
                     var value = property.GetValue(optionsClass);
                     var valueStr = value == null ? null : value.ToString();
                     list.Add(new OptionPair(name, valueStr));
-                }
+                }     
                 // if it's a class in the namespace of "MultiAlignCore.xyz", we want to do special handling
                 else if (propType.IsClass && propType.FullName.StartsWith(optType.FullName.Substring(0, 15)))
                 {

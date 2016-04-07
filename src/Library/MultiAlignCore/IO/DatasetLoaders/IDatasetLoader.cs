@@ -12,6 +12,6 @@
     {
         List<UMCLight> Load(DatasetInformation dataset, IProgress<ProgressData> progress = null);
 
-        void ResetDefaults();
+        void RestoreDefaults();
     }
 }

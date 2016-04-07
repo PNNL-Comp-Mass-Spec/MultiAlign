@@ -50,7 +50,7 @@ namespace MultiAlignTestSuite.IO
 
             // Read isos features
             var isosReader = new MsFeatureLightFileReader();
-            isosReader.IsosFilteroptions = new DeconToolsIsosFilterOptions { MaximumIsotopicFit = 0.15 };
+            //isosReader.IsosFilteroptions = new DeconToolsIsosFilterOptions { MaximumIsotopicFit = 0.15 };
             var msFeatures = isosReader.ReadFile(isosFile).ToList();
 
             // Get LCMS features

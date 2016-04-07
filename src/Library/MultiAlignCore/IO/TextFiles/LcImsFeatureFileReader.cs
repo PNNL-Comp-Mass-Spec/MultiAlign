@@ -11,6 +11,7 @@ namespace MultiAlignCore.IO.TextFiles
 
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.DatasetLoaders;
 
     public class LcImsFeatureFileReader : ITextFileReader<UMCLight>
     {
@@ -24,7 +25,7 @@ namespace MultiAlignCore.IO.TextFiles
             this.datasetId = datasetId;
         }
 
-        public IEnumerable<UMCLight> ReadFile(string fileLocation)
+        public IEnumerable<UMCLight> ReadFile(string fileLocation, IFeatureFilter<UMCLight> filter = null)
         {
             var headers = new Dictionary<string, int>();
             var umcs = new List<UMCLight>();
@@ -122,7 +123,7 @@ namespace MultiAlignCore.IO.TextFiles
             return umcs;
         }
 
-        public IEnumerable<UMCLight> ReadFile(TextReader textReader)
+        public IEnumerable<UMCLight> ReadFile(TextReader textReader, IFeatureFilter<UMCLight> filter = null)
         {
             throw new NotImplementedException();
         }

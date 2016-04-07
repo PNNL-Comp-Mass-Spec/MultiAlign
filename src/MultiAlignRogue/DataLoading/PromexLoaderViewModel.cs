@@ -13,7 +13,7 @@
     /// <summary>
     /// View model for selecting loading and filtering settings for Promex datasets.
     /// </summary>
-    public class PromexLoaderViewModel : DatasetLoaderViewModelBase
+    public sealed class PromexLoaderViewModel : DatasetLoaderViewModelBase
     {
         /// <summary>
         /// The default time ranges to display for each type of unit.
@@ -42,6 +42,7 @@
         public PromexLoaderViewModel(PromexFilter loader)
         {
             this.PromexLoader = loader;
+            this.SupportedDatasetType = MultiAlignCore.Data.DatasetLoader.SupportedDatasetTypes.Promex;
 
             this.ElutionTimeUnits = new ObservableCollection<ElutionUnitNames>
             {
@@ -121,7 +122,7 @@
 
         /// <summary>
         /// Gets or sets a value indicating whether features should be discarded if their
-        /// normalized elution range falls outside of <see cref="ElutionTimeRange" />.
+        /// normalized elution range falls outside of <see cref="MinElutionTime" /> and <see cref="MaxElutionTime" />.
         /// </summary>
         public bool UseTimeRangeFilter
         {
@@ -184,11 +185,6 @@
                 }
             }
         }
-
-        /// <summary>
-        /// Gets or sets the minimum and maximum normalized elution time to retain.
-        /// </summary>
-        public ElutionTimeRange<NetTimePoint> ElutionTimeRange { get; set; }
 
         /// <summary>
         /// Gets or sets the type of unit for the elution length.

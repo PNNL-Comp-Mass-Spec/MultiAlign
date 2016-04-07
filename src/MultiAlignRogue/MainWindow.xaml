@@ -8,6 +8,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
+        xmlns:dataLoading="clr-namespace:MultiAlignRogue.DataLoading"
         x:Name="RogueMainWindow"
         Title="{Binding WindowTitle}"
         Width="1100"
@@ -210,8 +211,8 @@
 
                 <!--  Settings  -->
                 <TabControl Grid.Column="1">
-                    <TabItem DataContext="{Binding DataLoadingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="1. Loading Options">
-                        <utils:DataLoadingSettings Margin="5" />
+                    <TabItem DataContext="{Binding DatasetLoaderSelectionViewModel, UpdateSourceTrigger=PropertyChanged}" Header="1. Loading Options">
+                        <dataLoading:DatasetLoaderSelectionView Margin="5" />
                     </TabItem>
 
                     <TabItem DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}" Header="2. Feature Finding">

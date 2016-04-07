@@ -6,6 +6,8 @@ using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.IO.Features
 {
+    using MultiAlignCore.IO.DatasetLoaders;
+
     /// <summary>
     /// This class is used by STACConsole
     /// </summary>
@@ -82,14 +84,14 @@ namespace MultiAlignCore.IO.Features
 
 			return columnMap;
 		}
-		
-		/// <summary>
+
+        /// <summary>
 		/// Read the entire file
 		/// </summary>
 		/// <param name="textReader"></param>
 		/// <param name="columnMapping"></param>
         /// <returns>List of MassTagLights</returns>
-        protected override IEnumerable<MassTagLight> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping)
+        protected override IEnumerable<MassTagLight> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping, IFeatureFilter<MassTagLight> filter = null)
 		{
             var massTagList = new List<MassTagLight>();
 			string line;

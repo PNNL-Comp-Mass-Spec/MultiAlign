@@ -27,6 +27,8 @@
     {
         double Value { get; set; }
 
+        ElutionUnitNames ElutionUnitName { get; }
+
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
         /// </summary>
@@ -65,14 +67,17 @@
         ElutionTimePoint ToElutionTime(IScanSummaryProvider scanSummaryProvider);
     }
 
-    public class NetTimePoint : IElutionTimePoint
+    public sealed class NetTimePoint : IElutionTimePoint
     {
         public NetTimePoint(double value = 0.0)
         {
             this.Value = value;
+            this.ElutionUnitName = ElutionUnitNames.Net;
         }
 
         public double Value { get; set; }
+
+        public ElutionUnitNames ElutionUnitName { get; private set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -131,14 +136,17 @@
         }
     }
 
-    public class ElutionTimePoint : IElutionTimePoint
+    public sealed class ElutionTimePoint : IElutionTimePoint
     {
         public ElutionTimePoint(double value = 0.0)
         {
             this.Value = value;
+            this.ElutionUnitName = ElutionUnitNames.Minutes;
         }
 
         public double Value { get; set; }
+
+        public ElutionUnitNames ElutionUnitName { get; private set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.
@@ -189,16 +197,19 @@
         }
     }
 
-    public class ScanTimePoint : IElutionTimePoint
+    public sealed class ScanTimePoint : IElutionTimePoint
     {
         public ScanTimePoint(int value = 0)
         {
             this.Value = value;
+            this.ElutionUnitName = ElutionUnitNames.Scans;
         }
 
         public int ScanValue { get { return (int)this.Value; } }
 
         public double Value { get; set; }
+
+        public ElutionUnitNames ElutionUnitName { get; private set; }
 
         /// <summary>
         /// Converts this elution time point from one unit to a scan number, keeping the value consistent between units.

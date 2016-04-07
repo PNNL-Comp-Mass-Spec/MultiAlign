@@ -10,6 +10,7 @@
 
     using InformedProteomics.Backend.Utils;
 
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.DatasetLoaders;
 
@@ -20,6 +21,11 @@
     public class DatasetLoaderViewModelBase : ViewModelBase
     {
         /// <summary>
+        /// A value indicating whether the loading progress bar should be shown.
+        /// </summary>
+        private bool shouldShowProgress;
+
+        /// <summary>
         /// The loading progress percentage.
         /// </summary>
         private double loadingProgress;
@@ -29,9 +35,13 @@
         /// </summary>
         protected IDatasetLoader DatasetLoader;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DatasetLoaderViewModelBase" /> class. 
+        /// </summary>
         public DatasetLoaderViewModelBase()
         {
             this.LoadDatasetCommand = new RelayCommand(async () => await this.Load());
+            this.ShouldShowProgress = false;
         }
 
         /// <summary>
@@ -40,12 +50,33 @@
         public DatasetInformation SelectedDataset { get; set; }
 
         /// <summary>
+        /// Gets or sets the supported dataset type that the dataset loader loads.
+        /// </summary>
+        public DatasetLoader.SupportedDatasetTypes SupportedDatasetType { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the loading progress bar should be shown.
+        /// </summary>
+        public bool ShouldShowProgress
+        {
+            get { return this.shouldShowProgress; }
+            protected set
+            {
+                if (!this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the loading progress percentage.
         /// </summary>
         public double LoadingProgress
         {
             get { return this.loadingProgress; }
-            set
+            protected set
             {
                 if (!this.loadingProgress.Equals(value))
                 {
@@ -65,8 +96,10 @@
         /// </summary>
         protected virtual async Task Load()
         {
+            this.ShouldShowProgress = true;
             var progressReporter = new Progress<ProgressData>(pd => this.LoadingProgress = pd.Percent);
             await Task.Run(() => this.DatasetLoader.Load(this.SelectedDataset, progressReporter));
+            this.ShouldShowProgress = false;
         }
     }
 }

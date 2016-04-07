@@ -5,6 +5,8 @@ using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.IO.TextFiles
 {
+    using MultiAlignCore.IO.DatasetLoaders;
+
     /// <summary>
     /// Decon2ls (MS Feature) file text reader.
     /// </summary>
@@ -95,7 +97,7 @@ namespace MultiAlignCore.IO.TextFiles
         /// <param name="textReader"></param>
         /// <param name="columnMapping"></param>
         /// <returns></returns>
-        protected override IEnumerable<MSFeatureLight> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping)
+        protected override IEnumerable<MSFeatureLight> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping, IFeatureFilter<MSFeatureLight> filter = null)
         {
             var features = new List<MSFeatureLight>();
             var currentId = 0;

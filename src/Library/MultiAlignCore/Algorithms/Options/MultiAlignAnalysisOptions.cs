@@ -10,7 +10,10 @@ using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Options
 {
+    using System.Collections.Generic;
+
     using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
+    using MultiAlignCore.IO.DatasetLoaders;
 
     /// <summary>
     ///     Analysis Options for MultiAlign
@@ -41,12 +44,18 @@ namespace MultiAlignCore.Algorithms.Options
             HasMsMs = false;
             UsedIonMobility = false;
             this.ClusterPostProcessingoptions = new ClusterPostProcessingOptions();
+            this.DatasetLoaders = new List<IDatasetLoader>();
         }
 
         /// <summary>
         ///     Gets or sets data loading options
         /// </summary>
         public DataLoadingOptions DataLoadOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the possible dataset loaders.
+        /// </summary>
+        public List<IDatasetLoader> DatasetLoaders { get; set; }
 
         /// <summary>
         ///     Gets or sets instrument tolerances

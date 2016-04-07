@@ -5,6 +5,8 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.IO.TextFiles
 {
+    using MultiAlignCore.IO.DatasetLoaders;
+
     public abstract class BaseTextFileReader<T> : ITextFileReader<T>
     {
         /// <summary>
@@ -88,7 +90,7 @@ namespace MultiAlignCore.IO.TextFiles
         /// </summary>
         /// <param name="fileLocation">Full path to a file</param>
         /// <returns>Enumerable list of type T</returns>
-        public IEnumerable<T> ReadFile(string fileLocation)
+        public IEnumerable<T> ReadFile(string fileLocation, IFeatureFilter<T> filter = null)
         {
             IEnumerable<T> returnEnumerable;
 
@@ -115,7 +117,7 @@ namespace MultiAlignCore.IO.TextFiles
         /// </summary>
         /// <param name="textReader">TextReader object</param>
         /// <returns>Enumerable list of type T</returns>
-        public IEnumerable<T> ReadFile(TextReader textReader)
+        public IEnumerable<T> ReadFile(TextReader textReader, IFeatureFilter<T> filter = null)
         {
             var columnMapping = CreateColumnMapping(textReader);
 
@@ -124,12 +126,12 @@ namespace MultiAlignCore.IO.TextFiles
                 throw new ApplicationException("Given file does not contain any valid column headers.");
             }
 
-            var enumerable = SaveFileToEnumerable(textReader, columnMapping);
+            var enumerable = SaveFileToEnumerable(textReader, columnMapping, filter);
             return enumerable;
         }
 
         protected abstract Dictionary<string, int> CreateColumnMapping(TextReader textReader);
-        protected abstract IEnumerable<T> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping);
+        protected abstract IEnumerable<T> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping, IFeatureFilter<T> filter = null);
 
     }
 }

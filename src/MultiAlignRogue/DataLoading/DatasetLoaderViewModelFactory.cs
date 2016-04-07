@@ -11,12 +11,6 @@ namespace MultiAlignRogue.DataLoading
 
     public class DatasetLoaderViewModelFactory
     {
-        public static DatasetLoaderViewModelBase GetDatasetLoaderViewModel(DatasetInformation dataset)
-        {
-            var datasetLoader = DatasetLoaderFactory.GetDatasetLoader(dataset);
-            return GetDatasetLoaderViewModel(datasetLoader);
-        }
-
         public static DatasetLoaderViewModelBase GetDatasetLoaderViewModel(IDatasetLoader loader)
         {
             if (loader is DeconToolsLoader)

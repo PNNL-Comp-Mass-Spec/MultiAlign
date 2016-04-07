@@ -7,9 +7,15 @@
 
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
+    using MultiAlignCore.IO.Features;
 
     public class LcImsFeatureFilter : IDatasetLoader, IFeatureFilter<UMCLight>
     {
+        public LcImsFeatureFilter(FeatureDataAccessProviders dataProviders)
+        {
+            
+        }
+
         public List<UMCLight> FilterFeatures(List<UMCLight> features)
         {
             throw new NotImplementedException();
@@ -20,7 +26,7 @@
             throw new NotImplementedException();
         }
 
-        public void ResetDefaults()
+        public void RestoreDefaults()
         {
             throw new NotImplementedException();
         }

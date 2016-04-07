@@ -17,6 +17,8 @@
 
     using DMS;
 
+    using GalaSoft.MvvmLight.Messaging;
+
     using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Extensions;
 
@@ -30,6 +32,7 @@
     using MultiAlignRogue.Alignment;
     using MultiAlignRogue.AMTMatching;
     using MultiAlignRogue.Clustering;
+    using MultiAlignRogue.DataLoading;
     using MultiAlignRogue.Feature_Finding;
 
     using MessageBox = System.Windows.MessageBox;
@@ -39,9 +42,8 @@
         #region Private Data Members
         private MultiAlignAnalysis analysis;
 
-        private readonly AnalysisConfig analysisConfig;
+        //private readonly AnalysisConfig analysisConfig;
 
-        private DataLoadingSettingsViewModel dataLoadingSettingsViewModel;
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
@@ -85,10 +87,7 @@
         /// <remarks>Constructor</remarks>
         public MainViewModel()
         {
-            this.analysisConfig = new AnalysisConfig();
             this.Analysis = new MultiAlignAnalysis();
-            this.analysisConfig.AnalysisName = "Analysis.db3";
-            this.analysisConfig.Analysis = this.Analysis;
 
             this.WindowTitle = "MultiAlign Rogue";
 
@@ -108,13 +107,23 @@
 
             this.Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
-            this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(this.Analysis);
+            this.DatasetLoaderSelectionViewModel = new DatasetLoaderSelectionViewModel();
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets);
             this.ShouldShowProgress = false;
 
-            this.RegistryLoadSettings();
+            // When dataset is selected, update selected dataset loader
+            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this,
+                msg =>
+                    {
+                        var datasetInformationViewModel = msg.Sender as DatasetInformationViewModel;
+                        if (datasetInformationViewModel != null && msg.PropertyName == "IsSelected")
+                        {
+                            this.DatasetLoaderSelectionViewModel.SelectedDatasetLoaderType =
+                                datasetInformationViewModel.Dataset.SupportedDatasetType;
+                        }
+                    });
         }
 
         #endregion
@@ -179,6 +188,9 @@
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets a value indicating whether the splash screen should be displayed.
+        /// </summary>
         public bool ShowSplash
         {
             get { return this.showSplash; }
@@ -192,6 +204,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the current analysis.
+        /// </summary>
         public MultiAlignAnalysis Analysis
         {
             get { return this.analysis; }
@@ -205,12 +220,18 @@
             }
         }
 
+        /// <summary>
+        /// Gets the view models for the current datasets.
+        /// </summary>
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the full workflow progress bar should be displayed.
+        /// </summary>
         public bool ShouldShowProgress
         {
             get { return this.shouldShowProgress; }
-            set
+            private set
             {
                 if (this.shouldShowProgress != value)
                 {
@@ -220,6 +241,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the full workflow progress.
+        /// </summary>
         public int ProgressTracker
         {
             get { return this.progressTracker; }
@@ -233,10 +257,13 @@
             }
         }
 
+        /// <summary>
+        /// Gets the path to the project file.
+        /// </summary>
         public string ProjectPath
         {
             get { return this.projectPath; }
-            set
+            private set
             {
                 if (this.projectPath != value)
                 {
@@ -252,10 +279,13 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window title to be displayed.
+        /// </summary>
         public string WindowTitle
         {
             get { return this.windowTitle; }
-            set
+            private set
             {
                 if (this.WindowTitle != value)
                 {
@@ -274,10 +304,13 @@
             get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
         }
 
+        /// <summary>
+        /// Gets the path to the project file.
+        /// </summary>
         public string InputFilePath
         {
             get { return this.inputFilePath; }
-            set
+            private set
             {
                 if (this.inputFilePath != value)
                 {
@@ -291,15 +324,10 @@
 
         #region Child ViewModels
 
-        public DataLoadingSettingsViewModel DataLoadingSettingsViewModel
-        {
-            get { return this.dataLoadingSettingsViewModel; }
-            private set
-            {
-                this.dataLoadingSettingsViewModel = value;
-                this.RaisePropertyChanged();
-            }
-        }
+        /// <summary>
+        /// Gets the view model for selecting a the dataset settings for editing.
+        /// </summary>
+        public DatasetLoaderSelectionViewModel DatasetLoaderSelectionViewModel { get; private set; }
 
         public FeatureFindingSettingsViewModel FeatureFindingSettingsViewModel
         {
@@ -347,7 +375,7 @@
         /// <summary>
         /// Select an input dataset file
         /// </summary>
-        public async void SelectFiles()
+        public void SelectFiles()
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -371,7 +399,7 @@
             if (filePaths.Length == 0)
                 return;
 
-            await this.AddDatasets(filePaths);
+            this.AddDatasets(filePaths);
 
             this.lastInputDirectory = Path.GetDirectoryName(filePaths.First());
         }
@@ -400,7 +428,7 @@
             this.AddFolderCommand.Execute(null);
         }
 
-        public async void AddFolderDelegate()
+        public void AddFolderDelegate()
         {
             if (string.IsNullOrEmpty(this.InputFilePath))
             {
@@ -414,10 +442,10 @@
                 return;
             }
 
-            await this.AddDatasets(this.InputFilePath);
+            this.AddDatasets(this.InputFilePath);
         }
 
-        private async void SearchDms()
+        private void SearchDms()
         {
             var dmsLookupViewModel = new DmsLookupViewModel { OutputDirectory = this.outputDirectory };
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
@@ -441,13 +469,13 @@
                     var filePaths = dataset.GetAvailableFiles();
                     if (filePaths.Count > 0)
                     {
-                        await this.AddDatasets(filePaths);
+                        this.AddDatasets(filePaths);
                     }
                 }
             }
         }
 
-        public async Task UpdateDatasets()
+        public void UpdateDatasets()
         {
             this.Datasets.Clear();
             var i = 0;
@@ -471,6 +499,7 @@
                             this.Datasets.Remove(vm);
                             this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
                             this.deletedDatasets.Add(vm.Dataset);
+                            this.DatasetLoaderSelectionViewModel.SetDatasetLoaders(this.Analysis.GetDatasetLoaders(this.Datasets.Select(ds => ds.Dataset).ToList()));
                         }
                     }
                 };
@@ -479,12 +508,10 @@
                 this.Datasets.Add(viewmodel);
             }
 
-            await this.LoadRawData(this.Datasets);
-
-            this.RaisePropertyChanged("analysisConfig");
+            this.DatasetLoaderSelectionViewModel.SetDatasetLoaders(this.Analysis.GetDatasetLoaders(this.Datasets.Select(ds => ds.Dataset).ToList()));
         }
 
-        private async Task AddDatasets(string folderPath)
+        private void AddDatasets(string folderPath)
         {
             var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
@@ -506,10 +533,10 @@
 
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
-            await this.UpdateDatasets();
+            this.UpdateDatasets();
         }
 
-        private async Task AddDatasets(IEnumerable<string> files)
+        private void AddDatasets(IEnumerable<string> files)
         {
             var datasetLoader = new DatasetLoader();
             var datasets = datasetLoader.GetValidDatasets(files);
@@ -527,7 +554,7 @@
 
             // Add valid datasets.
             this.Analysis.MetaData.Datasets.AddRange(datasets);
-            await this.UpdateDatasets();
+            this.UpdateDatasets();
         }
 
         private bool CheckDatasets(IEnumerable<DatasetInformation> datasets)
@@ -583,7 +610,7 @@
                 if (success)
                 {
                     this.ShowSplash = false;
-                    this.analysisConfig.AnalysisName = newProjectViewModel.ProjectFilePath;
+                    this.Analysis.AnalysisName = newProjectViewModel.ProjectFilePath;
                     this.ProjectPath = newProjectViewModel.ProjectFilePath;
                     this.projectDirectory = Path.GetDirectoryName(this.projectPath) + Path.DirectorySeparatorChar;
                     this.outputDirectory = newProjectViewModel.OutputDirectory;
@@ -595,8 +622,6 @@
                     this.lastProjectDirectory = newProjectViewModel.LastProjectDirectory;
                     this.lastOutputDirectory = newProjectViewModel.LastOutputDirectory;
                     this.useProjectDirectoryAuto = newProjectViewModel.UseProjectDirectory;
-
-                    this.RegistrySaveSettings();
                 }
 #if (!DEBUG)
             }
@@ -636,9 +661,8 @@
                 this.analysis.MetaData.Datasets.AddRange(datasets);
             }
 
-            //Prevent updates of ViewModels (that we will recreate anyway) while loading datasets
+            // Prevent updates of ViewModels (that we will recreate anyway) while loading datasets
             this.clusterViewFactory = null;
-            this.DataLoadingSettingsViewModel = null;
             this.FeatureFindingSettingsViewModel = null;
             this.AlignmentSettingsViewModel = null;
             this.StacSettingsViewModel = null;
@@ -669,12 +693,11 @@
 
             this.Analysis.MetaData.BaselineDataset = this.Analysis.MetaData.Datasets.FirstOrDefault(ds => ds.IsBaseline);
 
-            this.analysisConfig.AnalysisPath = this.ProjectPath;
-            await this.UpdateDatasets();
+            this.Analysis.AnalysisPath = this.ProjectPath;
+            this.UpdateDatasets();
 
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders);
 
-            this.DataLoadingSettingsViewModel = new DataLoadingSettingsViewModel(this.Analysis);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.Datasets);
             this.StacSettingsViewModel = new StacSettingsViewModel(this.Analysis, this.Datasets);
@@ -783,163 +806,6 @@
                 this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
             }
         }
-
-        private void UpdateProject()
-        {
-            try
-            {
-                this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
-                this.Analysis.DataProviders.DatasetCache.UpdateAll(this.Datasets.Select(d => d.Dataset).ToList());
-                this.Analysis.DataProviders.OptionsDao.UpdateAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
-            }
-            finally
-            {
-                this.Analysis.DataProviders.DatabaseLock.ExitWriteLock();
-            }
-        }
-
-        private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)
-        {
-            foreach (var dataset in datasets)
-            {
-                if (dataset.Dataset.RawFile != null && File.Exists(dataset.Dataset.RawFile.Path))
-                {
-                    var finalDatasetState = dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Waiting ?
-                        DatasetInformationViewModel.DatasetStates.Loaded : dataset.DatasetState;
-
-                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.LoadingRawData;
-                    var progress = new Progress<ProgressData>(pd => dataset.Progress = pd.Percent);
-                    var provider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
-                        dataset.Dataset.RawFile.Path,
-                        dataset.DatasetId);
-                    await provider.InitializeAsync(progress);
-                    dataset.DatasetState = finalDatasetState;
-                }
-            }
-        }
-        #endregion
-
-        #region Registry data
-
-        /// <summary>
-        /// Load settings from the registry
-        /// </summary>
-        private void RegistryLoadSettings()
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            if (currentDirectory == Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
-            {
-                currentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            }
-
-            this.lastInputDirectory = this.RegistryReadValue("LastInputDirectory", currentDirectory);
-            this.lastProjectDirectory = this.RegistryReadValue("LastProjectDirectory", currentDirectory);
-            this.lastOutputDirectory = this.RegistryReadValue("LastOutputDirectory", currentDirectory);
-            this.useProjectDirectoryAuto = Convert.ToBoolean(this.RegistryReadValue("UseProjectDirectory", false.ToString()));
-        }
-
-        /// <summary>
-        /// Save settings to the registry
-        /// </summary>
-        private void RegistrySaveSettings()
-        {
-            var success = this.RegistrySaveValue("LastInputDirectory", this.lastInputDirectory);
-            if (!success)
-                return;
-
-            this.RegistrySaveValue("LastProjectDirectory", this.lastProjectDirectory);
-            this.RegistrySaveValue("LastOutputDirectory", this.lastOutputDirectory);
-            this.RegistrySaveValue("UseProjectDirectory", this.useProjectDirectoryAuto.ToString());
-        }
-
-        /// <summary>
-        /// Read a value from the registry
-        /// </summary>
-        /// <param name="keyName"></param>
-        /// <param name="valueIfMissing"></param>
-        /// <returns></returns>
-        private string RegistryReadValue(string keyName, string valueIfMissing)
-        {
-            var currentTask = "Initializing";
-
-            try
-            {
-                currentTask = @"OpenSubKey Software\PNNL\MultiAlign";
-                var regKey = Registry.CurrentUser.OpenSubKey(@"Software\PNNL\MultiAlign", false);
-
-                if (regKey == null)
-                {
-                    // Key not found
-                    return valueIfMissing;
-                }
-
-                var value = regKey.GetValue(keyName);
-
-                if (value == null)
-                {
-                    // Entry not found
-                    return valueIfMissing;
-                }
-
-                return value.ToString();
-            }
-            catch (Exception ex)
-            {
-                Logger.PrintMessage(string.Format("Error reading from the registry, {0}: {1}", currentTask, ex.Message));
-            }
-
-            return valueIfMissing;
-        }
-
-        /// <summary>
-        /// Write a value to the registry
-        /// </summary>
-        /// <param name="keyName"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private bool RegistrySaveValue(string keyName, string value)
-        {
-            var currentTask = "Initializing";
-
-            try
-            {
-                currentTask = "OpenSubKey Software";
-                var regSoftware = Registry.CurrentUser.OpenSubKey("Software", true);
-
-                if (regSoftware == null)
-                {
-                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software"));
-                    return false;
-                }
-                
-                currentTask = @"Open Software\PNNL";
-                var regPnnl = regSoftware.CreateSubKey("PNNL");
-                if (regPnnl == null)
-                {
-                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software\PNNL"));
-                    return false;
-                }
-
-                currentTask = @"Software\PNNL\MultiAlign";
-                var subKey = regPnnl.CreateSubKey("MultiAlign");
-
-                if (subKey == null)
-                {
-                    Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software\PNNL\MultiAlign"));
-                    return false;
-                }
-
-                subKey.SetValue(keyName, value);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.PrintMessage(string.Format("Error writing to the registry, {0}: {1}", currentTask, ex.Message));
-            }
-
-            return false;
-        }
-
         #endregion
 
         private void RestoreDefaultSettings()
@@ -950,7 +816,7 @@
                 return;
             }
 
-            this.DataLoadingSettingsViewModel.RestoreDefaults();
+            this.DatasetLoaderSelectionViewModel.RestoreDefaults();
 
             // Todo: (maybe) use .RestoreDefaults
             this.Analysis.Options = new MultiAlignAnalysisOptions();
@@ -960,7 +826,6 @@
 
             // ToDo: use .RestoreDefaults
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
-            //this.ClusterSettingsViewModel.RestoreDefaults();
 
         }  
 

@@ -187,6 +187,9 @@
       <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Clustering\ClusterFeaturePlotViewModel.cs" />
+    <Compile Include="Clustering\ClusteringAlgorithmSettings.xaml.cs">
+      <DependentUpon>ClusteringAlgorithmSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\ClusterPlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPoint.cs" />
     <Compile Include="Clustering\ClusterSettings.xaml.cs">
@@ -209,11 +212,24 @@
     </Compile>
     <Compile Include="Clustering\XicPlotViewModel.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
+    <Compile Include="DataLoading\DatasetLoaderSelectionView.xaml.cs">
+      <DependentUpon>DatasetLoaderSelectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataLoading\DatasetLoaderSelectionViewModel.cs" />
     <Compile Include="DataLoading\DatasetLoaderViewModelBase.cs" />
     <Compile Include="DataLoading\DatasetLoaderViewModelFactory.cs" />
     <Compile Include="DataLoading\DeconToolsLoaderViewModel.cs" />
+    <Compile Include="DataLoading\DeconToolsLoadSettingsView.xaml.cs">
+      <DependentUpon>DeconToolsLoadSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataLoading\LcImsFeatureFinderLoaderViewModel.cs" />
+    <Compile Include="DataLoading\LcImsFeatureFinderSettingsView.xaml.cs">
+      <DependentUpon>LcImsFeatureFinderSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataLoading\PromexLoaderViewModel.cs" />
+    <Compile Include="DataLoading\PromexLoadSettingsView.xaml.cs">
+      <DependentUpon>PromexLoadSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -240,6 +256,7 @@
       <DependentUpon>DataLoadingSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DataLoadingSettingsViewModel.cs" />
+    <Compile Include="Utils\ElutionTimeRangeViewModel.cs" />
     <Compile Include="Utils\ImageConverter.cs" />
     <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="Utils\PlotSaving.xaml.cs">
@@ -298,6 +315,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Clustering\ClusteringAlgorithmSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Clustering\ClusterSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -311,6 +332,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Clustering\UmcClusterDatasetHistogram.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataLoading\DatasetLoaderSelectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataLoading\DeconToolsLoadSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataLoading\LcImsFeatureFinderSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataLoading\PromexLoadSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

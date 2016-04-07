@@ -4,6 +4,8 @@ using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.IO.TextFiles
 {
+    using MultiAlignCore.IO.DatasetLoaders;
+
     public class MsgfReader : BaseTextFileReader<Peptide>, ISequenceFileReader
     {
 
@@ -57,7 +59,7 @@ namespace MultiAlignCore.IO.TextFiles
             return ReadFile(path);
         }
 
-        protected override IEnumerable<Peptide> SaveFileToEnumerable(System.IO.TextReader textReader, Dictionary<string, int> columnMapping)
+        protected override IEnumerable<Peptide> SaveFileToEnumerable(System.IO.TextReader textReader, Dictionary<string, int> columnMapping, IFeatureFilter<Peptide> filter = null)
         {
             var peptides = new List<Peptide>();
             string line;

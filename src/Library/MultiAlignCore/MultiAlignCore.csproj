@@ -485,7 +485,6 @@
     <Compile Include="IO\Clusters\UMCClusterMsmsSpectraWriter.cs" />
     <Compile Include="IO\Clusters\UMCClusterMsmsWriter.cs" />
     <Compile Include="IO\Clusters\UMCClusterScanWriter.cs" />
-    <Compile Include="IO\DatasetLoaders\DatasetLoaderFactory.cs" />
     <Compile Include="IO\DatasetLoaders\DeconToolsFilter.cs" />
     <Compile Include="IO\DatasetLoaders\DeconToolsLoader.cs" />
     <Compile Include="IO\DatasetLoaders\IDatasetLoader.cs" />
