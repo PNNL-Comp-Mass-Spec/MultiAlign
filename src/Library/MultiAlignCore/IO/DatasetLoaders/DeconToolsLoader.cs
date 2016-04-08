@@ -47,6 +47,11 @@
         public ElutionTimeRange<IElutionTimePoint> ElutionTimeRange { get; set; }
 
         /// <summary>
+        /// Gets or sets the minimum and maximum lengths of features to retain.
+        /// </summary>
+        public ElutionTimeRange<IElutionTimePoint> ElutionLengthRange { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the RAW file should be read.
         /// </summary>
         /// <remarks>
@@ -83,10 +88,13 @@
             // (1) Read raw/scans data
             var scanSummaryProvider = this.dataAccessProviders.ScanSummaryProviderCache.GetScanSummaryProvider(dataset.RawPath);
 
-            // Set scan ranges (DeconTools reader requires scan numbers)
+            // Set ranges required by filter.
             this.Filter.ScanRange = new ElutionTimeRange<ScanTimePoint>(
                                         this.ElutionTimeRange.MinValue.ToScan(scanSummaryProvider),
                                         this.ElutionTimeRange.MinValue.ToScan(scanSummaryProvider));
+            this.Filter.ElutionLengthRange = new ElutionTimeRange<NetTimePoint>(
+                                        this.ElutionTimeRange.MinValue.ToNet(scanSummaryProvider),
+                                        this.ElutionTimeRange.MaxValue.ToNet(scanSummaryProvider));
 
             // (2) Read and filter MSFeatureFile
             var reader = new MsFeatureLightFileReader();
@@ -112,6 +120,7 @@
         {
             this.Filter.RetoreDefaults();
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(this.Filter.ScanRange.MinValue, this.Filter.ScanRange.MaxValue);
+            this.ElutionLengthRange = new ElutionTimeRange<IElutionTimePoint>(this.Filter.ElutionLengthRange.MinValue, this.Filter.ElutionLengthRange.MaxValue);
             this.ClusteringOptions = new LcmsClusteringOptions
             {
                 LcmsFeatureClusteringAlgorithm = ClusteringAlgorithmTypes.SingleLinkage,

@@ -59,6 +59,17 @@
         public ElutionTimeRange<ScanTimePoint> ScanRange { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether features should be discarded if their
+        /// normalized elution length falls outside of <see cref="ElutionLengthRange" />.
+        /// </summary>
+        public bool UseFeatureLengthFilter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the minimum and maximum lengths of features to retain.
+        /// </summary>
+        public ElutionTimeRange<NetTimePoint> ElutionLengthRange { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the MSFeatures should be filtered to contain
         /// only those with charge states between <see cref="MinChargeState" /> and <see cref="MaxChargeState" />.
         /// </summary>
@@ -121,8 +132,12 @@
             this.UseScanFilter = false;
             this.ScanRange = new ElutionTimeRange<ScanTimePoint>(new ScanTimePoint(), new ScanTimePoint(10000));
 
+            this.UseFeatureLengthFilter = true;
+            this.ElutionLengthRange = new ElutionTimeRange<NetTimePoint>(new NetTimePoint(0.01), new NetTimePoint(0.2));
+
             this.UseDataCountFilter = false;
             this.MaximumDataPoints = 800000;
+            this.MinimumDataPointsPerLcmsFeature = 3;
         }
 
         /// <summary>
@@ -171,7 +186,15 @@
         /// <returns>A value indicating whether the feature should be retained or discarded.</returns>
         public bool ShouldKeepFeature(UMCLight feature)
         {
-            return feature.Features.Count >= this.MinimumDataPointsPerLcmsFeature;
+            bool keepFeature = true;
+            keepFeature &= feature.Features.Count >= this.MinimumDataPointsPerLcmsFeature;
+
+            var featureLength = feature.NetEnd - feature.NetStart;
+            keepFeature &= !this.UseFeatureLengthFilter ||
+                           (featureLength >= this.ElutionLengthRange.MinValue.Value &&
+                            featureLength <= this.ElutionLengthRange.MaxValue.Value);
+
+            return keepFeature;
         }
     }
 }

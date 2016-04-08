@@ -38,10 +38,7 @@
         private PromexFilter PromexLoader
         {
             get { return this.DatasetLoader as PromexFilter; }
-            set
-            {
-                this.DatasetLoader = value;
-            }
+            set { this.DatasetLoader = value; }
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿namespace MultiAlignRogue.DataLoading
 {
     using MultiAlignCore.Algorithms.Clustering;
+    using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.DatasetLoaders;
 
     using MultiAlignRogue.Clustering;
@@ -21,6 +22,17 @@
         {
             this.DeconToolsLoader = loader;
             this.ElutionTimeRange = new ElutionTimeRangeViewModel(this.DeconToolsLoader.ElutionTimeRange);
+            this.ElutionLengthRange = new ElutionTimeRangeViewModel(this.DeconToolsLoader.ElutionLengthRange);
+
+            this.ElutionLengthRange = new ElutionTimeRangeViewModel(loader.ElutionLengthRange)
+            {
+                DefaultElutionRangeValues =
+                {
+                    [ElutionUnitNames.Scans] = new ElutionTimeRange<IElutionTimePoint>(new ScanTimePoint(3), new ScanTimePoint(20)),
+                    [ElutionUnitNames.Minutes] = new ElutionTimeRange<IElutionTimePoint>(new ElutionTimePoint(0.06), new ElutionTimePoint(20)),
+                    [ElutionUnitNames.Net] = new ElutionTimeRange<IElutionTimePoint>(new NetTimePoint(0.01), new NetTimePoint(0.1))
+                }
+            };
 
             // Set up clustering settings
             this.ClustererSettings = new ClusterAlgorithmSettingsViewModel(this.DeconToolsLoader.ClusteringOptions);
@@ -143,6 +155,28 @@
         /// Gets the view model for editing the elution time range.
         /// </summary>
         public ElutionTimeRangeViewModel ElutionTimeRange { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether features should be discarded if their
+        /// normalized elution length falls outside of <see cref="ElutionLengthRange" />.
+        /// </summary>
+        public bool UseNetLengthFilter
+        {
+            get { return this.DeconToolsLoader.Filter.UseFeatureLengthFilter; }
+            set
+            {
+                if (this.DeconToolsLoader.Filter.UseFeatureLengthFilter != value)
+                {
+                    this.DeconToolsLoader.Filter.UseFeatureLengthFilter = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the view model for selecting the minimum and maximum lengths of features to retain.
+        /// </summary>
+        public ElutionTimeRangeViewModel ElutionLengthRange { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the MSFeatures should be filtered to contain

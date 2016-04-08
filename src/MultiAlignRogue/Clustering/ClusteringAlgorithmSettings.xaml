@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              d:DataContext="{d:DesignInstance d:Type=clustering:ClusterAlgorithmSettingsViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -16,7 +16,8 @@
             <RowDefinition Height="20" />
             <RowDefinition Height="30" />
             <RowDefinition Height="20" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*" />
@@ -27,16 +28,14 @@
         <!--  Clustering Method  -->
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
-                   HorizontalAlignment="Center"
-                   FontWeight="Bold">
+                   HorizontalAlignment="Center">
             Clustering Method
         </TextBlock>
 
         <!--  Distance Function  -->
         <TextBlock Grid.Row="0"
                    Grid.Column="2"
-                   HorizontalAlignment="Center"
-                   FontWeight="Bold">
+                   HorizontalAlignment="Center">
             Distance Function
         </TextBlock>
         <ComboBox Grid.Row="1"
@@ -53,8 +52,7 @@
         <!--  Centroid Representation  -->
         <TextBlock Grid.Row="3"
                    Grid.Column="0"
-                   HorizontalAlignment="Center"
-                   FontWeight="Bold">
+                   HorizontalAlignment="Center">
             Centroid Representation
         </TextBlock>
         <ComboBox Grid.Row="4"
@@ -68,49 +66,42 @@
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
                   Content="Separate by Charge"
-                  FontWeight="Bold"
                   IsChecked="{Binding ShouldSeparateCharge,
                                       Mode=TwoWay,
                                       UpdateSourceTrigger=PropertyChanged}" />
-
-        <!--  Cluster refinement options  -->
-        <GroupBox Grid.Row="6"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="3">
-            <GroupBox.Header>
-                <CheckBox IsChecked="{Binding ShouldRefineWithMsMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine clusters using MS/MS</CheckBox>
-            </GroupBox.Header>
-            <Grid IsEnabled="{Binding ShouldRefineWithMsMs, UpdateSourceTrigger=PropertyChanged}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <!--  Cluster comparison type  -->
-                <TextBlock Grid.Row="0"
+        <!-- Mass tolerance -->
+        <TextBlock Grid.Row="6"
+                   Grid.Column="0"
+                   HorizontalAlignment="Center">
+            Mass Tolerance (ppm)
+        </TextBlock>
+        <xctk:DoubleUpDown Grid.Row="7"
                            Grid.Column="0"
-                           VerticalAlignment="Center">
-                    Comparison Type
-                </TextBlock>
-                <ComboBox Grid.Row="0"
-                          Grid.Column="1"
-                          Height="25"
-                          VerticalAlignment="Center"
-                          ItemsSource="{Binding PostProcessingComparisonType}"
-                          SelectedItem="{Binding ClusterComparisonType}" />
+                           Margin="0,0,3,0"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="0"
+                           Increment="1"
+                           Value="{Binding MassTolerance,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}" />
 
-                <!--  Tolerance  -->
-                <TextBlock Grid.Row="1" Grid.Column="0">Tolerance (ppm)</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="1"
-                                   Grid.Column="1"
-                                   Height="25"
-                                   Increment="1"
-                                   Minimum="0"
-                                   Value="{Binding ClusterPostProcessingTolerance}" />
-            </Grid>
-        </GroupBox>
+        <!-- Net tolerance -->
+        <TextBlock Grid.Row="6"
+                   Grid.Column="2"
+                   HorizontalAlignment="Center">
+            NET Tolerance
+        </TextBlock>
+        <xctk:DoubleUpDown Grid.Row="7"
+                           Grid.Column="2"
+                           Margin="0,0,3,0"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="0"
+                           Maximum="1"
+                           Increment="1"
+                           Value="{Binding NetTolerance,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </UserControl>

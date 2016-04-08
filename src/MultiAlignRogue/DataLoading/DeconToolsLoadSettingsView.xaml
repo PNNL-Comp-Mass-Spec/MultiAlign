@@ -8,12 +8,12 @@
              xmlns:clustering="clr-namespace:MultiAlignRogue.Clustering"
              d:DataContext="{d:DesignInstance d:Type=local:DeconToolsLoaderViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="300">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="150" />
-            <RowDefinition Height="270" />
+            <RowDefinition Height="210" />
+            <RowDefinition Height="215" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         
@@ -24,6 +24,8 @@
             </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
@@ -147,8 +149,54 @@
                           ItemsSource="{Binding ElutionTimeRange.ElutionTimeUnits}"
                           SelectedItem="{Binding ElutionTimeRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- Data point filter -->
+                <!-- Time Length Filter -->
                 <CheckBox Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Margin="7,0,0,0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding UseNetLengthFilter,
+                                      Mode=TwoWay,
+                                      NotifyOnSourceUpdated=True,
+                                      UpdateSourceTrigger=PropertyChanged}">
+                    Feature Length Filter
+                </CheckBox>
+                <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionLengthRange.ElutionRangeAbsoluteMinimum, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionLengthRange.MaxElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionLengthRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionLengthRange.MinElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Row="3"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                to
+                </TextBlock>
+                <xctk:DoubleUpDown Grid.Row="3"
+                           Grid.Column="4"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Minimum="{Binding ElutionLengthRange.MinElutionTime, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{Binding ElutionLengthRange.ElutionRangeAbsoluteMaximum, UpdateSourceTrigger=PropertyChanged}"
+                           Increment="{Binding ElutionLengthRange.ElutionRangeIncrement, UpdateSourceTrigger=PropertyChanged}"
+                           Value="{Binding ElutionLengthRange.MaxElutionTime,
+                                           Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+                <ComboBox Grid.Row="3"
+                          Grid.Column="5"
+                          Margin="5,0,0,0"
+                          Height="25"
+                          ItemsSource="{Binding ElutionLengthRange.ElutionTimeUnits}"
+                          SelectedItem="{Binding ElutionLengthRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Data point filter -->
+                <CheckBox Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Margin="7,0,0,0"
@@ -159,7 +207,7 @@
                                       UpdateSourceTrigger=PropertyChanged}">
                     Maximum Data Points
                 </CheckBox>
-                <xctk:DoubleUpDown Grid.Row="3"
+                <xctk:DoubleUpDown Grid.Row="4"
                            Grid.Column="2"
                            Height="25"
                            VerticalAlignment="Center"
@@ -167,6 +215,22 @@
                            Maximum="10000000"
                            Minimum="0"
                            Value="{Binding MaximumDataPoints,
+                                           Mode=TwoWay,
+                                           NotifyOnSourceUpdated=True,
+                                           UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Minimum data points per LCMS feature filter -->
+                <TextBlock Grid.Row="5"
+                           Grid.Column="1"
+                           VerticalAlignment="Center">Min points per feature</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="5"
+                           Grid.Column="2"
+                           Height="25"
+                           VerticalAlignment="Center"
+                           Increment="10000"
+                           Maximum="100"
+                           Minimum="0"
+                           Value="{Binding MinimumDataPointsPerLcmsFeature,
                                            Mode=TwoWay,
                                            NotifyOnSourceUpdated=True,
                                            UpdateSourceTrigger=PropertyChanged}" />

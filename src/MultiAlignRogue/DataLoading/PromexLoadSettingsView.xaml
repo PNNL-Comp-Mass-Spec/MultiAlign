@@ -233,8 +233,6 @@
                           Height="25"
                           ItemsSource="{Binding ElutionLengthRange.ElutionTimeUnits}"
                           SelectedItem="{Binding ElutionLengthRange.SelectedElutionTimeUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-
         </Grid>
     </GroupBox>
 </UserControl>

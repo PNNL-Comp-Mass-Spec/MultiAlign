@@ -135,7 +135,7 @@
         /// <summary>
         /// Gets or sets the normalized elution time (NET) tolerance.
         /// </summary>
-        public double Net
+        public double NetTolerance
         {
             get { return this.clusteringOptions.InstrumentTolerances.Net; }
             set
