@@ -4,16 +4,16 @@
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    using GalaSoft.MvvmLight;
-
     using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.Algorithms.Distance;
     using MultiAlignCore.Data.Features;
 
+    using MultiAlignRogue.Utils;
+
     /// <summary>
     /// This is the view model for the ClusterAlgorithmSettings User Control.
     /// </summary>
-    public class ClusterAlgorithmSettingsViewModel : ViewModelBase
+    public class ClusterAlgorithmSettingsViewModel : SettingsEditorViewModelBase
     {
         /// <summary>
         /// The clustering options model that this view model edits.
@@ -24,7 +24,7 @@
         /// Initializes a new instance of the <see cref="ClusterAlgorithmSettingsViewModel" /> class. 
         /// </summary>
         /// <param name="clusteringOptions">The clustering options model that this view model edits.</param>
-        public ClusterAlgorithmSettingsViewModel(LcmsClusteringOptions clusteringOptions)
+        public ClusterAlgorithmSettingsViewModel(LcmsClusteringOptions clusteringOptions) : base(clusteringOptions)
         {
             this.clusteringOptions = clusteringOptions;
             this.ClusteringAlgorithmTypes = new ObservableCollection<ClusteringAlgorithmTypes>(ClusteringAlgorithms.GenericClusteringAlgorithms);

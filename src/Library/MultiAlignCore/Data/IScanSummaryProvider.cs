@@ -8,7 +8,7 @@ namespace MultiAlignCore.Data
     using InformedProteomics.Backend.Utils;
 
     /// <summary>
-    /// Interface for objects that need access to scan summary data
+    /// Interface for objects that provide information about the scans in an LCMS run.
     /// </summary>
     public interface IScanSummaryProvider : IDisposable
     {

@@ -16,10 +16,12 @@
 
 namespace MultiAlignCore.Algorithms
 {
+    using MultiAlignCore.Data;
+
     /// <summary>
     /// Tolerances for the single linkage clustering algorithm.
     /// </summary>
-    public sealed class FeatureTolerances
+    public sealed class FeatureTolerances : ISettingsContainer
     {
         /// <summary>
         /// Default drift time value in ms.
@@ -39,10 +41,9 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public FeatureTolerances()
         {
-            Clear();
+            this.RestoreDefaults();
         }
 
-        #region Properties 
         /// <summary>
         /// Gets or sets the approximate size of a fragmentation window.
         /// </summary>
@@ -62,16 +63,15 @@ namespace MultiAlignCore.Algorithms
         /// Gets or sets the normalized elution time (NET) tolerance.
         /// </summary>
         public double Net { get; set; }
-        #endregion
 
         /// <summary>
         /// Resets the tolerances to their default values.
         /// </summary>
-        public void Clear()
+        public void RestoreDefaults()
         {
-            DriftTime   = DEFAULT_DRIFT_TIME;
-            Mass        = DEFAULT_MASS;
-            Net         = DEFAULT_NET_TIME;
+            this.DriftTime   = DEFAULT_DRIFT_TIME;
+            this.Mass        = DEFAULT_MASS;
+            this.Net         = DEFAULT_NET_TIME;
         }
     }
 }

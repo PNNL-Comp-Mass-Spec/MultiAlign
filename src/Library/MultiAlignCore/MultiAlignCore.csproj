@@ -207,6 +207,8 @@
     <Compile Include="Algorithms\Clustering\Edge.cs" />
     <Compile Include="Algorithms\Clustering\FeatureClusterParameters.cs" />
     <Compile Include="Algorithms\Clustering\FeatureGraph.cs" />
+    <Compile Include="Algorithms\FeatureRefinement\DeisotopingCorrector.cs" />
+    <Compile Include="Algorithms\FeatureRefinement\FeatureRefiner.cs" />
     <Compile Include="Algorithms\Clustering\FeatureTree.cs" />
     <Compile Include="Algorithms\Clustering\IClusterer.cs" />
     <Compile Include="Algorithms\Clustering\IClusterReprocessor.cs" />
@@ -391,6 +393,7 @@
     <Compile Include="Data\Features\UMCExtended.cs" />
     <Compile Include="Data\Features\UMCLight.cs" />
     <Compile Include="Data\IScanSummaryProvider.cs" />
+    <Compile Include="Data\ISettingsContainer.cs" />
     <Compile Include="Data\MassTags\CleavageState.cs" />
     <Compile Include="Data\MassTags\FeatureMatchLight.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />

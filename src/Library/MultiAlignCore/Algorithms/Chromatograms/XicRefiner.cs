@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using InformedProteomics.Backend.Data.Spectrometry;
-using InformedProteomics.Backend.Utils;
-using MultiAlignCore.Data;
-
-namespace MultiAlignCore.Algorithms.Chromatograms
+﻿namespace MultiAlignCore.Algorithms.Chromatograms
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using InformedProteomics.Backend.Data.Spectrometry;
+    using InformedProteomics.Backend.Utils;
+    using MultiAlignCore.Data;
+
+    /// <summary>
+    /// This class performs refinement on XICs by smoothing and snipping peak tails.
+    /// </summary>
     public class XicRefiner
     {
         /// <summary>
         /// Default polynomial order for SavitzkyGolay smoother.
         /// </summary>
-        private const int CONST_POLYNOMIAL_ORDER = 3;
+        private const int ConstPolynomialOrder = 3;
 
         /// <summary>
         /// Default window size for SavitzkyGolay smoother.
         /// </summary>
-        private const int NUMBER_OF_POINTS = 5;
+        private const int NumberOfPoints = 5;
 
         /// <summary>
         /// Smoother to smooth Xics with.
@@ -25,18 +28,25 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         private readonly SpectralProcessing.SavitzkyGolaySmoother smoother;
 
         /// <summary>
-        /// Relative intensity threshold for snipping XICs
+        /// Initializes new instance of the <see cref="XicRefiner" /> class.
         /// </summary>
-        private readonly double relativeIntensityThreshold;
-
+        /// <param name="relativeIntensityThreshold">The relative intensity threshold for snipping XIC tails</param>
+        /// <param name="smoother">Savitzky-Golay smoother to use for smoothing the XICs.</param>
         public XicRefiner(double relativeIntensityThreshold = 0.05, SpectralProcessing.SavitzkyGolaySmoother smoother = null)
         {
-            this.relativeIntensityThreshold = relativeIntensityThreshold;
-            this.smoother = smoother ?? new SpectralProcessing.SavitzkyGolaySmoother(NUMBER_OF_POINTS, CONST_POLYNOMIAL_ORDER, false);
+            this.RelativeIntensityThreshold = relativeIntensityThreshold;
+            this.smoother = smoother ?? new SpectralProcessing.SavitzkyGolaySmoother(NumberOfPoints, ConstPolynomialOrder, false);
         }
 
         /// <summary>
-        /// Smooth and snip tails off of a collection of XICs.
+        /// Gets or sets the relative intensity threshold for snipping XIC tails.
+        /// </summary>
+        public double RelativeIntensityThreshold { get; set; }
+
+        /// <summary>
+        /// Refinement includes smoothing the XICs with a Savitzky-Golay smoother,
+        /// and snipping points off of peaks that are less than a given percentage
+        /// (<see cref="RelativeIntensityThreshold" />) of the peak apex.
         /// </summary>
         /// <param name="xics">The XICs to refine.</param>
         /// <param name="progress">Progress reporter object.</param>
@@ -47,7 +57,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             var refinedXics = new List<Xic> { Capacity = xics.Count };
             for (int i = 0; i < xics.Count; i++)
             {
-                refinedXics.Add(RefineXic(xics[i]));
+                refinedXics.Add(this.RefineXic(xics[i]));
                 progressData.Report(i, xics.Count);
             }
 
@@ -63,11 +73,13 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         {
             // Here we smooth the points...and remove any features with from and trailing zero points
             if (xic.Count == 0)
+            {
                 return xic;
+            }
 
             var unsmoothedPoints = xic.Select(xicp => new XYData(xicp.ScanNum, xicp.Intensity))
                                       .OrderBy(p => p.X).ToList(); 
-            var points = smoother.Smooth(unsmoothedPoints);
+            var points = this.smoother.Smooth(unsmoothedPoints);
 
             // Find the biggest peak...
             var maxScanIndex = 0;
@@ -88,7 +100,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             // If we hit zero, then keep
             for (; startIndex > 0; startIndex--)
             {
-                if ((xic[startIndex].Intensity / maxAbundance) < this.relativeIntensityThreshold)
+                if ((xic[startIndex].Intensity / maxAbundance) < this.RelativeIntensityThreshold)
                     break;
             }
 
@@ -96,7 +108,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             var stopIndex = maxScanIndex;
             for (; stopIndex < xic.Count - 1; stopIndex++)
             {
-                if ((xic[stopIndex].Intensity / maxAbundance) < this.relativeIntensityThreshold)
+                if ((xic[stopIndex].Intensity / maxAbundance) < this.RelativeIntensityThreshold)
                     break;
             }
 

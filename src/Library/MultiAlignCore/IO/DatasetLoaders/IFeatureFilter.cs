@@ -2,9 +2,9 @@
 {
     using System.Collections.Generic;
 
-    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.Data;
 
-    public interface IFeatureFilter<T>
+    public interface IFeatureFilter<T> : ISettingsContainer
     {
         List<T> FilterFeatures(List<T> features);
 

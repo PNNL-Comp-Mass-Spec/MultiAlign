@@ -1,33 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using InformedProteomics.Backend.Utils;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.RawData;
-using SavitzkyGolaySmoother = MultiAlignCore.Algorithms.SpectralProcessing.SavitzkyGolaySmoother;
-
-namespace MultiAlignCore.Algorithms.Chromatograms
+﻿namespace MultiAlignCore.Algorithms.Chromatograms
 {
-    public class XicCreator
-    {
-        private const int CONST_POLYNOMIAL_ORDER = 3;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using InformedProteomics.Backend.Utils;
+    using MultiAlignCore.Data;
+    using MultiAlignCore.Data.Features;
+    using MultiAlignCore.IO.RawData;
 
-        public XicCreator()
+    /// <summary>
+    /// This class is a MultiAlign wrapper for the InformedProteomics XIC extractor.
+    /// </summary>
+    public class XicCreator : ISettingsContainer
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XicCreator" /> class.
+        /// </summary>
+        /// <param name="xicRefiner">Refiner to use.</param>
+        public XicCreator(XicRefiner xicRefiner = null)
         {
-            ScanWindowSize = 100;
-            FragmentationSizeWindow = .5;
-            NumberOfPoints = 5;
-            this.XicRefiner = new XicRefiner();
+            this.XicRefiner = xicRefiner ?? new XicRefiner();
         }
 
-        public XicRefiner XicRefiner { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether refinement (smoothing and tail snipping)
+        /// should be run on the XICs.
+        /// </summary>
+        public bool ShouldRefine { get; set; }
 
-        public IEnumerable<UMCLight> CreateXicNew(List<UMCLight> features,
-            double massError,
+        /// <summary>
+        /// Gets or sets the mass error in PPM for the 
+        /// </summary>
+        public double MassError { get; set; }
+
+        /// <summary>
+        /// Gets the XIC refiner.
+        /// </summary>
+        public XicRefiner XicRefiner { get; private set; }
+
+        /// <summary>
+        /// Create a XICs for LCMS features.
+        /// </summary>
+        /// <param name="features">The features to create XICs for.</param>
+        /// <param name="provider">The InformedProteomics XIC extractor.</param>
+        /// <param name="progress"></param>
+        /// <returns>The features with XICs filled in as MSFeatures.</returns>
+        public IEnumerable<UMCLight> CreateXic(
+            List<UMCLight> features,
             InformedProteomicsReader provider,
-            bool refine = true,
             IProgress<ProgressData> progress = null)
         {
             var progressData = new ProgressData(progress);
@@ -41,14 +61,19 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             features.Sort((x,y) => x.Mz.CompareTo(y.Mz));
 
             // Iterate over XIC targets.
-            foreach (var xicTarget in CreateXicTargetsYield(features, massError))
+            foreach (var feature in features)
             {
                 count++;
-                // Read XIC
-                var target = xicTarget.StartScan + ((xicTarget.EndScan - xicTarget.StartScan) / 2);
-                var xic = ipr.GetPrecursorExtractedIonChromatogram(xicTarget.LowMz, xicTarget.HighMz, target);
 
-                if (refine)
+                // Get target M/z and scan
+                var targetScan = this.GetTargetScanNum(feature);
+                var highMz = FeatureLight.ComputeDaDifferenceFromPPM(feature.Mz, -this.MassError);
+                var lowMz = FeatureLight.ComputeDaDifferenceFromPPM(feature.Mz, this.MassError);
+
+                // Read XIC
+                var xic = ipr.GetPrecursorExtractedIonChromatogram(lowMz, highMz, targetScan);
+
+                if (this.ShouldRefine)
                 {
                     var xicRefiner = this.XicRefiner ?? new XicRefiner();
                     xic = xicRefiner.RefineXic(xic);
@@ -64,45 +89,45 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 var diffEt = maxEt - minEt;
 
                 // Add xic points as MSFeatures.
-                xicTarget.Feature.MsFeatures.Clear();
+                feature.MsFeatures.Clear();
                 foreach (var point in xic)
                 {
-                    xicTarget.Feature.AddChildFeature(new MSFeatureLight
+                    feature.AddChildFeature(new MSFeatureLight
                     {
-                        ChargeState = xicTarget.ChargeState,
-                        Mz = xicTarget.Mz,
-                        MassMonoisotopic = xicTarget.Feature.MassMonoisotopic,
+                        ChargeState = feature.ChargeState,
+                        Mz = feature.Mz,
+                        MassMonoisotopic = feature.MassMonoisotopic,
                         Scan = point.ScanNum,
                         Abundance = Convert.ToInt64(point.Intensity),
                         Id = id++,
-                        DriftTime = xicTarget.Feature.DriftTime,
+                        DriftTime = feature.DriftTime,
                         Net = (ipr.GetElutionTime(point.ScanNum) - minEt) / diffEt,
-                        GroupId = xicTarget.Feature.GroupId
+                        GroupId = feature.GroupId
                     });
                 }
 
                 // Associate MS/MS information.
-                var ms2Scans = ipr.GetFragmentationSpectraScanNums(xicTarget.Feature.Mz).ToArray();
+                var ms2Scans = ipr.GetFragmentationSpectraScanNums(feature.Mz).ToArray();
                 int j = 0;
-                for (int i = 0; i < xicTarget.Feature.MsFeatures.Count; i++)
+                for (int i = 0; i < feature.MsFeatures.Count; i++)
                 {
                     for (; j < ms2Scans.Length; j++)
                     {
                         // Scan below UMC feature scan range.
-                        if (ms2Scans[j] < xicTarget.Feature.MsFeatures[i].Scan)
+                        if (ms2Scans[j] < feature.MsFeatures[i].Scan)
                         {
                             break;
                         }
 
                         // Haven't reached the last ms2 scan and ms2 scan is larger than next feature, could be associated with next feature
-                        if (i < xicTarget.Feature.MsFeatures.Count - 1 && ms2Scans[j] > xicTarget.Feature.MsFeatures[i + 1].Scan)
+                        if (i < feature.MsFeatures.Count - 1 && ms2Scans[j] > feature.MsFeatures[i + 1].Scan)
                         {
                             break;
                         }
 
                         // We're on the last MSFeature - is the MS/MS scan actually for this feature?
-                        if (i == xicTarget.Feature.MsFeatures.Count - 1 && 
-                            ipr.GetPrevScanNum(ms2Scans[j], 1) != xicTarget.Feature.MsFeatures[i].Scan)
+                        if (i == feature.MsFeatures.Count - 1 && 
+                            ipr.GetPrevScanNum(ms2Scans[j], 1) != feature.MsFeatures[i].Scan)
                         {
                             continue;
                         }
@@ -115,18 +140,18 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                             {
                                 MsLevel = 2,
                                 Scan = ms2Scans[j],
-                                PrecursorMz = xicTarget.Feature.MsFeatures[i].Mz,
+                                PrecursorMz = feature.MsFeatures[i].Mz,
                             },
                             CollisionType = CollisionType.None,
                             Scan = ms2Scans[j],
-                            PrecursorMz = xicTarget.Feature.MsFeatures[i].Mz
+                            PrecursorMz = feature.MsFeatures[i].Mz
                         };
-                        xicTarget.Feature.MsFeatures[i].MSnSpectra.Add(spectraData);
+                        feature.MsFeatures[i].MSnSpectra.Add(spectraData);
                     }
                 }
 
-                resultFeatures.Add(xicTarget.Feature);
-                if (count%100 == 0 || count == features.Count - 1)
+                resultFeatures.Add(feature);
+                if (count % 100 == 0 || count == features.Count - 1)
                 {
                     progressData.Report(count, features.Count);
                 }
@@ -135,180 +160,36 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             return resultFeatures;
         }
 
-        private IEnumerable<XicFeature> CreateXicTargetsYield(IEnumerable<UMCLight> features, double massError)
-        {
-            int id = 0;
-            foreach (var feature in features)
-            {
-                int minScan = Int32.MaxValue;
-                int maxScan = 0;
-                foreach (var msFeature in feature.MsFeatures)
-                {
-                    minScan = Math.Min(minScan, msFeature.Scan);
-                    maxScan = Math.Max(maxScan, msFeature.Scan);
-                }
-
-                yield return new XicFeature
-                {
-                    HighMz = FeatureLight.ComputeDaDifferenceFromPPM(feature.Mz, -massError),
-                    LowMz = FeatureLight.ComputeDaDifferenceFromPPM(feature.Mz, massError),
-                    Mz = feature.Mz,
-                    Feature = feature,
-                    Id = id++,
-                    EndScan = minScan + ScanWindowSize,
-                    StartScan = maxScan - ScanWindowSize,
-                    ChargeState = feature.ChargeState
-                };
-            }
-        }
-
-        private IEnumerable<UMCLight> RefineFeatureXics(IList<UMCLight> features)
-        {
-            // Here we smooth the points...and remove any features with from and trailing zero points
-            var numberOfPoints = NumberOfPoints;
-            var smoother = new SavitzkyGolaySmoother(numberOfPoints, CONST_POLYNOMIAL_ORDER, false);
-
-            foreach (var feature in features)
-            {
-                var map = feature.CreateChargeMap();
-
-                // Clear the MS Feature List 
-                // Because we're going to refine each charge state then fix the length of the feature
-                // from it's known max abundance value.                
-                feature.MsFeatures.Clear();
-
-
-                // Work on a single charge state since XIC's have different m/z values
-                foreach (var chargeFeatures in map.Values)
-                {
-                    var xic = new List<XYData>();
-                    var msFeatures = chargeFeatures.Where(x => x.Abundance > 0).OrderBy(x => x.Scan).ToList();
-                    msFeatures.ForEach(x => xic.Add(new XYData(x.Scan, x.Abundance)));
-
-                    var points = smoother.Smooth(xic);
-                    if (msFeatures.Count <= 0)
-                        continue;
-
-                    // Find the biggest peak...
-                    var maxScanIndex = 0;
-                    double maxAbundance = 0;
-                    for (var i = 0; i < msFeatures.Count; i++)
-                    {
-                        msFeatures[i].Abundance = Convert.ToInt64(points[i].Y);
-
-                        if (maxAbundance < msFeatures[i].Abundance)
-                        {
-                            maxScanIndex = i;
-                            maxAbundance = msFeatures[i].Abundance;
-                        }
-                    }
-
-                    // Then find when the feature goes to zero
-                    // Start from max to left                        
-                    var startIndex = maxScanIndex;
-
-                    // If we hit zero, then keep
-                    for (; startIndex > 0; startIndex--)
-                    {
-                        if (msFeatures[startIndex].Abundance < 1)
-                            break;
-                    }
-
-                    // Start from max to right
-                    var stopIndex = maxScanIndex;
-                    for (; stopIndex < msFeatures.Count - 1; stopIndex++)
-                    {
-                        if (msFeatures[stopIndex].Abundance < 1)
-                            break;
-                    }
-
-                    // Add the features back
-                    for (var i = startIndex; i <= stopIndex; i++)
-                    {
-                        msFeatures[i].Abundance = Convert.ToInt64(points[i].Y);
-                        feature.AddChildFeature(msFeatures[i]);
-                    }
-                }
-
-                // Clean up 
-            }
-            return features.Where(x => x.MsFeatures.Count > 0).ToList();
-        }
-
         /// <summary>
-        /// Creates XIC Targets from a list of UMC Features
+        /// Gets the target scan number. We attempt to set the target at
+        /// the apex of the peak.
         /// </summary>
-        /// <param name="features"></param>
-        /// <param name="massError"></param>
-        /// <returns></returns>
-        private List<XicFeature> CreateXicTargets(IEnumerable<UMCLight> features, double massError)
+        /// <param name="feature">The feature to find the target scan number for.</param>
+        /// <returns>The target scan number.</returns>
+        public int GetTargetScanNum(UMCLight feature)
         {
-            var allFeatures = new List<XicFeature>();
-
-            // Create XIC Features
-            var id = 0;
-            // Then for each feature turn it into a new feature
-            foreach (var feature in features)
+            int maxAbundance = 0;
+            int targetScan = 0;
+            foreach (var msFeature in feature.MsFeatures)
             {
-                // Build XIC features from each
-                var x = feature.CreateChargeMap();
-                foreach (var charge in x.Keys)
+                if (msFeature.Abundance >= maxAbundance)
                 {
-                    double maxIntensity = 0;
-                    double mz = 0;
-                    var min = double.MaxValue;
-                    var max = double.MinValue;
-
-                    var scanStart = int.MaxValue;
-                    var scanEnd = 0;
-
-                    foreach (var chargeFeature in x[charge])
-                    {
-                        min = Math.Min(min, chargeFeature.Mz);
-                        max = Math.Max(max, chargeFeature.Mz);
-                        scanStart = Math.Min(scanStart, chargeFeature.Scan);
-                        scanEnd = Math.Min(scanStart, chargeFeature.Scan);
-
-                        if (chargeFeature.Abundance > maxIntensity)
-                        {
-                            maxIntensity = chargeFeature.Abundance;
-                            mz = chargeFeature.Mz;
-                        }
-                    }
-
-                    // Clear the ms feature list...because later we will populate it
-                    feature.MsFeatures.Clear();
-
-                    var xicFeature = new XicFeature
-                    {
-                        HighMz = FeatureLight.ComputeDaDifferenceFromPPM(mz, -massError),
-                        LowMz = FeatureLight.ComputeDaDifferenceFromPPM(mz, massError),
-                        Mz = mz,
-                        Feature = feature,
-                        Id = id++,
-                        EndScan = scanEnd + ScanWindowSize,
-                        StartScan = scanStart - ScanWindowSize,
-                        ChargeState = charge
-                    };
-
-                    allFeatures.Add(xicFeature);
+                    targetScan = msFeature.Scan;
                 }
             }
 
-            return allFeatures;
+            return targetScan;
         }
 
         /// <summary>
-        /// Gets or sets how many scans to add before and after an initial XIC target
+        /// Restore settings back to their default values.
         /// </summary>
-        public int ScanWindowSize { get; set; }
-        /// <summary>
-        /// Gets or sets the size of the m/z window to use when linking MS Features to MS/MS spectra
-        /// </summary>
-        public double FragmentationSizeWindow { get; set; }
-
-
-        public int NumberOfPoints { get; set; }
+        public void RestoreDefaults()
+        {
+            this.MassError = 10;
+            this.ShouldRefine = true;
+            this.XicRefiner.RelativeIntensityThreshold = 0.1;
+        }
     }
 
 }

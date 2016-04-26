@@ -118,7 +118,7 @@
         /// </summary>
         public void RestoreDefaults()
         {
-            this.Filter.RetoreDefaults();
+            this.Filter.RestoreDefaults();
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(this.Filter.ScanRange.MinValue, this.Filter.ScanRange.MaxValue);
             this.ElutionLengthRange = new ElutionTimeRange<IElutionTimePoint>(this.Filter.ElutionLengthRange.MinValue, this.Filter.ElutionLengthRange.MaxValue);
             this.ClusteringOptions = new LcmsClusteringOptions

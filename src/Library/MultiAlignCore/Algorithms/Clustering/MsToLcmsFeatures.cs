@@ -192,13 +192,15 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns></returns>
         private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<ProgressData> progress)
         {
-            var xicCreator = new XicCreator { XicRefiner = new XicRefiner(this.options.XicRelativeIntensityThreshold) };
-            return xicCreator.CreateXicNew(
-                            umcLights,
-                            this.options.InstrumentTolerances.Mass,
-                            provider as InformedProteomicsReader,
-                            this.options.RefineXics,
-                            progress).ToList();
+            //var xicCreator = new XicCreator { XicRefiner = new XicRefiner(this.options.XicRelativeIntensityThreshold) };
+            //return xicCreator.CreateXic(
+            //                umcLights,
+            //                this.options.InstrumentTolerances.Mass,
+            //                provider as InformedProteomicsReader,
+            //                this.options.RefineXics,
+            //                progress).ToList();
+
+            throw new NotImplementedException();
         }
 
         /// <summary>

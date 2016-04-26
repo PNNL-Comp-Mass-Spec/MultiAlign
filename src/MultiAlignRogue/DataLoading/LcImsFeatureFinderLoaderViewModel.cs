@@ -12,7 +12,7 @@ namespace MultiAlignRogue.DataLoading
 
     public class LcImsFeatureFinderLoaderViewModel : DatasetLoaderViewModelBase
     {
-        public LcImsFeatureFinderLoaderViewModel(LcImsFeatureFilter loader)
+        public LcImsFeatureFinderLoaderViewModel(LcImsFeatureFilter loader) : base(loader)
         {
             this.SupportedDatasetType = MultiAlignCore.Data.DatasetLoader.SupportedDatasetTypes.LcImsFeatureFinder;
         }

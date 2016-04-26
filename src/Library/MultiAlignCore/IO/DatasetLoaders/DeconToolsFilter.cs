@@ -15,7 +15,7 @@
         /// </summary>
         public DeconToolsFilter()
         {
-            this.RetoreDefaults();
+            this.RestoreDefaults();
         }
 
         /// <summary>
@@ -120,7 +120,7 @@
         /// <summary>
         /// Reset all settings to their default settings.
         /// </summary>
-        public void RetoreDefaults()
+        public void RestoreDefaults()
         {
             this.UseIsotopicFitFilter = true;
             this.MaximumIsotopicFit = 0.15;

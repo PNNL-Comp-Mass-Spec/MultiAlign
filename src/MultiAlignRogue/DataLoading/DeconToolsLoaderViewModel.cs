@@ -18,7 +18,7 @@
         /// Initializes a new instance of the <see cref="DeconToolsLoaderViewModel" /> class. 
         /// </summary>
         /// <param name="loader">The Promex dataset loader/filter model object.</param>
-        public DeconToolsLoaderViewModel(DeconToolsLoader loader)
+        public DeconToolsLoaderViewModel(DeconToolsLoader loader) : base(loader)
         {
             this.DeconToolsLoader = loader;
             this.ElutionTimeRange = new ElutionTimeRangeViewModel(this.DeconToolsLoader.ElutionTimeRange);

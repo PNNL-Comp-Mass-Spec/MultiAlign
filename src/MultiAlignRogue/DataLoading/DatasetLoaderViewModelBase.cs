@@ -5,7 +5,6 @@
 
     using System.Windows.Input;
 
-    using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
 
     using InformedProteomics.Backend.Utils;
@@ -14,11 +13,13 @@
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.DatasetLoaders;
 
+    using MultiAlignRogue.Utils;
+
     /// <summary>
     /// This class serves as the base class for all dataset loader view models.
     /// This has the basic functionality to start the loading process and report progress.
     /// </summary>
-    public class DatasetLoaderViewModelBase : ViewModelBase
+    public class DatasetLoaderViewModelBase : SettingsEditorViewModelBase
     {
         /// <summary>
         /// A value indicating whether the loading progress bar should be shown.
@@ -38,8 +39,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="DatasetLoaderViewModelBase" /> class. 
         /// </summary>
-        public DatasetLoaderViewModelBase()
+        public DatasetLoaderViewModelBase(IDatasetLoader datasetLoader) : base(datasetLoader)
         {
+            this.DatasetLoader = datasetLoader;
             this.LoadDatasetCommand = new RelayCommand(async () => await this.Load());
             this.ShouldShowProgress = false;
         }

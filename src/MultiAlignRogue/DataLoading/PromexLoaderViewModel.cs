@@ -14,7 +14,7 @@
         /// Initializes a new instance of the <see cref="PromexLoaderViewModel" /> class. 
         /// </summary>
         /// <param name="loader">The Promex dataset loader/filter model object.</param>
-        public PromexLoaderViewModel(PromexFilter loader)
+        public PromexLoaderViewModel(PromexFilter loader) : base(loader)
         {
             this.PromexLoader = loader;
             this.SupportedDatasetType = MultiAlignCore.Data.DatasetLoader.SupportedDatasetTypes.Promex;

@@ -1,9 +1,10 @@
 ﻿using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
-    public class LcmsClusteringOptions
+    public class LcmsClusteringOptions : ISettingsContainer
     {
         public LcmsClusteringOptions(FeatureTolerances instrumentTolerances)
         {
@@ -32,6 +33,15 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             parameters.DistanceFunction = Distance.DistanceFactory<UMCLight>.CreateDistanceFunction(options.DistanceFunction);
             return parameters;
+        }
+
+        public void RestoreDefaults()
+        {
+            this.ShouldSeparateCharge = true;
+            this.DistanceFunction = DistanceMetric.Euclidean;
+            this.LcmsFeatureClusteringAlgorithm = ClusteringAlgorithmTypes.AverageLinkage;
+            this.ClusterCentroidRepresentation = ClusterCentroidRepresentation.Apex;
+            this.InstrumentTolerances = new FeatureTolerances();
         }
     }
 }
