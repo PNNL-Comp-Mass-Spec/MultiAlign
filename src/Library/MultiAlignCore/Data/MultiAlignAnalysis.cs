@@ -126,7 +126,7 @@ namespace MultiAlignCore.Data
             if (path.EndsWith(".ms1ft"))
             {
                 loader = this.Options.DatasetLoaders.FirstOrDefault(l => l  is PromexFilter) ??
-                         new PromexFilter(this.DataProviders);
+                         new PromexFilter(this.DataProviders.ScanSummaryProviderCache);
             }
             else if (path.EndsWith("_LCMSFeatures.txt"))
             {
@@ -136,7 +136,7 @@ namespace MultiAlignCore.Data
             else
             {
                 loader = this.Options.DatasetLoaders.FirstOrDefault(l => l is DeconToolsLoader) ??
-                         new DeconToolsLoader(this.DataProviders);
+                         new DeconToolsLoader(this.DataProviders.ScanSummaryProviderCache);
             }
 
             if (!this.Options.DatasetLoaders.Contains(loader))

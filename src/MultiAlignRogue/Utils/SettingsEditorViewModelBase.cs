@@ -57,8 +57,11 @@
         /// </summary>
         private void RestoreDefaults()
         {
-            this.model.RestoreDefaults();
-            this.UpdateAll();
+            if (this.model != null)
+            {
+                this.model.RestoreDefaults();
+                this.UpdateAll();
+            }
         }
     }
 }

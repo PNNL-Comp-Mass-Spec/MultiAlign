@@ -469,7 +469,7 @@ namespace MultiAlignCore.Algorithms
                         config.Analysis.MassTagDatabase,
                         datasetInfo,
                         baselineInfo);
-                    featureCache.UpdateAll(features);
+                    featureCache.SaveFeaturesByDataset(features.ToList(), datasetInfo.DatasetId);
 
                     // This dataset is done!                               
                     if (FeaturesLoaded != null)
@@ -584,7 +584,7 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
                 providers.ClusterCache.AddAll(clusters);
-                providers.FeatureCache.UpdateAll(features);
+                providers.FeatureCache.SaveFeaturesByDataset(features, 0);
                 config.Analysis.Clusters = clusters;
 
                 UpdateStatus(string.Format("Found {0} clusters.", clusters.Count));
@@ -630,7 +630,7 @@ namespace MultiAlignCore.Algorithms
                     }
 
                     config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
-                    config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
+                    config.Analysis.DataProviders.FeatureCache.SaveFeaturesByDataset(features, 0);
                     UpdateStatus(string.Format("Found {0} clusters.", clusters.Count));
 
                     if (FeaturesClustered != null)

@@ -9,29 +9,31 @@
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.Algorithms.Distance;
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.Features;
+    using MultiAlignCore.IO.RawData;
     using MultiAlignCore.IO.TextFiles;
 
     /// <summary>
     /// Loads and filters DeconTools datasets.
     /// </summary>
-    public class DeconToolsLoader : IDatasetLoader
+    public class DeconToolsLoader : IDatasetLoader, ISettingsContainer
     {
         /// <summary>
-        /// Data access providers for loading and persisting data.
+        /// Scan summary provider cache that encapulates loading and persisting raw data
         /// </summary>
-        private readonly FeatureDataAccessProviders dataAccessProviders;
+        private readonly ScanSummaryProviderCache scanSummaryProviderCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PromexFilter" /> class. 
         /// </summary>
         /// <param name="filter">Gets or sets the elution time range to limit features in.</param>
-        /// <param name="dataAccessProviders">Data access providers for loading/persisting to database.</param>
-        public DeconToolsLoader(FeatureDataAccessProviders dataAccessProviders, DeconToolsFilter filter = null)
+        /// <param name="scanSummaryProviderCache">Scan summary provider cache that encapulates loading and persisting raw data.</param>
+        public DeconToolsLoader(ScanSummaryProviderCache scanSummaryProviderCache, DeconToolsFilter filter = null)
         {
-            this.dataAccessProviders = dataAccessProviders;
+            this.scanSummaryProviderCache = scanSummaryProviderCache;
             this.Filter = filter ?? new DeconToolsFilter();
             this.RestoreDefaults();
         }
@@ -71,7 +73,19 @@
         public DeconToolsFilter Filter { get; private set; }
 
         /// <summary>
-        /// Loads a DeconTools dataset for processing by MultiAlign.
+        /// Loads features from a DeconTools results dataset and persists the features to a data access object.
+        /// </summary>
+        /// <param name="dataset">The data set to load.</param>
+        /// <param name="dataAccessProvider">The data access object to persist features to.</param>
+        /// <param name="progress">The progress reporter to report progress and status messages to.</param>
+        public void Load(DatasetInformation dataset, IUmcDAO dataAccessProvider, IProgress<ProgressData> progress = null)
+        {
+            var features = this.Load(dataset, progress);
+            dataAccessProvider.SaveFeaturesByDataset(features, dataset.DatasetId, progress);
+        }
+
+        /// <summary>
+        /// Loads features from a DeconTools results dataset.
         /// </summary>
         /// <param name="dataset">The dataset to load.</param>
         /// <param name="progress"></param>
@@ -86,7 +100,7 @@
         public List<UMCLight> Load(DatasetInformation dataset, IProgress<ProgressData> progress = null)
         {
             // (1) Read raw/scans data
-            var scanSummaryProvider = this.dataAccessProviders.ScanSummaryProviderCache.GetScanSummaryProvider(dataset.RawPath);
+            var scanSummaryProvider = this.scanSummaryProviderCache.GetScanSummaryProvider(dataset.RawPath);
 
             // Set ranges required by filter.
             this.Filter.ScanRange = new ElutionTimeRange<ScanTimePoint>(

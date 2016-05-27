@@ -148,7 +148,7 @@ namespace MultiAlignTestSuite.OHSU
                     features.Add(feature);
                 }
             }
-            featureCache.AddAll(features);
+            featureCache.SaveFeaturesByDataset(features, 0);
         }
 
         [Test]
@@ -233,7 +233,7 @@ namespace MultiAlignTestSuite.OHSU
                 cluster.CalculateStatistics(ClusterCentroidRepresentation.Mean);
                 clusters.Add(cluster);
             }
-            featureCache.AddAll(features);
+            featureCache.SaveFeaturesByDataset(features, 0);
             clusterCache.AddAll(clusters);
             clusters = clusterCache.FindAll();
 

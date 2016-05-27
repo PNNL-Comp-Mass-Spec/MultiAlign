@@ -36,8 +36,6 @@
         {
             this.datasetTypeToDatasetLoader = new Dictionary<DatasetLoader.SupportedDatasetTypes, DatasetLoaderViewModelBase>();
             this.DatasetLoaderTypes = new ObservableCollection<DatasetLoader.SupportedDatasetTypes>();
-
-            // When datasets are selected or unselected, update 
         }
 
         /// <summary>
@@ -136,7 +134,11 @@
         {
             foreach (var datasetLoader in this.DatasetLoaders)
             {
-                datasetLoader.RestoreDefaults();
+                var settingsEditor = datasetLoader as ISettingsContainer;
+                if (settingsEditor != null)
+                {
+                    settingsEditor.RestoreDefaults();
+                }
             }
         }
     }

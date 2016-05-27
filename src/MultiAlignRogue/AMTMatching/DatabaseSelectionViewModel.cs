@@ -297,7 +297,7 @@ namespace MultiAlignRogue.AMTMatching
                                         this.analysis.Options.MassTagDatabaseOptions);
             this.Analysis.DataProviders.MassTags.DeleteAll();
             this.ShowMassTagProgress = true;
-            this.Analysis.DataProviders.MassTags.AddAllStateless(this.Analysis.MassTagDatabase.MassTags, loadProgress);
+            this.Analysis.DataProviders.MassTags.AddAll(this.Analysis.MassTagDatabase.MassTags, loadProgress);
             this.ShowMassTagProgress = false;
         }
     }

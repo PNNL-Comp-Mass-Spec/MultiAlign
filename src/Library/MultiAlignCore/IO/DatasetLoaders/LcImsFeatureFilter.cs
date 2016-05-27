@@ -5,11 +5,12 @@
 
     using InformedProteomics.Backend.Utils;
 
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.Features;
 
-    public class LcImsFeatureFilter : IDatasetLoader, IFeatureFilter<UMCLight>
+    public class LcImsFeatureFilter : IDatasetLoader, IFeatureFilter<UMCLight>, ISettingsContainer
     {
         public LcImsFeatureFilter(FeatureDataAccessProviders dataProviders)
         {
@@ -27,6 +28,11 @@
         }
 
         public void RestoreDefaults()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load(DatasetInformation dataset, IUmcDAO dataAccessProvider, IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

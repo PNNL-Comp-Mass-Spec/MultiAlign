@@ -14,6 +14,7 @@
     using MultiAlignCore.Algorithms.FeatureRefinement;
     using MultiAlignCore.IO.Features;
     using MultiAlignCore.IO.InputFiles;
+    using MultiAlignCore.IO.RawData;
 
     using MultiAlignRogue.Clustering;
     using MultiAlignRogue.Utils;
@@ -42,7 +43,12 @@
         /// <summary>
         /// The data access providers for pulling/persisting features from the database.
         /// </summary>
-        private readonly FeatureDataAccessProviders dataAccessProviders;
+        private readonly IUmcDAO featureDataAccessProvider;
+
+        /// <summary>
+        /// Scan summary provider cache that encapulates loading and persisting raw data.
+        /// </summary>
+        private readonly ScanSummaryProviderCache scanSummaryProviderCache;
 
         /// <summary>
         /// A value indicating whether it is possible to create XICs for the selected dataset.
@@ -54,16 +60,23 @@
         /// </summary>
         /// <param name="featureRefiner">The <see cref="FeatureRefiner" /> model that this class edits.</param>
         /// <param name="datasets">All datasets for the current project.</param>
-        /// <param name="dataAccessProviders">The data access providers for pulling/persisting features from the database.</param>
+        /// <param name="featureDataAccessProvider">
+        /// The data access providers for pulling/persisting features from the database.
+        /// </param>
+        /// <param name="scanSummaryProviderCache">
+        /// Scan summary provider cache that encapulates loading and persisting raw data.
+        /// </param>
         public FeatureRefinementViewModel(
                                           FeatureRefiner featureRefiner,
                                           IEnumerable<DatasetInformationViewModel> datasets,
-                                          FeatureDataAccessProviders dataAccessProviders) 
+                                          IUmcDAO featureDataAccessProvider,
+                                          ScanSummaryProviderCache scanSummaryProviderCache) 
             : base(featureRefiner)
         {
             this.featureRefiner = featureRefiner;
             this.datasets = datasets;
-            this.dataAccessProviders = dataAccessProviders;
+            this.featureDataAccessProvider = featureDataAccessProvider;
+            this.scanSummaryProviderCache = scanSummaryProviderCache;
             this.DeisotopingCorrectorViewModel = new DeisotopingCorrectorViewModel(featureRefiner.DeiosotopingCorrector);
             this.ClusteringSettingsViewModel = new ClusterAlgorithmSettingsViewModel(featureRefiner.ClusteringOptions);
             this.XicCreatorViewModel = new XicCreatorViewModel(featureRefiner.XicCreator);
@@ -196,13 +209,12 @@
 
             foreach (var dataset in this.datasets.Where(ds => ds.IsSelected))
             {
-                var features = this.dataAccessProviders.FeatureCache.FindByDatasetId(dataset.DatasetId);
-                var scanSummaryProvider = this.dataAccessProviders
-                                              .ScanSummaryProviderCache
+                var scanSummaryProvider = this.scanSummaryProviderCache
                                               .GetScanSummaryProvider(dataset.DatasetId);
-                var refinedFeatures = this.featureRefiner.Run(features, scanSummaryProvider, progressReporter);
-                this.dataAccessProviders.FeatureCache.DeleteByDataset(dataset.DatasetId);
-                this.dataAccessProviders.FeatureCache.AddAllStateless(refinedFeatures);
+                this.featureRefiner.Run(
+                                        this.featureDataAccessProvider,
+                                        scanSummaryProvider,
+                                        progressReporter);
             }
         }
 

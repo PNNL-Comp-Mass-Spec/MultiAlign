@@ -30,7 +30,7 @@ namespace MultiAlignTestSuite.IO
             }
 
             IUmcDAO cache = new UmcDAOHibernate();
-            cache.AddAll(lights);
+            cache.SaveFeaturesByDataset(lights, 0);
         }
     }
 }

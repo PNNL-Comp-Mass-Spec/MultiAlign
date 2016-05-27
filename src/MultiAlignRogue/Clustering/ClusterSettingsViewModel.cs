@@ -349,11 +349,11 @@ namespace MultiAlignRogue.Clustering
                 this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                 progData.StepRange(85);
                 providers.ClusterCache.ClearAllClusters();
-                providers.ClusterCache.AddAllStateless(clusters, clusterProgress);
+                providers.ClusterCache.AddAll(clusters, clusterProgress);
                 this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
 
                 progData.StepRange(100);
-                providers.FeatureCache.UpdateAll(features, clusterProgress);
+                providers.FeatureCache.SaveFeaturesByDataset(features, 0);
 
                 foreach (var dataset in this.Datasets)
                 {
@@ -431,7 +431,7 @@ namespace MultiAlignRogue.Clustering
                     this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
 
                     progData.StepRange(maxPercent);
-                    this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
+                    this.analysis.DataProviders.FeatureCache.SaveFeaturesByDataset(features, 0, clusterProgress);
 
                     ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                     ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);

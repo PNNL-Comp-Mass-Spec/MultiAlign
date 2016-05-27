@@ -49,7 +49,17 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
+        public void SaveFeaturesByDataset(List<UMCLight> features, int datasetId, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DeleteByDataset(int datasetId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UMCLight> FindAll()
         {
             throw new NotImplementedException();
         }
@@ -117,65 +127,6 @@ namespace MultiAlignCore.IO.Features
         }
 
         public void ClearAlignmentData()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IGenericDAO<UMCLight> Members
-
-        public void Add(UMCLight t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddAll(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddAllStateless(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(UMCLight t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateAll(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateAll(ICollection<UMCLight> tList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(UMCLight t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteAll(ICollection<UMCLight> tList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteAllStateless(ICollection<UMCLight> tList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UMCLight FindById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<UMCLight> FindAll()
         {
             throw new NotImplementedException();
         }

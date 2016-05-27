@@ -73,8 +73,7 @@
             var refinedFeatures = this.Run(features, scanSummaryProvider, progress);
 
             // Persist features
-            umcDataAccessProvider.DeleteByDataset(scanSummaryProvider.GroupId);
-            umcDataAccessProvider.AddAllStateless(refinedFeatures);
+            umcDataAccessProvider.SaveFeaturesByDataset(refinedFeatures, scanSummaryProvider.GroupId, progress);
         }
 
         /// <summary>

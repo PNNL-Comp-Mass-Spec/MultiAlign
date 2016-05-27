@@ -39,7 +39,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="DatasetLoaderViewModelBase" /> class. 
         /// </summary>
-        public DatasetLoaderViewModelBase(IDatasetLoader datasetLoader) : base(datasetLoader)
+        public DatasetLoaderViewModelBase(IDatasetLoader datasetLoader) : base(datasetLoader as ISettingsContainer)
         {
             this.DatasetLoader = datasetLoader;
             this.LoadDatasetCommand = new RelayCommand(async () => await this.Load());

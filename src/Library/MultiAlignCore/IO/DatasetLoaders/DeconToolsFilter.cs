@@ -3,12 +3,13 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
 
     /// <summary>
     /// This class filters DeconTools feature datasets.
     /// </summary>
-    public class DeconToolsFilter : IFeatureFilter<MSFeatureLight>, IFeatureFilter<UMCLight>
+    public class DeconToolsFilter : IFeatureFilter<MSFeatureLight>, IFeatureFilter<UMCLight>, ISettingsContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeconToolsLoader" /> class. 

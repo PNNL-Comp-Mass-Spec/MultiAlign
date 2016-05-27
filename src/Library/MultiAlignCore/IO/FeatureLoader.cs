@@ -149,8 +149,7 @@ namespace MultiAlignCore.IO
             if (features.Count > 0)
             {
                 progData.StepRange(100);
-                Providers.FeatureCache.DeleteByDataset(features[0].GroupId);
-                Providers.FeatureCache.AddAllStateless(features, internalProgress);
+                this.Providers.FeatureCache.SaveFeaturesByDataset(features.ToList(), features[0].GroupId);
             }
         }
 

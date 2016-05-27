@@ -336,7 +336,7 @@ namespace MultiAlignRogue.AMTMatching
             // Persist matches
             var clusterToMassTags = matches.Select(match => new ClusterToMassTagMap(match.Observed.Id, match.Target.Id)).ToList();
             this.analysis.DataProviders.MassTagMatches.ClearAllMatches();
-            this.analysis.DataProviders.MassTagMatches.AddAllStateless(clusterToMassTags, progress);
+            this.analysis.DataProviders.MassTagMatches.AddAll(clusterToMassTags, progress);
 
             try
             {

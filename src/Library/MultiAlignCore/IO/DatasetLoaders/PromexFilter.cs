@@ -6,6 +6,7 @@
 
     using InformedProteomics.Backend.Utils;
 
+    using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO.Features;
@@ -15,20 +16,20 @@
     /// <summary>
     /// Loads and filters Promex datasets.
     /// </summary>
-    public class PromexFilter : IDatasetLoader, IFeatureFilter<UMCLight>
+    public class PromexFilter : IDatasetLoader, IFeatureFilter<UMCLight>, ISettingsContainer
     {
         /// <summary>
-        /// Data access providers for loading and persisting data.
+        /// Scan summary provider cache that encapulates loading and persisting raw data
         /// </summary>
-        private readonly FeatureDataAccessProviders dataAccessProviders;
+        private readonly ScanSummaryProviderCache scanSummaryProviderCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PromexFilter" /> class. 
         /// </summary>
-        /// <param name="dataAccessProviders">Data access providers for loading/persisting to database.</param>
-        public PromexFilter(FeatureDataAccessProviders dataAccessProviders)
+        /// <param name="scanSummaryProviderCache">Scan summary provider cache that encapulates loading and persisting raw data.</param>
+        public PromexFilter(ScanSummaryProviderCache scanSummaryProviderCache)
         {
-            this.dataAccessProviders = dataAccessProviders;
+            this.scanSummaryProviderCache = scanSummaryProviderCache;
 
             // Initialize all values with their defaults.
             this.RestoreDefaults();
@@ -155,15 +156,27 @@
         }
 
         /// <summary>
-        /// Load the Promex feature file and raw file.
+        /// Loads and filters features from Promex results and persists the features to a data access object.
+        /// </summary>
+        /// <param name="dataset">The data set to load.</param>
+        /// <param name="dataAccessProvider">The data access object to persist features to.</param>
+        /// <param name="progress">The progress reporter to report progress and status messages to.</param>
+        public void Load(DatasetInformation dataset, IUmcDAO dataAccessProvider, IProgress<ProgressData> progress = null)
+        {
+            var features = this.Load(dataset, progress);
+            dataAccessProvider.SaveFeaturesByDataset(features, dataset.DatasetId, progress);
+        }
+
+        /// <summary>
+        /// Loads and filters features from Promex results
         /// </summary>
         /// <param name="dataset">The dataset to load.</param>
-        /// <param name="progress">The progress reporter.</param>
+        /// <param name="progress">The progress reporter to report progress and status messages to..</param>
         /// <returns>The loaded features.</returns>
         public List<UMCLight> Load(DatasetInformation dataset, IProgress<ProgressData> progress = null)
         {
             // Read raw data.
-            var spectraProvider = this.dataAccessProviders.ScanSummaryProviderCache.GetScanSummaryProvider(dataset.RawPath, dataset.DatasetId);
+            var spectraProvider = this.scanSummaryProviderCache.GetScanSummaryProvider(dataset.RawPath, dataset.DatasetId);
 
             // Min and max value have to be NETs for filtering Promex results.
             this.ElutionTimeRange = new ElutionTimeRange<IElutionTimePoint>(
