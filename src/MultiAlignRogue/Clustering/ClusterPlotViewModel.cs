@@ -291,8 +291,13 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         /// <param name="sender">The sending PlotView.</param>
         /// <param name="args">The event arguments.</param>
-        private void ClusterPlotMouseDown(object sender, OxyMouseEventArgs args)
+        private void ClusterPlotMouseDown(object sender, OxyMouseDownEventArgs args)
         {
+            if (args.ChangedButton != OxyMouseButton.Left)
+            {
+                return;
+            }
+
             var series = this.ClusterPlotModel.GetSeriesFromPoint(args.Position, 10);
             if (series != null)
             {
