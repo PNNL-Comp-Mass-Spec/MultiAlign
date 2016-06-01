@@ -573,6 +573,7 @@
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderFactory.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />
     <Compile Include="IO\MTDB\MtdbCreatorDatabaseLoader.cs" />
+    <Compile Include="IO\MTDB\MtdbFromGenericTsvReader.cs" />
     <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="IO\MTDB\MTSMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />

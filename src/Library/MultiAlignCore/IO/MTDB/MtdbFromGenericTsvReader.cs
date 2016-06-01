@@ -2,21 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Linq.Expressions;
+    
+    using System.IO;
 
-    using Data.MassTags;
+    using InformedProteomics.Backend.Data.Biology;
 
-    using PNNLOmics.Data.Constants;
-
-    using Constants = InformedProteomics.Backend.Data.Biology.Constants;
+    using MultiAlignCore.Data.MassTags;
 
     /// <summary>
-    /// Loads a Liquid lipd MS/MS search results file as a MultiAlign
-    /// <see cref="MassTagDatabase" />.
+    /// This class is is a reader for 
     /// </summary>
-    public class LiquidResultsFileLoader : IMtdbLoader
+    public class MtdbFromGenericTsvReader : IMtdbLoader
     {
         /// <summary>
         /// Full file path for Liquid results CSV file.
@@ -24,27 +21,39 @@
         private readonly string filePath;
 
         /// <summary>
+        /// The column separator to use.
+        /// </summary>
+        private readonly char delimeter;
+
+        /// <summary>
         /// Headers required for parsing the file into <see cref="MassTagLight" />.
         /// </summary>
         public static readonly string[] RequiredHeaders =
         {
-            "Common Name",
-            "Formula",
-            "NET",
-            "Exact m/z",
+            "Name",         // The name of the protein
+            "Sequence",     // The protein/peptide sequence or equivalent
+            "NET",          // The normalized elution time
+            "Mass",         // Monoisotopic Mass
         };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LiquidResultsFileLoader"/> class. 
         /// </summary>
-        /// <param name="filePath">Full file path for Liquid results CSV file.</param>
-        public LiquidResultsFileLoader(string filePath)
+        /// <param name="filePath">Full file path for the TSV file.</param>
+        public MtdbFromGenericTsvReader(string filePath)
         {
             this.filePath = filePath;
+
+            var ext = Path.GetExtension(filePath);
+            if (ext != ".tsv" && ext != ".csv")
+            {
+                throw new FormatException(string.Format("Invalid file type: {0}.", ext));
+            }
+            this.delimeter = ext == ".tsv" ? '\t' : ',';
         }
 
         /// <summary>
-        /// Load a Liquid lipd MS/MS search results file as a MultiAlign
+        /// Load a generic TSV file as a MultiAlign
         /// <see cref="MassTagDatabase" />.
         /// </summary>
         /// <returns>The resulting mass tag database.</returns>
@@ -67,7 +76,7 @@
             int lineCount = 0;
             foreach (var line in File.ReadLines(this.filePath))
             {
-                var parts = line.Split('\t');
+                var parts = line.Split(this.delimeter);
                 if (lineCount++ == 0)
                 {   // Header line, store header indices
                     for (int i = 0; i < parts.Length; i++)
@@ -81,11 +90,11 @@
                 }
 
                 var net = Convert.ToDouble(parts[headers["NET"]]);
-                var mz = Convert.ToDouble(parts[headers["Exact m/z"]]);
+                var mz = Convert.ToDouble(parts[headers["Mass"]]);
                 var mass = mz - Constants.Proton;
 
-                var name = parts[headers["Common Name"]];
-                var formula = parts[headers["Formula"]];
+                var name = parts[headers["Name"]];
+                var formula = parts[headers["Sequence"]];
 
                 // Add lipid to mapping if it isn't already there
                 if (!commonNameToProtein.ContainsKey(name))
@@ -107,7 +116,7 @@
                 // Data line, create mass tag
                 massTags.Add(
                     new MassTagLight
-                {   // TODO: We have lipid data now, we're not doing just proteomics anymore. We should have omic-independent names for this stuff.
+                {
                     Id = lineCount - 2, // Subtract 2 because i will be incremented once when it sees the headers, and once before it gets to this line
                     ProteinName = name,
                     PeptideSequence = formula,
@@ -121,7 +130,7 @@
                 });
             }
 
-            // Mapping from masstags to proteins (actually lipids)
+            // Mapping from masstags to proteins
             var massTagToProtein = new Dictionary<int, List<Protein>>();
 
             // Create mappings.

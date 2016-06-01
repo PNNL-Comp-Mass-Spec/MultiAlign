@@ -270,9 +270,7 @@ namespace MultiAlignRogue.AMTMatching
             {
                 DatabaseName = Path.GetFileNameWithoutExtension(openFileDialog.FileName),
                 LocalPath = openFileDialog.FileName,
-
-                // TODO: I am hardcoding Liquid results format for now, but we need a way to differentiate these files
-                DatabaseFormat = MassTagDatabaseFormat.LiquidResultsFile,
+                DatabaseFormat = MtdbLoaderFactory.GetGenericTextFormat(openFileDialog.FileName),
             };
         }
 
