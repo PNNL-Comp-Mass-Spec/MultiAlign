@@ -408,8 +408,13 @@
         /// </summary>
         /// <param name="sender">The sending PlotView.</param>
         /// <param name="args">The event arguments.</param>
-        private void XicPlotMouseDown(object sender, OxyMouseEventArgs args)
+        private void XicPlotMouseDown(object sender, OxyMouseDownEventArgs args)
         {
+            if (args.ChangedButton != OxyMouseButton.Left)
+            {
+                return;
+            }
+
             var series = this.XicPlotModel.GetSeriesFromPoint(args.Position, 10);
             if (series != null)
             {

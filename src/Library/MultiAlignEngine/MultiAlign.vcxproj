@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>MultiAlignEngine</ProjectName>
+    <ProjectGuid>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</ProjectGuid>
+    <RootNamespace>MultiAlign</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>OldSyntax</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>OldSyntax</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>OldSyntax</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>OldSyntax</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\x86\$(Configuration)\</OutDir>
+    <IntDir>obj\x86\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>bin\x64\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\x86\$(Configuration)\</OutDir>
+    <IntDir>obj\x86\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>bin\x64\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/noentry
+/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>mscoree.lib;msvcrtd.lib;msvcrt.lib;msvcmrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/noentry
+/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>mscoree.lib;msvcrtd.lib;msvcrt.lib;msvcmrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>dir $(TargetDir)$(TargetName)*
+dir ..\..\
+dir ..\..\lib\$(Platform)
+copy $(TargetDir)$(TargetName)* ..\..\..\lib\$(Platform)
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/noentry %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>mscoree.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)* ..\..\lib\x86</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/noentry %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>mscoree.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)* ..\..\lib\$(Platform)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="clsAlignmentFunction.cpp" />
+    <ClCompile Include="clsAlignmentOptions.cpp" />
+    <ClCompile Include="clsAlignmentProcessor.cpp" />
+    <ClCompile Include="clsCluster.cpp" />
+    <ClCompile Include="clsClusterData.cpp" />
+    <ClCompile Include="clsClusterOptions.cpp" />
+    <ClCompile Include="clsClusterProcessor.cpp" />
+    <ClCompile Include="clsDataSummaryAttribute.cpp" />
+    <ClCompile Include="clsFactorInfo.cpp" />
+    <ClCompile Include="clsMassTag.cpp" />
+    <ClCompile Include="clsMassTagDatabaseOptions.cpp" />
+    <ClCompile Include="clsMassTagDB.cpp" />
+    <ClCompile Include="clsMassTimeTag.cpp" />
+    <ClCompile Include="clsMTDBLoader.cpp" />
+    <ClCompile Include="clsParameterFileAttribute.cpp" />
+    <ClCompile Include="clsPeakMatch.cpp" />
+    <ClCompile Include="clsPeakMatchingOptions.cpp" />
+    <ClCompile Include="clsPeakMatchingProcessor.cpp" />
+    <ClCompile Include="clsPeakMatchingResults.cpp" />
+    <ClCompile Include="clsPeakProphetProcessor.cpp" />
+    <ClCompile Include="clsProtein.cpp" />
+    <ClCompile Include="clsUMC.cpp" />
+    <ClCompile Include="clsUMCCreator.cpp" />
+    <ClCompile Include="clsUMCData.cpp" />
+    <ClCompile Include="clsUMCFindingOptions.cpp" />
+    <ClCompile Include="clsUtilities.cpp" />
+    <ClCompile Include="LCMSWarp\AlignmentMatch.cpp" />
+    <ClCompile Include="LCMSWarp\CentralRegression.cpp" />
+    <ClCompile Include="LCMSWarp\clsFeatureData.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\CombinedRegression.cpp" />
+    <ClCompile Include="LCMSWarp\FeatureMatch.cpp" />
+    <ClCompile Include="LCMSWarp\Interpolation.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\LCMSWarp.cpp" />
+    <ClCompile Include="LCMSWarp\LSQSplineRegression.cpp" />
+    <ClCompile Include="LCMSWarp\MassTimeFeature.cpp" />
+    <ClCompile Include="LCMSWarp\MathUtils.cpp" />
+    <ClCompile Include="LCMSWarp\Matrix.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\NaturalCubicSplineRegression.cpp" />
+    <ClCompile Include="LCMSWarp\NormUnifEM.cpp" />
+    <ClCompile Include="LCMSWarp\Utilities.cpp" />
+    <ClCompile Include="MassTags\MassTag.cpp" />
+    <ClCompile Include="MassTags\MassTagDB.cpp" />
+    <ClCompile Include="MassTags\Protein.cpp" />
+    <ClCompile Include="Prophets\PeakMatch.cpp" />
+    <ClCompile Include="Prophets\PeakMatchingResults.cpp" />
+    <ClCompile Include="SLClustering\MassTimeSLClustering.cpp" />
+    <ClCompile Include="SLClustering\Point.cpp" />
+    <ClCompile Include="SLClustering\SingleLinkageClustering.cpp" />
+    <ClCompile Include="UMCCreation\IsotopePeak.cpp" />
+    <ClCompile Include="UMCCreation\MemMappedReader.cpp" />
+    <ClCompile Include="UMCCreation\UMC.cpp" />
+    <ClCompile Include="UMCCreation\UMCCreator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="classAlignmentMZBoundary.h" />
+    <ClInclude Include="classAlignmentResidualData.h" />
+    <ClInclude Include="clsAlignmentFunction.h" />
+    <ClInclude Include="clsAlignmentOptions.h" />
+    <ClInclude Include="clsAlignmentProcessor.h" />
+    <ClInclude Include="clsCluster.h" />
+    <ClInclude Include="clsClusterData.h" />
+    <ClInclude Include="clsClusterOptions.h" />
+    <ClInclude Include="clsClusterProcessor.h" />
+    <ClInclude Include="clsDataSummaryAttribute.h" />
+    <ClInclude Include="clsFactorInfo.h" />
+    <ClInclude Include="clsMassTag.h" />
+    <ClInclude Include="clsMassTagDatabaseOptions.h" />
+    <ClInclude Include="clsMassTagDB.h" />
+    <ClInclude Include="clsMassTimeTag.h" />
+    <ClInclude Include="clsMTDBLoader.h" />
+    <ClInclude Include="clsParameterFileAttribute.h" />
+    <ClInclude Include="clsPeakMatch.h" />
+    <ClInclude Include="clsPeakMatchingOptions.h" />
+    <ClInclude Include="clsPeakMatchingProcessor.h" />
+    <ClInclude Include="clsPeakMatchingResults.h" />
+    <ClInclude Include="clsPeakProphetProcessor.h" />
+    <ClInclude Include="clsProtein.h" />
+    <ClInclude Include="clsUMC.h" />
+    <ClInclude Include="clsUMCCreator.h" />
+    <ClInclude Include="clsUMCData.h" />
+    <ClInclude Include="clsUMCFindingOptions.h" />
+    <ClInclude Include="clsUtilities.h" />
+    <ClInclude Include="LCMSWarp\AlignmentMatch.h" />
+    <ClInclude Include="LCMSWarp\CentralRegression.h" />
+    <ClInclude Include="LCMSWarp\clsFeatureData.h" />
+    <ClInclude Include="LCMSWarp\CombinedRegression.h" />
+    <ClInclude Include="LCMSWarp\FeatureMatch.h" />
+    <ClInclude Include="LCMSWarp\Interpolation.h" />
+    <ClInclude Include="LCMSWarp\LCMSWarp.h" />
+    <ClInclude Include="LCMSWarp\LSQSplineRegression.h" />
+    <ClInclude Include="LCMSWarp\MassTimeFeature.h" />
+    <ClInclude Include="LCMSWarp\MathUtils.h" />
+    <ClInclude Include="LCMSWarp\Matrix.h" />
+    <ClInclude Include="LCMSWarp\NaturalCubicSplineRegression.h" />
+    <ClInclude Include="LCMSWarp\NormUnifEM.h" />
+    <ClInclude Include="LCMSWarp\RegressionPts.h" />
+    <ClInclude Include="LCMSWarp\Utilities.h" />
+    <ClInclude Include="MassTags\MassTag.h" />
+    <ClInclude Include="MassTags\MassTagDB.h" />
+    <ClInclude Include="MassTags\Protein.h" />
+    <ClInclude Include="Prophets\PeakMatch.h" />
+    <ClInclude Include="Prophets\PeakMatchingResults.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SLClustering\MassTimeSLClustering.h" />
+    <ClInclude Include="SLClustering\Point.h" />
+    <ClInclude Include="SLClustering\SingleLinkageClustering.h" />
+    <ClInclude Include="UMCCreation\IsotopePeak.h" />
+    <ClInclude Include="UMCCreation\MemMappedReader.h" />
+    <ClInclude Include="UMCCreation\UMC.h" />
+    <ClInclude Include="UMCCreation\UMCCreator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

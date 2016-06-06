@@ -9,6 +9,9 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.IO.MTDB
 {
+    using System.IO;
+    using System.Linq;
+
     /// <summary>
     ///     Class that loads Mass Tag databases from a given source.
     /// </summary>
@@ -63,8 +66,47 @@ namespace MultiAlignCore.IO.MTDB
                 case MassTagDatabaseFormat.LiquidResultsFile:
                     loader = new LiquidResultsFileLoader(databaseDefinition.LocalPath);
                     break;
+                case MassTagDatabaseFormat.GenericTsvFile:
+                    loader = new MtdbFromGenericTsvReader(databaseDefinition.LocalPath);
+                    break;
             }
             return loader;
+        }
+
+        /// <summary>
+        /// Determine the type of TSV/CSV file by the headers in the file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        /// <returns>The mass tag format of the file.</returns>
+        public static MassTagDatabaseFormat GetGenericTextFormat(string filePath)
+        {
+            var ext = Path.GetExtension(filePath);
+            if (ext != ".tsv" && ext != ".csv")
+            {
+                return MassTagDatabaseFormat.None;
+            }
+            
+            var delimiter = ext == ".tsv" ? '\t' : ',';
+            var liquidRequiredHeaders = LiquidResultsFileLoader.RequiredHeaders;
+            var genericRequiredHeaders = MtdbFromGenericTsvReader.RequiredHeaders;
+            using (var reader = new StreamReader(filePath))
+            {
+                var line = reader.ReadLine();
+                var headers = line.Split(delimiter);
+                var numLiquidHeaders = headers.Count(header => liquidRequiredHeaders.Contains(header));
+                if (numLiquidHeaders == liquidRequiredHeaders.Length)
+                {
+                    return MassTagDatabaseFormat.LiquidResultsFile;
+                }
+                
+                var numGenericHeaders = headers.Count(header => genericRequiredHeaders.Contains(header));
+                if (numGenericHeaders == genericRequiredHeaders.Length)
+                {
+                    return MassTagDatabaseFormat.GenericTsvFile;
+                }
+
+                return MassTagDatabaseFormat.None;
+            }
         }
     }
 }

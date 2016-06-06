@@ -38,6 +38,11 @@ namespace MultiAlignCore.Data.MassTags
         LiquidResultsFile,
 
         /// <summary>
+        /// Targets in a generic TSV/CSV format.
+        /// </summary>
+        GenericTsvFile,
+
+        /// <summary>
         ///     APE created databases
         /// </summary>
         [Obsolete] Ape,

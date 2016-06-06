@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Clustering">
+      <UniqueIdentifier>{009c72b7-9ca7-43fd-96cb-37cbd56825ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clustering\Source Files">
+      <UniqueIdentifier>{ff25bd39-c2f5-4c83-9a95-43219b441489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clustering\Header Files">
+      <UniqueIdentifier>{e4b51480-9eef-4da1-b613-f68b787ce9f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clustering\SLClustering">
+      <UniqueIdentifier>{cfa09158-f685-41ee-9220-9cbb94ce8165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clustering\SLClustering\Source Files">
+      <UniqueIdentifier>{e3cb4da0-8738-47ed-934b-c450bd4add82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clustering\SLClustering\Header Files">
+      <UniqueIdentifier>{6ca69ec1-6f7f-4eec-b7b2-f34d9a1520f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features">
+      <UniqueIdentifier>{948883ba-4901-43b8-97e7-2b0b4b62b7db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Source Files">
+      <UniqueIdentifier>{e0b8dfae-9cd9-4667-b1bd-ce81384ba31b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Header Files">
+      <UniqueIdentifier>{94781ffc-54c7-4fd6-a926-95f11603893d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\UMCCreation">
+      <UniqueIdentifier>{7a6f9d6b-b91a-4171-8d6e-f036b303c868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\UMCCreation\Source Files">
+      <UniqueIdentifier>{acd502b9-943a-4bdc-9d7d-2d213b17836f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\UMCCreation\Header Files">
+      <UniqueIdentifier>{05ff92d3-f2d9-4b61-8195-fde150eadf21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Parameters">
+      <UniqueIdentifier>{9958392c-c64d-4a2b-ae4d-72b2548395a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment">
+      <UniqueIdentifier>{1c3f34d4-03e9-4d22-9e09-4bf6ea3edf0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment\Source Files">
+      <UniqueIdentifier>{8f19693b-d031-43e7-865a-f50613ca77c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment\Header Files">
+      <UniqueIdentifier>{0834c99d-e0ec-456f-b29a-c55e6e2779fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment\LCMSWarp">
+      <UniqueIdentifier>{b54ed03e-4973-4a59-8e86-ac87f198fc28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment\LCMSWarp\Source Files">
+      <UniqueIdentifier>{1f9481d8-88e6-46b1-a1df-dbe18301d4d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Alignment\LCMSWarp\Header Files">
+      <UniqueIdentifier>{9fb44777-fcc1-4f43-8dd0-57d2b7ca5550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching">
+      <UniqueIdentifier>{61932dce-9df1-4681-baa4-6395b6c91ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching\Source Files">
+      <UniqueIdentifier>{f1c1d4cb-f462-47fb-9458-ef7aea9b8ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching\Header Files">
+      <UniqueIdentifier>{df3cba8b-58eb-464c-b51c-feb0b00b8c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching\Prophets">
+      <UniqueIdentifier>{41bfe145-d73d-4583-b1e3-44023c61e8ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching\Prophets\Source Files">
+      <UniqueIdentifier>{1e161640-eb11-41ea-aefe-117b9e389e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeakMatching\Prophets\Header Files">
+      <UniqueIdentifier>{bdbe3df9-15ff-42a1-8011-67cfd234e333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags">
+      <UniqueIdentifier>{b0b462a7-a898-4217-91be-f8e0cd1091c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags\Source Files">
+      <UniqueIdentifier>{22793d44-2d0a-4819-affd-c36f306107aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags\Header Files">
+      <UniqueIdentifier>{57da6d17-6e39-47b9-b17e-61458a94ab0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags\MassTags">
+      <UniqueIdentifier>{3019b908-2f87-4a6c-903b-a7bfd6702f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags\MassTags\Source Files">
+      <UniqueIdentifier>{150eada3-a312-4c18-a543-5ee2d653d331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MassTags\MassTags\Header Files">
+      <UniqueIdentifier>{9522908d-1063-45c4-9c5b-98165e8a7ac2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsDataSummaryAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsFactorInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsMassTimeTag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsParameterFileAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsClusterOptions.cpp">
+      <Filter>Clustering\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsClusterProcessor.cpp">
+      <Filter>Clustering\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SLClustering\MassTimeSLClustering.cpp">
+      <Filter>Clustering\SLClustering\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SLClustering\Point.cpp">
+      <Filter>Clustering\SLClustering\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SLClustering\SingleLinkageClustering.cpp">
+      <Filter>Clustering\SLClustering\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsCluster.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsClusterData.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsUMC.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsUMCCreator.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsUMCData.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsUMCFindingOptions.cpp">
+      <Filter>Features\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UMCCreation\IsotopePeak.cpp">
+      <Filter>Features\UMCCreation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UMCCreation\MemMappedReader.cpp">
+      <Filter>Features\UMCCreation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UMCCreation\UMC.cpp">
+      <Filter>Features\UMCCreation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UMCCreation\UMCCreator.cpp">
+      <Filter>Features\UMCCreation\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsAlignmentFunction.cpp">
+      <Filter>Alignment\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsAlignmentOptions.cpp">
+      <Filter>Alignment\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsAlignmentProcessor.cpp">
+      <Filter>Alignment\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\AlignmentMatch.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\CentralRegression.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\clsFeatureData.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\CombinedRegression.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\FeatureMatch.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\Interpolation.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\LCMSWarp.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\LSQSplineRegression.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\MassTimeFeature.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\MathUtils.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\Matrix.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\NaturalCubicSplineRegression.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\NormUnifEM.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCMSWarp\Utilities.cpp">
+      <Filter>Alignment\LCMSWarp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsPeakMatch.cpp">
+      <Filter>PeakMatching\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsPeakMatchingOptions.cpp">
+      <Filter>PeakMatching\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsPeakMatchingProcessor.cpp">
+      <Filter>PeakMatching\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsPeakMatchingResults.cpp">
+      <Filter>PeakMatching\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsPeakProphetProcessor.cpp">
+      <Filter>PeakMatching\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Prophets\PeakMatch.cpp">
+      <Filter>PeakMatching\Prophets\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Prophets\PeakMatchingResults.cpp">
+      <Filter>PeakMatching\Prophets\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsMassTag.cpp">
+      <Filter>MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsMassTagDatabaseOptions.cpp">
+      <Filter>MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsMassTagDB.cpp">
+      <Filter>MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsMTDBLoader.cpp">
+      <Filter>MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clsProtein.cpp">
+      <Filter>MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MassTags\MassTag.cpp">
+      <Filter>MassTags\MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MassTags\MassTagDB.cpp">
+      <Filter>MassTags\MassTags\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MassTags\Protein.cpp">
+      <Filter>MassTags\MassTags\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="clsDataSummaryAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsFactorInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsMassTimeTag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsParameterFileAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsClusterOptions.h">
+      <Filter>Clustering\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsClusterProcessor.h">
+      <Filter>Clustering\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SLClustering\MassTimeSLClustering.h">
+      <Filter>Clustering\SLClustering\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SLClustering\Point.h">
+      <Filter>Clustering\SLClustering\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SLClustering\SingleLinkageClustering.h">
+      <Filter>Clustering\SLClustering\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsCluster.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsClusterData.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsUMC.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsUMCCreator.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsUMCData.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsUMCFindingOptions.h">
+      <Filter>Features\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UMCCreation\IsotopePeak.h">
+      <Filter>Features\UMCCreation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UMCCreation\MemMappedReader.h">
+      <Filter>Features\UMCCreation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UMCCreation\UMC.h">
+      <Filter>Features\UMCCreation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UMCCreation\UMCCreator.h">
+      <Filter>Features\UMCCreation\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="classAlignmentMZBoundary.h">
+      <Filter>Alignment\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="classAlignmentResidualData.h">
+      <Filter>Alignment\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsAlignmentFunction.h">
+      <Filter>Alignment\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsAlignmentOptions.h">
+      <Filter>Alignment\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsAlignmentProcessor.h">
+      <Filter>Alignment\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\AlignmentMatch.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\CentralRegression.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\clsFeatureData.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\CombinedRegression.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\FeatureMatch.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\Interpolation.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\LCMSWarp.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\LSQSplineRegression.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\MassTimeFeature.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\MathUtils.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\Matrix.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\NaturalCubicSplineRegression.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\NormUnifEM.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\RegressionPts.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCMSWarp\Utilities.h">
+      <Filter>Alignment\LCMSWarp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsPeakMatch.h">
+      <Filter>PeakMatching\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsPeakMatchingOptions.h">
+      <Filter>PeakMatching\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsPeakMatchingProcessor.h">
+      <Filter>PeakMatching\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsPeakMatchingResults.h">
+      <Filter>PeakMatching\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsPeakProphetProcessor.h">
+      <Filter>PeakMatching\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Prophets\PeakMatch.h">
+      <Filter>PeakMatching\Prophets\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Prophets\PeakMatchingResults.h">
+      <Filter>PeakMatching\Prophets\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsMassTag.h">
+      <Filter>MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsMassTagDatabaseOptions.h">
+      <Filter>MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsMassTagDB.h">
+      <Filter>MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsMTDBLoader.h">
+      <Filter>MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clsProtein.h">
+      <Filter>MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MassTags\MassTag.h">
+      <Filter>MassTags\MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MassTags\MassTagDB.h">
+      <Filter>MassTags\MassTags\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MassTags\Protein.h">
+      <Filter>MassTags\MassTags\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
