@@ -60,6 +60,7 @@
 
         <!-- Restore Defaults Button -->
         <Button Grid.Row="3" Height="25" Width="125"
+                Command="{Binding SelectedDatasetLoader.RestoreDefaultsCommand}"
                 HorizontalAlignment="Left">Restore Defaults</Button>
     </Grid>
 </UserControl>
