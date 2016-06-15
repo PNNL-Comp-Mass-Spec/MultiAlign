@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     using GalaSoft.MvvmLight.CommandWpf;
@@ -79,7 +79,7 @@
             this.XicCreatorViewModel = new XicCreatorViewModel(featureRefiner.XicCreator);
             this.PeakFinderViewModel = new MasicPeakFinderViewModel(featureRefiner.PeakFinder);
             this.DeisotopingCorrectorViewModel = new DeisotopingCorrectorViewModel(featureRefiner.DeiosotopingCorrector);
-            this.RunCommand = new RelayCommand(() => this.RunFeatureRefinement());
+            this.RunCommand = new RelayCommand(async () => await this.RunFeatureRefinement());
 
             // When dataset is selected, determine if raw data is available to toggle XIC creation
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, this.UpdateDatasetSelection);
@@ -201,18 +201,34 @@
         /// Run the feature refinement process.
         /// </summary>
         /// <param name="progressReporter">The progress reporter.</param>
-        public void RunFeatureRefinement(IProgress<ProgressData> progressReporter = null)
+        public async Task RunFeatureRefinement(IProgress<ProgressData> progressReporter = null)
         {
             progressReporter = progressReporter ?? new Progress<ProgressData>(pd => this.Progress = pd.Percent);
 
-            foreach (var dataset in this.datasets.Where(ds => ds.IsSelected))
+            // Get datasets that were selected by the user in the list of all datasets.
+            var selectedDatasets = this.datasets.Where(ds => ds.IsSelected).ToList();
+
+            // Create subtask progress
+            var progData = new ProgressData { MaxPercentage = 100.0 / selectedDatasets.Count, IsPartialRange = true };
+            var subProgress = new Progress<ProgressData>(pd => progressReporter.Report(progData.UpdatePercent(pd.Percent)));
+
+            for (int index = 0; index < selectedDatasets.Count; index++)
             {
+                var dataset = selectedDatasets[index];
+
+                // Step up progress range for each dataset.
+                var maxPercentage = (index + 1) * (100.0 / selectedDatasets.Count);
+                progData.StepRange(maxPercentage);
+
+                // Get the scan summary provider for the selected dataset
                 var scanSummaryProvider = this.scanSummaryProviderCache
                                               .GetScanSummaryProvider(dataset.DatasetId);
-                this.featureRefiner.Run(
-                                        this.featureDataAccessProvider,
-                                        scanSummaryProvider,
-                                        progressReporter);
+
+                // Finally, run the feature refinement on the dataset
+                await Task.Run(() => this.featureRefiner.Run(
+                                                             this.featureDataAccessProvider,
+                                                             scanSummaryProvider,
+                                                             subProgress));
             }
         }
 

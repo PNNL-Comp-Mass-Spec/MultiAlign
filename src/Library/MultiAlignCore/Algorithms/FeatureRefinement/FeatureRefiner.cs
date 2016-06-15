@@ -61,14 +61,21 @@
                         IScanSummaryProvider scanSummaryProvider,
                         IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+
+            // Set up progress reporter for sub tasks
+            var progData = new ProgressData { MaxPercentage = 66, IsPartialRange = true };
+            var subProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent));
+
             // Get features
             var features = umcDataAccessProvider.FindByDatasetId(scanSummaryProvider.GroupId);
 
             // Run feature refinement
-            var refinedFeatures = this.Run(features, scanSummaryProvider, progress);
+            var refinedFeatures = this.Run(features, scanSummaryProvider, subProgress);
 
             // Persist features
-            umcDataAccessProvider.SaveFeaturesByDataset(refinedFeatures, scanSummaryProvider.GroupId, progress);
+            progData.StepRange(100);
+            umcDataAccessProvider.SaveFeaturesByDataset(refinedFeatures, scanSummaryProvider.GroupId, subProgress);
         }
 
         /// <summary>
@@ -85,22 +92,28 @@
         {
             progress = progress ?? new Progress<ProgressData>();
 
+            // Set up progress reporter for sub tasks
+            var progData = new ProgressData { MaxPercentage = 33, IsPartialRange = true };
+            var subProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
+
             // 1. Find XICs
             if (this.ShouldCreateXics)
             {
-                this.XicCreator.CreateXic(features, scanSummaryProvider as InformedProteomicsReader, progress);
+                this.XicCreator.CreateXic(features, scanSummaryProvider as InformedProteomicsReader, subProgress);
             }
 
             // 2. Run peak finding
             if (this.ShouldRunPeakFinding)
             {
-                features = this.PeakFinder.FindPeaks(features, scanSummaryProvider, progress);
+                progData.StepRange(66);
+                features = this.PeakFinder.FindPeaks(features, scanSummaryProvider, subProgress);
             }
 
             // 3. Run deisotoping correction
             if (this.ShouldRunDeisotopingCorrection)
             {
-                features = this.DeiosotopingCorrector.Run(features, progress);
+                progData.StepRange(100);
+                features = this.DeiosotopingCorrector.Run(features, subProgress);
             }
 
             return features;
