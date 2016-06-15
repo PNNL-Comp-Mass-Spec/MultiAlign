@@ -46,6 +46,12 @@
         public int NumberOfIsotopes { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether potential isotope peaks
+        /// should be combined even though they are different charge states.
+        /// </summary>
+        public bool ShouldSeparateChargeStates { get; set; }
+
+        /// <summary>
         /// Run Deisotoping clustering on the features.
         /// </summary>
         /// <param name="features">The features to deisotope.</param>
@@ -57,7 +63,7 @@
             clusterer.Parameters = new FeatureClusterParameters<UMCLight>
             {
                 CentroidRepresentation = ClusterCentroidRepresentation.Apex,
-                OnlyClusterSameChargeStates = true,
+                OnlyClusterSameChargeStates = !this.ShouldSeparateChargeStates,
                 Tolerances = this.Tolerances,
                 RangeFunction = this.IsotopesWithinRange,
                 DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(DistanceMetric.Euclidean)
@@ -84,6 +90,7 @@
             };
 
             this.NumberOfIsotopes = 2;
+            this.ShouldSeparateChargeStates = true;
         }
 
         /// <summary>

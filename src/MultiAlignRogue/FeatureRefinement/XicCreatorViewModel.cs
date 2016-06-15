@@ -1,12 +1,8 @@
 ﻿namespace MultiAlignRogue.FeatureRefinement
 {
-    using GalaSoft.MvvmLight.Messaging;
-
     using MultiAlignCore.Algorithms.Chromatograms;
-    using MultiAlignCore.IO.InputFiles;
 
     using MultiAlignRogue.Utils;
-    using MultiAlignRogue.ViewModels;
 
     /// <summary>
     /// This class is a view model for editing the <see cref="XicCreator" /> settings.

@@ -6,10 +6,10 @@
     using InformedProteomics.Backend.Utils;
 
     using MultiAlignCore.Algorithms.Chromatograms;
-    using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.Features;
+    using MultiAlignCore.IO.RawData;
 
     /// <summary>
     /// Runs several different post-processors on the features in attempt to
@@ -29,16 +29,6 @@
         public XicCreator XicCreator { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether clustering should be performed on the LCMS features.
-        /// </summary>
-        public bool ShouldCluster { get; set; }
-
-        /// <summary>
-        /// Gets or sets the clustering settings.
-        /// </summary>
-        public LcmsClusteringOptions ClusteringOptions { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether deisotoping correction clustering should be
         /// performed on the LCMS features.
         /// </summary>
@@ -50,9 +40,14 @@
         public DeisotopingCorrector DeiosotopingCorrector { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether peak finding/splitting should be run on the LCMS features.
+        /// Gets or sets a value indicating whether peak detecting/splitting should be run on the LCMS features.
         /// </summary>
-        public bool ShouldRunPeakSplitter { get; set; }
+        public bool ShouldRunPeakFinding { get; set; }
+
+        /// <summary>
+        /// Gets or sets the peak finder to use for detecting and splitting peaks into separate LCMS features.
+        /// </summary>
+        public MasicPeakFinder PeakFinder { get; set; }
 
         /// <summary>
         /// Run the feature refinement process on a set of features given a DAO.
@@ -93,17 +88,13 @@
             // 1. Find XICs
             if (this.ShouldCreateXics)
             {
-                
+                this.XicCreator.CreateXic(features, scanSummaryProvider as InformedProteomicsReader, progress);
             }
 
-            // 2. Run clustering
-            if (this.ShouldCluster)
+            // 2. Run peak finding
+            if (this.ShouldRunPeakFinding)
             {
-                var clusterer =
-                    ClusterFactory.CreateSecondPassFeatureClusterer(
-                        this.ClusteringOptions.LcmsFeatureClusteringAlgorithm);
-
-                features = clusterer.Cluster(features, progress);
+                features = this.PeakFinder.FindPeaks(features, scanSummaryProvider, progress);
             }
 
             // 3. Run deisotoping correction
@@ -111,8 +102,6 @@
             {
                 features = this.DeiosotopingCorrector.Run(features, progress);
             }
-
-            // 4. Run peak splitter
 
             return features;
         }
@@ -123,7 +112,6 @@
         public void RestoreDefaults()
         {
             this.ShouldCreateXics = true;
-            this.ClusteringOptions = new LcmsClusteringOptions();
             this.ShouldCreateXics = true;
             this.XicCreator = new XicCreator();
             this.ShouldRunDeisotopingCorrection = true;

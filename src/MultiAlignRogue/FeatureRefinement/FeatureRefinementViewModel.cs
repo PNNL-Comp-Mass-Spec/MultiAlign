@@ -16,7 +16,6 @@
     using MultiAlignCore.IO.InputFiles;
     using MultiAlignCore.IO.RawData;
 
-    using MultiAlignRogue.Clustering;
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;
 
@@ -77,57 +76,14 @@
             this.datasets = datasets;
             this.featureDataAccessProvider = featureDataAccessProvider;
             this.scanSummaryProviderCache = scanSummaryProviderCache;
-            this.DeisotopingCorrectorViewModel = new DeisotopingCorrectorViewModel(featureRefiner.DeiosotopingCorrector);
-            this.ClusteringSettingsViewModel = new ClusterAlgorithmSettingsViewModel(featureRefiner.ClusteringOptions);
             this.XicCreatorViewModel = new XicCreatorViewModel(featureRefiner.XicCreator);
+            this.PeakFinderViewModel = new MasicPeakFinderViewModel(featureRefiner.PeakFinder);
+            this.DeisotopingCorrectorViewModel = new DeisotopingCorrectorViewModel(featureRefiner.DeiosotopingCorrector);
             this.RunCommand = new RelayCommand(() => this.RunFeatureRefinement());
 
             // When dataset is selected, determine if raw data is available to toggle XIC creation
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, this.UpdateDatasetSelection);
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether deisotoping correction clustering should be
-        /// performed on the LCMS features.
-        /// </summary>
-        public bool ShouldRunDeisotopingCorrection
-        {
-            get { return this.featureRefiner.ShouldRunDeisotopingCorrection; }
-            set
-            {
-                if (this.featureRefiner.ShouldRunDeisotopingCorrection != value)
-                {
-                    this.featureRefiner.ShouldRunDeisotopingCorrection = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the view model for editing the deisotoping settings.
-        /// </summary>
-        public DeisotopingCorrectorViewModel DeisotopingCorrectorViewModel { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether clustering should be performed on the LCMS features.
-        /// </summary>
-        public bool ShouldCluster
-        {
-            get { return this.featureRefiner.ShouldCluster; }
-            set
-            {
-                if (this.featureRefiner.ShouldCluster != value)
-                {
-                    this.featureRefiner.ShouldCluster = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the view model for editing the clustering settings.
-        /// </summary>
-        public ClusterAlgorithmSettingsViewModel ClusteringSettingsViewModel { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether it is possible to create XICs for the selected dataset.
@@ -168,6 +124,49 @@
         public XicCreatorViewModel XicCreatorViewModel { get; private set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether peak detecting/splitting should be run on the LCMS features.
+        /// </summary>
+        public bool ShouldRunPeakFinding
+        {
+            get { return this.featureRefiner.ShouldRunPeakFinding; }
+            set
+            {
+                if (this.featureRefiner.ShouldRunPeakFinding != value)
+                {
+                    this.featureRefiner.ShouldRunPeakFinding = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the view model for editing the peak detection settings.
+        /// </summary>
+        public MasicPeakFinderViewModel PeakFinderViewModel { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether deisotoping correction clustering should be
+        /// performed on the LCMS features.
+        /// </summary>
+        public bool ShouldRunDeisotopingCorrection
+        {
+            get { return this.featureRefiner.ShouldRunDeisotopingCorrection; }
+            set
+            {
+                if (this.featureRefiner.ShouldRunDeisotopingCorrection != value)
+                {
+                    this.featureRefiner.ShouldRunDeisotopingCorrection = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the view model for editing the deisotoping settings.
+        /// </summary>
+        public DeisotopingCorrectorViewModel DeisotopingCorrectorViewModel { get; private set; }
+
+        /// <summary>
         /// Gets or sets the total progress (as a percent) of the feature refinement process.
         /// </summary>
         public double Progress
@@ -195,7 +194,6 @@
         {
             this.DeisotopingCorrectorViewModel.RestoreDefaultsCommand.Execute(null);
             this.XicCreatorViewModel.RestoreDefaultsCommand.Execute(null);
-            this.ClusteringSettingsViewModel.RestoreDefaultsCommand.Execute(null);
             base.UpdateAll();
         }
 

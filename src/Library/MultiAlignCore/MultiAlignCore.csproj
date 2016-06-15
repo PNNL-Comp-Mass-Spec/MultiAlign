@@ -76,6 +76,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Mage\Mage.dll</HintPath>
     </Reference>
+    <Reference Include="MagnitudeConcavityPeakFinder">
+      <HintPath>..\..\..\lib\MagnitudeConcavityPeakFinder\MagnitudeConcavityPeakFinder.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MathNet.Numerics.3.10.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -267,6 +270,7 @@
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STACAdapter.cs" />
     <Compile Include="Algorithms\FeatureMetrics\ChromatogramMetrics.cs" />
+    <Compile Include="Algorithms\FeatureRefinement\MasicPeakFinder.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorFactory.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorOptions.cs" />
     <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />

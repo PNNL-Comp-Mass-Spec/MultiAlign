@@ -114,6 +114,23 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether potential isotope peaks
+        /// should be combined even though they are different charge states.
+        /// </summary>
+        public bool ShouldSeparateChargeStates
+        {
+            get { return this.deisotopingCorrector.ShouldSeparateChargeStates; }
+            set
+            {
+                if (this.deisotopingCorrector.ShouldSeparateChargeStates != value)
+                {
+                    this.deisotopingCorrector.ShouldSeparateChargeStates = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Restore defaults back to their original values.
         /// </summary>
         public void RestoreDefaults()
