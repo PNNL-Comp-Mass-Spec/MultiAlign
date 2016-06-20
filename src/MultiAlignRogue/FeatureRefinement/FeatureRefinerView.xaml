@@ -13,11 +13,14 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30*" />
-            <RowDefinition Height="40*" />
-            <RowDefinition Height="30*" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="120" /> <!-- Create XICs -->
+            <RowDefinition Height="10" />  <!-- Spacer -->
+            <RowDefinition Height="130" /> <!-- Peak Fiding -->
+            <RowDefinition Height="10" />  <!-- Spacer -->
+            <RowDefinition Height="130" /> <!-- Deisotoping Corrector -->
+            <RowDefinition Height="*" />   <!-- Spacer -->
+            <RowDefinition Height="30" />  <!-- Progress bar -->
+            <RowDefinition Height="30" />  <!-- Buttons -->
         </Grid.RowDefinitions>
         
         <!-- XIC Creator -->
@@ -28,8 +31,9 @@
             </GroupBox.Header>
             <Grid IsEnabled="{Binding ShouldCreateXics}" Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50*" />
@@ -38,30 +42,72 @@
                     <ColumnDefinition Width="25*" />
                 </Grid.ColumnDefinitions>
 
+                <!-- Scan Padding -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="18,0,0,0" VerticalAlignment="Center">Scan Tolerance</TextBlock>
+                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1" Height="25" Minimum="0" Value="{Binding XicCreatorViewModel.ScanTolerance}" />
+                
                 <!-- Smoothing Polynomial Order -->
-                <CheckBox Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Smoothing</CheckBox>
-                <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">Polynomial:</TextBlock>
-                <xctk:IntegerUpDown Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" />
+                <CheckBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Smoothing</CheckBox>
+                <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1">Polynomial:</TextBlock>
+                <xctk:IntegerUpDown Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1"
+                                    Value="{Binding XicCreatorViewModel.ScanTolerance }" />
 
                 <!-- Smoothing Window Size -->
-                <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3">Window Size:</TextBlock>
-                <xctk:IntegerUpDown Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="3" />
+                <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="3">Window Size:</TextBlock>
+                <xctk:IntegerUpDown Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="3" />
 
                 <!-- Relative Intensity Threshold -->
-                <TextBlock Grid.Row="1" Grid.Column="0" Margin="18,0,0,0" VerticalAlignment="Center">Relative Intensity Threshold</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Height="25" Minimum="0" Maximum="1" Increment="" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="18,0,0,0" VerticalAlignment="Center">Relative Intensity Threshold</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" Height="25" Minimum="0" Maximum="1" />
             </Grid>
         </GroupBox>
         
         <!-- Peak Finding -->
-        <GroupBox Grid.Row="1">
+        <GroupBox Grid.Row="2">
             <GroupBox.Header>
                 <CheckBox FontWeight="Bold" Margin="5,0,5,0">Peak Finding</CheckBox>
             </GroupBox.Header>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <!-- Absolute Minimum Intensity Threshold -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           VerticalAlignment="Center" HorizontalAlignment="Center">Absolute Minimum Intensity Threshold</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="0" Height="25"
+                                   Value="{ Binding PeakFinderViewModel.AbsoluteMinimumIntensityThreshold, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                
+                <!-- Relative Intensity Threshold -->
+                <TextBlock Grid.Row="0" Grid.Column="2"
+                           VerticalAlignment="Center" HorizontalAlignment="Center">Relative Intensity Threshold</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="2" Height="25"
+                                   Value="{ Binding PeakFinderViewModel.RelativeIntensityThreshold, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                
+                <!-- Max Scans with no overlap -->
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           VerticalAlignment="Center" HorizontalAlignment="Center">Max scans with no overlap</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="3" Grid.Column="0" Height="25"
+                                   Value="{ Binding PeakFinderViewModel.MaxScansWithNoOverlap, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }"/>
+
+                <!-- Max Allowed Upward Spike Fraction -->
+                <TextBlock Grid.Row="2" Grid.Column="2"
+                           VerticalAlignment="Center" HorizontalAlignment="Center">Max Upward Spike Fraction</TextBlock>
+                <xctk:DoubleUpDown Grid.Row="3" Grid.Column="2" Height="25"
+                                   Value="{ Binding PeakFinderViewModel.MaxAllowedUpwardSpikeFraction, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }"/>
+            </Grid>
         </GroupBox>
 
         <!-- Deisotoping Correction -->
-        <GroupBox Grid.Row="2">
+        <GroupBox Grid.Row="4">
             <GroupBox.Header>
                 <CheckBox FontWeight="Bold" Margin="5,0,5,0"
                           IsChecked="{Binding ShouldRunDeisotopingCorrection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Deisotoping Correction</CheckBox>
@@ -69,11 +115,9 @@
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="10" />
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="20" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -83,31 +127,32 @@
 
                 <!-- Isotopic Tolerance -->
                 <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Isotopic Tolerance</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="0"
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="0" Height="25"
                                    Value="{Binding DeisotopingCorrectorViewModel.MassTolerance}"/>
                 
                 <!-- NET tolerance -->
                 <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">NET Tolerance</TextBlock>
-                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="2" Minimum="0" Maximum="1" Increment="0.1" Value="{Binding DeisotopingCorrectorViewModel.NetTolerance}" />
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="2" Height="25"
+                                   Minimum="0" Maximum="1" Increment="0.1" Value="{Binding DeisotopingCorrectorViewModel.NetTolerance}" />
 
                 <!-- # of Isotopes -->
-                <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Number of Isotopes</TextBlock>
-                <xctk:IntegerUpDown Grid.Row="4" Grid.Column="0" Minimum="0"
-                                    Value="{Binding DeisotopingCorrectorViewModel.NumberOfIsotopes}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Number of Isotopes</TextBlock>
+                <xctk:IntegerUpDown Grid.Row="3" Grid.Column="0" Height="25"
+                                    Minimum="0" Value="{Binding DeisotopingCorrectorViewModel.NumberOfIsotopes}" />
 
                 <!-- Separate By Charge -->
-                <CheckBox Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Separate By Charge</CheckBox>
+                <CheckBox Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Separate By Charge</CheckBox>
             </Grid>
         </GroupBox>
         
         <!-- Progress Bar -->
-        <ProgressBar Grid.Row="3"
+        <ProgressBar Grid.Row="6"
                      Height="25"
                      Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}"
                      Value="{Binding LoadingProgress}" />
 
         <!-- Load Button -->
-        <Button Grid.Row="4"
+        <Button Grid.Row="7"
                 Width="125"
                 Height="25"
                 HorizontalAlignment="Right"
@@ -116,7 +161,7 @@
         </Button>
 
         <!-- Restore Defaults Button -->
-        <Button Grid.Row="4" Height="25" Width="125"
+        <Button Grid.Row="7" Height="25" Width="125"
                 Command="{Binding RestoreDefaultsCommand}"
                 HorizontalAlignment="Left">Restore Defaults</Button>
     </Grid>

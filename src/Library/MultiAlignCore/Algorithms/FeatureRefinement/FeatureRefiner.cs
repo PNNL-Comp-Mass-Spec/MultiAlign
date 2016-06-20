@@ -65,7 +65,7 @@
 
             // Set up progress reporter for sub tasks
             var progData = new ProgressData { MaxPercentage = 66, IsPartialRange = true };
-            var subProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent));
+            var subProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
 
             // Get features
             var features = umcDataAccessProvider.FindByDatasetId(scanSummaryProvider.GroupId);
@@ -106,7 +106,7 @@
             if (this.ShouldRunPeakFinding)
             {
                 progData.StepRange(66);
-                features = this.PeakFinder.FindPeaks(features, scanSummaryProvider, subProgress);
+                features = this.PeakFinder.FindPeaks(features, subProgress);
             }
 
             // 3. Run deisotoping correction

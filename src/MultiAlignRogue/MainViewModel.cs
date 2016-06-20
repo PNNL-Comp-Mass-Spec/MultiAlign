@@ -33,6 +33,7 @@
     using MultiAlignRogue.AMTMatching;
     using MultiAlignRogue.Clustering;
     using MultiAlignRogue.DataLoading;
+    using MultiAlignRogue.FeatureRefinement;
     using MultiAlignRogue.Feature_Finding;
 
     using MessageBox = System.Windows.MessageBox;
@@ -45,6 +46,8 @@
         //private readonly AnalysisConfig analysisConfig;
 
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
+
+        private FeatureRefinementViewModel featureRefinementViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
         private StacSettingsViewModel stacSettingsViewModel;

@@ -3,7 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
+    using InformedProteomics.Backend.Data.Spectrometry;
     using InformedProteomics.Backend.Utils;
+
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.RawData;
@@ -14,29 +17,40 @@
     public class XicCreator : ISettingsContainer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="XicCreator" /> class.
+        /// Smoother to smooth Xics with.
         /// </summary>
-        /// <param name="xicRefiner">Refiner to use.</param>
-        public XicCreator(XicRefiner xicRefiner = null)
-        {
-            this.XicRefiner = xicRefiner ?? new XicRefiner();
-        }
+        private SpectralProcessing.SavitzkyGolaySmoother smoother;
+
+        /// <summary>
+        /// Gets or sets the number scans to pad the feature scan range by when extracting the XIC.
+        /// </summary>
+        public int ScanTolerance { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether refinement (smoothing and tail snipping)
         /// should be run on the XICs.
         /// </summary>
-        public bool ShouldRefine { get; set; }
+        public bool ShouldSmooth { get; set; }
 
         /// <summary>
-        /// Gets or sets the mass error in PPM for the 
+        /// Gets or sets the polynomial order for Savitzky-Golay smoother.
+        /// </summary>
+        public int SmoothingPolynomialOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the smoothing window size for Savitzky-Golay smoother.
+        /// </summary>
+        public int SmoothingWindowSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the intensity threshold relative to the highest peak to snip tails at.
+        /// </summary>
+        public double RelativeIntensityThreshold { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mass error in PPM.
         /// </summary>
         public double MassError { get; set; }
-
-        /// <summary>
-        /// Gets the XIC refiner.
-        /// </summary>
-        public XicRefiner XicRefiner { get; private set; }
 
         /// <summary>
         /// Create a XICs for LCMS features.
@@ -71,12 +85,11 @@
                 var lowMz = FeatureLight.ComputeDaDifferenceFromPPM(feature.Mz, this.MassError);
 
                 // Read XIC
-                var xic = ipr.GetPrecursorExtractedIonChromatogram(lowMz, highMz, targetScan);
+                var xic = ipr.GetPrecursorExtractedIonChromatogram(lowMz, highMz, targetScan, this.ScanTolerance);
 
-                if (this.ShouldRefine)
+                if (this.ShouldSmooth)
                 {
-                    var xicRefiner = this.XicRefiner ?? new XicRefiner();
-                    xic = xicRefiner.RefineXic(xic);
+                    xic = this.RefineXic(xic);
                 }
 
                 if (xic.Count < 3)
@@ -187,9 +200,93 @@
         public void RestoreDefaults()
         {
             this.MassError = 10;
-            this.ShouldRefine = true;
-            this.XicRefiner.RelativeIntensityThreshold = 0.1;
+            this.ShouldSmooth = true;
+            this.RelativeIntensityThreshold = 0;
+            this.ScanTolerance = 3;
         }
+
+        /// <summary>
+        /// This method smooths the XIC using the Savitzky-Golay smoothing algorithm
+        /// and snips the tails on the XIC based on where the relative intensity 
+        /// falls below <see cref="RelativeIntensityThreshold" />.
+        /// </summary>
+        /// <param name="xic">The XIC to smooth.</param>
+        /// <returns>The smoothed and snipped XIC.</returns>
+        private Xic RefineXic(Xic xic)
+        {
+            if (xic.Count == 0)
+            {
+                return xic;
+            }
+
+
+            if (this.smoother == null)
+            {   // Create the smoother if it hasn't been created yet.
+                this.smoother = new SpectralProcessing.SavitzkyGolaySmoother(this.SmoothingWindowSize, this.SmoothingPolynomialOrder, false);
+            }
+
+            // Here we smooth the points...and remove any features with from and trailing zero points
+            var unsmoothedPoints = xic.Select(xicp => new XYData(xicp.ScanNum, xicp.Intensity))
+                                      .OrderBy(p => p.X).ToList();
+            var points = this.smoother.Smooth(unsmoothedPoints);
+
+            // Snip peak tails.
+            if (this.RelativeIntensityThreshold > 0)
+            {
+                points = this.SnipPeakTails(points);
+            }
+
+            var refinedXic = new Xic();
+            foreach (var point in points)
+            {
+                refinedXic.Add(new XicPoint((int)point.X, xic[0].Mz, point.Y));
+            }
+
+            return refinedXic;
+        }
+
+        private List<XYData> SnipPeakTails(List<XYData> xic)
+        {
+            // Find the biggest peak...
+            var maxScanIndex = 0;
+            double maxAbundance = 0;
+            for (var i = 0; i < xic.Count; i++)
+            {
+                if (maxAbundance < xic[i].Y)
+                {
+                    maxScanIndex = i;
+                    maxAbundance = xic[i].Y;
+                }
+            }
+
+            // Then find when the feature goes to zero
+            // Start from max to left                        
+            var startIndex = maxScanIndex;
+
+            // If we hit zero, then keep
+            for (; startIndex > 0; startIndex--)
+            {
+                if ((xic[startIndex].Y / maxAbundance) < this.RelativeIntensityThreshold)
+                    break;
+            }
+
+            // Start from max to right
+            var stopIndex = maxScanIndex;
+            for (; stopIndex < xic.Count - 1; stopIndex++)
+            {
+                if ((xic[stopIndex].Y / maxAbundance) < this.RelativeIntensityThreshold)
+                    break;
+            }
+
+            // Add the features back
+            var snippedXic = new List<XYData>();
+            for (var i = startIndex; i <= stopIndex; i++)
+            {
+                snippedXic.Add(new XYData(Convert.ToInt32(xic[i].X), Convert.ToInt64(xic[i].Y)));
+            }
+
+            return snippedXic;
+        } 
     }
 
 }

@@ -28,7 +28,7 @@
         /// Gets or sets the minimum intensity allowed to be considered a peak.
         /// </summary>
         /// <remarks>Default: 0</remarks>
-        public double AbsoluteMinimumIntensityThreshold
+        public float AbsoluteMinimumIntensityThreshold
         {
             get { return this.masicPeakFinder.AbsoluteMinimumIntensityThreshold; }
             set
@@ -46,7 +46,7 @@
         /// be considered a peak.
         /// </summary>
         /// <remarks>Default: 0.01</remarks>
-        public double RelativeIntensityThreshold
+        public float RelativeIntensityThreshold
         {
             get { return this.masicPeakFinder.RelativeIntensityThreshold; }
             set
@@ -67,7 +67,7 @@
         /// <remarks>Default: 0</remarks>
         public int MaxScansWithNoOverlap
         {
-            get { return this.masicPeakFinder.MaxScansWithNoOverlap;}
+            get { return this.masicPeakFinder.MaxScansWithNoOverlap; }
             set
             {
                 if (this.masicPeakFinder.MaxScansWithNoOverlap != value)
@@ -83,7 +83,7 @@
         /// to be included in the peak.
         /// </summary>
         /// <remarks>Default: 0.20 which means the maximum allowable spike is 20% of the peak maximum</remarks>
-        public double MaxAllowedUpwardSpikeFraction
+        public float MaxAllowedUpwardSpikeFraction
         {
             get { return this.masicPeakFinder.MaxAllowedUpwardSpikeFraction;}
             set

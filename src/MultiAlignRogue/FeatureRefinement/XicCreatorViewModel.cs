@@ -45,12 +45,12 @@
         /// </summary>
         public bool ShouldRefine
         {
-            get { return this.xicCreator.ShouldRefine; }
+            get { return this.xicCreator.ShouldSmooth; }
             set
             {
-                if (this.xicCreator.ShouldRefine != value)
+                if (this.xicCreator.ShouldSmooth != value)
                 {
-                    this.xicCreator.ShouldRefine = value;
+                    this.xicCreator.ShouldSmooth = value;
                     this.RaisePropertyChanged();
                 }
             }
@@ -61,12 +61,29 @@
         /// </summary>
         public double RelativeIntensityThreshold
         {
-            get { return this.xicCreator.XicRefiner.RelativeIntensityThreshold; }
+            get { return this.xicCreator.RelativeIntensityThreshold; }
             set
             {
-                if (!this.xicCreator.XicRefiner.RelativeIntensityThreshold.Equals(value))
+                if (!this.xicCreator.RelativeIntensityThreshold.Equals(value))
                 {
-                    this.xicCreator.XicRefiner.RelativeIntensityThreshold = value;
+                    this.xicCreator.RelativeIntensityThreshold = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number scans to pad the feature scan range by when extracting the XIC.
+        /// </summary>
+        /// <remarks>This is useful when using this feature as an input to the peak finder.</remarks>
+        public int ScanTolerance
+        {
+            get { return this.xicCreator.ScanTolerance; }
+            set
+            {
+                if (this.xicCreator.ScanTolerance != value)
+                {
+                    this.xicCreator.ScanTolerance = value;
                     this.RaisePropertyChanged();
                 }
             }

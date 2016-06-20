@@ -28,14 +28,14 @@
         /// Gets or sets the minimum intensity allowed to be considered a peak.
         /// </summary>
         /// <remarks>Default: 0</remarks>
-        public double AbsoluteMinimumIntensityThreshold { get; set; }
+        public float AbsoluteMinimumIntensityThreshold { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum intensity relative to the largest data point to
         /// be considered a peak.
         /// </summary>
         /// <remarks>Default: 0.01</remarks>
-        public double RelativeIntensityThreshold { get; set; }
+        public float RelativeIntensityThreshold { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum distance that the edge of an identified peak can
@@ -50,7 +50,7 @@
         /// to be included in the peak.
         /// </summary>
         /// <remarks>Default: 0.20 which means the maximum allowable spike is 20% of the peak maximum</remarks>
-        public double MaxAllowedUpwardSpikeFraction { get; set; }
+        public float MaxAllowedUpwardSpikeFraction { get; set; }
 
         /// <summary>
         /// Restore settings back to their default values.
@@ -58,19 +58,18 @@
         public void RestoreDefaults()
         {
             this.AbsoluteMinimumIntensityThreshold = 0;
-            this.RelativeIntensityThreshold = 0.01;
+            this.RelativeIntensityThreshold = 0.01f;
             this.MaxScansWithNoOverlap = 0;
-            this.MaxAllowedUpwardSpikeFraction = 0.2;
+            this.MaxAllowedUpwardSpikeFraction = 0.2f;
         }
 
         /// <summary>
         /// Run peak finder on a collection of features. Each feature may contain 0 to many peaks.
         /// </summary>
         /// <param name="features">The raw features to run the peak finder on.</param>
-        /// <param name="scanSummaryProvider">Scan summary provider for mapping scans to NET.</param>
         /// <param name="progress">The progress reporter.</param>
         /// <returns>A list of LCMS features where each feature represents a single LC peak.</returns>
-        public List<UMCLight> FindPeaks(List<UMCLight> features, IScanSummaryProvider scanSummaryProvider, IProgress<ProgressData> progress = null)
+        public List<UMCLight> FindPeaks(List<UMCLight> features, IProgress<ProgressData> progress = null)
         {
             progress = progress ?? new Progress<ProgressData>();
             var progressData = new ProgressData();
@@ -79,7 +78,7 @@
             // Run peak finder on each existing LCMS feature.
             for (int index = 0; index < features.Count; index++)
             {
-                peaksFound.AddRange(this.FindPeaks(features[index], scanSummaryProvider));
+                peaksFound.AddRange(this.FindPeaks(features[index]));
                 progress.Report(progressData.UpdatePercent((100.0 * index) / features.Count));
             }
 
@@ -90,9 +89,8 @@
         /// Find peaks within a single feature. Feature may contain 0 to many peaks.
         /// </summary>
         /// <param name="feature">The feature to find peaks in.</param>
-        /// <param name="scanSummaryProvider">Scan summary provider for mapping scans to NET.</param>
         /// <returns>List of peaks found within the feature as new LCMS features.</returns>
-        public List<UMCLight> FindPeaks(UMCLight feature, IScanSummaryProvider scanSummaryProvider)
+        public List<UMCLight> FindPeaks(UMCLight feature)
         {
             // Set up peak finder.
             var peakFinder = new PeakDetector();
@@ -103,15 +101,22 @@
                 UseButterworthSmooth = false,
                 UseSavitzkyGolaySmooth = false,
                 FindPeaksOnSmoothedData = false,
+                IntensityThresholdAbsoluteMinimum = this.AbsoluteMinimumIntensityThreshold,
+                IntensityThresholdFractionMax = this.RelativeIntensityThreshold,
+                MaxDistanceScansNoOverlap = this.MaxScansWithNoOverlap,
+                MaxAllowedUpwardSpikeFractionMax = this.MaxAllowedUpwardSpikeFraction
             };
+
+            // Map scans to NETs for back calculating later
+            var scanToNetMap = feature.MsFeatures.ToDictionary(msFeature => msFeature.Scan, msFeature => msFeature.Net);
 
             // Split out x and y values for peak finder
             var scans = feature.MsFeatures.Select(msFeature => msFeature.Scan).ToArray();
             var intensities = feature.MsFeatures.Select(msFeature => msFeature.Abundance).ToArray();
-            List<double> xyData;
 
             // Run peak finder on feature
-            var peaks = peakFinder.FindPeaks(options, scans, intensities, feature.Scan, out xyData)
+            List<double> yData;
+            var peaks = peakFinder.FindPeaks(options, scans, intensities, feature.Scan, out yData)
                                   .Where(peak => peak.IsValid);
 
             // Make each peak a new LCMS feature
@@ -124,8 +129,8 @@
                 for (int i = peak.LeftEdge; i <= peak.RightEdge; i++)
                 {
                     var scan = scans[i];
-                    var net = scanSummaryProvider.GetScanSummary(scan).Net;
-                    var intensity = xyData[i];
+                    var net = scanToNetMap[scan];
+                    var intensity = yData[i];
                     newFeature.AddChildFeature(new MSFeatureLight
                     {
                         Scan = scan,
@@ -141,6 +146,6 @@
             }
 
             return newFeatures;
-        } 
+        }
     }
 }
