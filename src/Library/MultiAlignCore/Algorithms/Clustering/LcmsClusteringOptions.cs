@@ -21,6 +21,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public ClusteringAlgorithmTypes       LcmsFeatureClusteringAlgorithm { get; set; }
         public ClusterCentroidRepresentation ClusterCentroidRepresentation { get; set; }
         public FeatureTolerances InstrumentTolerances { get; set; }
+        public bool ShouldClusterSameDataset { get; set; }
 
         public static FeatureClusterParameters<UMCLight> ConvertToOmics(LcmsClusteringOptions options)
         {                        
