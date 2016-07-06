@@ -68,7 +68,8 @@
                         Grid.Column="2"
                         Width="33"
                         HorizontalAlignment="Right"
-                        Command="{Binding DatabaseSelectionViewModel.SelectTextFileCommand}" />
+                        Command="{Binding DatabaseSelectionViewModel.SelectLocalFileCommand}"
+                        Content="File" />
 
                 <ProgressBar Name="AmtTagDatabaseProgressBar"
                              Grid.Row="1"

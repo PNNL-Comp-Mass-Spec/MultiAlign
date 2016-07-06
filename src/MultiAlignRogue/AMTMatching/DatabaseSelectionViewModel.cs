@@ -57,7 +57,7 @@ namespace MultiAlignRogue.AMTMatching
             this.ShowMassTagProgress = false;
             this.Analysis = new MultiAlignAnalysis();
             this.SelectAMTCommand = new RelayCommand(async () => await this.SelectAMTAsync());
-            this.SelectTextFileCommand = new RelayCommand(async () => await this.SelectTextFileAsync());
+            this.SelectLocalFileCommand = new RelayCommand(async () => await this.SelectLocalFileAsync());
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace MultiAlignRogue.AMTMatching
 
         /// <summary>
         /// Gets a command that opens a file dialog that allows the user to 
-        /// select a path to a mass tag text file.
+        /// select a path to a local mass tag database or text file.
         /// </summary>
-        public ICommand SelectTextFileCommand { get; private set; }
+        public ICommand SelectLocalFileCommand { get; private set; }
 
         /// <summary>
         /// Gets the singleton instance of this class.
@@ -235,13 +235,13 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        /// Opens a file dialog that allows the user to select a path to a mass tag text file,
+        /// Opens a file dialog that allows the user to select a path to a local mass tag database or text file,
         /// and then adding it to the analysis database asynchronously.
         /// </summary>
         /// <returns>The <see cref="Task" />.</returns>
-        private async Task SelectTextFileAsync()
+        private async Task SelectLocalFileAsync()
         {
-            this.SelectTextFile();
+            this.SelectLocalFile();
             if (this.SelectedDatabase != null)
             {
                 this.analysis.Options.AlignmentOptions.InputDatabase = this.SelectedDatabase;
@@ -250,14 +250,14 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        /// Opens a file dialog that allows the user to select a path to a mass tag text file.
+        /// Opens a file dialog that allows the user to select a path to a local mass tag database or text file.
         /// </summary>
-        private void SelectTextFile()
+        private void SelectLocalFile()
         {
             var openFileDialog = new OpenFileDialog
             {
                 DefaultExt = ".tsv",
-                Filter = @"Supported Files|*.tsv"
+                Filter = InputDatabase.MassTagFileFilterString
             };
 
             var result = openFileDialog.ShowDialog();
@@ -266,12 +266,7 @@ namespace MultiAlignRogue.AMTMatching
                 return;
             }
 
-            this.SelectedDatabase = new InputDatabase
-            {
-                DatabaseName = Path.GetFileNameWithoutExtension(openFileDialog.FileName),
-                LocalPath = openFileDialog.FileName,
-                DatabaseFormat = MtdbLoaderFactory.GetGenericTextFormat(openFileDialog.FileName),
-            };
+            this.SelectedDatabase = InputDatabase.GetLocalDatabase(openFileDialog.FileName);
         }
 
         /// <summary>

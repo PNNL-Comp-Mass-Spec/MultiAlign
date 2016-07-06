@@ -790,7 +790,7 @@
             {
                 this.Analysis.DataProviders.DatabaseLock.EnterWriteLock();
                 this.Analysis.DataProviders.DatasetCache.UpdateAll(this.Datasets.Select(d => d.Dataset).ToList());
-                this.Analysis.DataProviders.OptionsDao.UpdateAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
+                this.Analysis.DataProviders.OptionsDao.AddAll(OptionsTransformer.PropertiesToList(this.Analysis.Options));
             }
             finally
             {
