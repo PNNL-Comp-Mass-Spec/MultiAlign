@@ -11,7 +11,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
     public class NumericalIntegrationTests : SolverTestBase
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -23,7 +23,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Linear);
             var coeffs = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -34,7 +34,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             Assert.AreEqual(22.5, area, .001);
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -71,12 +71,12 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 }
                 var percentError = (area - 22.5)/22.5*100;
                 var averageTime = sum / Convert.ToDouble(iterations);
-                Console.WriteLine("{0}\t{1}\t{2}\t{3}", totalSamples, averageTime, area, percentError);                
+                Console.WriteLine("{0}\t{1}\t{2}\t{3}", totalSamples, averageTime, area, percentError);
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a Hanning line shape.")]
@@ -103,7 +103,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -130,7 +130,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a cubic line shape.")]
@@ -154,7 +154,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         //[Test]
         [Description("Tests the Levenburg Marquadt solver using Chebyshev polynomials.")]
@@ -179,7 +179,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a lorentzian line shape.")]
@@ -196,23 +196,23 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs[0] = 6;//width
             coeffs[1] = 50;//height
-            coeffs[2] = -1;//xoffset            
+            coeffs[2] = -1;//xoffset
 
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
-            Assert.AreEqual(0.50000000000535016d, coeffs[0]);//real is 0.5. 
+            Assert.AreEqual(0.50000000000535016d, coeffs[0]);//real is 0.5.
             Assert.AreEqual(150.00000000174555d, coeffs[1]);//real is 75
             Assert.AreEqual(0.99999999999999312d, coeffs[2]);//real is 1
 
             //using 1 instead of 0.5
-            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5. 
+            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5.
             //Assert.AreEqual(74.99999972887592d, coeffs[1]);//real is 75
             //Assert.AreEqual(0.9999999999999587d, coeffs[2]);//real is 1
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a lorentzian line shape.")]
@@ -229,23 +229,23 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs[0] = 1;//width
             coeffs[1] = 100;//height
-            coeffs[2] = -1;//xoffset            
+            coeffs[2] = -1;//xoffset
 
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
-            Assert.AreEqual(-0.0018033993446626476d, coeffs[0],0.0000001);//real is 0.5. 
+            Assert.AreEqual(-0.0018033993446626476d, coeffs[0],0.0000001);//real is 0.5.
             Assert.AreEqual(-5.1154290702777061d, coeffs[1],0.001);//real is 75
             Assert.AreEqual(-0.0094999999962089646d, coeffs[2],0.0000001);//real is 1
 
             //using 1 instead of 0.5
-            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5. 
+            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5.
             //Assert.AreEqual(74.99999972887592d, coeffs[1]);//real is 75
             //Assert.AreEqual(0.9999999999999587d, coeffs[2]);//real is 1
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape.")]
@@ -262,7 +262,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs[0] = 6;//sigma
             coeffs[1] = 50;//height
-            coeffs[2] = -1;//xoffset            
+            coeffs[2] = -1;//xoffset
 
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
@@ -273,7 +273,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape (legacy)")]
@@ -296,7 +296,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape (legacy)")]
@@ -319,5 +319,5 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             Assert.AreEqual(0.99999999999999967d, coeffs[2], .00001);//real is 1
 
         }
-    }     
+    }
 }

@@ -21,7 +21,7 @@ namespace MultiAlignRogue.Clustering
     using OxyPlot;
     using OxyPlot.Axes;
 
-    
+
     using QuadTreeLib;
 
     public class ClusterPlotViewModel : ViewModelBase
@@ -142,7 +142,7 @@ namespace MultiAlignRogue.Clustering
                     this.clusterViewerSettings = value;
                     if (this.clusterViewerSettings == null)
                     {
-                        this.clusterViewerSettings = new ClusterViewerSettings();    
+                        this.clusterViewerSettings = new ClusterViewerSettings();
                     }
 
                     if (this.throttler != null && this.ClusterPlotModel != null)

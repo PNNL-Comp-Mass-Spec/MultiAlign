@@ -15,7 +15,7 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
     {
         public void FitChromatograms(Chromatogram profile,
                                      BasisFunctionBase basisFunction)
-        {                        
+        {
             var solver = new LevenburgMarquadtSolver();
             solver.BasisFunction = basisFunction.FunctionDelegate;
 
@@ -32,15 +32,15 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
             var fitPoints = new List<XYData>();
             while (scan <= maxScan)
             {
-                var y = basisFunction.Evaluate(coeffs, scan);                
+                var y = basisFunction.Evaluate(coeffs, scan);
                 fitPoints.Add(new XYData(scan, y));
                 scan += deltaScan;
             }
             profile.FitCoefficients = coeffs;
-            profile.FitPoints       = fitPoints;                 
+            profile.FitPoints       = fitPoints;
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="feature"></param>
         /// <param name="basisFunction"></param>
@@ -49,12 +49,12 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
         {
             foreach (var charge in feature.ChargeStateChromatograms.Keys)
             {
-                var gram = feature.ChargeStateChromatograms[charge];                
-                FitChromatograms(gram, basisFunction);                
+                var gram = feature.ChargeStateChromatograms[charge];
+                FitChromatograms(gram, basisFunction);
             }
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="features"></param>
         /// <param name="basisFunction"></param>
@@ -67,7 +67,7 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
         /// </summary>
         /// <param name="profileA">chromatogram A</param>
         /// <param name="profileB">chromatogram B</param>
-        /// <param name="basisFunction">Function used to interpolate</param>        
+        /// <param name="basisFunction">Function used to interpolate</param>
         /// <param name="intensityProfile"></param>
         /// <returns>R-squared value for a given linear regression between intensity matrix</returns>
         public double ScoreChromatogramIntensity(Chromatogram profileA,
@@ -83,7 +83,7 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
 
             minScan = Math.Min(minScan, profileB.FitPoints.Min(x => x.X));
             maxScan = Math.Max(maxScan, profileB.FitPoints.Max(x => x.X));
-            
+
             var deltaScan    = Math.Abs(maxScan - minScan) / 100;
             var scan         = minScan;
 
@@ -105,6 +105,6 @@ namespace MultiAlignCore.Algorithms.FeatureMetrics
             var report                 = solver.Solve(pairs, ref coeffs);
 
             return report.RSquared;
-        }        
+        }
     }
 }

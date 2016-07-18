@@ -9,7 +9,7 @@ namespace MultiAlignCore.IO.Options
     /// </summary>
     /// <remarks>Will not work with Immutable types besides strings; the properties must have public set accessors for them to be properly set.
     /// This means that Tuples and KeyValuePairs (and any collection than uses them, including 'Dictionary's and 'SortedLists').
-    /// 
+    ///
     /// This can store arrays to the database, but will not convert from collections to arrays; collections that need to be stored to the
     /// database should be "ignored", and have a separate get/set property that converts the collection to/from an array.
     /// This puts the control of how the collection is configured in the hands of the object.
@@ -60,7 +60,7 @@ namespace MultiAlignCore.IO.Options
                     // Ignore the property
                     continue;
                 }
-                
+
                 // Get the type of the property
                 var propType = property.PropertyType;
 
@@ -238,7 +238,7 @@ namespace MultiAlignCore.IO.Options
             // iterate through all properties in the object, and modify with those that have a match in the dictionaries
             foreach (var property in optionsClass.GetProperties())
             {
-                // Enums: must use Enum.Parse to translate from string back into Enum 
+                // Enums: must use Enum.Parse to translate from string back into Enum
                 if (property.PropertyType.IsEnum && valDict.ContainsKey(property.Name))
                 {
                     var val = valDict[property.Name];

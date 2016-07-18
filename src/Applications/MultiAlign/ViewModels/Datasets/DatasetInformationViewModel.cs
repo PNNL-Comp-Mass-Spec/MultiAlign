@@ -288,7 +288,7 @@ namespace MultiAlign.ViewModels.Datasets
         }
 
         private double progress;
-        
+
         public double Progress
         {
             get { return this.progress; }

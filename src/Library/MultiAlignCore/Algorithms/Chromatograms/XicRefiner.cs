@@ -66,7 +66,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 return xic;
 
             var unsmoothedPoints = xic.Select(xicp => new XYData(xicp.ScanNum, xicp.Intensity))
-                                      .OrderBy(p => p.X).ToList(); 
+                                      .OrderBy(p => p.X).ToList();
             var points = smoother.Smooth(unsmoothedPoints);
 
             // Find the biggest peak...
@@ -82,7 +82,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             }
 
             // Then find when the feature goes to zero
-            // Start from max to left                        
+            // Start from max to left
             var startIndex = maxScanIndex;
 
             // If we hit zero, then keep

@@ -26,7 +26,7 @@ namespace AlignmentPaperTestSuite.Figures
             0, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent                
+            .8, // Ion Percent
             100, // Required peaks
             Ignore = true
             )]
@@ -36,10 +36,10 @@ namespace AlignmentPaperTestSuite.Figures
             .5, // mz bin size when retrieving spectra
             1, // m/z
             .25, // NET
-            .6, // Similarity Cutoff Score            
+            .6, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             Ignore = true,
             Description =
@@ -51,10 +51,10 @@ namespace AlignmentPaperTestSuite.Figures
             .5, // mz bin size when retrieving spectra
             1, // m/z
             .25, // NET
-            .6, // Similarity Cutoff Score            
+            .6, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             Ignore = false,
             Description =
@@ -89,7 +89,7 @@ namespace AlignmentPaperTestSuite.Figures
                         select new FigureBase.PathCache { Cache = newName, Msgf = path, Features = features }).ToList();
 
 
-            // The options for the analysis 
+            // The options for the analysis
             var options = new SpectralOptions
             {
                 MzBinSize = mzBinSize,
@@ -110,7 +110,7 @@ namespace AlignmentPaperTestSuite.Figures
             {
                 var cachex = data[i];
                 // Get the raw path stored in the cache file...
-                // then get the dataset object 
+                // then get the dataset object
                 var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
@@ -134,7 +134,7 @@ namespace AlignmentPaperTestSuite.Figures
 
                         var cachey = data[j];
                         // Get the raw path stored in the cache file...
-                        // then get the dataset object 
+                        // then get the dataset object
                         var rawPathY = ScanSummaryCache.ReadPath(cachey.Cache);
                         var datasetY = new AlignmentDataset(rawPathY, "", cachey.Msgf);
 

@@ -24,14 +24,14 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                 {
                     peak.Y = Math.Log(peak.Y, 2);
                 }
-            }            
+            }
             return spectrum;
         }
 
         public static MSSpectra GetSpectra(double mzTolerance,
                                            double percent,
                                            ISpectraFilter filter,
-                                           ISpectraProvider readerY,                                           
+                                           ISpectraProvider readerY,
                                            int scany,
                                            int numberRequiredPeaks)
         {

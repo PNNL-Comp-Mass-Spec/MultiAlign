@@ -55,7 +55,7 @@
     //            {
     //                if (featureX.Abundance > prominentFeature.Abundance)
     //                {
-    //                    prominentFeature = featureX;                        
+    //                    prominentFeature = featureX;
     //                }
     //            }
 
@@ -65,7 +65,7 @@
     //        return features;
     //    }
     //    private static clsSeries MakeSeries(List<float> x, List<float> y, Color color, int size, string name = "series")
-    //    {            
+    //    {
     //        float[] xf = new float[x.Count];
     //        float[] yf = new float[y.Count];
     //        x.CopyTo(xf, 0);
@@ -73,7 +73,7 @@
 
     //        clsPlotParams p  = new clsPlotParams(new BubbleShape(size, false), color);
     //        p.Name           = name;
-    //        clsSeries series = new clsSeries(ref xf, ref yf, p);            
+    //        clsSeries series = new clsSeries(ref xf, ref yf, p);
     //        return series;
     //    }
     //    private static bool HasEnoughMembers(MammothCluster cluster)
@@ -93,7 +93,7 @@
     //    static void Main(string[] args)
     //    {
     //        string imageName        = "plot";
-    //        IDictionary<string, List<string>> options = CommandLineParser.ProcessArgs(args, 0);            
+    //        IDictionary<string, List<string>> options = CommandLineParser.ProcessArgs(args, 0);
     //        foreach(string option in options.Keys)
     //        {
     //            try
@@ -106,14 +106,14 @@
     //                        break;
     //                    case "-log":
     //                        m_logPath       = values[0];
-    //                        break;                        
+    //                        break;
     //                    case "-image":
     //                        imageName       = values[0];
     //                        break;
     //                    case "-filter":
     //                        m_requiredDatasets = Convert.ToInt32(values[0]);
     //                        break;
-    //                }   
+    //                }
     //            }
     //            catch(ArgumentOutOfRangeException)
     //            {
@@ -224,7 +224,7 @@
     //            {
     //                sumIntensity += feature.Abundance;
     //                totalFeatures++;
-    //            }                
+    //            }
     //        }
 
     //        meanIntensity = sumIntensity / Convert.ToDouble(totalFeatures);
@@ -235,7 +235,7 @@
     //            foreach (UMCLight feature in cluster.UMCList)
     //            {
     //                double diff = feature.Abundance - meanIntensity;
-    //                sumIntensity = (diff*diff);                    
+    //                sumIntensity = (diff*diff);
     //            }
     //        }
 
@@ -319,10 +319,10 @@
     //            meanFunctionalRedundancy += functionRedundancy;
 
 
-    //            int bin = Convert.ToInt32((functionRedundancy + 1.0F) / binSize);                
+    //            int bin = Convert.ToInt32((functionRedundancy + 1.0F) / binSize);
     //            bin     = Math.Max(0, Math.Min(frCounts.Length - 1, bin));
     //            frCounts[bin]++;
-    //            bin     = Convert.ToInt32((presenceTotal + 1.0F) / binSize); 
+    //            bin     = Convert.ToInt32((presenceTotal + 1.0F) / binSize);
     //            paCounts[bin]++;
     //        }
     //        meanFunctionalRedundancy /= Convert.ToSingle(clusters.Count);
@@ -361,8 +361,8 @@
 
     //            MultiAlign.Charting.controlHistogram histogram = new MultiAlign.Charting.controlHistogram();
     //            histogram.AddData(bins, ffrCounts, "Functional Redundancy Histogram");
-    //            histogram.Title     = string.Format("Functional Redundancy (Total Clusters: {0})", clusters.Count); 
-    //            histogram.BinSize   = binSize;                
+    //            histogram.Title     = string.Format("Functional Redundancy (Total Clusters: {0})", clusters.Count);
+    //            histogram.BinSize   = binSize;
     //            histogram.Width     = 800;
     //            histogram.Height    = 800;
     //            histogram.ViewPort  = new RectangleF(-1.1F, 0.0F, 2.2F, 1000); // Convert.ToSingle(maxFR));
@@ -387,7 +387,7 @@
     //            histogram.Height    = 800;
     //            histogram.ViewPort  = new RectangleF(-1.1F, 0.0F, 2.2F, Convert.ToSingle(maxFR));
     //            image = histogram.ToBitmap();
-    //            image.Save(imageName + "-PAHistogram.png");                
+    //            image.Save(imageName + "-PAHistogram.png");
     //        }
 
     //        return meanFunctionalRedundancy;

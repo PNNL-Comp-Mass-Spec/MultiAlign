@@ -23,7 +23,7 @@ namespace MultiAlignTestSuite
             }
 
             IMSFeatureDAO cache = new MSFeatureDAOHibernate();
-            cache.AddAll(lights);            
+            cache.AddAll(lights);
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace MultiAlignTestSuite
                             x++;
                             features.Add(feature);
                         }
-                        System.Console.WriteLine("{0} features loaded", x);                        
+                        System.Console.WriteLine("{0} features loaded", x);
                     }
                 }
             }

@@ -44,13 +44,13 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         public ISpectralComparer SpectralComparer
         {
             get; set;
-        }        
+        }
         /// <summary>
-        /// Gets or sets the spectral filter 
+        /// Gets or sets the spectral filter
         /// </summary>
         public ISpectraFilter Filter { get; set; }
 
-        
+
         private void OnProgress(string message)
         {
             if (Progress != null)
@@ -70,8 +70,8 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         {
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();
-            var matches = finder.FindAnchorPoints(BaselineSpectraProvider as ISpectraProvider, 
-                                                    AligneeSpectraProvider as ISpectraProvider, 
+            var matches = finder.FindAnchorPoints(BaselineSpectraProvider as ISpectraProvider,
+                                                    AligneeSpectraProvider as ISpectraProvider,
                                                     SpectralComparer,
                                                     Filter,
                                                     Options);
@@ -103,7 +103,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();
             var matches = finder.FindAnchorPoints(BaselineSpectraProvider as ISpectraProvider,
-                                                    AligneeSpectraProvider as ISpectraProvider, 
+                                                    AligneeSpectraProvider as ISpectraProvider,
                                                     SpectralComparer,
                                                     Filter,
                                                     Options);

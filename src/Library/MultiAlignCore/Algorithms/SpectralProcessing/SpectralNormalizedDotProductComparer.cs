@@ -75,10 +75,10 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
             xTopIons.Sort();
             yTopIons.Sort();
-            
+
             var xTop = Math.Max(0, xTopIons.Count - System.Convert.ToInt32(System.Convert.ToDouble(xTotalNonZero) * TopPercent));
             var yTop = Math.Max(0, yTopIons.Count - System.Convert.ToInt32(System.Convert.ToDouble(yTotalNonZero) * TopPercent));
-            
+
             xTop = Math.Min(xTopIons.Count - 1, xTop);
             yTop = Math.Min(yTopIons.Count - 1, yTop);
 
@@ -119,10 +119,10 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
                 xIon /= magX;
                 yIon /= magY;
-                
+
                 sum += (xIon * yIon);
             }
-            
+
             return sum;
         }
         #endregion

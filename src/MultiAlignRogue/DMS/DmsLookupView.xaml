@@ -154,7 +154,7 @@
             <GroupBox.Header>
             <TextBlock Text="Output Directory" FontWeight="Bold" />
             </GroupBox.Header>
-            
+
             <StackPanel Margin="3">
             <Grid>
             <Grid.ColumnDefinitions>
@@ -162,11 +162,11 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="70" />
             </Grid.ColumnDefinitions>
-            
+
             <TextBox Grid.Column="0" Text="{Binding OutputDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Column="2" Command="{Binding BrowseOutputDirectoriesCommand}">Browse</Button>
             </Grid>
-            
+
             <CheckBox Margin="0,5,0,0" IsChecked="{Binding ShouldCopyFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Copy files to output directory" />
             </StackPanel>
             </GroupBox>

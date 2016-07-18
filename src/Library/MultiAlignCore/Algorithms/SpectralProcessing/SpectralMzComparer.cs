@@ -5,7 +5,7 @@ using MultiAlignCore.Data;
 namespace MultiAlignCore.Algorithms.SpectralProcessing
 {
     /// <summary>
-    /// Compares two spectra based on their 
+    /// Compares two spectra based on their
     /// </summary>
     public class SpectralMzComparer: ISpectralComparer
     {
@@ -29,7 +29,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         {
             var x = xSpectrum.Peaks;
             var y = ySpectrum.Peaks;
-            
+
             var i       = 0;
             var j       = 0;
             var eps  = .0000001;
@@ -63,7 +63,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
                 }
 
                 var mzTol     = Math.Min(Math.Min(MassTolerance, massMax), massMin);
-                var bestDelta = mzTol; 
+                var bestDelta = mzTol;
                 var bestMatch    = -1;
 
                 while (j < Ny)
@@ -78,11 +78,11 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
                     }
                     bestMatch = j;
                     j = j + 1;
-                }   
+                }
 
                 if (bestMatch >= 0)
                 {
-                    distanceMap.Add(i, j);                       
+                    distanceMap.Add(i, j);
                 }
                 i = i + 1;
             }
@@ -92,7 +92,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
             var ny      = y.Count;
             var matches = distanceMap.Keys.Count;
 
-            return Convert.ToDouble(matches) / Convert.ToDouble(Math.Max(nx, ny));            
+            return Convert.ToDouble(matches) / Convert.ToDouble(Math.Max(nx, ny));
         }
         #endregion
     }

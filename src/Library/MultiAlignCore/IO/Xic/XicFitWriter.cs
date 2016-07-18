@@ -9,7 +9,7 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Writes the fitted XIC values to file.
     /// </summary>
-    public class XicFitWriter : IXicWriter 
+    public class XicFitWriter : IXicWriter
     {
         public void WriteXics(string path,
                               List<UMCLight> features)
@@ -31,7 +31,7 @@ namespace MultiAlignCore.IO.Features
                             XYData fitPoint = gram.FitPoints[i];
                             XYData regPoint = gram.Points[i];
 
-                            writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", gram.Mz, fitPoint.X, fitPoint.Y, regPoint.X, regPoint.Y);                            
+                            writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", gram.Mz, fitPoint.X, fitPoint.Y, regPoint.X, regPoint.Y);
                         }
                         for (; i < gram.FitPoints.Count; i++)
                         {

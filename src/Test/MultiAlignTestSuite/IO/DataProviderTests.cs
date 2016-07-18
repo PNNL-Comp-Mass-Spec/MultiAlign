@@ -9,7 +9,7 @@ namespace MultiAlignTestSuite.IO
     /// Main application.
     /// </summary>
     public class DataProviderTest
-    {                
+    {
         #region Data Provider Setup
 
         /// <summary>
@@ -20,10 +20,10 @@ namespace MultiAlignTestSuite.IO
         {
             try
             {
-                return DataAccessFactory.CreateDataAccessProviders(path, createNew);                
+                return DataAccessFactory.CreateDataAccessProviders(path, createNew);
             }
             catch (IOException ex)
-            {                
+            {
                 throw ex;
             }
         }
@@ -33,21 +33,21 @@ namespace MultiAlignTestSuite.IO
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders(string path)
         {
-            return SetupDataProviders("test.db3", true);           
+            return SetupDataProviders("test.db3", true);
         }
         private static void CleanupDataProviders()
-        {            
+        {
             NHibernateUtil.Dispose();
         }
         #endregion
-                        
-		static void Main(string[] args)
-		{
+
+        static void Main(string[] args)
+        {
             //MassTagDOATest massTagTest = new MassTagDOATest();
             SetupDataProviders(@"m:\data\proteomics\matest-gui\guitest.db3");
             var dao = new MSFeatureDAOHibernate();
             var start = DateTime.Now;
-            var features = dao.FindByDatasetId(0);            
+            var features = dao.FindByDatasetId(0);
             var end = DateTime.Now;
             //msFeatureTest.LoadMSFeaturesFromCache(@"m:\data\proteomics\matest-gui\guitest.db3");
             var span = end.Subtract(start);

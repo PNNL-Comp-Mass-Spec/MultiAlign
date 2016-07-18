@@ -20,8 +20,8 @@ namespace MultiAlignCore.Algorithms
 
             foreach (var scan in peptideMap.Keys)
             {
-                // Here we don't allow any scans without MS/MS to make it through.                
-                // We only add one, because per MS/MS scan there should be only one MSSpectra. 
+                // Here we don't allow any scans without MS/MS to make it through.
+                // We only add one, because per MS/MS scan there should be only one MSSpectra.
                 if (!msFeatureMap.ContainsKey(scan))
                     continue;
 
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Algorithms
                 var potentialPeptides = peptideMap[scan];
                 var spectra = msFeatureMap[scan];
 
-                // This is probably a N to 1 thing (N = number of peptide id's)                
+                // This is probably a N to 1 thing (N = number of peptide id's)
                 foreach (var peptide in potentialPeptides)
                 {
                     foreach (var spectrum in spectra)
@@ -50,8 +50,8 @@ namespace MultiAlignCore.Algorithms
 
             foreach (var scan in peptideMap.Keys)
             {
-                // Here we don't allow any scans without MS/MS to make it through.                
-                // We only add one, because per MS/MS scan there should be only one MSSpectra. 
+                // Here we don't allow any scans without MS/MS to make it through.
+                // We only add one, because per MS/MS scan there should be only one MSSpectra.
                 if (!msFeatureMap.ContainsKey(scan))
                     continue;
 
@@ -60,7 +60,7 @@ namespace MultiAlignCore.Algorithms
                 var potentialPeptides = peptideMap[scan];
                 var spectra = msFeatureMap[scan];
 
-                // This is probably a N to 1 thing (N = number of peptide id's)                
+                // This is probably a N to 1 thing (N = number of peptide id's)
                 foreach (var peptide in potentialPeptides)
                 {
                     foreach (var spectrum in spectra)

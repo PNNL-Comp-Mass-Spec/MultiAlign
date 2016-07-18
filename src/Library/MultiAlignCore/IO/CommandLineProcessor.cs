@@ -73,7 +73,7 @@ namespace MultiAlignCore.IO
                             config.HtmlPathName = values[0];
                             break;
                             //--------------------------------------------------------------------
-                            //  Print helps 
+                            //  Print helps
                             //--------------------------------------------------------------------
                         case "-h":
                             config.showHelp = true;
@@ -92,7 +92,7 @@ namespace MultiAlignCore.IO
                             break;
                             //--------------------------------------------------------------------
                             //  Data exporting
-                            //--------------------------------------------------------------------                        
+                            //--------------------------------------------------------------------
                         case "-exportmsms":
                             config.ExporterNames.ClusterMSMSPath = values[0];
                             config.ShouldExportMSMS = true;
@@ -106,9 +106,9 @@ namespace MultiAlignCore.IO
                         case "-exportabundances":
                             config.ExporterNames.CrossTabAbundance = values[0];
                             break;
-                            //--------------------------------------------------------------------                        
-                            // Exporting 
-                            //--------------------------------------------------------------------                        
+                            //--------------------------------------------------------------------
+                            // Exporting
+                            //--------------------------------------------------------------------
                         case "-export":
                             config.ExporterNames.ClusterScanPath = values[0];
                             break;

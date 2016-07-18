@@ -67,7 +67,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     parent.Right = node;
                     return;
                 }
-                Insert(parent.Right, node);  
+                Insert(parent.Right, node);
             }
             else
             {
@@ -77,14 +77,14 @@ namespace MultiAlignCore.Algorithms.Clustering
                     parent.Left = node;
                     return;
                 }
-                Insert(parent.Left, node);                
+                Insert(parent.Left, node);
             }
         }
     }
 
     /// <summary>
     /// Minimum Spanning Tree Linear Relationship Tree
-    /// 
+    ///
     /// This class has a special insert function for creating the Linear Relationship's Binary Search Tree (LR-BST).
     /// This reduces the search complexity from O(N^2) for creating clusters to O(N*logN)
     /// </summary>
@@ -93,7 +93,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         where T : IComparable, IComparable<T>
     {
         protected override void Insert(TreeNode<T> parent, TreeNode<T> node)
-        {                        
+        {
             var compareValue             = node.Value.CompareTo(parent.Value);
 
             // Greater Than the Parent - replace parent...
@@ -104,11 +104,11 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 // Everything goes left,,, that means the parent
                 // came before during construction of the MST
-                node.Left       = parent;                                
+                node.Left       = parent;
             }
-            else 
+            else
             {
-                // This would mean that the parent was equal...so we move everything right   
+                // This would mean that the parent was equal...so we move everything right
                 // If the parent was bigger..we still move everything right...it's
                 // only if the node is bigger than the child that we move anything left....
                 // This tells us about the structure of the clusters...
@@ -119,8 +119,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                     parent.Right = node;
                     return;
                 }
-                Insert(parent.Right, node);                        
-            }            
+                Insert(parent.Right, node);
+            }
         }
     }
 }

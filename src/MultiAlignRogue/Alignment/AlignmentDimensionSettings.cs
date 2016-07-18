@@ -10,7 +10,7 @@
     public class AlignmentDimensionSettings
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AlignmentDimensionSettings"/> class. 
+        /// Initializes a new instance of the <see cref="AlignmentDimensionSettings"/> class.
         /// </summary>
         public AlignmentDimensionSettings()
         {
@@ -39,7 +39,7 @@
         /// <summary>
         /// Get or sets a value indicating how much this dimension's sections can
         /// expand or contract.
-        /// 
+        ///
         /// Each section can expand to (ContractionFactor)^2 or
         /// contract to 1 / ContractionFactor.
         /// </summary>

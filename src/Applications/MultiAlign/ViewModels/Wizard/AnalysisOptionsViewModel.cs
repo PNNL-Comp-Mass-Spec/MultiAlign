@@ -97,7 +97,7 @@ namespace MultiAlign.ViewModels.Wizard
 
         private void ShowAdvancedWindow()
         {
-            //var viewModel       = new AdvancedOptionsViewModel(m_options);            
+            //var viewModel       = new AdvancedOptionsViewModel(m_options);
             var view = new AdvancedOptionsWindow
             {
                 DataContext = m_options,
@@ -152,7 +152,7 @@ namespace MultiAlign.ViewModels.Wizard
             }
         }
 
-        #region Updating 
+        #region Updating
 
         private void UpdateOptions()
         {
@@ -456,10 +456,10 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         public ObservableCollection<string> TimeOptions { get; set; }
-        
+
         public double MinimumFeatureLength
         {
-            get 
+            get
             {
                 if (FilterOnMinutes)
                 {
@@ -577,7 +577,7 @@ namespace MultiAlign.ViewModels.Wizard
 
         #endregion
 
-        #region Commands 
+        #region Commands
 
         public ICommand ShowAdvancedWindowCommand { get; set; }
         public ICommand LoadExistingCommand { get; set; }

@@ -48,7 +48,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
 
             //6.  apply alignment to data
             processor.ApplyNetMassFunctionToAligneeDatasetFeatures(experimentalTimesAsUmc);
-            
+
             //7.  test alignment
             Console.WriteLine("index" + "," + "ReferenceNet" + "," + "ExperimentalNet" + "," + "AlignedNet");
             double sum = 0;
@@ -62,7 +62,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
 
                 sum += (alighnedNet - referecneNet)*(alighnedNet - referecneNet);
             }
-            
+
             Console.WriteLine(" The sum of the squares score is " + Math.Round(sum,2));
             Assert.AreEqual(2.0126026729399675, sum);
         }
@@ -102,7 +102,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
         private static void ExampleTimesDB02(out List<double> experimentalTimes, out List<double> referenceTimes)
         {
             experimentalTimes = new List<double>();
-            referenceTimes = new List<double>();     
+            referenceTimes = new List<double>();
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.57193475);
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.57193475);
             referenceTimes.Add(0.587572175925926); experimentalTimes.Add(0.56411899537037);
@@ -218,7 +218,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
         private static void ExampleTimesDB09(out List<double> experimentalTimes, out List<double> referenceTimes)
         {
             experimentalTimes = new List<double>();
-            referenceTimes = new List<double>(); 
+            referenceTimes = new List<double>();
             referenceTimes.Add(0.597636236111111); experimentalTimes.Add(0.604530111111111);
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.568825597222222);
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.568825597222222);
@@ -343,7 +343,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
         private static void ExampleTimesDB12(out List<double> experimentalTimes, out List<double> referenceTimes)
         {
             experimentalTimes = new List<double>();
-            referenceTimes = new List<double>(); 
+            referenceTimes = new List<double>();
             referenceTimes.Add(0.597636236111111); experimentalTimes.Add(0.663321032407408);
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.608498402777778);
             referenceTimes.Add(0.59678225); experimentalTimes.Add(0.608498402777778);

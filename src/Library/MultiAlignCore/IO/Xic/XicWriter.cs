@@ -6,7 +6,7 @@ using System.IO;
 
 namespace MultiAlignCore.IO.Features
 {
-    public class XicWriter : IXicWriter 
+    public class XicWriter : IXicWriter
     {
         public void WriteXics(string path,
                               List<UMCLight> features)
@@ -25,7 +25,7 @@ namespace MultiAlignCore.IO.Features
                         foreach (XYData point in gram.Points)
                         {
                             writer.WriteLine("{0}\t{1}\t{2}", gram.Mz, point.X, point.Y);
-                        }                        
+                        }
                     }
                 }
             }

@@ -588,7 +588,7 @@
                     this.projectDirectory = Path.GetDirectoryName(this.projectPath) + Path.DirectorySeparatorChar;
                     this.outputDirectory = newProjectViewModel.OutputDirectory;
                     await this.LoadRogueProject(true, newProjectViewModel.Datasets.Select(x => x.Dataset).ToList());
-                    
+
                     this.PersistProject();
 
                     this.lastInputDirectory = newProjectViewModel.LastInputDirectory;
@@ -739,7 +739,7 @@
                 return;
             }
 
-			this.ShowSplash = false;
+            this.ShowSplash = false;
             this.outputDirectory = Path.GetDirectoryName(openFileDialog.FileName);
             this.ProjectPath = openFileDialog.FileName;
             this.projectDirectory = Path.GetDirectoryName(openFileDialog.FileName) + Path.DirectorySeparatorChar;
@@ -911,7 +911,7 @@
                     Logger.PrintMessage(string.Format("Error opening registry key {0}; access denied?", @"HKEY_CURRENT_USER\Software"));
                     return false;
                 }
-                
+
                 currentTask = @"Open Software\PNNL";
                 var regPnnl = regSoftware.CreateSubKey("PNNL");
                 if (regPnnl == null)
@@ -956,13 +956,13 @@
             this.Analysis.Options = new MultiAlignAnalysisOptions();
 
             this.FeatureFindingSettingsViewModel.RestoreDefaults();
-            this.AlignmentSettingsViewModel.RestoreDefaults();    
+            this.AlignmentSettingsViewModel.RestoreDefaults();
 
             // ToDo: use .RestoreDefaults
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
             //this.ClusterSettingsViewModel.RestoreDefaults();
 
-        }  
+        }
 
         private async void AsyncWorkflow()
         {
@@ -992,7 +992,7 @@
                 });
 
                 progData.StepRange(50);
-                
+
                 // Make copy of selected datasets at time of function call so all work is done on the same set of files
                 // even if the user changes the selection while the workflow is running.
                 var selectedDatasetsCopy = this.FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();

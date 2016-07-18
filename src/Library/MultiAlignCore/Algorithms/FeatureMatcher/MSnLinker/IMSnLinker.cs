@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
         {
             get;
             set;
-        }        
+        }
         /// <summary>
         /// Links MS Features to MSMS Spectra.
         /// </summary>
@@ -32,6 +32,6 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
         /// <param name="features"></param>
         /// <param name="fragmentSpectra">Fragmentation spectra to link</param>
         /// <returns>The number of a times a MSn spectra was mapped to a feature using the spectrum ID as a key.</returns>
-        Dictionary<int, int> LinkMSFeaturesToMSn(List<MSFeatureLight> features, List<MSSpectra> fragmentSpectra);               
+        Dictionary<int, int> LinkMSFeaturesToMSn(List<MSFeatureLight> features, List<MSSpectra> fragmentSpectra);
     }
 }

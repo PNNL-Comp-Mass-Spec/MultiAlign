@@ -18,7 +18,7 @@ namespace MultiAlignTestSuite
 
             IMassTagDAO cache = new MassTagDAOHibernate();
             cache.AddAll(lights);
-            
+
         }
     }
 }

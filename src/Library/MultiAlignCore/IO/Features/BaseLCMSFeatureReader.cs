@@ -167,7 +167,7 @@ namespace MultiAlignCore.IO.Features
             }
 
             // If the UMC ID matches the previous UMC ID, then skip the UMC data.
-            //		- It is the same UMC, different peptide, and we have already stored this UMC data.
+            //      - It is the same UMC, different peptide, and we have already stored this UMC data.
             if (previousId == currentId)
             {
                 return null;
@@ -180,19 +180,19 @@ namespace MultiAlignCore.IO.Features
 
             if (m_columnMap.ContainsKey("Umc.ScanStart"))
                 umc.ScanStart = int.Parse(columns[m_columnMap["Umc.ScanStart"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.ScanEnd"))
                 umc.ScanEnd = int.Parse(columns[m_columnMap["Umc.ScanEnd"]]);
-				
-            if (m_columnMap.ContainsKey("Umc.Scan")) 
+
+            if (m_columnMap.ContainsKey("Umc.Scan"))
                 umc.Scan = int.Parse(columns[m_columnMap["Umc.Scan"]]);
-			
-            if (m_columnMap.ContainsKey("Umc.Net")) 
+
+            if (m_columnMap.ContainsKey("Umc.Net"))
                 umc.Net = double.Parse(columns[m_columnMap["Umc.Net"]]);
-			
+
             if (m_columnMap.ContainsKey("Umc.Mass"))
                 umc.MassMonoisotopic = double.Parse(columns[m_columnMap["Umc.Mass"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.AbundanceSum"))
             {
                 try
@@ -217,21 +217,21 @@ namespace MultiAlignCore.IO.Features
             {
                 umc.Abundance = double.Parse(columns[m_columnMap["Umc.AbundanceMax"]]);
             }
-			
+
             if (m_columnMap.ContainsKey("Umc.ChargeRepresentative"))
             {
                 umc.ChargeState = int.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
             }
-			
+
             if (m_columnMap.ContainsKey("Umc.SpectralCount"))
                 umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.MZForCharge"))
                 umc.Mz = double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.DriftTime"))
                 umc.DriftTime = double.Parse(columns[m_columnMap["Umc.DriftTime"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))
             {
                 var d = double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
@@ -245,16 +245,16 @@ namespace MultiAlignCore.IO.Features
                 }
                 umc.AverageInterferenceScore = d;
             }
-			
+
             if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))
                 umc.ConformationFitScore = double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))
                 umc.AverageDeconFitScore = double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
-				
+
             if (m_columnMap.ContainsKey("Umc.SaturatedCount"))
                 umc.SaturatedMemberCount = int.Parse(columns[m_columnMap["Umc.SaturatedCount"]]);
-				
+
             return umc;
         }
 

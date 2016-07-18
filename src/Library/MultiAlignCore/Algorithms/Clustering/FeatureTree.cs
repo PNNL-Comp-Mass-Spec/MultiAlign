@@ -23,13 +23,13 @@ namespace MultiAlignCore.Algorithms.Clustering
         public FeatureTree()
             : this(null)
         {
-            
+
         }
         public FeatureTree(Func<T, T, int> comparison)
             : base(comparison)
-        {            
+        {
             m_left          = null;
-            m_right         = null;            
+            m_right         = null;
             m_features      = new List<T>();
         }
         public IEnumerable<U> Build()
@@ -43,7 +43,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 features.Add(feature);
             }
 
-            
+
             if (m_left != null)
                 features.AddRange(m_left.Build());
             if (m_right != null)
@@ -51,7 +51,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             return features;
         }
-        
+
         /// <summary>
         /// Inserts a new feature tree into the mix...
         /// </summary>

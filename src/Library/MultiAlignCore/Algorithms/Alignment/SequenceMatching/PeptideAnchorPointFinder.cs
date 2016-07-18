@@ -50,14 +50,14 @@ namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching
                                                                         IEnumerable<Peptide> peptidesB,
                                                                         SpectralOptions      options)
         {
-            var matches = new List<SpectralAnchorPointMatch>();                                            
+            var matches = new List<SpectralAnchorPointMatch>();
             peptidesA = AssignNET(peptidesA);
             peptidesB = AssignNET(peptidesB);
 
             // Map sequences
             var mapA = PeptideUtility.MapWithBestSequence(peptidesA);
             var mapB = PeptideUtility.MapWithBestSequence(peptidesB);
-                                
+
             foreach(var sequence in mapB.Keys)
             {
                 if (mapA.ContainsKey(sequence))
@@ -73,8 +73,8 @@ namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching
 
                     if (Math.Abs(net) < options.NetTolerance && Math.Abs(mz) < options.MzTolerance)
                     {
-                        matches.Add(point);                    
-                    }                                                                
+                        matches.Add(point);
+                    }
                 }
             }
 

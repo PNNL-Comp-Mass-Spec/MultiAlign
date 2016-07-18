@@ -7,7 +7,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
     public sealed class XicFeature : Chromatogram, IComparable<XicFeature>
     {
         public double LowMz { get; set; }
-        public double HighMz { get; set; }                
+        public double HighMz { get; set; }
         public int Id { get; set; }
         public UMCLight Feature { get; set; }
 

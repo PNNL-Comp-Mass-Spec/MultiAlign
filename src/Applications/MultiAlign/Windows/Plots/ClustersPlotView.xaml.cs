@@ -94,7 +94,7 @@ namespace MultiAlign.Windows.Plots
         {
             //var datasetHistogram    = HistogramFactory.CreateHistogram(Clusters.CreateClusterDatasetMemeberSizeHistogram(), "Dataset Members");
             //var sizeHistogram       = HistogramFactory.CreateHistogram(Clusters.CreateClusterSizeHistogram(), "Cluster Members");
-            var clustersHistogram   = ScatterPlotFactory.CreateClusterMassScatterPlot(Clusters);            
+            var clustersHistogram   = ScatterPlotFactory.CreateClusterMassScatterPlot(Clusters);
 
            // ClustersDatasetSizeHistogram    = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(datasetHistogram));
            // ClusterSizeHistogram            = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(sizeHistogram));

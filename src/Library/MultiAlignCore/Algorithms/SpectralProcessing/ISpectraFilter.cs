@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         List<XYData> Threshold(List<XYData> spectrum, double threshold);
     }
 
-    
 
-   
+
+
 }

@@ -10,7 +10,7 @@
         {
             RefId = -1;
             Sequence = "";
-            CleavageState = CleavageState.NonSpecific;            
+            CleavageState = CleavageState.NonSpecific;
         }
 
         /// <summary>
@@ -55,6 +55,6 @@
         /// Gets or sets the position of the starting residue of a cleaved protein.
         /// </summary>
         public int ResidueStartPosition { get; set; }
-        
+
     }
 }

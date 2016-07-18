@@ -74,7 +74,7 @@ namespace MultiAlignCore.Algorithms.Regression
             m_likelihoods = new DenseMatrix(numPoints, 2);
             m_coefficients = new DenseMatrix(m_order + 1, 1);
 
-            // set up X, Y and weights vector. 
+            // set up X, Y and weights vector.
             for (var index = 0; index < numPoints; index++)
             {
                 var currentPoint = m_regressionPoints[index];
@@ -228,7 +228,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public MixtureModelEm()
         {
@@ -264,9 +264,9 @@ namespace MultiAlignCore.Algorithms.Regression
             SetupMatrices();
             var numPts = m_regressionPoints.Count;
 
-            // CALCULATE FIRST SET OF COEFFICIENTS HERE .. 
-            // Remember that the coefficients should be: 
-            // (XX')-1X             
+            // CALCULATE FIRST SET OF COEFFICIENTS HERE ..
+            // Remember that the coefficients should be:
+            // (XX')-1X
             var xTranspose = m_x.Transpose() as DenseMatrix;
             if (xTranspose != null)
             {
@@ -336,7 +336,7 @@ namespace MultiAlignCore.Algorithms.Regression
                 if (likelihood > maxLikelihood)
                 {
                     maxLikelihood = likelihood;
-                    // set the best set of coefficients. 
+                    // set the best set of coefficients.
                     for (short coefficientNum = 0; coefficientNum < m_order + 1; coefficientNum++)
                         bestCoefficients.At(coefficientNum, 0, m_coefficients.At(coefficientNum, 0));
                 }
@@ -361,7 +361,7 @@ namespace MultiAlignCore.Algorithms.Regression
                     nextCoefficients.At(coefficientNum, 0, coefficient);
                 }
 
-                // set the next set of coefficient. 
+                // set the next set of coefficient.
                 for (short coefficientNum = 0; coefficientNum < m_order + 1; coefficientNum++)
                     m_coefficients.At(coefficientNum, 0, nextCoefficients.At(coefficientNum, 0));
                 if (iterationNum <= 0)
@@ -413,7 +413,7 @@ namespace MultiAlignCore.Algorithms.Regression
             var upperX = maxScan - (maxScan - minScan) * (percentToIgnore / 2.0);
 
             for (var ptNum = 0; ptNum < x.Count; ptNum++)
-            {                
+            {
                 var pt = new RegressionPoint(x[ptNum], y[ptNum]);
 
                 if (pt.X > lowerX && pt.X < upperX)
@@ -423,7 +423,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
         public double Transform(LinearRegressionResult regressionFunction, double observed)
         {
-            return (regressionFunction.Slope * observed) + regressionFunction.Intercept;           
+            return (regressionFunction.Slope * observed) + regressionFunction.Intercept;
         }
 
     }

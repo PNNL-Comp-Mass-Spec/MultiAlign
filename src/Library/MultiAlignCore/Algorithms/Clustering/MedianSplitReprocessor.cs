@@ -79,11 +79,11 @@ namespace MultiAlignCore.Algorithms.Clustering
             {
                 return null;
             }
-            
+
             // Get the mean
             while (i < j && i < data.Count)
             {
-                sum += data[i++];                
+                sum += data[i++];
             }
 
             // Get the stdev
@@ -97,12 +97,12 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             // Calculate stdev and variance...
             stdev       = Math.Sqrt(sum / N);
-            var var  = sum / (N - 1); 
+            var var  = sum / (N - 1);
 
             var distribution = new DistributionData(mean, stdev, var, N);
             return distribution;
         }
-        
+
         /// <summary>
         /// Calculates the means of potentially doubled groups
         /// </summary>
@@ -116,14 +116,14 @@ namespace MultiAlignCore.Algorithms.Clustering
             // Get negative distribution
             var i = 0;
             while (i < data.Count && data[i] < 0)  i++;
-            
+
             var N = data.Count;
 
             var positive = CalculuteDistributionData(data, 0, i);
             var negative = CalculuteDistributionData(data, i, N);
             var all      = CalculuteDistributionData(data, 0, N);
 
-            var means 
+            var means
                             = new Tuple<DistributionData, DistributionData, DistributionData>(positive, negative, all);
             return means;
         }
@@ -138,7 +138,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             var stdB = sampleB.StandardDeviation / Math.Sqrt(Convert.ToDouble(sampleB.N));
             stdB *= stdB;
-            
+
             z = (sampleA.Mean - sampleB.Mean) / Math.Sqrt(stdA + stdB);
             return z;
         }
@@ -216,11 +216,11 @@ namespace MultiAlignCore.Algorithms.Clustering
                 Console.WriteLine("Net z-score  \t{0}", netZScore);
                 Console.WriteLine("Drift z-score\t{0}", driftZScore);
                 Console.WriteLine();
-                
+
                 Console.WriteLine("   Positive ");
                 massZScore = CalculateZScore(massDistribution.Item2, massDistribution.Item3);
                 netZScore = CalculateZScore(netDistribution.Item2, netDistribution.Item3);
-                driftZScore = CalculateZScore(driftDistribution.Item2, driftDistribution.Item3);                                
+                driftZScore = CalculateZScore(driftDistribution.Item2, driftDistribution.Item3);
                 Console.WriteLine("Mass z-score \t{0}", massZScore);
                 Console.WriteLine("Net z-score  \t{0}", netZScore);
                 Console.WriteLine("Drift z-score\t{0}", driftZScore);

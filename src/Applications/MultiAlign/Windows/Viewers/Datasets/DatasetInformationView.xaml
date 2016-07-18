@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Datasets.DatasetInformationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:maWindows="clr-namespace:MultiAlign.Windows"
              xmlns:maConverters="clr-namespace:MultiAlign.Converters"
              xmlns:datasetViews="clr-namespace:MultiAlign.Windows.Viewers.Datasets"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="217"
              d:DesignWidth="819">
     <UserControl.Resources>
@@ -15,7 +15,7 @@
         <DataTemplate x:Key="DatasetDataTemplate">
             <datasetViews:DatasetPlotView/>
         </DataTemplate>
-        <Style TargetType="{x:Type ListBox}">            
+        <Style TargetType="{x:Type ListBox}">
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
@@ -27,10 +27,10 @@
                     Value="Disabled"/>
         </Style>
     </UserControl.Resources>
-    
+
     <Border
         BorderBrush="DarkGray"
-        BorderThickness="2"        
+        BorderThickness="2"
         Margin="5">
         <Grid
             Margin="5">
@@ -51,15 +51,15 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-                <Label  Grid.Row="0"    
-                        Grid.Column  ="1"   
+                <Label  Grid.Row="0"
+                        Grid.Column  ="1"
                         VerticalContentAlignment="Center"
                         FontSize="24"
                         Content="{Binding Path=DisplayName}"/>
-                <Label  Grid.Row="1"  
-                        Grid.Column="1"   
-                        VerticalContentAlignment="Center"  
-                        FontSize="12" 
+                <Label  Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalContentAlignment="Center"
+                        FontSize="12"
                         Content="{Binding Path=Id}"/>
                 <Label
                     Grid.Row="0"
@@ -94,11 +94,11 @@
                 Grid.Row="1"
                 FontSize="16"
                 Header="Images"
-                IsExpanded="{Binding Path=ShouldExpand}"            
-                ExpandDirection="Down">                
+                IsExpanded="{Binding Path=ShouldExpand}"
+                ExpandDirection="Down">
                 <ListBox
                     ItemTemplate="{StaticResource DatasetDataTemplate}"
-                    ItemsSource="{Binding Path=PlotData}"                    
+                    ItemsSource="{Binding Path=PlotData}"
                     />
             </Expander>
         </Grid>

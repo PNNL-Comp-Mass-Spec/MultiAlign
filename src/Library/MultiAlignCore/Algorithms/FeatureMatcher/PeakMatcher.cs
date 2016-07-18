@@ -37,7 +37,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
             // Sort by mass, gives us the best search time.
             allFeatures.Sort(FeatureLight.MassComparison);
-            
+
             var netTolerance     = options.Tolerances.Net;
             var massTolerance    = options.Tolerances.Mass;
             var driftTolerance   = options.Tolerances.DriftTime;
@@ -45,10 +45,10 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
             var N               = allFeatures.Count;
             var elementNumber   = 0;
- 
+
             // This was a linear search, now O(N^2).  Need to improve.
-			while(elementNumber < N)
-			{
+            while(elementNumber < N)
+            {
                 var feature = allFeatures[elementNumber];
                 var massTag            = feature as U;
                 if (massTag == null)
@@ -72,7 +72,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
                         var tag = toMatchFeature as U;
                         if (tag != null)
-                        {                           
+                        {
                             if (lowerNET <= tag.Net && tag.Net <= higherNET)
                             {
                                 if (lowerDritfTime <= tag.DriftTime && tag.DriftTime <= higherDriftTime)
@@ -80,13 +80,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                                     var match   = new FeatureMatch<T, U>(feature as T, tag, false, false);
                                     matches.Add(match);
                                 }
-                            }                            
+                            }
                         }
                         matchIndex--;
                     }
 
                     matchIndex = elementNumber + 1;
-                    while(matchIndex < N)                    
+                    while(matchIndex < N)
                     {
                         var toMatchFeature = allFeatures[matchIndex];
                         if (toMatchFeature.MassMonoisotopicAligned > higherMass)
@@ -109,8 +109,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                         matchIndex++;
                     }
                 }
-                elementNumber++;																						
-			}			
+                elementNumber++;
+            }
             return matches;
         }
     }

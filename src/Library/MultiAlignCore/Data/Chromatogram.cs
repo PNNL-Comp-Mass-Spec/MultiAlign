@@ -47,7 +47,7 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
-        }        
+        }
         /// <summary>
         /// Gets or sets the coefficients that describes the fit profile.
         /// </summary>

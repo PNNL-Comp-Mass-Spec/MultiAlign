@@ -109,7 +109,7 @@
 
             // Perform warp on each separation dimension.
             foreach (var separationType in this.options.SeparationTypes)
-            {   
+            {
                 // Get matches for given separation dimension
                 var matches = featureMatcher.GetMatchesAs(separationType);
 

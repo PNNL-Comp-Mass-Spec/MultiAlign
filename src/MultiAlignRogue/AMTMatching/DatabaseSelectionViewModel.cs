@@ -67,7 +67,7 @@ namespace MultiAlignRogue.AMTMatching
         public ICommand SelectAMTCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command that opens a file dialog that allows the user to 
+        /// Gets a command that opens a file dialog that allows the user to
         /// select a path to a local mass tag database or text file.
         /// </summary>
         public ICommand SelectLocalFileCommand { get; private set; }

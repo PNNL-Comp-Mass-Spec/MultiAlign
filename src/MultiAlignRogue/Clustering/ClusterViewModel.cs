@@ -148,7 +148,7 @@
                 if (args.Sender == this.ClusterPlotViewModel && !this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedMatch))
                 {
                     this.SelectedMatch = this.Matches.FirstOrDefault(match => match.Cluster == this.ClusterPlotViewModel.SelectedCluster);
-                } 
+                }
             });
 
             // Listen for changes in selected cluster internally.
@@ -179,7 +179,7 @@
                     if (first != null)
                     {
                         this.SelectedMsMsSpectra = first;
-                    } 
+                    }
                 }
             });
 

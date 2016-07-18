@@ -111,7 +111,7 @@
                                             Mode=TwoWay,
                                             NotifyOnSourceUpdated=True}"
                              TextWrapping="Wrap" />
-                    
+
                     <!-- Select Database Server -->
                     <Button Grid.Row="3"
                             Grid.Column="2"
@@ -119,7 +119,7 @@
                             Content="Select Database"
                             IsEnabled="{Binding ShouldAlignToAMT,
                                                 UpdateSourceTrigger=PropertyChanged}" />
-                    
+
                     <!-- Select Database file -->
                     <Button Grid.Row="3"
                             Grid.Column="3"

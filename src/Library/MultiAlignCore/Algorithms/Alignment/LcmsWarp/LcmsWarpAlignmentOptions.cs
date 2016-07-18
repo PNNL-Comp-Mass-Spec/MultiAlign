@@ -9,7 +9,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     using MultiAlignCore.Data.Features;
 
     /// <summary>
-    /// Object to hold the options for LcmsWarp Alignment. 
+    /// Object to hold the options for LcmsWarp Alignment.
     /// </summary>
     public class LcmsWarpAlignmentOptions
     {
@@ -110,7 +110,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarpAlignmentType AlignType { get; set; }
 
         /// <summary>
-        /// The type of calibration which will be performed; Either MZ, Scan or hybrid 
+        /// The type of calibration which will be performed; Either MZ, Scan or hybrid
         /// </summary>
         public LcmsWarpCalibrationType CalibrationType { get; set; }
 
@@ -147,7 +147,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// When using AMT tags from a database, only use those AMT tags with an observation count of this value or larger
         /// </summary>
         /// <remarks>
-        /// If all of the AMT tags have an observation count of 0, then they will all be used 
+        /// If all of the AMT tags have an observation count of 0, then they will all be used
         /// (i.e. this filter will be effectively ignored)</remarks>
         public int MinimumAMTTagObsCount { get; set; }
 

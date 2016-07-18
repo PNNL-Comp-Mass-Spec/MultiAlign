@@ -23,7 +23,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Chebyshev);
             var coeffs     = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var report = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -32,14 +32,14 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             // Here are the coefficients where this should pass.
             Assert.LessOrEqual(Math.Abs(coeffs[0] - -161.49999998947484),          .0000001);
-		    Assert.LessOrEqual(Math.Abs(coeffs[1] - -340.99999998132216),          .0000001);
-		    Assert.LessOrEqual(Math.Abs(coeffs[2] - -89.749999993541593),          .0000001);
-		    Assert.LessOrEqual(Math.Abs(coeffs[3] - 0.50000000335890493),          .0000001);
-		    Assert.LessOrEqual(Math.Abs(coeffs[4] - 0.50000000120664689),          .0000001);
+            Assert.LessOrEqual(Math.Abs(coeffs[1] - -340.99999998132216),          .0000001);
+            Assert.LessOrEqual(Math.Abs(coeffs[2] - -89.749999993541593),          .0000001);
+            Assert.LessOrEqual(Math.Abs(coeffs[3] - 0.50000000335890493),          .0000001);
+            Assert.LessOrEqual(Math.Abs(coeffs[4] - 0.50000000120664689),          .0000001);
             Assert.LessOrEqual(Math.Abs(coeffs[5] - 0.00000000023672415945361692), .0000001);
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -51,7 +51,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Linear);
             var coeffs = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -66,7 +66,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             ConvertXYDataToArrays(CalculateLine(), out x, out y);
 
             var regression = new AlglibRegression();
-            
+
 
             var coeffs = new double[2];
             //initial conditions
@@ -80,7 +80,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             Assert.AreEqual(true,worked.DidConverge);
         }
 
-        
+
 
 
 
@@ -88,7 +88,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -100,7 +100,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.PolynomialQuadratic);
             var coeffs = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -131,7 +131,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a Hanning line shape.")]
@@ -148,7 +148,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             coeffs[0] = 30;//hanningI
             coeffs[1] = 5;//hanningK
             coeffs[2] = 1234.388251;//xoffset
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -158,7 +158,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape.")]
@@ -175,7 +175,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             coeffs[0] = 5;//hanningI
             coeffs[1] = 80000;//hanningK
             coeffs[2] = 1234.388251;//xoffset
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -185,7 +185,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a cubic line shape.")]
@@ -198,7 +198,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             var functionChoise = BasisFunctionsEnum.PolynomialCubic;
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(functionChoise);
             var coeffs = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -209,7 +209,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         //[Test]
         [Description("Tests the Levenburg Marquadt solver using Chebyshev polynomials.")]
@@ -223,7 +223,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(functionChoise);
             var coeffs = functionSelector.Coefficients;
-            
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -235,7 +235,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a lorentzian line shape.")]
@@ -252,24 +252,24 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs[0] = 6;//width
             coeffs[1] = 50;//height
-            coeffs[2] = -1;//xoffset   
-         
+            coeffs[2] = -1;//xoffset
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
-            Assert.AreEqual(0.50000000000535016d, coeffs[0], .00001);//real is 0.5. 
+            Assert.AreEqual(0.50000000000535016d, coeffs[0], .00001);//real is 0.5.
             Assert.AreEqual(150.00000000174555d, coeffs[1], .00001);//real is 75
             Assert.AreEqual(0.99999999999999312d, coeffs[2], .00001);//real is 1
 
             //using 1 instead of 0.5
-            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5. 
+            //Assert.AreEqual(0.49999999817701907d, coeffs[0]);//real is 0.5.
             //Assert.AreEqual(74.99999972887592d, coeffs[1]);//real is 75
             //Assert.AreEqual(0.9999999999999587d, coeffs[2]);//real is 1
         }
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape.")]
@@ -286,7 +286,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs[0] = 6;//sigma
             coeffs[1] = 50;//height
-            coeffs[2] = -1;//xoffset            
+            coeffs[2] = -1;//xoffset
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
@@ -297,7 +297,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape.")]
@@ -315,13 +315,13 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             coeffs[0] = 2;//sigma
             coeffs[1] = 7375230.5281385286;//height
             coeffs[2] = 1080;//xoffset
-        
+
             var showDetails = false;
             var worked = EvaluateFunction(x, y, functionSelector, ref coeffs, showDetails);
 
-            Assert.AreEqual(15.307150768556957d, Math.Abs(coeffs[0]), .01);//real is 
-            Assert.AreEqual(5839780.76391418d, coeffs[1], 100);//real is 
-            Assert.AreEqual(1081.0890598765791d, coeffs[2], .001);//real is 
+            Assert.AreEqual(15.307150768556957d, Math.Abs(coeffs[0]), .01);//real is
+            Assert.AreEqual(5839780.76391418d, coeffs[1], 100);//real is
+            Assert.AreEqual(1081.0890598765791d, coeffs[2], .001);//real is
 
 
             Console.WriteLine("Try New Guess Coeff");
@@ -333,18 +333,18 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 coeffs = functionSelectorPoorChoice.Coefficients;
                 coeffs[0] = 2; //sigma
                 coeffs[1] = 7375230.5281385286; //height
-                coeffs[2] = 1102; //xoffset            
+                coeffs[2] = 1102; //xoffset
 
                 var workedPoorChoiseOfX = EvaluateFunction(x, y, functionSelectorPoorChoice, ref coeffs, showDetails);
 
-                Assert.AreEqual(15.307150768556957d, Math.Abs(coeffs[0]), .01); //real is 
-                Assert.AreEqual(5839780.76391418d, coeffs[1], 100); //real is 
-                Assert.AreEqual(1081.0890598765791d, coeffs[2], .001); //real is 
+                Assert.AreEqual(15.307150768556957d, Math.Abs(coeffs[0]), .01); //real is
+                Assert.AreEqual(5839780.76391418d, coeffs[1], 100); //real is
+                Assert.AreEqual(1081.0890598765791d, coeffs[2], .001); //real is
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a quadratic line shape (legacy)")]
@@ -367,7 +367,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape (legacy)")]
@@ -391,7 +391,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         [Description("Tests the Levenburg Marquadt solver using a gaussian line shape (legacy)")]
@@ -416,7 +416,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
                 Console.WriteLine();
             }
-           
+
 
             var basisFunction     = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.AsymmetricGaussian);
             var coefficients               = basisFunction.Coefficients;
@@ -446,5 +446,5 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
             }
 
         }
-    }     
+    }
 }

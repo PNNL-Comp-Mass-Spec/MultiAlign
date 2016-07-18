@@ -28,7 +28,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 var lineData = line.Split(new[] {"\t"}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 var feature                 = new UMCLight();
-                feature.ClusterId                = Convert.ToInt32(lineData[0]);                
+                feature.ClusterId                = Convert.ToInt32(lineData[0]);
                 feature.GroupId                  = Convert.ToInt32(lineData[1]);
                 feature.Id                       = Convert.ToInt32(lineData[2]);
                 feature.MassMonoisotopicAligned  = Convert.ToDouble(lineData[3]);
@@ -36,7 +36,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 feature.DriftTime                = Convert.ToDouble(lineData[5]);
                 feature.ChargeState              = Convert.ToInt32(lineData[6]);
 
-                features.Add(feature);                    
+                features.Add(feature);
             }
             return features;
         }
@@ -45,8 +45,8 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
         //[TestCase(@"ClusterData\clusterData-merged.txt")]
         //[TestCase(@"ClusterData\clusterData-mergedSmall.txt")]
         //[TestCase(@"ClusterData\clusterData-toy.txt")]
-		//[TestCase(@"ClusterData\clusterData-ideal.txt")]
-		[TestCase(@"ClusterData\clusterData-ideal.txt")]
+        //[TestCase(@"ClusterData\clusterData-ideal.txt")]
+        [TestCase(@"ClusterData\clusterData-ideal.txt")]
         //[TestCase(@"ClusterData\clusterData-merged-nodelin.txt")]
         public void TestPrims(string path)
         {
@@ -119,7 +119,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
         [TestCase(@"ClusterData\clusterData-merged-small.txt", 4)]
         //[TestCase(@"ClusterData\clusterData-single-1500.txt", 4)]
         //[TestCase(@"ClusterData\clusterData-single-1500-two.txt", 4)]
-        public void TestPrimsWeighted(string path, double sigma)        
+        public void TestPrimsWeighted(string path, double sigma)
         {
 
             sigma = 1;
@@ -187,13 +187,13 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                     distances.Add(newDistance);
                 }
                 //Console.WriteLine();
-                //Console.WriteLine("Distances");                
+                //Console.WriteLine("Distances");
                 //distances.ForEach(x => Console.WriteLine(x));
-                //Console.WriteLine();                
+                //Console.WriteLine();
             }
             Console.WriteLine();
             Console.WriteLine("Test Done:");
             Console.WriteLine();
-        }                
+        }
     }
 }

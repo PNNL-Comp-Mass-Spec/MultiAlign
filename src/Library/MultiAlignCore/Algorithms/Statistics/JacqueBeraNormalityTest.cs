@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Statistics
         public HypothesisTestingData Test(List<double> dist1)
         {
             var x = new double[dist1.Count];
-            var n = dist1.Count;            
+            var n = dist1.Count;
             dist1.CopyTo(x);
 
             var pValue = double.MaxValue;
@@ -21,7 +21,7 @@ namespace MultiAlignCore.Algorithms.Statistics
             var t = new HypothesisTestingData(pValue);
 
             return t;
-        }    
+        }
     }
 
 

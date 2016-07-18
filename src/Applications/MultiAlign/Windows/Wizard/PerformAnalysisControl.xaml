@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Wizard.PerformAnalysisControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"             
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:maConverters="clr-namespace:MultiAlign.Converters"
-        xmlns:wizardViews="clr-namespace:MultiAlign.Windows.Wizard"              
-        mc:Ignorable="d" 
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:wizardViews="clr-namespace:MultiAlign.Windows.Wizard"
+        mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         d:DesignHeight="688" d:DesignWidth="852">
     <UserControl.Resources>
@@ -26,7 +26,7 @@
             Grid.Row="0"
             Grid.Column="0">
             <!-- Dataset Selection-->
-            <TabItem 
+            <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Dataset Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=DatasetSelection}}">
@@ -34,7 +34,7 @@
                     DataContext="{Binding Path=DatasetSelectionViewModel}"/>
             </TabItem>
             <!-- Baseline Selection-->
-            <TabItem 
+            <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Baseline Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=BaselineStep}}">
@@ -71,9 +71,9 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            
+
             <Button
-                Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                                        
+                Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
                 Grid.Row="1"
                 Grid.Column="0"
                 Height="32"
@@ -83,22 +83,22 @@
                 Command="{Binding Path=CancelCommand}"
                 />
             <Button
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                 Grid.Row="1"
                 Grid.Column="4"
                 Height="32"
                 Width="128"
                 Margin="5,5,5,5"
-                Content="Back"             
+                Content="Back"
                 Command="{Binding Path=BackCommand}"/>
             <Button
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                 Grid.Row="1"
                 Grid.Column="5"
                 Height="32"
                 Width="128"
                 Margin="5,5,5,5"
-                Content="Next"            
+                Content="Next"
                 Command="{Binding Path=NextCommand}"
                 IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" />
         </Grid>

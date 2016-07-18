@@ -70,7 +70,7 @@ namespace MultiAlignCore.Data.Features
         public virtual List<MSSpectra> MSnSpectra { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of MSMS spectra 
+        /// Gets or sets the number of MSMS spectra
         /// </summary>
         public int MsMsCount { get; set; }
 
@@ -84,7 +84,7 @@ namespace MultiAlignCore.Data.Features
         /// Gets or sets the minimum distance between this feature's elements and another
         /// </summary>
         public double MinimumCentroidDistance { get; set; }
-      
+
         public double Mz { get; set; }
 
         /// <summary>
@@ -149,22 +149,22 @@ namespace MultiAlignCore.Data.Features
         /// </summary>
         /// <remarks>Typically an integer for the TOF scan number</remarks>
         public double DriftTime { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the drift time of a feature.
         /// </summary>
         public double DriftTimeAligned { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the charge state of a feature.
         /// </summary>
         public int ChargeState { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the score value for this feature.
         /// </summary>
         public double Score { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the ambiguity score for a given cluster.
         /// </summary>

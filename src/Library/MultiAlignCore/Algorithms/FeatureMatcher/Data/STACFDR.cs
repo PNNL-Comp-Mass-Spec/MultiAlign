@@ -10,7 +10,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         private double m_fdr;
 
         private int m_conformationMatches;
-		private int m_amtMatches;
+        private int m_amtMatches;
         private double m_falseMatches;
 
         private String m_label;
@@ -40,16 +40,16 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         public int ConformationMatches
         {
             get { return m_conformationMatches; }
-			set { m_conformationMatches = value; }
+            set { m_conformationMatches = value; }
         }
-		/// <summary>
-		/// Gets or sets the number of Unique Mass Tag Matches for the cutoff level.
-		/// </summary>
-		public int AMTMatches
-		{
-			get { return m_amtMatches; }
-			set { m_amtMatches = value; }
-		}
+        /// <summary>
+        /// Gets or sets the number of Unique Mass Tag Matches for the cutoff level.
+        /// </summary>
+        public int AMTMatches
+        {
+            get { return m_amtMatches; }
+            set { m_amtMatches = value; }
+        }
         /// <summary>
         /// Gets or sets the number of false matches at the cutoff.
         /// </summary>
@@ -113,7 +113,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             m_fdr = 1;
             SetLabel(0);
             m_conformationMatches = 0;
-			m_amtMatches = 0;
+            m_amtMatches = 0;
             m_falseMatches = 0;
         }
         /// <summary>
@@ -126,8 +126,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         {
             m_fdr = fdr;
             m_falseMatches = falseMatches;
-			m_conformationMatches = conformationMatches;
-			m_amtMatches = amtMatches;
+            m_conformationMatches = conformationMatches;
+            m_amtMatches = amtMatches;
         }
         #endregion
         public override bool Equals(object obj)

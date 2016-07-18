@@ -26,9 +26,9 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
             {
                 return matrix;
             }
-            
+
             var reducedMatrix = matrix.Clone() as DenseMatrix;
-                
+
             for (var rIndex = 0; rIndex < rows; rIndex++)
             {
                 if (matrix[rIndex, rIndex] == 0)
@@ -135,53 +135,53 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
                 dimension++;
             var differences = new DenseMatrix(dimension, 1);
 
-			if (!double.IsNaN(feature1.MassMonoisotopicAligned) && feature1.MassMonoisotopicAligned > 0.0)
-			{
-				differences[0, 0] = MathUtilities.MassDifferenceInPpm(feature1.MassMonoisotopicAligned, feature2.MassMonoisotopic);
-			}
-			else
-			{
-				differences[0, 0] = MathUtilities.MassDifferenceInPpm(feature1.MassMonoisotopic, feature2.MassMonoisotopic);
-			}
+            if (!double.IsNaN(feature1.MassMonoisotopicAligned) && feature1.MassMonoisotopicAligned > 0.0)
+            {
+                differences[0, 0] = MathUtilities.MassDifferenceInPpm(feature1.MassMonoisotopicAligned, feature2.MassMonoisotopic);
+            }
+            else
+            {
+                differences[0, 0] = MathUtilities.MassDifferenceInPpm(feature1.MassMonoisotopic, feature2.MassMonoisotopic);
+            }
 
-			if (!double.IsNaN(feature1.NetAligned) && feature1.NetAligned > 0.0)
-			{
-				differences[1, 0] = feature1.NetAligned - feature2.Net;
-			}
-			else
-			{
-				differences[1, 0] = feature1.Net - feature2.Net;
-			}
+            if (!double.IsNaN(feature1.NetAligned) && feature1.NetAligned > 0.0)
+            {
+                differences[1, 0] = feature1.NetAligned - feature2.Net;
+            }
+            else
+            {
+                differences[1, 0] = feature1.Net - feature2.Net;
+            }
 
-			if (driftTime)
-			{
-				double feature1DriftTime;
-				double feature2DriftTime;
+            if (driftTime)
+            {
+                double feature1DriftTime;
+                double feature2DriftTime;
 
-				if (!double.IsNaN(feature1.DriftTimeAligned) && feature1.DriftTimeAligned > 0.0)
-				{
-					feature1DriftTime = feature1.DriftTimeAligned;
-				}
-				else
-				{
-					feature1DriftTime = feature1.DriftTime;
-				}
-				if (feature2.DriftTimeAligned != double.NaN && feature2.DriftTimeAligned > 0.0)
-				{
-					feature2DriftTime = feature2.DriftTimeAligned;
-				}
-				else
-				{
-					feature2DriftTime = feature2.DriftTime;
-				}
+                if (!double.IsNaN(feature1.DriftTimeAligned) && feature1.DriftTimeAligned > 0.0)
+                {
+                    feature1DriftTime = feature1.DriftTimeAligned;
+                }
+                else
+                {
+                    feature1DriftTime = feature1.DriftTime;
+                }
+                if (feature2.DriftTimeAligned != double.NaN && feature2.DriftTimeAligned > 0.0)
+                {
+                    feature2DriftTime = feature2.DriftTimeAligned;
+                }
+                else
+                {
+                    feature2DriftTime = feature2.DriftTime;
+                }
 
-				differences[2, 0] = feature1DriftTime - feature2DriftTime;
-			}
+                differences[2, 0] = feature1DriftTime - feature2DriftTime;
+            }
 
             return differences;
         }
-        
-        
+
+
         #endregion
     }
 }

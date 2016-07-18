@@ -13,14 +13,14 @@ namespace MultiAlignTestSuite.IO
         [TestFixtureSetUp]
         public void Setup()
         {
-            NHibernateUtil.CreateDatabase("test.db3");            
+            NHibernateUtil.CreateDatabase("test.db3");
         }
 
         [Test]
         public void CreateMsnTest()
         {
             var msnFeatures = new MSnFeatureToMSFeatureDAOHibernate();
-            
+
             var map = new MSFeatureToMSnFeatureMap();
             map.LCMSFeatureID   = 0;
             map.MSDatasetID     = 0;

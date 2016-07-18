@@ -24,7 +24,7 @@ namespace MultiAlignCore.Algorithms.Statistics
 
             var twoTail      = double.MaxValue;
             var leftTail     = double.MaxValue;
-            var rightTail    = double.MaxValue; 
+            var rightTail    = double.MaxValue;
 
             alglib.mannwhitneyutest(x, n, y, m, out twoTail, out leftTail, out rightTail);
 

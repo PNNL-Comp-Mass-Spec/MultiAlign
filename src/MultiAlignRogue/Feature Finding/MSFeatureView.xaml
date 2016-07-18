@@ -9,7 +9,7 @@
     <Window.DataContext>
         <featureFinding:MSFeatureViewModel/>
     </Window.DataContext>
-    
+
     <Grid>
         <oxy:PlotView Model="{Binding Model}" >
             <oxy:PlotView.ContextMenu>

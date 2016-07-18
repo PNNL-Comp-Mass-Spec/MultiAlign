@@ -116,7 +116,7 @@
                 {
                     this.ScaleYAxis();
                 }
-            }; 
+            };
 
             this.SavePlotCommand = new RelayCommand(this.SavePlot);
 

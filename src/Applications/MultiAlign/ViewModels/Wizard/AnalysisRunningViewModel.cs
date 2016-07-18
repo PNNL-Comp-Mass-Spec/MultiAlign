@@ -232,7 +232,7 @@ namespace MultiAlign.ViewModels.Wizard
 
         #endregion
 
-        #region IAnalysisReportGenerator Members        
+        #region IAnalysisReportGenerator Members
 
         public string PlotPath
         {

@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //  <composite-id>
             //    <key-property name="Id"                   column="Feature_ID" type="integer" />
             //    <key-property name="GroupId"              column="Dataset_ID" type="integer" />
-            //  </composite-id>		
+            //  </composite-id>
             //  <property name="ClusterId"                  column="Cluster_ID"                 type="int" not-null="false"/>
             //  <property name="ConformationId"             column="Conformation_ID"            type="int" not-null="false" />
             //  <property name="MassMonoisotopic"           column="Mass"                       type="double" not-null="false" />
@@ -53,7 +53,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //  <property name="Mz"                         column="MZ"                         type="double" not-null="false" />
             //  <property name="Scan"                       column="Scan_LC"                    type="int" not-null="false" />
             //  <property name="ScanStart"                  column="Scan_LC_Start"              type="int" not-null="false" />
-            //  <property name="ScanEnd"                    column="Scan_LC_End"                type="int" not-null="false" />		
+            //  <property name="ScanEnd"                    column="Scan_LC_End"                type="int" not-null="false" />
             //  <property name="ChargeState"                column="Charge"                     type="int" not-null="false" />
             //  <property name="Abundance"                  column="Abundance_Max"              type="double" not-null="false" />
             //  <property name="AbundanceSum"               column="Abundance_Sum"              type="double" not-null="false" />

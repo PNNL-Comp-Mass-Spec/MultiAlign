@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         where T : FeatureLight, new()
     {
         /// <summary>
-        /// Graph that encapsulates this 
+        /// Graph that encapsulates this
         /// </summary>
         private Dictionary<int, Edge<T>> m_edges;
         /// <summary>
@@ -32,7 +32,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             m_edges     = new Dictionary<int, Edge<T>>();
         }
         /// <summary>
-        /// Gets 
+        /// Gets
         /// </summary>
         public SortedSet<Edge<T>> Edges
         {

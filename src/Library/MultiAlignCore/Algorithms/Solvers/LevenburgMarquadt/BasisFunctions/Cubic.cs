@@ -5,7 +5,7 @@
     /// </summary>
     public class Cubic : BasisFunctionBase
     {
-        
+
         /// <summary>
         /// Evaluates the cubic polynomials
         /// </summary>

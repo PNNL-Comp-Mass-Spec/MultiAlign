@@ -44,10 +44,10 @@ namespace MultiAlignCore.IO.TextFiles
                 var data     = precursorMap[key];
                 var peptide             = new Peptide();
                 peptide                     = new Peptide();
-                peptide.Sequence            = data[0][3];                
+                peptide.Sequence            = data[0][3];
                 var spectrum          = new MSSpectra();
                 spectrum.PrecursorMz        = Convert.ToDouble(key);
-                
+
                 foreach (var line in data)
                 {
                     var fragment = Convert.ToDouble(line[1]);

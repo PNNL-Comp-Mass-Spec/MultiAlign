@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    
+
     using System.IO;
 
     using InformedProteomics.Backend.Data.Biology;
@@ -11,7 +11,7 @@
     using MultiAlignCore.Data.MassTags;
 
     /// <summary>
-    /// This class is is a reader for 
+    /// This class is is a reader for
     /// </summary>
     public class MtdbFromGenericTsvReader : IMtdbLoader
     {
@@ -37,7 +37,7 @@
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LiquidResultsFileLoader"/> class. 
+        /// Initializes a new instance of the <see cref="LiquidResultsFileLoader"/> class.
         /// </summary>
         /// <param name="filePath">Full file path for the TSV file.</param>
         public MtdbFromGenericTsvReader(string filePath)
@@ -161,7 +161,7 @@
             {
                 var errorString = missingHeaders.Aggregate(
                                       "Liquid results file is missing expected headers:\n",
-                                      (current, missingHeader) => 
+                                      (current, missingHeader) =>
                                             current + string.Format("\t{0}\n", missingHeader));
 
                 throw new FormatException(errorString);

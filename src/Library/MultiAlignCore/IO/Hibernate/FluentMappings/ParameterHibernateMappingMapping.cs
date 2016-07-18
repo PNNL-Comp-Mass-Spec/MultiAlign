@@ -21,7 +21,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //    <key-property name="OptionGroup"          column="Option"      type="string" />
             //    <key-property name="Parameter"            column="Parameter"         type="string" />
             //  </composite-id>
-            //  <property name="Value"                      column="Value"             type="string"    not-null="false" />		
+            //  <property name="Value"                      column="Value"             type="string"    not-null="false" />
             //</class>
         }
     }

@@ -28,7 +28,7 @@ namespace MultiAlignCore.Extensions
             }
             return map;
         }
-        
+
         public static Dictionary<int, List<MSSpectra>> CreateScanMapsForMsMs<T>(this List<T> spectra) where T : MSSpectra
         {
             var map = new Dictionary<int, List<MSSpectra>>();

@@ -5,7 +5,7 @@ using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 {
-    public sealed class FeatureMatch<TObserved, TTarget> 
+    public sealed class FeatureMatch<TObserved, TTarget>
         where TObserved : FeatureLight, new()
         where TTarget : FeatureLight, new()
     {
@@ -176,13 +176,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         {
             return featureMatch1.m_stacScore.CompareTo(featureMatch2.STACScore);
         };
-		/// <summary>
-		/// Comparison function for sorting by STAC score descending.
-		/// </summary>
-		public static Comparison<FeatureMatch<TObserved, TTarget>> STACComparisonDescending = delegate(FeatureMatch<TObserved, TTarget> featureMatch1, FeatureMatch<TObserved, TTarget> featureMatch2)
-		{
-			return featureMatch2.m_stacScore.CompareTo(featureMatch1.STACScore);
-		};
+        /// <summary>
+        /// Comparison function for sorting by STAC score descending.
+        /// </summary>
+        public static Comparison<FeatureMatch<TObserved, TTarget>> STACComparisonDescending = delegate(FeatureMatch<TObserved, TTarget> featureMatch1, FeatureMatch<TObserved, TTarget> featureMatch2)
+        {
+            return featureMatch2.m_stacScore.CompareTo(featureMatch1.STACScore);
+        };
         #endregion
 
         #region Private functions
@@ -203,7 +203,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         #endregion
 
         #region Public functions
-        
+
         /// <summary>
         /// Add (or replace) features in a match.
         /// </summary>
@@ -218,7 +218,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             m_targetFeature = targetFeature;
             m_useDriftTime = useDriftTime;
             m_shiftedMatch = shiftedMatch;
-			SetDifferenceMatrices();
+            SetDifferenceMatrices();
         }
         /// <summary>
         /// Sets the internal flag as to whether the match is within the given tolerances.

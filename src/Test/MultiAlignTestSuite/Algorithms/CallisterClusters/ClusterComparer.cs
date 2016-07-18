@@ -218,7 +218,7 @@ namespace MultiAlignTestSuite.Algorithms.CallisterClusters
             var values = new List<double>();
             for (var i = 0; i < spectra.Count; i++)
             {
-                //for (int j = i + 1; j < spectra.Count; j++) 
+                //for (int j = i + 1; j < spectra.Count; j++)
                 {
                     //double value = comparer.CompareSpectra(spectra[i], spectra[j]);
                     //values.Add(value);

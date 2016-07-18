@@ -3,13 +3,13 @@
 namespace MultiAlignCore.Algorithms.Clustering
 {
     /// <summary>
-    /// Unbalanced BST 
+    /// Unbalanced BST
     /// </summary>
     /// <typeparam name="T">Data type</typeparam>
     /// <typeparam name="TNodeType">Node Type for (Left and Right)</typeparam>
     public abstract class BinarySearchTree<T, TNodeType>
         where TNodeType: BinarySearchTree<T, TNodeType>, new ()
-    {        
+    {
         /// <summary>
         /// Comparison function between two features
         /// </summary>
@@ -26,11 +26,11 @@ namespace MultiAlignCore.Algorithms.Clustering
         protected BinarySearchTree()
             : this(null)
         {
-            
+
         }
 
         protected BinarySearchTree(Func<T, T, int> comparison)
-        {            
+        {
             m_left          = null;
             m_right         = null;
             m_func          = comparison;
@@ -63,15 +63,15 @@ namespace MultiAlignCore.Algorithms.Clustering
             // If this node is empty...it belongs here
             if (m_left == null && m_right == null)
             {
-                Add(feature);                
+                Add(feature);
                 return;
             }
 
             // Use the first item as a feature
             var compare = Compare(feature);
 
-            if (compare == 0)            
-                Add(feature);                            
+            if (compare == 0)
+                Add(feature);
             else if (compare > 0)
                 Insert(m_right, feature);
             else

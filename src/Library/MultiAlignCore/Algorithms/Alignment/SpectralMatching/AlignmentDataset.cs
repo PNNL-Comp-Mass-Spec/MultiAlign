@@ -4,7 +4,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 {
 
     /// <summary>
-    /// Encapsulates dataset information 
+    /// Encapsulates dataset information
     /// </summary>
     public class AlignmentDataset
     {

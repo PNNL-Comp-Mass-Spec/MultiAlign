@@ -52,7 +52,7 @@
         private List<int> knownScanNumbers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class. 
+        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class.
         /// For initializing an empty ScanSummaryProvider or a preloaded set of scan summaries.
         /// </summary>
         /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
@@ -81,7 +81,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class. 
+        /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class.
         /// For initializing a ScanSummaryProvider from a scans file.
         /// </summary>
         /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
@@ -93,7 +93,7 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScanSummaryProvider"/> class.
-        /// For initializing a ScanSummaryProvider from a database data access object. 
+        /// For initializing a ScanSummaryProvider from a database data access object.
         /// </summary>
         /// <param name="groupId">The identifier for the dataset that this provider is a part of.</param>
         /// <param name="scanSummaryDao"></param>
@@ -175,7 +175,7 @@
                 this.LoadScans();
             }
 
-            var scanSummary = this.summary.ScanMetaData.ContainsKey(scan) ? 
+            var scanSummary = this.summary.ScanMetaData.ContainsKey(scan) ?
                                           this.summary.ScanMetaData[scan] :
                                           this.InterpolateScanSummary(scan);
 

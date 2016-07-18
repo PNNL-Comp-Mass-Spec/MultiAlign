@@ -10,8 +10,8 @@
             var type =  GetFileType(path);
 
             if (type == SequenceFileType.None)
-                return null; 
-             
+                return null;
+
             return CreateReader(type);
         }
         public static ISequenceFileReader CreateReader(SequenceFileType type)
@@ -41,7 +41,7 @@
         {
             var type = SequenceFileType.None;
             var lowerPath      = peptidePath.ToLower();
-           
+
             if (lowerPath.EndsWith("msgfdb_fht.txt"))
             {
                     type = SequenceFileType.MSGF;

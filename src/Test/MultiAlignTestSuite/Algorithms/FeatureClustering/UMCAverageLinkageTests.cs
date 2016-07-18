@@ -28,7 +28,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 var lineData = line.Split(new[] {"\t"}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 var feature                 = new UMCLight();
-                feature.ClusterId                = Convert.ToInt32(lineData[0]);                
+                feature.ClusterId                = Convert.ToInt32(lineData[0]);
                 feature.GroupId                  = Convert.ToInt32(lineData[1]);
                 feature.Id                       = Convert.ToInt32(lineData[2]);
                 feature.MassMonoisotopicAligned  = Convert.ToDouble(lineData[3]);
@@ -36,7 +36,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 feature.DriftTime                = Convert.ToDouble(lineData[5]);
                 feature.ChargeState              = Convert.ToInt32(lineData[6]);
 
-                features.Add(feature);                    
+                features.Add(feature);
             }
             return features;
         }
@@ -106,9 +106,9 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                     distances.Add(newDistance);
                 }
                 //Console.WriteLine();
-                //Console.WriteLine("Distances");                
+                //Console.WriteLine("Distances");
                 //distances.ForEach(x => Console.WriteLine(x));
-                //Console.WriteLine();                
+                //Console.WriteLine();
             }
         }
 
@@ -143,8 +143,8 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             average.Parameters                          = new FeatureClusterParameters<UMCLight>();
             average.Parameters.CentroidRepresentation   = ClusterCentroidRepresentation.Mean;
             average.Parameters.Tolerances               = new FeatureTolerances();
-            
-            var distance = new WeightedEuclideanDistance<UMCLight>();            
+
+            var distance = new WeightedEuclideanDistance<UMCLight>();
             average.Parameters.DistanceFunction = distance.EuclideanDistance;
             var clusters      = average.Cluster(features);
 
@@ -153,14 +153,14 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             {
                 foreach (var feature in newCluster.Features)
                 {
-                    Console.WriteLine("{0},{1},{2},{3},{4}",feature.GroupId, 
+                    Console.WriteLine("{0},{1},{2},{3},{4}",feature.GroupId,
                                                             feature.Id,
-                                                            feature.Net, 
+                                                            feature.Net,
                                                             feature.MassMonoisotopicAligned,
                                                             feature.DriftTime);
 
                 }
             }
-        }                
+        }
     }
 }

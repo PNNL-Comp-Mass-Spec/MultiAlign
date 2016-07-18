@@ -13,12 +13,12 @@ namespace MultiAlignChargeStateProcessor
     public sealed class UmcClusterWriter : IClusterWriter<UMCClusterLight>
     {
         private TextWriter m_writer;
-        private TextWriter m_idMapper;        
+        private TextWriter m_idMapper;
         private readonly List<int> m_ids;
 
         public UmcClusterWriter()
-        {            
-            m_ids       = new List<int>();                        
+        {
+            m_ids       = new List<int>();
         }
 
         public void Open(string path)
@@ -26,7 +26,7 @@ namespace MultiAlignChargeStateProcessor
             var folder   = Path.GetDirectoryName(path);
             var name     = Path.GetFileNameWithoutExtension(path);
             m_writer        = File.CreateText(path);
-            if (folder != null) 
+            if (folder != null)
                 m_idMapper      = File.CreateText(Path.Combine(folder, name + "_map.txt"));
             m_idMapper.WriteLine("Cluster, Dataset, Feature");
         }

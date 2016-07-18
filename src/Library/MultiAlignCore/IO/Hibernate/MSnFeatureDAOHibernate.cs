@@ -47,7 +47,7 @@ namespace MultiAlignCore.IO.Hibernate
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    // This is a hack, but the provider was incorrectly 
+                    // This is a hack, but the provider was incorrectly
                     // saying that "SELECT COUNT(*) FROM..."
                     // always had one entry, whether one row existed, or five, or none.
                     command.CommandType = CommandType.Text;

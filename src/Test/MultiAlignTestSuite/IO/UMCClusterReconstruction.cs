@@ -48,8 +48,8 @@ namespace MultiAlignTestSuite.IO
             // If you just wanted the clusters you could do this:
             // 1. Connect to the database
             //NHibernateUtil.ConnectToDatabase(databasePath, false);
-            // 2. Then extract all of the clusters 
-            //IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate(); 
+            // 2. Then extract all of the clusters
+            //IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate();
             //List<UMCClusterLight> clusters  = clusterCache.FindAll();
 
             var clusters = providers.ClusterCache.FindAll();
@@ -88,7 +88,7 @@ namespace MultiAlignTestSuite.IO
                                 {
                                     if (info.RawFile != null)
                                     {
-                                        // This might seem kind of klunky, but it's called a bridge, this way I can access 
+                                        // This might seem kind of klunky, but it's called a bridge, this way I can access
                                         // MS/MS spectra from PNNLOmics without having to reference any of the Thermo DLL's
                                         // Nor support file reading capability.  This is also nice because I don't have to load
                                         // several MS/MS spectra when analyzing large datasets for my spectral clustering work.

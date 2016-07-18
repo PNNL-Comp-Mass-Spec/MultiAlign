@@ -9,7 +9,7 @@ namespace MultiAlignCore.Extensions
     public static class FeatureListExtensions
     {
         /// <summary>
-        /// Determines the magnitude of the scan range beyond what is defined by the MSFeatures min and max scan based on percentage of total range. 
+        /// Determines the magnitude of the scan range beyond what is defined by the MSFeatures min and max scan based on percentage of total range.
         /// </summary>
         /// <param name="features"></param>
         /// <param name="percentage"></param>
@@ -72,11 +72,11 @@ namespace MultiAlignCore.Extensions
                 chargeMap[msFeature.ChargeState].Add(msFeature);
             }
 
-            var newChargeMap = new Dictionary<int, List<MSFeatureLight>>();            
+            var newChargeMap = new Dictionary<int, List<MSFeatureLight>>();
             foreach (var charge in chargeMap.Keys)
             {
                 var ordered       = chargeMap[charge].OrderBy(x => x.Scan);
-                newChargeMap.Add(charge, ordered.ToList());                
+                newChargeMap.Add(charge, ordered.ToList());
             }
             return newChargeMap;
         }
@@ -104,7 +104,7 @@ namespace MultiAlignCore.Extensions
                         return data[i];
                     return data[j];
                 }
-                i = j;                
+                i = j;
             }
             return data[data.Count - 1];
         }

@@ -50,7 +50,7 @@ namespace MultiAlign.ViewModels.Viewers
             }
         }
 
-        #region Commands        
+        #region Commands
 
         public ICommand LoadExistingAnalysis { get; private set; }
         public ICommand StartNewAnalysis { get; private set; }
@@ -120,7 +120,7 @@ namespace MultiAlign.ViewModels.Viewers
 
         private void item_RecentAnalysisSelected(object sender, OpenAnalysisArgs e)
         {
-            // Load ...            
+            // Load ...
             if (ExistingAnalysisSelected != null)
             {
                 ExistingAnalysisSelected(sender, e);

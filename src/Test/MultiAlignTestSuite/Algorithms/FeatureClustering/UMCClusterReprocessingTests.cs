@@ -32,7 +32,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 var lineData = line.Split(new[] {"\t"}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 var feature                 = new UMCLight();
-                feature.ClusterId                = Convert.ToInt32(lineData[0]);                
+                feature.ClusterId                = Convert.ToInt32(lineData[0]);
                 feature.GroupId                  = Convert.ToInt32(lineData[1]);
                 feature.Id                       = Convert.ToInt32(lineData[2]);
                 feature.MassMonoisotopicAligned  = Convert.ToDouble(lineData[3]);
@@ -40,12 +40,12 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                 feature.DriftTime                = Convert.ToDouble(lineData[5]);
                 feature.ChargeState              = Convert.ToInt32(lineData[6]);
 
-                features.Add(feature);                    
+                features.Add(feature);
             }
             return features;
-        }        
+        }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test(Description = "Tests clusters that should have been split.")]
         [TestCase(@"ClusterData\clusterData-merged.txt")]
@@ -63,7 +63,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             features.ForEach(x => cluster.AddChildFeature(x));
 
             var maps = new Dictionary<int, UMCClusterLight>();
-            
+
 
             // Map the features
             var mapFeatures = new Dictionary<int, List<UMCLight>>();
@@ -86,7 +86,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test(Description = "Tests clusters that should have been split.")]
         [TestCase(@"ClusterData\clusterData-merged.txt")]
@@ -96,7 +96,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
         {
             Console.WriteLine("Test: " + path);
             var features = GetClusterData(Path.Combine(TestPathSingleton.TestDirectory, path));
-            
+
             Assert.IsNotEmpty(features);
 
             var cluster = new UMCClusterLight();
@@ -110,12 +110,12 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             Console.WriteLine();
 
             var distance = new EuclideanDistanceMetric<FeatureLight>();
-            
+
             features.ForEach(x => Console.WriteLine(distance.EuclideanDistance(x, cluster)));
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test(Description = "Tests clusters that should have been split.")]
         [TestCase(@"ClusterData\clusterData-merged.txt")]
@@ -162,7 +162,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             cluster.Id = features[0].Id;
             features.ForEach(x => cluster.AddChildFeature(x));
 
-            
+
             var distance = new EuclideanDistanceMetric<FeatureLight>();
 
             for (var i = 0; i < features.Count; i++)
@@ -176,7 +176,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
                         var featureY = features[j];
                        // Console.WriteLine(distance.EuclideanDistance(featureX, featureY));
                     }
-                }                
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         Run m_run = null;
 
         public XicAdaptor(string rawPath, string peaksPath)
-        {            
+        {
             Run run     = RunUtilities.CreateAndLoadPeaks(rawPath, peaksPath);
             m_run       = run;
 
@@ -74,13 +74,13 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             double chromPeakGeneratorTolInPPM = MzPpmWindow;
             Globals.ChromatogramGeneratorMode chromGeneratorMode = Globals.ChromatogramGeneratorMode.MZ_BASED;
 
-            var chromGen = new PeakChromatogramGenerator(   chromPeakGeneratorTolInPPM, 
+            var chromGen = new PeakChromatogramGenerator(   chromPeakGeneratorTolInPPM,
                                                             chromGeneratorMode);
             chromGen.NETWindowWidthForNonAlignedData = Convert.ToSingle(NetWindow);
 
             int pointsToSmooth  = 5;
             var chromSmoother   = new SavitzkyGolaySmoother(pointsToSmooth, 2);
-            
+
             double chromPeakDetectorPeakBR   = 1;
             double chromPeakDetectorSigNoise = 1;
             var chromPeakDetector            = new ChromPeakDetector(   chromPeakDetectorPeakBR,
@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             var chromPeakSelector = new BasicChromPeakSelector(chromPeakSelectorParameters);
 
             //this generates an extracted ion chromatogram
-            // Since we are not using the built in generator, 
+            // Since we are not using the built in generator,
             chromGen.Execute(m_run.ResultCollection);
 
             //this smooths the data - very important step!
@@ -106,7 +106,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             chromPeakSelector.Parameters.PeakSelectorMode = Globals.PeakSelectorMode.ClosestToTarget;
             chromPeakSelector.Execute(m_run.ResultCollection);
 
-            //Here's the chromatogram data... 
+            //Here's the chromatogram data...
             List<XYData> data = new List<XYData>();
 
             for (int i = 0; i < m_run.XYData.Xvalues.Length; i++)
@@ -117,23 +117,23 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             return data;
         }
-        
+
         /// <summary>
         /// Creates an Xic for a feature based on individual charge states.
         /// </summary>
         /// <param name="rawPath">Path to the raw file.</param>
-        /// <param name="peaksPath">Path to the peaks file.</param>        
+        /// <param name="peaksPath">Path to the peaks file.</param>
         /// <param name="feature">Feature to target</param>
         public Dictionary<int, Chromatogram> CreateXicForChargeStates(UMCLight feature, bool shouldSmooth)
-        {            
+        {
 
             Dictionary<int, Chromatogram> chromatograms = new Dictionary<int, Chromatogram>();
             Dictionary<int, List<XYZData>> charges      =  feature.CreateChargeSIC();
-            
-            XicFinder finder   = new XicFinder();            
+
+            XicFinder finder   = new XicFinder();
             feature.ChargeStateChromatograms.Clear();
 
-            // 
+            //
             foreach (int charge in charges.Keys)
             {
                 // This is the current XIC - but it's not that great
@@ -144,7 +144,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 var maxPoint                    = xicMz.Where( u => u.Y == xicMz.Max(x=>x.Y)).Select(u=> new { u.X, u.Y, u.Z}).FirstOrDefault();
 
                 int     targetScan  = Convert.ToInt32(maxPoint.X);
-                double  targetMz    = maxPoint.Z; 
+                double  targetMz    = maxPoint.Z;
 
                 // Find the Xic based on the target point, this may include other peaks
                 List<XYData> totalXic = null;
@@ -186,7 +186,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// Creates an Xic for a feature based on individual charge states.
         /// </summary>
         /// <param name="rawPath">Path to the raw file.</param>
-        /// <param name="peaksPath">Path to the peaks file.</param>        
+        /// <param name="peaksPath">Path to the peaks file.</param>
         /// <param name="feature">Feature to target</param>
         public Dictionary<int, List<Chromatogram>> CreateXicForIsotopes(UMCLight feature, bool shouldSmooth)
         {
@@ -195,7 +195,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             Dictionary<int, List<XYZData>> charges      = feature.CreateChargeSIC();
             XicFinder finder                            = new XicFinder();
             feature.IsotopeChromatograms.Clear();
-            
+
             foreach (int charge in charges.Keys)
             {
                 /// Creates a list of Xic's for a given chromatogram.
@@ -207,7 +207,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
                 // Finds the maximum point in the XIC, we'll use this as our target, it most likely contains
                 // the exact point that we'll want to use to help identify the feature.
-                var maxPoint    = xicMz.Where(u => u.Y == xicMz.Max(x => x.Y)).Select(u => new { u.X, u.Y, u.Z }).FirstOrDefault();                
+                var maxPoint    = xicMz.Where(u => u.Y == xicMz.Max(x => x.Y)).Select(u => new { u.X, u.Y, u.Z }).FirstOrDefault();
                 int targetScan  = Convert.ToInt32(maxPoint.X);
                 double targetMz = maxPoint.Z;
 
@@ -222,7 +222,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     List<XYData> targetIsotopeXic = finder.FindTarget(totalXic, targetScan);
 
                     // Add the targeted Xic to the charge state map so that we can create Xic's for each charge state.
-                    Chromatogram gram = new Chromatogram(targetIsotopeXic, maxPoint.Z, charge);                
+                    Chromatogram gram = new Chromatogram(targetIsotopeXic, maxPoint.Z, charge);
                     grams.Add(gram);
                 }
 
@@ -231,6 +231,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             feature.IsotopeChromatograms = chromatograms;
             return chromatograms;
-        } 
-    }    
+        }
+    }
 }

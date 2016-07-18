@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
             var errors    = new Tuple<AlignmentMeasurement<double>, AlignmentMeasurement<double>>
                                         (netError, massError);
 
-              
+
             foreach (var match in matches)
             {
                 var x   = match.AnchorPointX;

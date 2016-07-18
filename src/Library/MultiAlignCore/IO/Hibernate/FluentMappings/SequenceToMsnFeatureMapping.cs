@@ -24,7 +24,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //    <key-property name="SequenceId"     column="Sequence_ID"      type="integer" />
             //    <key-property name="MsnFeatureId"   column="MSn_Feature_ID"   type="integer" />
             //    <key-property name="UmcFeatureId"   column="LCMS_Feature_ID"   type="integer" />
-            //  </composite-id>          
+            //  </composite-id>
             //</class>
         }
     }

@@ -52,7 +52,7 @@ namespace MultiAlignCore.IO.Reports
 
         public void CreateClusterPlots(FeaturesClusteredEventArgs args)
         {
-            // Plots: 
+            // Plots:
             //      Dataset member
             //      Total members
             //      Cluster scatter plot
@@ -98,11 +98,11 @@ namespace MultiAlignCore.IO.Reports
 
             var report = Config.Report;
 
-            report.PushTextHeader("Cluster Charge States"); 
+            report.PushTextHeader("Cluster Charge States");
             report.PushStartTable();
             var path        = Path.Combine(Config.AnalysisPath, PlotPath, "clusters_chargestates.png");
-            var histogram   = HistogramFactory.CreateHistogram(chargeMap, "Charge States", "Charge States");            
-            PlotImageUtility.SaveImage(histogram, path);            
+            var histogram   = HistogramFactory.CreateHistogram(chargeMap, "Charge States", "Charge States");
+            PlotImageUtility.SaveImage(histogram, path);
             report.PushImageColumn(path);
             report.PushEndTable();
         }
@@ -185,9 +185,9 @@ namespace MultiAlignCore.IO.Reports
 
             var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
-            
+
             var report = Config.Report;
-            report.PushLargeText(string.Format("Alignee Statistics - {0}", name));            
+            report.PushLargeText(string.Format("Alignee Statistics - {0}", name));
             report.PushStartTable();
 
             // Features
@@ -195,14 +195,14 @@ namespace MultiAlignCore.IO.Reports
             report.PushTextHeader("Features");
             report.PushEndTableRow();
             report.PushStartTableRow();
-            
+
             Config.Report.PushImageColumn(directory + "_features.png", WIDTH, HEIGHT);
             Config.Report.PushImageColumn(directory + "_heatmap.png", WIDTH, HEIGHT);
             PlotImageUtility.SaveImage(feature, directory + "_features.png");
             PlotImageUtility.SaveImage(heatmap, directory + "_heatmap.png");
             report.PushEndTableRow();
 
-            // Histograms 
+            // Histograms
             report.PushStartTableRow();
             report.PushTextHeader("Histograms");
             report.PushEndTableRow();

@@ -13,9 +13,9 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         /// </summary>
         /// <param name="spectrum"></param>
         /// <returns></returns>
-        MSSpectra Normalize(MSSpectra spectrum);        
+        MSSpectra Normalize(MSSpectra spectrum);
     }
 
-   
+
 
 }

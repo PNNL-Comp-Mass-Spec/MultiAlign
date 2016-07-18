@@ -33,7 +33,7 @@ namespace MultiAlignCore.Data.MetaData
             MetaData = new Dictionary<string, string>();
             FactorInformation = new Dictionary<FactorInformation, string>();
             Factors = new List<Factor>();
-            
+
             Sequence = null;
             InputFiles = new List<InputFile>();
             IsBaseline = false;
@@ -51,9 +51,9 @@ namespace MultiAlignCore.Data.MetaData
         ///     Gets or sets whether this dataset is a baseline or not.
         /// </summary>
         public bool IsBaseline { get; set; }
-        
+
         /// <summary>
-        ///     Gets or sets a mapping of scans to retention times 
+        ///     Gets or sets a mapping of scans to retention times
         /// </summary>
         public Dictionary<int, double> ScanTimes { get; set; }
 
@@ -251,7 +251,7 @@ namespace MultiAlignCore.Data.MetaData
 
         #endregion
 
-        #region Comparison Methods 
+        #region Comparison Methods
 
         public override bool Equals(object obj)
         {

@@ -6,12 +6,12 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
     /// Holds information about each analysis window for true and false matches.
     /// </summary>
     public class SpectralAnalysis
-    {        
+    {
         /// <summary>
         /// Constructor
         /// </summary>
         public SpectralAnalysis()
-        {                        
+        {
             MassData    = new AlignmentMeasurement<double>();
             NetData     = new AlignmentMeasurement<double>();
             Matches = new List<SpectralAnchorPointMatch>();
@@ -29,7 +29,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// </summary>
         public IEnumerable<SpectralAnchorPointMatch> Matches { get; set; }
 
-        
+
     }
 
 }

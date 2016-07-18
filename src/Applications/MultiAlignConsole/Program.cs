@@ -20,7 +20,7 @@ namespace MultiAlignConsole
         private const uint ENABLE_EXTENDED_FLAGS = 0x0080;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="hConsoleHandle"></param>
         /// <param name="dwMode"></param>
@@ -28,7 +28,7 @@ namespace MultiAlignConsole
         [DllImport("kernel32.dll")]
         public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-        private static readonly IAnalysisReportGenerator  m_reportCreator; 
+        private static readonly IAnalysisReportGenerator  m_reportCreator;
         private static readonly AnalysisConfig            m_config;
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace MultiAlignConsole
             m_config        = new AnalysisConfig();
             m_reportCreator = new AnalysisReportGenerator();
             m_reportCreator.Config = m_config;
-        }        
-        
+        }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="args"></param>
         static int Main(string[] args)

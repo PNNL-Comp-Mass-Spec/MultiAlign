@@ -37,7 +37,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             var ipr = provider.LcMsRun;
 
             ipr.HigherPrecursorChromatogramCacheSize = 2000;
-            
+
             features.Sort((x,y) => x.Mz.CompareTo(y.Mz));
 
             // Iterate over XIC targets.
@@ -101,7 +101,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         }
 
                         // We're on the last MSFeature - is the MS/MS scan actually for this feature?
-                        if (i == xicTarget.Feature.MsFeatures.Count - 1 && 
+                        if (i == xicTarget.Feature.MsFeatures.Count - 1 &&
                             ipr.GetPrevScanNum(ms2Scans[j], 1) != xicTarget.Feature.MsFeatures[i].Scan)
                         {
                             continue;
@@ -172,9 +172,9 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             {
                 var map = feature.CreateChargeMap();
 
-                // Clear the MS Feature List 
+                // Clear the MS Feature List
                 // Because we're going to refine each charge state then fix the length of the feature
-                // from it's known max abundance value.                
+                // from it's known max abundance value.
                 feature.MsFeatures.Clear();
 
 
@@ -204,7 +204,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                     }
 
                     // Then find when the feature goes to zero
-                    // Start from max to left                        
+                    // Start from max to left
                     var startIndex = maxScanIndex;
 
                     // If we hit zero, then keep
@@ -230,7 +230,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                     }
                 }
 
-                // Clean up 
+                // Clean up
             }
             return features.Where(x => x.MsFeatures.Count > 0).ToList();
         }

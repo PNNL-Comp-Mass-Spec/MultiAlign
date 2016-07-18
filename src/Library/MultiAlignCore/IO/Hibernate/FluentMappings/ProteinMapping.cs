@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
 
             //<class name="Protein" table="T_Proteins" lazy="false">
             //  <id name="RefId" column="Ref_Id" type="integer">
-            //    <generator class="assigned" />      
+            //    <generator class="assigned" />
             //  </id>
             //  <property name="Sequence"            column="Protein"              type="string"   not-null="false" />
             //  <property name="ProteinDescription"  column="Protein_Description"  type="string"   not-null="false" />

@@ -147,7 +147,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         public void TestPeptideBands(string directory,
             string matchPath)
         {
-            // Loads the supported MultiAlign types 
+            // Loads the supported MultiAlign types
             var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
@@ -338,7 +338,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var matchPath = string.Format("{0}.txt", outputPath);
             var errorPath = string.Format("{0}-errors.txt", outputPath);
 
-            // Loads the supported MultiAlign types 
+            // Loads the supported MultiAlign types
             var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
@@ -508,10 +508,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
                             var massError = FeatureLight.ComputeMassPPMDifference(match.AnchorPointX.Mz,
                                 match.AnchorPointY.Mz);
                             var netError = match.AnchorPointX.Net - match.AnchorPointY.Net;
-                            var massPoint = new RegressionPoint(match.AnchorPointX.Mz, 0, massError, netError);                              
+                            var massPoint = new RegressionPoint(match.AnchorPointX.Mz, 0, massError, netError);
                             massPoints.Add(massPoint);
 
-                            var netPoint = new RegressionPoint(match.AnchorPointX.Net, 0, massError, netError);                            
+                            var netPoint = new RegressionPoint(match.AnchorPointX.Net, 0, massError, netError);
                             netPoints.Add(netPoint);
                         }
 

@@ -13,7 +13,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         private readonly IdentificationProviderCache identificationProviderCache;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="identificationProviderCache">The identification provider.</param>
         public IdComparisonScorer(IdentificationProviderCache identificationProviderCache)
@@ -66,6 +66,6 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
             }
 
             return peptides;
-        } 
+        }
     }
 }

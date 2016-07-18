@@ -113,7 +113,7 @@
 //            var polynomialOrder = 2;
 //            var allowNegativeValues = true;//faster
 //            var smoother = new SavitzkyGolaySmoother(numberOfSmootherPoints, polynomialOrder, allowNegativeValues);
-          
+
 //            var smoothedValues = smoother.Smooth(dataInput);
 
 //            Console.WriteLine("We found " + smoothedValues.Count + " Peaks.");

@@ -12,7 +12,7 @@ namespace MultiAlignTestSuite.IO.Databases
 {
     [TestFixture]
     public sealed class MtdbLoaderTests
-    {      
+    {
         /// <summary>
         /// Tests local database loading.
         /// </summary>

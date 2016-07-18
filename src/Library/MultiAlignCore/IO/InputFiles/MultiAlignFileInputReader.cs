@@ -81,7 +81,7 @@ namespace MultiAlignCore.IO.InputFiles
                     continue;
                 }
 
-                // If wasModeChanged = true, then the current 
+                // If wasModeChanged = true, then the current
                 // line is not data, but a tag to say change how read the next section.
                 var wasModeChanged = false;
                 switch (fixedLine)

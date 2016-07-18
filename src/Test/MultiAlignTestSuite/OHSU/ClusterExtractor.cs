@@ -25,7 +25,7 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\results.db3",
             @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
-            10, 
+            10,
             Ignore=true)]
         public void CreateDatasetMap(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
@@ -408,7 +408,7 @@ namespace MultiAlignTestSuite.OHSU
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            // Here we map the features onto the clusters 
+            // Here we map the features onto the clusters
 
             GC.Collect();
             GC.WaitForPendingFinalizers();

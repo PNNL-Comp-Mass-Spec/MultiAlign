@@ -22,7 +22,7 @@
                 <MenuItem Header="Settings" Command="{Binding SettingsCommand}" />
             </MenuItem>
         </Menu>
-        
+
         <xcad:DockingManager Grid.Row="1" Margin="5"  AllowMixedOrientation="True" Name="AvDock">
             <xcad:LayoutRoot>
                 <xcad:LayoutPanel>
@@ -59,7 +59,7 @@
                             </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>
                     </xcad:LayoutAnchorablePaneGroup>
-                    
+
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument Title="Clusters" CanClose="False">
                             <Grid DataContext="{Binding ClusterPlotViewModel}" Name="ClusterPlotGrid">
@@ -113,9 +113,9 @@
                                     <RowDefinition Height="5" />
                                     <RowDefinition Height="20" />
                                 </Grid.RowDefinitions>
-                                
+
                                 <oxy:PlotView DataContext="{Binding MsMsSpectraViewModel}" Grid.Row="0" Model="{Binding Model}" />
-                                
+
                                 <ComboBox Grid.Row="2" ItemsSource="{Binding MsMsSpectra}" SelectedItem="{Binding SelectedMsMsSpectra}" Width="190" HorizontalAlignment="Right"></ComboBox>
                             </Grid>
                         </xcad:LayoutDocument>-->

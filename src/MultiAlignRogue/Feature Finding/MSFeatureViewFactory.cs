@@ -6,12 +6,12 @@ namespace MultiAlignRogue.Feature_Finding
 
     using MultiAlignCore.Data.MetaData;
 
-    
+
     class MSFeatureViewFactory: IFeatureWindowFactory
     {
         public void CreateNewWindow()
         {
-            
+
         }
         public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features, bool showAlignedFeatures)
         {

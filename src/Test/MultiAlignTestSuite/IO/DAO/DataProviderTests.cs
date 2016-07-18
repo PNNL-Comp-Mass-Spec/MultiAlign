@@ -37,12 +37,12 @@ namespace MultiAlignTestSuite.IO.DAO
         [Test]
         [TestCase(@"m:\data\proteomics\matest-gui\guitest.db3", Ignore=true)]
         public void TestLoad(string path)
-        {            
+        {
             SetupDataProviders(path);
             var dao = new MSFeatureDAOHibernate();
             var start = DateTime.Now;
             dao.FindByDatasetId(0);
-            var end = DateTime.Now;            
+            var end = DateTime.Now;
             var span = end.Subtract(start);
             Console.WriteLine("{0} total ms", span.TotalMilliseconds);
 

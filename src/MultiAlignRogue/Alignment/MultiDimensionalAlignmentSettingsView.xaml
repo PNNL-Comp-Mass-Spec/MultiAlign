@@ -1,18 +1,18 @@
 ﻿<UserControl x:Class="MultiAlignRogue.Alignment.MultiDimensionalAlignmentSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="750"> <!--d:DataContext="{d:DesignInstance d:Type=alignment:AlignmentSettingsViewModel, IsDesignTimeCreatable=True}">-->
     <UserControl.DataContext>
         <alignment:AlignmentSettingsViewModel />
     </UserControl.DataContext>
     <Grid>
         <DataGrid ItemsSource="{Binding DimensionSettings}" AutoGenerateColumns="False">
-            <DataGrid.Columns>                
+            <DataGrid.Columns>
                 <!-- Up/down button column -->
                 <DataGridTemplateColumn Width="30">
                     <DataGridTemplateColumn.CellTemplate>
@@ -24,7 +24,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <!-- Should align dimension column -->
                 <DataGridCheckBoxColumn Width="50" Header="Warp?" Binding="{Binding ShouldAlignDimension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.ElementStyle>
@@ -34,7 +34,7 @@
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
-                
+
                 <!-- Separation type column -->
                 <DataGridTextColumn Width="*" Header="Separation" Binding="{Binding SeparationType, Mode=OneWay}">
                     <DataGridTextColumn.ElementStyle>
@@ -44,7 +44,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                
+
                 <!-- Reference dataset column -->
                 <DataGridTemplateColumn Width="5*" Header="Reference">
                     <DataGridTemplateColumn.CellTemplate>
@@ -60,7 +60,7 @@
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" FontSize="20">Reference Dataset</TextBlock>
-                                        
+
                                         <ListView Grid.Row="1" ItemsSource="{Binding Datasets}" />
                                     </Grid>
                                 </xctk:DropDownButton.DropDownContent>
@@ -68,7 +68,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <!-- Number of sections column -->
                 <DataGridTemplateColumn Width="*" Header="# Sections">
                     <DataGridTemplateColumn.CellTemplate>
@@ -77,7 +77,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <!-- Contraction factor column -->
                 <DataGridTemplateColumn Header="Contraction Factor" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -87,6 +87,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-        </DataGrid>   
+        </DataGrid>
     </Grid>
 </UserControl>

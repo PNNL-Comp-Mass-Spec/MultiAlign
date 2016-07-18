@@ -24,7 +24,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
             ISpectralNormalizer normalizer = new BinarySpectraNormalizer();
             var x = normalizer.Normalize(spectraX);
             var y = normalizer.Normalize(spectraY);
-            
+
             var NM    = Convert.ToDouble(spectraX.Peaks.Count + spectraY.Peaks.Count);
             double sum   = 0;
             for (var i = 0; i < spectraX.Peaks.Count; i++)

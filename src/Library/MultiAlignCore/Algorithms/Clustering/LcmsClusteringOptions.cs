@@ -22,7 +22,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public FeatureTolerances InstrumentTolerances { get; set; }
 
         public static FeatureClusterParameters<UMCLight> ConvertToOmics(LcmsClusteringOptions options)
-        {                        
+        {
             var parameters       = new FeatureClusterParameters<UMCLight>
             {
                 Tolerances                  = options.InstrumentTolerances,

@@ -13,7 +13,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         public SpectralAnchorPointAligner():
             this(.25)
         {
-            
+
         }
 
         public SpectralAnchorPointAligner(double bandwidth)
@@ -74,19 +74,19 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
             matches =
                 anchorPoints.Where(
-                    x => FeatureLight.ComputeMassPPMDifference(x.AnchorPointX.Mz, x.AnchorPointY.Mz) < 20 && 
+                    x => FeatureLight.ComputeMassPPMDifference(x.AnchorPointX.Mz, x.AnchorPointY.Mz) < 20 &&
                         x.AnchorPointX.Spectrum.ParentFeature.ChargeState == x.AnchorPointY.Spectrum.ParentFeature.ChargeState
                             ).ToList();
 
             foreach (var match in matches)
-            {                
+            {
                 netXvalues.Add(match.AnchorPointX.Net);
-                netYvalues.Add(match.AnchorPointY.Net);                
+                netYvalues.Add(match.AnchorPointY.Net);
             }
 
             var netInterpolator = new LoessInterpolator(Bandwidth, 5);
             netInterpolator.Smooth(netYvalues, netXvalues, FitFunctionFactory.Create(FitFunctionTypes.TriCubic));
-            
+
             // Then generate the Mass Alignment using R1
             // We also have to resort the matches based on mass now too
             anchorPoints = all.Values.OrderBy(x => x.AnchorPointY.Mz).ToList();
@@ -111,11 +111,11 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
         public double AlignMass(double mass)
         {
-            return m_massInterpolator.Predict(mass);            
+            return m_massInterpolator.Predict(mass);
         }
         public double AlignNet(double net)
         {
-            return m_netInterpolator.Predict(net);            
+            return m_netInterpolator.Predict(net);
         }
     }
 }

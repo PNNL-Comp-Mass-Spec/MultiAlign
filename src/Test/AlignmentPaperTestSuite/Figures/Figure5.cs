@@ -56,7 +56,7 @@ namespace AlignmentPaperTestSuite.Figures
         {
             var databasePath    = GetPath(relativeDatabasePath);
             var outputPath      = GetOutputPath(relativeName);
-            
+
             if (!Directory.Exists(outputPath))
             {
                 Directory.CreateDirectory(outputPath);
@@ -147,9 +147,9 @@ namespace AlignmentPaperTestSuite.Figures
 
         private IEnumerable<UMCLight> RetrieveFeatures(int datasetId, FeatureDataAccessProviders providers)
         {
-            var features     = providers.FeatureCache.FindByDatasetId(datasetId);            
+            var features     = providers.FeatureCache.FindByDatasetId(datasetId);
             var spectra      = providers.MSnFeatureCache.FindByDatasetId(datasetId);
-            if (spectra == null) 
+            if (spectra == null)
                 throw new ArgumentNullException(@"There were no MS/MS spectra in the database");
 
             var sequences    = providers.DatabaseSequenceCache.FindAll();
@@ -157,7 +157,7 @@ namespace AlignmentPaperTestSuite.Figures
             var spectraMaps  = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetId);
             var msFeatures   = providers.MSFeatureCache.FindByDatasetId(datasetId);
 
-            // Make a one pass through each enumerable list, 
+            // Make a one pass through each enumerable list,
             // then use the maps to join the data together
             var dictFeatures = new Dictionary<int, UMCLight>();
             var dictSpectra  = new Dictionary<int, MSSpectra>();
@@ -173,7 +173,7 @@ namespace AlignmentPaperTestSuite.Figures
                 {
                     Sequence =  sequence.Sequence,
                     Id       =  sequence.Id,
-                };                 
+                };
                 dictPeptide.Add(peptide.Id, peptide);
             }
 
@@ -207,7 +207,7 @@ namespace AlignmentPaperTestSuite.Figures
                 UMCLight  feature;
                 MSSpectra spectrum;
                 MSFeatureLight msFeature;
-                
+
                 var workedFeatures  = dictFeatures.TryGetValue(map.LCMSFeatureID, out feature);
                 var workedSpectra   = dictSpectra.TryGetValue(map.MSMSFeatureID,  out spectrum);
                 var workedMsFeature = dictMsFeatures.TryGetValue(map.MSFeatureID, out msFeature);
@@ -229,7 +229,7 @@ namespace AlignmentPaperTestSuite.Figures
                 count++;
             }
 
-            Console.WriteLine("Mapped {0} spectra to parent Features", count);            
+            Console.WriteLine("Mapped {0} spectra to parent Features", count);
             return features;
         }
 
@@ -316,10 +316,10 @@ namespace AlignmentPaperTestSuite.Figures
             var postAlignment = scorer.Score(clusters);
 
             UpdateStatus("Note\tSame\tDifferent");
-            UpdateStatus(string.Format("Pre\t{0}\t{1}", 
+            UpdateStatus(string.Format("Pre\t{0}\t{1}",
                             preAlignment.SameCluster,
                             preAlignment.DifferentCluster));
-            UpdateStatus(string.Format("Post\t{0}\t{1}", 
+            UpdateStatus(string.Format("Post\t{0}\t{1}",
                             postAlignment.SameCluster,
                             postAlignment.DifferentCluster));
 
@@ -333,12 +333,12 @@ namespace AlignmentPaperTestSuite.Figures
         private IEnumerable<SpectralAnchorPointMatch> FilterMatches(IEnumerable<SpectralAnchorPointMatch> matches, double ppm)
         {
             return
-                matches.Where(x => 
+                matches.Where(x =>
                         ppm > Math.Abs(FeatureLight.ComputeMassPPMDifference(x.AnchorPointX.Spectrum.ParentFeature.Mz,
                                                                     x.AnchorPointY.Spectrum.ParentFeature.Mz)));
         }
 
-      
+
         private void SaveMatches(string path, IEnumerable<SpectralAnchorPointMatch> matches)
         {
             using (var writer = File.CreateText(path))

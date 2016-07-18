@@ -70,7 +70,7 @@ namespace MultiAlignCore.Algorithms.Regression
                 m_intervalStart.Add(val);
             }
         }
-       
+
         /// <summary>
         /// input points are [x, y], order specifies order of the regression line
         /// Returns false if the number of knots is less than 2, if there are no points

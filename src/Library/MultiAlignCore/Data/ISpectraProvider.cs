@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace MultiAlignCore.Data
-{    
+{
     /// <summary>
     /// Interface for objects that have access to raw data.
     /// </summary>
@@ -56,7 +56,7 @@ namespace MultiAlignCore.Data
         List<MSSpectra> GetMSMSSpectra(Dictionary<int, int> excludeMap);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="group"></param>
         /// <param name="excludeMap"></param>

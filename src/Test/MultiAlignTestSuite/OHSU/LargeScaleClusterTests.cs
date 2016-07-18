@@ -68,7 +68,7 @@ namespace MultiAlignTestSuite.OHSU
 
                 for (var j = i + 1; j <= stop; j++)
                 {
-                    // Don't calculate distance to self.                    
+                    // Don't calculate distance to self.
                     var featureY = data[j];
 
                     // Calculate the distances here (using a cube).  We dont care if we are going to re-compute
@@ -83,7 +83,7 @@ namespace MultiAlignTestSuite.OHSU
                     // Make sure we fall within the distance range before computing...
                     if (withinRange)
                     {
-                        // If IMS or equivalent only cluster similar charge states                        
+                        // If IMS or equivalent only cluster similar charge states
 
                         // Make sure it's the same charge state
                         if (chargeStateX == featureY.ChargeState)
@@ -142,14 +142,14 @@ namespace MultiAlignTestSuite.OHSU
             for (var i = 0; i < totalFeatures - 1; i++)
             {
                 // Here we compute the ppm mass difference between consecutive features (based on mass).
-                // This will determine if we cluster a block of data or not.                
+                // This will determine if we cluster a block of data or not.
                 var umcX = data[i];
                 var umcY = data[i + 1];
                 var ppm =
                     Math.Abs(FeatureLight.ComputeMassPPMDifference(umcX.MassMonoisotopicAligned,
                         umcY.MassMonoisotopicAligned));
 
-                // If the difference is greater than the tolerance then we cluster 
+                // If the difference is greater than the tolerance then we cluster
                 //  - we dont check the sign of the ppm because the data should be sorted based on mass.
                 if (ppm > massTolerance)
                 {

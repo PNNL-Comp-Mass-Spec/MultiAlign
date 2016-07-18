@@ -80,7 +80,7 @@ namespace MultiAlignTestSuite.Drawing
 
                 var xml = new XmlDocument();
                 xml.LoadXml(svgString);
-                var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
+                var x = SvgDocument.Open(xml); // Svg.SvgDocument();
                 var bmp = x.Draw();
                 var outputFilePath = GetPath(@"testResults\ScatterPlot\testScatter" + totalPoints + ".jpg");
                 bmp.Save(outputFilePath);
@@ -190,7 +190,7 @@ namespace MultiAlignTestSuite.Drawing
 
             var xml = new XmlDocument();
             xml.LoadXml(svgString);
-            var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
+            var x = SvgDocument.Open(xml); // Svg.SvgDocument();
             var bmp = x.Draw();
 
             bmp.Save(pngPath);
@@ -198,7 +198,7 @@ namespace MultiAlignTestSuite.Drawing
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.HeatScores, false);
             var netHistogram = HistogramFactory.CreateHistogram(alignmentResults.NetErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");          
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var baseName = Path.Combine(didirectory.FullName, Path.GetFileNameWithoutExtension(fiOutput.Name));
 

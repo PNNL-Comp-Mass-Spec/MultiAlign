@@ -21,12 +21,12 @@ namespace MultiAlignCore.Drawing
             Model.PlotMargins = new OxyThickness(double.NaN, 40, 40, double.NaN);
             Model.Title = name;
 
-            var axis = new CategoryAxis            
+            var axis = new CategoryAxis
             {
-                Position = AxisPosition.Bottom,                                              
-                GapWidth = 0,                
+                Position = AxisPosition.Bottom,
+                GapWidth = 0,
                 Angle =  -90,
-                IsAxisVisible = false                
+                IsAxisVisible = false
             };
             Model.Axes.Add(axis);
 
@@ -78,11 +78,11 @@ namespace MultiAlignCore.Drawing
             foreach (var key in keys)
             {
                 var keyValue = key.ToString();
-                
+
                 axis.Labels.Add(keyValue);
                 //axis.ActualLabels.Add(keyValue);
 
-                var number = histogram[key];                
+                var number = histogram[key];
                 data.Items.Add(new ColumnItem(number));
             }
 

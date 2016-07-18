@@ -339,7 +339,7 @@ namespace MultiAlign.ViewModels.Viewers
         /// </summary>
         private void SetCluster(UMCClusterLightMatched cluster)
         {
-            // Grab the data from the cache            
+            // Grab the data from the cache
             UpdatePlotsWithClusterData(cluster);
 
             ChargeHistogramModel = new UmcClusterChargeHistogram(cluster.Cluster, "Charge State Histogram");

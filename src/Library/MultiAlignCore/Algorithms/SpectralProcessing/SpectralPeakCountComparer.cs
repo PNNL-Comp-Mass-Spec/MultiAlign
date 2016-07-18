@@ -16,7 +16,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         {
             var a = xSpectrum.Peaks;
             var b = ySpectrum.Peaks;
-                                               
+
             // Then compute the magnitudes of the spectra
             double sum  = 0;
             var xc = 0;

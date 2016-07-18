@@ -51,7 +51,7 @@ namespace MultiAlignTestSuite.Algorithms.Regression
             var newYValues = interpolator.Smooth(xValues, yValues, fitFunction);
             for (var i = 0; i < xValues.Count; i++)
             {
-                Console.WriteLine(@"{0}	{1}	{2}	{3}", i, xValues[i], yValues[i], newYValues[i]);
+                Console.WriteLine(@"{0} {1} {2} {3}", i, xValues[i], yValues[i], newYValues[i]);
             }
 
             dt /= 2;
@@ -63,7 +63,7 @@ namespace MultiAlignTestSuite.Algorithms.Regression
             while (cv < Math.PI * 3)
             {
                 var predicted = interpolator.Predict(cv);
-                Console.WriteLine(@"{0}	{1}", cv, predicted);
+                Console.WriteLine(@"{0} {1}", cv, predicted);
                 cv += dt;
             }
         }

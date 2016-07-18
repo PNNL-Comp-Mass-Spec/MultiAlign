@@ -36,7 +36,7 @@ namespace MultiAlignCore.Algorithms.Solvers
                 x += delta;
 
                 var y = basis.Evaluate(coefficients, x);
-                sum += (y * 2);                
+                sum += (y * 2);
             }
 
             // Make sure we get the end of the function

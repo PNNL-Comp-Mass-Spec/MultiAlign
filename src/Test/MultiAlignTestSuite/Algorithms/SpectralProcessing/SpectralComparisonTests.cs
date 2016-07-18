@@ -137,7 +137,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             form.Show();
 
             IO.Utilities.SleepNow(3);
-            
+
             using (var bitmap = new Bitmap(form.Width, form.Height))
             {
                 form.DrawToBitmap(bitmap, form.DisplayRectangle);
@@ -165,8 +165,8 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             1,
             Ignore = false)]
         public void DisplayComparisonFigure(
-            string pathX, int scanX, 
-            string pathY, int scanY, 
+            string pathX, int scanX,
+            string pathY, int scanY,
             double mzTolerance)
         {
             // Convert relative paths to absolute paths
@@ -427,7 +427,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
         #endregion
 
-        #region Peptide String Manipulation 
+        #region Peptide String Manipulation
 
         /// <summary>
         ///     Cleans the peptide string
@@ -459,7 +459,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
         //            Ignore = true)]
-        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            SpectralComparison.CosineDotProduct,
         //            .8)]
@@ -498,7 +498,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            List<double> scans = new List<double>();
         //            Dictionary<int, MSSpectra> spectraMap = new Dictionary<int, MSSpectra>();
 
-        //            // Iterature through 
+        //            // Iterature through
         //            foreach (int scanx in scanDataX.Keys)
         //            {
         //                ScanSummary xsum = scanDataX[scanx];
@@ -507,7 +507,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //                    continue;
 
         //                MSSpectra spectrumX = GetSpectrum(readerX, scanDataX[scanx].Scan, 0, mzTolerance: mzTolerance);
-        //                spectrumX           = filter.Threshold(spectrumX, percent);                        
+        //                spectrumX           = filter.Threshold(spectrumX, percent);
         //                spectrumX.Peaks     = XYData.Bin(spectrumX.Peaks,
         //                                                    0,
         //                                                    2000,
@@ -572,8 +572,8 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            @"M:\data\proteomics\Thesis\testpaa-tr-cp-00-00\tr-cp-00-00-1.0e+00_matches.csv",
         //            SpectralComparison.CosineDotProduct,
         //            .8)]
-        //public void TestErrorDistributionsMatches(string pathX,            
-        //                                            string pathY, 
+        //public void TestErrorDistributionsMatches(string pathX,
+        //                                            string pathY,
         //                                            string peptideMatches,
         //                                            SpectralComparison comparerType,
         //                                            double mzTolerance)
@@ -597,7 +597,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //    Dictionary<int, Dictionary<int, PeptideMatch>> matchesX = CreateMatches(matches, 0);
         //    Dictionary<int, Dictionary<int, PeptideMatch>> matchesY = CreateMatches(matches, 1);
 
-        //    // These track our matched and not matched 
+        //    // These track our matched and not matched
         //    double step = .05;
         //    int N       = Convert.ToInt32(1.0/step);
 
@@ -634,7 +634,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            double start    = -.05;
         //            double max      = .05;
         //            double width    = max - start;
-        //            double stepNet  = .005; 
+        //            double stepNet  = .005;
         //            double netValue = start;
         //            int i = 0;
         //            while (netValue <= max)
@@ -651,8 +651,8 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //                    continue;
 
         //                // Grab the first spectar
-        //                MSSpectra spectrumX = GetSpectrum(readerX, scanDataX[scanx].Scan, 0, mzTolerance: mzTolerance);    
-        //                spectrumX           = filter.Threshold(spectrumX, percent);                        
+        //                MSSpectra spectrumX = GetSpectrum(readerX, scanDataX[scanx].Scan, 0, mzTolerance: mzTolerance);
+        //                spectrumX           = filter.Threshold(spectrumX, percent);
         //                spectrumX.Peaks     = XYData.Bin(spectrumX.Peaks,
         //                                                    0,
         //                                                    2000,
@@ -718,8 +718,8 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
 
         //                    double netX = Convert.ToDouble(scanx - minX) / Convert.ToDouble(maxX - minX);
-        //                    double netY = Convert.ToDouble(scany - minY) / Convert.ToDouble(maxY - minY);                            
-        //                    double net                  = Convert.ToDouble(netX - netY);                            
+        //                    double netY = Convert.ToDouble(scany - minY) / Convert.ToDouble(maxY - minY);
+        //                    double net                  = Convert.ToDouble(netX - netY);
         //                    if (analysis.NetTolerance >= net)
         //                    {
         //                        if (isInList)
@@ -739,9 +739,9 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //                            }
         //                            analysis.AddFalseMatch(index);
         //                        }
-        //                    }                              
-        //                }                           
-        //            }                    
+        //                    }
+        //                }
+        //            }
         //        }
         //    }
         //    analysis.Write();
@@ -755,7 +755,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         ///// <param name="peptideMatches"></param>
         ///// <param name="comparerType"></param>
         ///// <param name="mzTolerance"></param>
-        //[Test(Description = "Compares two spectra against each other.")]        
+        //[Test(Description = "Compares two spectra against each other.")]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
@@ -817,7 +817,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //    // This guy filters the spectra, so that we only keep the N most intense ions for comparison
         //    ISpectraFilter filter = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
 
-        //    // These track our matched and not matched 
+        //    // These track our matched and not matched
         //    double step                 = .05;
         //    int N                       = Convert.ToInt32(1.0 / step);
         //    SpectralAnalysis analysis   = new SpectralAnalysis(step);
@@ -832,7 +832,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            readerY.AddDataFile(pathY, 0);
 
         //            Dictionary<int, ScanSummary> scanDataX = readerX.GetScanData(0);
-        //            Dictionary<int, ScanSummary> scanDataY = readerY.GetScanData(0); 
+        //            Dictionary<int, ScanSummary> scanDataY = readerY.GetScanData(0);
 
         //            // Determine the scan maxes
         //            var maxX    = scanDataX.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
@@ -869,8 +869,8 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //                    continue;
 
         //                // Grab the first spectar
-        //                MSSpectra spectrumX = GetSpectrum(  readerX, 
-        //                                                    scanDataX[scanx].Scan, 
+        //                MSSpectra spectrumX = GetSpectrum(  readerX,
+        //                                                    scanDataX[scanx].Scan,
         //                                                    0,
         //                                                    mzTolerance: mzTolerance);
         //                spectrumX           = filter.Threshold(spectrumX, percent);
@@ -898,9 +898,9 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //                    }
         //                    else
         //                    {
-        //                        spectrumY = GetSpectrum(    readerY, 
-        //                                                    scanDataY[scany].Scan, 
-        //                                                    0, 
+        //                        spectrumY = GetSpectrum(    readerY,
+        //                                                    scanDataY[scany].Scan,
+        //                                                    0,
         //                                                    mzTolerance: mzTolerance);
         //                        spectrumY = filter.Threshold(spectrumY, percent);
         //                        spectrumY.Peaks = XYData.Bin(spectrumY.Peaks,
@@ -923,9 +923,9 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
 
         //                    if (peptideMapX.ContainsKey(scanx))
-        //                        peptidex    = peptideMapX[scanx];                               
+        //                        peptidex    = peptideMapX[scanx];
 
-        //                    if (peptideMapY.ContainsKey(scany))                            
+        //                    if (peptideMapY.ContainsKey(scany))
         //                        peptidey    = peptideMapY[scany];
 
 
@@ -942,7 +942,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
 
         //                    bool passesCutoff = PassesCutoff(peptidex, peptidey, score, fdr);
-        //                    if (!passesCutoff)                            
+        //                    if (!passesCutoff)
         //                        continue;
 
         //                    if (value < matchScore)
@@ -1013,7 +1013,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //}
 
         //private bool PassesCutoff(PeptideTest peptidex, PeptideTest peptidey, double score, double fdr)
-        //{         
+        //{
         //    bool passes = true;
 
         //    if (peptidex == null || peptidey == null)
@@ -1022,10 +1022,10 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //    if (peptidey.FDR > fdr) return false;
         //    if (peptidey.FDR > fdr) return false;
         //    if (peptidex.Score > score) return false;
-        //    if (peptidey.Score > score) return false;            
+        //    if (peptidey.Score > score) return false;
         //    return passes;
         //}
-        //#endregion        
+        //#endregion
     }
 
     public class PeptideMatch

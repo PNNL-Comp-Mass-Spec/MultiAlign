@@ -47,14 +47,14 @@ namespace MultiAlignRogue.DMS
         private readonly string connectionString;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DmsLookupUtility"/> class. 
+        /// Initializes a new instance of the <see cref="DmsLookupUtility"/> class.
         /// </summary>
         public DmsLookupUtility() : this(DmsConnectionString)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DmsLookupUtility"/> class. 
+        /// Initializes a new instance of the <see cref="DmsLookupUtility"/> class.
         /// </summary>
         /// <param name="connectionString">The connection String.</param>
         public DmsLookupUtility(string connectionString)

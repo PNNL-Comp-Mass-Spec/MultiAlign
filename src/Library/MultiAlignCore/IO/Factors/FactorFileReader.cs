@@ -10,17 +10,17 @@ namespace MultiAlignCore.IO.Factors
     {
         #region Events
         public event EventHandler<MageColumnEventArgs>  ColumnDefAvailable;
-        public event EventHandler<MageDataEventArgs>    DataRowAvailable; 
+        public event EventHandler<MageDataEventArgs>    DataRowAvailable;
         public event EventHandler<MageStatusEventArgs>  StatusMessageUpdated;
         #endregion
 
         public FactorFileReader()
         {
-        }    
+        }
 
         #region Cleanup Methods
         public void  Cancel()
-        { 	        
+        {
             // Pass
         }
 
@@ -33,8 +33,8 @@ namespace MultiAlignCore.IO.Factors
         #region Properties
         public string  ModuleName
         {
-	        get;
-	        set;
+            get;
+            set;
         }
         public ProcessingPipeline Pipeline
         {
@@ -50,33 +50,33 @@ namespace MultiAlignCore.IO.Factors
         }
         public void  Run(object state)
         {
- 	        
+
         }
         public void  SetParameters(Dictionary<string,string> parameters)
-        { 	        throw new NotImplementedException();
+        {           throw new NotImplementedException();
         }
 
         public void  SetPropertyByName(string key, string val)
         {
- 	        
-        }        
+
+        }
         #endregion
 
         #region ISinkModule Members
         public void  HandleColumnDef(object sender, MageColumnEventArgs args)
         {
- 	        
+
         }
         public void  HandleDataRow(object sender, MageDataEventArgs args)
         {
- 	        
+
         }
         #endregion
 
         #region IDisposable Members
         public void Dispose()
         {
-            
+
         }
         #endregion
 
@@ -86,5 +86,5 @@ namespace MultiAlignCore.IO.Factors
         public event EventHandler<MageStatusEventArgs> WarningMessageUpdated;
 
         #endregion
-    }    
+    }
 }

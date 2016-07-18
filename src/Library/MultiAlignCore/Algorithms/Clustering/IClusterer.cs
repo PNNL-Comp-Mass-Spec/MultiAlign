@@ -1,8 +1,8 @@
 ﻿/*////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * 
- * Name:    IClusterer Interface 
+ *
+ * Name:    IClusterer Interface
  * File:    IClusterer.cs
- * Author:  Brian LaMarche 
+ * Author:  Brian LaMarche
  * Purpose: Interface for clustering UMC data.
  * Date:    5-19-2010
  * Revisions:
@@ -17,7 +17,7 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Algorithms.Clustering
 {
     /// <summary>
-    /// Interface describing how to cluster 
+    /// Interface describing how to cluster
     /// </summary>
     /// <typeparam name="T">Type to cluster data objects of.</typeparam>
     /// <typeparam name="U">Type of cluster output objects.</typeparam>
@@ -28,7 +28,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Clusters the data objects provided in the list.
         /// </summary>
-        /// <param name="data">Data to cluster.</param>                
+        /// <param name="data">Data to cluster.</param>
         List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null);
         List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null);
         /// <summary>

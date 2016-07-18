@@ -151,8 +151,8 @@ namespace MultiAlignCore.IO.Reports
             using (TextWriter htmlWriter = File.CreateText(path))
             {
                 var headerTag =
-                    "<!DOCTYPE html>" + 
-                    "<html lang=\"en\">" +                       
+                    "<!DOCTYPE html>" +
+                    "<html lang=\"en\">" +
                     "<body>\n<table width=\"500\" border=\"0\">\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;color=#FFFFFF\">";
 
 

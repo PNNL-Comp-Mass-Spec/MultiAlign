@@ -7,7 +7,7 @@ using MultiAlignCore.Extensions;
 
 namespace MultiAlignCore.IO.Features
 {
-    public class XicComparisonWriter : IXicWriter 
+    public class XicComparisonWriter : IXicWriter
     {
 
 
@@ -73,7 +73,7 @@ namespace MultiAlignCore.IO.Features
                                 oldData = oldMap[i].ToString();
                                 found   = true;
                             }
-                            
+
                             if (newMap.ContainsKey(i))
                             {
                                 newData = newMap[i].ToString();

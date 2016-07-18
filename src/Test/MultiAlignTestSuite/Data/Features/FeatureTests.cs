@@ -10,7 +10,7 @@ namespace MultiAlignTestSuite.Data.Features
     public class FeatureTests
     {
         /// <summary>
-        ///  Part of a clustering test to make sure when sending a 
+        ///  Part of a clustering test to make sure when sending a
         ///  null list the clustering algorithm fails.
         /// </summary>
         [Test]
@@ -66,7 +66,7 @@ namespace MultiAlignTestSuite.Data.Features
             var massYdelta = FeatureLight.ComputeDaDifferenceFromPPM(massX, ppm);
             var ppmDelta = FeatureLight.ComputeMassPPMDifference(massX, massYdelta);
             //Assert.IsTrue( (ppm - ppmDelta) < epsilon);
-			Assert.Less(ppm - ppmDelta, epsilon);
+            Assert.Less(ppm - ppmDelta, epsilon);
         }
     }
 }

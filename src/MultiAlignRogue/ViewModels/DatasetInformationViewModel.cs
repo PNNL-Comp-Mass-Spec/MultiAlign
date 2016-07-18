@@ -90,7 +90,7 @@ namespace MultiAlignRogue.ViewModels
                           ((value == DatasetStates.Aligning) ||
                           (value == DatasetStates.PersistingAlignment));
 
-                    var isFinishedState = (value == DatasetStates.FeaturesFound || value == DatasetStates.Aligned || 
+                    var isFinishedState = (value == DatasetStates.FeaturesFound || value == DatasetStates.Aligned ||
                                            value == DatasetStates.Clustered     || value == DatasetStates.Matched);
                     if (isFinishedState && this.StateChanged != null)
                     {

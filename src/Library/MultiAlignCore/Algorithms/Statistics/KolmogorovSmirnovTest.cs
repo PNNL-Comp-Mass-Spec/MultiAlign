@@ -3,7 +3,7 @@
 namespace MultiAlignCore.Algorithms.Statistics
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed class KolmogorovSmirnovTest : IHypothesisTestingTwoSample
     {

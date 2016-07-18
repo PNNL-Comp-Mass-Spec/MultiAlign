@@ -8,8 +8,8 @@ namespace MultiAlignCore.Algorithms.Distance
         {
             DistanceFunction<T> function = null;
             switch (metric)
-            {                
-                case DistanceMetric.Euclidean:                    
+            {
+                case DistanceMetric.Euclidean:
                     var metricFunction = new EuclideanDistanceMetric<T>();
                     function = metricFunction.EuclideanDistance;
                     break;

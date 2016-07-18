@@ -16,7 +16,7 @@
                     break;
                 case HypothesisTests.KolmogorovSmirnov:
                     newTest = new KolmogorovSmirnovTest();
-                    break;                                
+                    break;
             }
 
             return newTest;

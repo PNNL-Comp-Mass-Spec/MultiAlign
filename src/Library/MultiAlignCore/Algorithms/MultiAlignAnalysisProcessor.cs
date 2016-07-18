@@ -435,7 +435,7 @@ namespace MultiAlignCore.Algorithms
         {
             UpdateStatus("Performing Alignment");
 
-            // Connect to database of features.                
+            // Connect to database of features.
             var featureCache = config.Analysis.DataProviders.FeatureCache;
 
             var options = config.Analysis.Options;
@@ -471,7 +471,7 @@ namespace MultiAlignCore.Algorithms
                         baselineInfo);
                     featureCache.UpdateAll(features);
 
-                    // This dataset is done!                               
+                    // This dataset is done!
                     if (FeaturesLoaded != null)
                         FeaturesLoaded(this, new FeaturesLoadedEventArgs(datasetInfo, features));
                 }
@@ -555,14 +555,14 @@ namespace MultiAlignCore.Algorithms
 
             clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(analysis.Options.LcmsClusteringOptions);
 
-            // This just tells us whether we are using mammoth memory partitions or not.          
+            // This just tells us whether we are using mammoth memory partitions or not.
             var featureCache = config.Analysis.DataProviders.FeatureCache;
             var clusterCount = 0;
 
             var providers = config.Analysis.DataProviders;
 
             // Here we see if we need to separate the charge...
-            // IMS is said to require charge separation 
+            // IMS is said to require charge separation
             if (!analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
                 UpdateStatus("Clustering features from all charge states.");
@@ -771,7 +771,7 @@ namespace MultiAlignCore.Algorithms
         {
             MassTagDatabase database;
 
-            // Load the mass tag database if we are aligning, or if we are 
+            // Load the mass tag database if we are aligning, or if we are
             // peak matching (but aligning to a reference dataset.
             if (m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {

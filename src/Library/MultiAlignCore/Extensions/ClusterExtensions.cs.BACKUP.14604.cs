@@ -68,7 +68,7 @@ namespace MultiAlignCore.Extensions
                 }
 
                 cluster.IdentifiedSpectraCount = totalIdentified;
-                cluster.MsMsCount = totalSpectra;   
+                cluster.MsMsCount = totalSpectra;
             }
 
             if (getMatches)
@@ -80,7 +80,7 @@ namespace MultiAlignCore.Extensions
                 {
                     var massTags = providers.MassTags.FindMassTags(matches.Select(match => match.MassTagId).ToList());
                     cluster.MassTags.AddRange(massTags);
-                }   
+                }
             }
         }
 
@@ -331,7 +331,7 @@ namespace MultiAlignCore.Extensions
 =======
                             var provider = RawLoaderFactory.CreateFileReader(singleInfo.RawFile.Path);
 >>>>>>> Stashed changes
-                            // Then we make sure we key it to the provider.  
+                            // Then we make sure we key it to the provider.
                             provider.AddDataFile(singleInfo.RawFile.Path, feature.GroupId);
                             // Then make sure we map it for a dataset, so when we sort through a cluster
                             // we make sure that we can access in O(1) time.
@@ -341,7 +341,7 @@ namespace MultiAlignCore.Extensions
                 }
             }
 
-            // We flag the first write, so that if the file exists, we overwrite.  They should have done 
+            // We flag the first write, so that if the file exists, we overwrite.  They should have done
             // checking to make sure that the file was already created...we dont care.
             var firstWrite = true;
             foreach (var feature in cluster.Features)
@@ -370,7 +370,7 @@ namespace MultiAlignCore.Extensions
                 }
             }
         }
-        
+
         /// <summary>
         /// Creates a charge map for a given ms feature list.
         /// </summary>

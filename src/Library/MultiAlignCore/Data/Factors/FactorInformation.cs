@@ -10,7 +10,7 @@ namespace MultiAlignCore.Data.Factors
     [Serializable]
     public class FactorInformation
     {
-        //TODO: REFACTOR Encapsulate	
+        //TODO: REFACTOR Encapsulate
         //TODO: REFACTOR Bring up to coding standard
 
         /// <summary>

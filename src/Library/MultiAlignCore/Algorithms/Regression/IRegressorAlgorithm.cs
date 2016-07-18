@@ -12,6 +12,6 @@ namespace MultiAlignCore.Algorithms.Regression
         [UsedImplicitly]
         T CalculateRegression(IEnumerable<double> observed, IEnumerable<double> predicted);
         [UsedImplicitly]
-        double Transform(T regressionFunction, double observed);        
+        double Transform(T regressionFunction, double observed);
     }
 }

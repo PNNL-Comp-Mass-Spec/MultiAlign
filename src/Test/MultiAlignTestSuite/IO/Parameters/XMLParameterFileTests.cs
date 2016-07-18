@@ -53,7 +53,7 @@ namespace MultiAlignTestSuite.IO.Parameters
                 object tempValue = values.GetValue(i);
                 if (tempValue.ToString() == o.ToString())
                 {
-                    // Make sure 
+                    // Make sure
                     if (i == 0)
                     {
                         i = i + 1;
@@ -75,11 +75,11 @@ namespace MultiAlignTestSuite.IO.Parameters
                     {
                         i = values.Length - 1;
                     }
-                    
-                    value = values.GetValue(i);                    
+
+                    value = values.GetValue(i);
                     break;
                 }
-            }            
+            }
             return value;
         }
         private void Compare(object o, object p)
@@ -239,7 +239,7 @@ namespace MultiAlignTestSuite.IO.Parameters
                         ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
                         if (objectValue != null && attr != null)
                         {
-                            throw new Exception("There should be no fields");                                   
+                            throw new Exception("There should be no fields");
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace MultiAlignTestSuite.IO.Parameters
             return o;
         }
 
-        
+
         [Test]
         [TestCase("testParameter2.xml")]
         public void TestXMLParameterWriterCluster(string path)
@@ -469,13 +469,13 @@ namespace MultiAlignTestSuite.IO.Parameters
         {
             try
             {
-                
+
                 XMLParameterFileWriter writer           = new XMLParameterFileWriter();
                 XMLParamterFileReader reader            = new XMLParamterFileReader();
                 MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
                 analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
 
-                analysis.Options.FeatureFindingOptions  = ChangeObjectValues(analysis.Options.FeatureFindingOptions) as MultiAlignCore.Algorithms.FeatureFinding.LCMSFeatureFindingOptions;                
+                analysis.Options.FeatureFindingOptions  = ChangeObjectValues(analysis.Options.FeatureFindingOptions) as MultiAlignCore.Algorithms.FeatureFinding.LCMSFeatureFindingOptions;
                 writer.WriteParameterFile(path, analysis);
                 MultiAlignAnalysis newAnalysis = new MultiAlignAnalysis();
                 reader.ReadParameterFile(path, ref newAnalysis);
@@ -501,6 +501,6 @@ namespace MultiAlignTestSuite.IO.Parameters
                     Console.WriteLine("The file was not deleted.");
                 }
             }
-        }        
+        }
     }
 }

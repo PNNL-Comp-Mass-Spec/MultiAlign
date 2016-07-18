@@ -74,7 +74,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 baselineUmCs.Add(umc);
             }
 
-            // filter based on charge state.                  
+            // filter based on charge state.
             var chargeMax = options.MaxChargeState;
             var chargeMin = options.MinChargeState;
 

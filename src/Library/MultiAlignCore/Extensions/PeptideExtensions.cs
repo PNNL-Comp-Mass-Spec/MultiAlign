@@ -24,7 +24,7 @@ namespace MultiAlignCore.Extensions
             }
             return map;
         }
-    
+
 
         public static Dictionary<int, List<Peptide>> CreateScanMaps(this List<Peptide> peptides)
         {
@@ -49,7 +49,7 @@ namespace MultiAlignCore.Extensions
 
             return peptide.Spectrum.GetParentUmc();
         }
-        
+
         public static Dictionary<int, List<Peptide>> CreateScanMaps(this IEnumerable<Peptide> peptides)
         {
             var peptideMap = new Dictionary<int, List<Peptide>>();

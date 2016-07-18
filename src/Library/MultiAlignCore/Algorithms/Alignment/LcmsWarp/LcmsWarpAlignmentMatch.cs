@@ -29,7 +29,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public int AligneeSectionStart { get; set; }
 
-        /// <summary> 
+        /// <summary>
         /// Gets or sets the alignee end section index.
         /// </summary>
         public int AligneeSectionEnd { get; set; }

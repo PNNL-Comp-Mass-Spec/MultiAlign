@@ -118,6 +118,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             }
             return target;
-        }  
+        }
     }
 }

@@ -27,13 +27,13 @@ namespace MultiAlignCore.IO.MTDB
 
             var sink = new MAGEMetaSampleDatabaseSink();
             var reader = new DelimitedFileReader();
-            
+
             reader.Delimiter = ",";
             reader.FilePath = Path;
 
             var pipeline = ProcessingPipeline.Assemble("MetaSample", reader, sink);
             pipeline.RunRoot(null);
-            
+
 
 
             var tags = sink.MassTags.Where(x => x.ObservationCount >= m_options.MinimumObservationCountFilter);

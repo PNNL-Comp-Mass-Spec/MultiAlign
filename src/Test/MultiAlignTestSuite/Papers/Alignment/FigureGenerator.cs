@@ -165,7 +165,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var newYValues = interpolator.Smooth(xValues, yValues, fitFunction);
             for (var i = 0; i < xValues.Count; i++)
             {
-                Console.WriteLine(@"{0}	{1}	{2}	{3}", i, xValues[i], yValues[i], newYValues[i]);
+                Console.WriteLine(@"{0} {1} {2} {3}", i, xValues[i], yValues[i], newYValues[i]);
             }
 
             dt /= 2;
@@ -177,7 +177,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             while (cv < Math.PI*3)
             {
                 var predicted = interpolator.Predict(cv);
-                Console.WriteLine(@"{0}	{1}", cv, predicted);
+                Console.WriteLine(@"{0} {1}", cv, predicted);
                 cv += dt;
             }
         }
@@ -196,7 +196,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             0, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent                
+            .8, // Ion Percent
             100, // Required peaks
             Ignore = true
             )]
@@ -209,7 +209,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             0, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             Ignore = false,
             Description =
@@ -245,7 +245,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure1,
                 "results-figure1-largeStatistics");
 
-            // The options for the analysis 
+            // The options for the analysis
             var options = new SpectralOptions
             {
                 MzBinSize = mzBinSize,
@@ -265,7 +265,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             {
                 var cachex = data[i];
                 // Get the raw path stored in the cache file...
-                // then get the dataset object 
+                // then get the dataset object
                 var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
@@ -283,7 +283,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     {
                         var cachey = data[j];
                         // Get the raw path stored in the cache file...
-                        // then get the dataset object 
+                        // then get the dataset object
                         var rawPathY = ScanSummaryCache.ReadPath(cachey.Cache);
                         var datasetY = new AlignmentDataset(rawPathY, "", cachey.Msgf);
 
@@ -323,7 +323,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             0, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent                
+            .8, // Ion Percent
             100, // Required peaks
             Ignore = true
             )]
@@ -333,10 +333,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
             .5, // mz bin size when retrieving spectra
             1, // m/z
             .25, // NET
-            .6, // Similarity Cutoff Score            
+            .6, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             Ignore = true,
             Description =
@@ -348,10 +348,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
             .5, // mz bin size when retrieving spectra
             1, // m/z
             .25, // NET
-            .6, // Similarity Cutoff Score            
+            .6, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             Ignore = false,
             Description =
@@ -386,7 +386,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 select new PathCache {Cache = newName, Msgf = path, Features = features}).ToList();
 
 
-            // The options for the analysis 
+            // The options for the analysis
             var options = new SpectralOptions
             {
                 MzBinSize = mzBinSize,
@@ -407,7 +407,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             {
                 var cachex = data[i];
                 // Get the raw path stored in the cache file...
-                // then get the dataset object 
+                // then get the dataset object
                 var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
@@ -431,7 +431,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
                         var cachey = data[j];
                         // Get the raw path stored in the cache file...
-                        // then get the dataset object 
+                        // then get the dataset object
                         var rawPathY = ScanSummaryCache.ReadPath(cachey.Cache);
                         var datasetY = new AlignmentDataset(rawPathY, "", cachey.Msgf);
 
@@ -467,10 +467,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
             .5, // mz bin size when retrieving spectra
             1, // m/z
             .25, // NET
-            .6, // Similarity Cutoff Score            
+            .6, // Similarity Cutoff Score
             1, // MSGF+ Score
             .01, // Peptide FDR
-            .8, // Ion Percent            
+            .8, // Ion Percent
             32, // Required peaks
             "results-figure4-metaMatches",
             Ignore = false,
@@ -497,7 +497,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             Console.WriteLine(@"Building data cache");
             var data = cacheFiles.Select(path => new PathCache {Cache = path}).ToList();
 
-            // The options for the analysis 
+            // The options for the analysis
             var options = new SpectralOptions
             {
                 MzBinSize = mzBinSize,
@@ -516,7 +516,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             {
                 var cachex = data[i];
                 // Get the raw path stored in the cache file...
-                // then get the dataset object 
+                // then get the dataset object
                 var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
@@ -534,7 +534,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     {
                         var cachey = data[j];
                         // Get the raw path stored in the cache file...
-                        // then get the dataset object 
+                        // then get the dataset object
                         var rawPathY = ScanSummaryCache.ReadPath(cachey.Cache);
                         var datasetY = new AlignmentDataset(rawPathY, "", cachey.Msgf);
 
@@ -613,7 +613,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             IEnumerable<string> names,
             SpectralOptions options)
         {
-            // Read data for peptides 
+            // Read data for peptides
             var reader = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
             var peptidesA = reader.Read(datasetX.PeptideFile);
             var peptidesB = reader.Read(datasetY.PeptideFile);
@@ -632,7 +632,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var maxY = scanDataY.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
             var minY = scanDataY.Aggregate((l, r) => l.Value.Scan < r.Value.Scan ? l : r).Key;
 
-            // Then map the peptide sequences to identify True Positive and False Positives            
+            // Then map the peptide sequences to identify True Positive and False Positives
             var count = (from scanx in peptideMapX.Keys
                 let peptideX = peptideMapX[scanx]
                 from scany in peptideMapY.Keys
@@ -701,7 +701,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     all.Add(scan, match);
                 }
             }
-            // Write the analysis 
+            // Write the analysis
             writer.Write(analysis);
 
             // Then generate the NET Alignment using R1

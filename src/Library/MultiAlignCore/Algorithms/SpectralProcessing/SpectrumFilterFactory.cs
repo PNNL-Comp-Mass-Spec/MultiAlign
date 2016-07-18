@@ -3,7 +3,7 @@
     public enum SpectraFilters
     {
         RawThreshold,
-        TopPercent        
+        TopPercent
     }
 
     public class SpectrumFilterFactory

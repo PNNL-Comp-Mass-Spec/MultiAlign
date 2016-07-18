@@ -9,18 +9,18 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// This class is used by STACConsole
     /// </summary>
-	public class MassTagFileReader : BaseTextFileReader<MassTagLight>
-	{
-		protected override Dictionary<string, int> CreateColumnMapping(TextReader textReader)
-		{
+    public class MassTagFileReader : BaseTextFileReader<MassTagLight>
+    {
+        protected override Dictionary<string, int> CreateColumnMapping(TextReader textReader)
+        {
             var columnMap = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
 
-		    var dateLine = textReader.ReadLine();
-		    if (string.IsNullOrWhiteSpace(dateLine))
+            var dateLine = textReader.ReadLine();
+            if (string.IsNullOrWhiteSpace(dateLine))
                 return columnMap;
 
             var columnTitles = dateLine.Split('\t', '\n');
-			var numOfColumns = columnTitles.Length;
+            var numOfColumns = columnTitles.Length;
 
             for (var i = 0; i < numOfColumns; i++)
             {
@@ -80,80 +80,80 @@ namespace MultiAlignCore.IO.Features
                 }
             }
 
-			return columnMap;
-		}
-		
-		/// <summary>
-		/// Read the entire file
-		/// </summary>
-		/// <param name="textReader"></param>
-		/// <param name="columnMapping"></param>
+            return columnMap;
+        }
+
+        /// <summary>
+        /// Read the entire file
+        /// </summary>
+        /// <param name="textReader"></param>
+        /// <param name="columnMapping"></param>
         /// <returns>List of MassTagLights</returns>
         protected override IEnumerable<MassTagLight> SaveFileToEnumerable(TextReader textReader, Dictionary<string, int> columnMapping)
-		{
+        {
             var massTagList = new List<MassTagLight>();
-			string line;
-		    var idIndex = 0;
+            string line;
+            var idIndex = 0;
 
-			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
-			while ((line = textReader.ReadLine()) != null)
-			{
+            // Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
+            while ((line = textReader.ReadLine()) != null)
+            {
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-				var columns = line.Split('\t', '\n');
+                var columns = line.Split('\t', '\n');
 
-			    var currentId = -99;
-			    if (columnMapping.ContainsKey("MassTag.ID"))
-				{
-					currentId = Int32.Parse(columns[columnMapping["MassTag.ID"]]);
-				}
-				else
-				{
-					currentId = idIndex;
-					idIndex++;
-				}
+                var currentId = -99;
+                if (columnMapping.ContainsKey("MassTag.ID"))
+                {
+                    currentId = Int32.Parse(columns[columnMapping["MassTag.ID"]]);
+                }
+                else
+                {
+                    currentId = idIndex;
+                    idIndex++;
+                }
 
-			    var massTag = new MassTagLight
-			    {
-			        Id = currentId
-			    };
+                var massTag = new MassTagLight
+                {
+                    Id = currentId
+                };
 
-			    if (columnMapping.ContainsKey("MassTag.Index"))
-				{
-					massTag.Index = Int32.Parse(columns[columnMapping["MassTag.Index"]]);
-				}
-				else
-				{
-					massTag.Index = currentId;
-				}
+                if (columnMapping.ContainsKey("MassTag.Index"))
+                {
+                    massTag.Index = Int32.Parse(columns[columnMapping["MassTag.Index"]]);
+                }
+                else
+                {
+                    massTag.Index = currentId;
+                }
 
-				if (columnMapping.ContainsKey("MassTag.MassMonoisotopic")) massTag.MassMonoisotopic = double.Parse(columns[columnMapping["MassTag.MassMonoisotopic"]]);
-				if (columnMapping.ContainsKey("MassTag.NET")) massTag.Net = double.Parse(columns[columnMapping["MassTag.NET"]]);
-				if (columnMapping.ContainsKey("MassTag.PriorProbability")) massTag.PriorProbability = double.Parse(columns[columnMapping["MassTag.PriorProbability"]]);
-				if (columnMapping.ContainsKey("MassTag.ObservationCount")) massTag.ObservationCount = ushort.Parse(columns[columnMapping["MassTag.ObservationCount"]]);
-				if (columnMapping.ContainsKey("MassTag.NETPredicted")) massTag.NetPredicted = double.Parse(columns[columnMapping["MassTag.NETPredicted"]]);
-				if (columnMapping.ContainsKey("MassTag.DiscriminantMax")) massTag.DiscriminantMax = double.Parse(columns[columnMapping["MassTag.DiscriminantMax"]]);
-				if (columnMapping.ContainsKey("MassTag.NETStandardDeviation")) massTag.NetStandardDeviation = double.Parse(columns[columnMapping["MassTag.NETStandardDeviation"]]);
-				if (columnMapping.ContainsKey("MassTag.DriftTime"))
-				{
-					if (!columns[columnMapping["MassTag.DriftTime"]].Equals("NULL"))
-					{
-						massTag.DriftTime = float.Parse(columns[columnMapping["MassTag.DriftTime"]]);
-						if (columnMapping.ContainsKey("MassTag.ConformationID")) massTag.ConformationId = int.Parse(columns[columnMapping["MassTag.ConformationID"]]);
-						if (columnMapping.ContainsKey("MassTag.ChargeState")) massTag.ChargeState = int.Parse(columns[columnMapping["MassTag.ChargeState"]]);
-						if (columnMapping.ContainsKey("MassTag.ConformationObservationCount")) massTag.ConformationObservationCount = ushort.Parse(columns[columnMapping["MassTag.ConformationObservationCount"]]);
-					}
-					else
-					{
-						massTag.DriftTime = -99;
-					}
-				}
+                if (columnMapping.ContainsKey("MassTag.MassMonoisotopic")) massTag.MassMonoisotopic = double.Parse(columns[columnMapping["MassTag.MassMonoisotopic"]]);
+                if (columnMapping.ContainsKey("MassTag.NET")) massTag.Net = double.Parse(columns[columnMapping["MassTag.NET"]]);
+                if (columnMapping.ContainsKey("MassTag.PriorProbability")) massTag.PriorProbability = double.Parse(columns[columnMapping["MassTag.PriorProbability"]]);
+                if (columnMapping.ContainsKey("MassTag.ObservationCount")) massTag.ObservationCount = ushort.Parse(columns[columnMapping["MassTag.ObservationCount"]]);
+                if (columnMapping.ContainsKey("MassTag.NETPredicted")) massTag.NetPredicted = double.Parse(columns[columnMapping["MassTag.NETPredicted"]]);
+                if (columnMapping.ContainsKey("MassTag.DiscriminantMax")) massTag.DiscriminantMax = double.Parse(columns[columnMapping["MassTag.DiscriminantMax"]]);
+                if (columnMapping.ContainsKey("MassTag.NETStandardDeviation")) massTag.NetStandardDeviation = double.Parse(columns[columnMapping["MassTag.NETStandardDeviation"]]);
+                if (columnMapping.ContainsKey("MassTag.DriftTime"))
+                {
+                    if (!columns[columnMapping["MassTag.DriftTime"]].Equals("NULL"))
+                    {
+                        massTag.DriftTime = float.Parse(columns[columnMapping["MassTag.DriftTime"]]);
+                        if (columnMapping.ContainsKey("MassTag.ConformationID")) massTag.ConformationId = int.Parse(columns[columnMapping["MassTag.ConformationID"]]);
+                        if (columnMapping.ContainsKey("MassTag.ChargeState")) massTag.ChargeState = int.Parse(columns[columnMapping["MassTag.ChargeState"]]);
+                        if (columnMapping.ContainsKey("MassTag.ConformationObservationCount")) massTag.ConformationObservationCount = ushort.Parse(columns[columnMapping["MassTag.ConformationObservationCount"]]);
+                    }
+                    else
+                    {
+                        massTag.DriftTime = -99;
+                    }
+                }
 
-				massTagList.Add(massTag);
-			}
+                massTagList.Add(massTag);
+            }
 
-			return massTagList;
-		}
-	}
+            return massTagList;
+        }
+    }
 }

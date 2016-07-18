@@ -9,7 +9,7 @@ namespace MultiAlignCore.Algorithms.Alignment
     /// Holds matches from drift time alignments.
     /// </summary>
     public sealed class DriftTimeAlignmentResults<TTarget, TObserved>
-		where TTarget   : FeatureLight, new()
+        where TTarget   : FeatureLight, new()
         where TObserved : FeatureLight, new()
     {
         /// <summary>
@@ -37,7 +37,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// </summary>
         public LinearRegressionResult AlignmentFunction
         {
-            get; 
+            get;
             private set;
         }
         #endregion

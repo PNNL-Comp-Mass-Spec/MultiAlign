@@ -83,7 +83,7 @@ namespace MultiAlign.ViewModels.Features
             }
         }
 
-        #region Mass NET Filters        
+        #region Mass NET Filters
 
         public RangeViewModel NetRange { get; private set; }
         public RangeViewModel DriftRange { get; private set; }

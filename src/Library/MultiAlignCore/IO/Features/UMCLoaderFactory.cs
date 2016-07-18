@@ -72,7 +72,7 @@ namespace MultiAlignCore.IO.Features
                     if (provider != null && provider is InformedProteomicsReader)
                     {
                         var promexReader = new PromexFileReader(provider as InformedProteomicsReader, dataset.DatasetId);
-                        features = promexReader.ReadFile(dataset.Features.Path).ToList();   
+                        features = promexReader.ReadFile(dataset.Features.Path).ToList();
                     }
                     break;
                 default: //Was reconstructing features from scratch even when they were already cached because the file extention was ".csv" not ".db3"

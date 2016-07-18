@@ -1,23 +1,23 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.AnalysisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"              
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:datasetViews="clr-namespace:MultiAlign.Windows.Viewers.Datasets"
              xmlns:clusterViews="clr-namespace:MultiAlign.Windows.Viewers.Clusters"
              xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
              xmlns:viewerViews="clr-namespace:MultiAlign.Windows.Viewers"
-             xmlns:converters="clr-namespace:MultiAlign.Converters"          
+             xmlns:converters="clr-namespace:MultiAlign.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
              xmlns:wpf="http://oxyplot.org/wpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="616" d:DesignWidth="1100">    
+             mc:Ignorable="d"
+             d:DesignHeight="616" d:DesignWidth="1100">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
-        <Grid>        
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="Auto"/>
@@ -26,27 +26,27 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="32"/>
-            </Grid.RowDefinitions> 
+            </Grid.RowDefinitions>
             <TabControl>
                 <TabItem Header="Clusters"
                             Style="{DynamicResource ResourceKey=SimpleTabItem}">
-                    <clusterViews:ClusterTree                         
-                        DataContext="{Binding Path=ClusterTree}"   
-                        Grid.Row="0"                                            
+                    <clusterViews:ClusterTree
+                        DataContext="{Binding Path=ClusterTree}"
+                        Grid.Row="0"
                         Grid.Column="0"/>
-                </TabItem>                        
+                </TabItem>
             </TabControl>
             <GridSplitter
-                Grid.Row="0"                        
+                Grid.Row="0"
                 Grid.Column="1"
-                Width="3"                        
+                Width="3"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
                 Background="#FF00000A" />
             <TabControl
-                Grid.Row="0"                                            
+                Grid.Row="0"
                 Grid.Column="2">
-                <TabItem                             
+                <TabItem
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="All Clusters">
                     <Grid>
@@ -55,7 +55,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <wpf:PlotView Model="{Binding ClustersPlotModel.Model}"/>
-                        <Button 
+                        <Button
                             Grid.Row="1"
                             Margin="5"
                             Command="{Binding ApplyViewAsFilter}"
@@ -67,7 +67,7 @@
                         </Button>
                     </Grid>
                 </TabItem>
-                <TabItem                             
+                <TabItem
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="{Binding SelectedClusterName}">
                     <TabControl>
@@ -77,27 +77,27 @@
                             >
                             <clusterViews:ClusterOverview
                                 Margin="5"
-                                DataContext="{Binding ClusterViewModel}"/>                                    
+                                DataContext="{Binding ClusterViewModel}"/>
                         </TabItem>
                         <TabItem
                             Header="Extracted Ion Chromatogram"
                             Width="Auto"
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            >                                    
+                            >
                             <clusterViews:ClusterControl
                                 Margin="5"
                                 DataContext="{Binding ClusterViewModel}"/>
                         </TabItem>
-                        <TabItem                             
+                        <TabItem
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="MS/MS Spectra">
-                                    <spectraViews:SpectraView                                                              
+                                    <spectraViews:SpectraView
                                             DataContext="{Binding Path=ClusterSpectraViewModel}"/>
                         </TabItem>
-                        <TabItem                             
+                        <TabItem
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Identifications">
-                                    <viewerViews:IdentificationView                                                             
+                                    <viewerViews:IdentificationView
                                 DataContext="{Binding Path=ClusterIdentificationViewModel}"/>
 
                         </TabItem>
@@ -117,9 +117,9 @@
                     <viewerViews:GlobalStatistics DataContext="{Binding Path=GlobalStatisticsViewModel}"/>
                 </TabItem>
 
-                <TabItem                
+                <TabItem
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    Header="Advanced"                
+                    Header="Advanced"
                     >
                     <StackPanel>
 
@@ -131,9 +131,9 @@
                                 Show Ion Mobility Dimensions
                             </CheckBox>
                         </GroupBox>
-                    </StackPanel>   
+                    </StackPanel>
                 </TabItem>
-            </TabControl>                        
+            </TabControl>
         </Grid>
     </Grid>
 </UserControl>

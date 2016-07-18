@@ -15,14 +15,14 @@ namespace MultiAlignCore.Data.Features
             ChargeRepresentative = 0;
             MZForCharge = 0;
             DriftTimeUncorrected = 0;
-        }    
+        }
 
         public int ChargeMax { get; set; }
 
         public int ChargeRepresentative { get; set; }
 
         public double MZForCharge { get; set; }
-        
+
         public double DriftTimeUncorrected { get; set; }
 
 

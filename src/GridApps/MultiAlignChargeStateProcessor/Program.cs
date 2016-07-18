@@ -24,7 +24,7 @@ namespace MultiAlignChargeStateProcessor
         private const uint ENABLE_EXTENDED_FLAGS = 0x0080;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="hConsoleHandle"></param>
         /// <param name="dwMode"></param>
@@ -34,7 +34,7 @@ namespace MultiAlignChargeStateProcessor
 
         /// <summary>
         /// The main entry point for the application.
-        /// </summary>        
+        /// </summary>
         static int Main(string [] args)
         {
             var handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
@@ -49,8 +49,8 @@ namespace MultiAlignChargeStateProcessor
                     return 1;
                 }
 
-                // Setup the analysis processing    
-                var databasePath = args[0]; 
+                // Setup the analysis processing
+                var databasePath = args[0];
                 var databaseName = Path.GetFileNameWithoutExtension(databasePath);
                 var path         = Path.GetDirectoryName(databasePath);
                 var crossPath = args[2];
@@ -59,7 +59,7 @@ namespace MultiAlignChargeStateProcessor
                 List<string> datasetList = null;
                 if (args.Length == 4)
                 {
-                    datasetList = File.ReadAllLines(args[3]).ToList(); 
+                    datasetList = File.ReadAllLines(args[3]).ToList();
                 }
 
 
@@ -69,7 +69,7 @@ namespace MultiAlignChargeStateProcessor
                     return 1;
                 }
 
-                
+
                 NHibernateUtil.ConnectToDatabase(databasePath, false);
 
                 IDatasetDAO datasetCache = new DatasetDAOHibernate();
@@ -79,17 +79,17 @@ namespace MultiAlignChargeStateProcessor
                 Logger.PrintMessage("Find all datasets", true);
                 var datasets = datasetCache.FindAll();
                 Logger.PrintMessage(string.Format("Found {0} datasets", datasets.Count), true);
-                
-                // Create the clustering algorithm - average linkage                
+
+                // Create the clustering algorithm - average linkage
                 IClusterer<UMCLight, UMCClusterLight> clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
 
                 // Create the DAO object to extract the features
                 var database      = new UmcAdoDAO {DatabasePath = databasePath};
                 IUmcDAO featureDao = database;
-                
-                
+
+
                 Logger.PrintMessage(string.Format("Extracting Features"), true);
-                var tempFeatures = featureDao.FindByCharge(chargeState);                                
+                var tempFeatures = featureDao.FindByCharge(chargeState);
                 Logger.PrintMessage(string.Format("Found {0} features", tempFeatures.Count), true);
 
 
@@ -128,12 +128,12 @@ namespace MultiAlignChargeStateProcessor
                 clusterer.Parameters.OnlyClusterSameChargeStates    = true;
                 clusterer.Parameters.CentroidRepresentation         = ClusterCentroidRepresentation.Mean;
                 clusterer.Parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(DistanceMetric.WeightedEuclidean);
-                
+
                 // Then cluster
                 var clusterWriter = new UmcClusterWriter();
-                IClusterWriter<UMCClusterLight> writer = clusterWriter; //new UMCClusterDummyWriter(); 
+                IClusterWriter<UMCClusterLight> writer = clusterWriter; //new UMCClusterDummyWriter();
                 try
-                {                    
+                {
                     clusterWriter.Open(crossPath);
                     clusterWriter.WriteHeader(datasets);
 
@@ -155,7 +155,7 @@ namespace MultiAlignChargeStateProcessor
                     Logger.PrintMessage("");
                     Logger.PrintMessage("ANALYSIS FAILED");
                     return 1;
-                }                
+                }
                 finally
                 {
                     clusterWriter.Close();

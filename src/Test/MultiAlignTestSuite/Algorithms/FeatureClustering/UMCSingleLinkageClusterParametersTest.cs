@@ -1,8 +1,8 @@
 ﻿/*////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * 
- * Name:    UMC Single Linkage Cluster Parameters Test 
+ *
+ * Name:    UMC Single Linkage Cluster Parameters Test
  * File:    UMCSingleLinkageClusterParameterTest.cs
- * Author:  Brian LaMarche 
+ * Author:  Brian LaMarche
  * Purpose: Tests parameter method and properties.
  * Date:    9-22-2010
  * Revisions:
@@ -16,12 +16,12 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
 {
     [TestFixture]
     public class UMCSingleLinkageClusterParameterTests
-    {        
+    {
         /// <summary>
-        ///  Part of a clustering test to make sure when sending a 
+        ///  Part of a clustering test to make sure when sending a
         ///  null list the clustering algorithm fails.
         /// </summary>
-        [Test]        
+        [Test]
         [Description("Sends a null list of UMC's to the clustering algorithm.")]
         public void ClearMethodTest()
         {
@@ -36,7 +36,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureClustering
             Assert.AreEqual(parameters.CentroidRepresentation, ClusterCentroidRepresentation.Median);
             Assert.NotNull(parameters.Tolerances);
             Assert.AreEqual(useCharges, parameters.OnlyClusterSameChargeStates);
-            Assert.NotNull(parameters.DistanceFunction);            
+            Assert.NotNull(parameters.DistanceFunction);
         }
     }
 }

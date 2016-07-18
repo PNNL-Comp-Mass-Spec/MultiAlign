@@ -39,8 +39,8 @@ namespace AlignmentPaperTestSuite.Generators
         {
             var directory  = GetPath(directoryPath);
             databasePath   = GetPath(databasePath);
-            
-            // Loads the supported MultiAlign types 
+
+            // Loads the supported MultiAlign types
             var supportedTypes = DatasetLoader.SupportedFileTypes;
             var extensions = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
@@ -104,9 +104,9 @@ namespace AlignmentPaperTestSuite.Generators
                                             msFilterOptions,
                                             lcmsFilters,
                                             spectralOptions,
-                                            finder);                
+                                            finder);
 
-                cache.CacheFeatures(features);                
+                cache.CacheFeatures(features);
             }
             providers.DatasetCache.AddAll(datasets);
 
@@ -121,7 +121,7 @@ namespace AlignmentPaperTestSuite.Generators
                                                     LcmsFeatureFilteringOptions lcmsFilterOptions,
                                                     SpectralOptions             peptideOptions,
                                                     MultiAlignCore.Algorithms.FeatureFinding.IFeatureFinder featureFinder)
-                                               
+
         {
             UpdateStatus("Loading baseline features.");
             var msFeatures  = UmcLoaderFactory.LoadMsFeatureData(information.Features.Path);
@@ -152,23 +152,23 @@ namespace AlignmentPaperTestSuite.Generators
                             {
                                 peptide.GroupId = datasetId;
                             }
-                           
+
                         }
 
                         if (msFeature.MSnSpectra.Count > 0)
                             lightEntry.Add(msFeature);
                     }
-                    
+
                     // We are doing this so that we dont have a ton of MS features in the database
                     feature.MsFeatures.Clear();
                     feature.MsFeatures.AddRange(lightEntry);
                 }
 
                 LinkPeptidesToFeatures(information.SequenceFile.Path,
-                                        features, 
+                                        features,
                                         peptideOptions.Fdr,
                                         peptideOptions.IdScore);
-                
+
                 DeRegisterProgressNotifier(featureFinder);
                 return features;
             }

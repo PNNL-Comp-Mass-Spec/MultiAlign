@@ -4,6 +4,6 @@ namespace MultiAlignCore.Algorithms.Statistics
 {
     public interface IHypothesisTestingTwoSample
     {
-        HypothesisTestingData Test(List<double> dist1, List<double> dist2); 
+        HypothesisTestingData Test(List<double> dist1, List<double> dist2);
     }
 }

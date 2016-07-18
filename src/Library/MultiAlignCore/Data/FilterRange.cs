@@ -1,11 +1,11 @@
 ﻿namespace MultiAlignCore.Data
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class FilterRange
     {
-        public FilterRange() : 
+        public FilterRange() :
             this(0, 10000)
         {
         }

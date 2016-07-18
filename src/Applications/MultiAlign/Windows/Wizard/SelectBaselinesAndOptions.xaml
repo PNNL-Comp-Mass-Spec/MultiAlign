@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Wizard.SelectBaselinesAndOptions"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:databaseOptions="clr-namespace:MultiAlign.Windows.Viewers.Databases"
              xmlns:identificationsOptions="clr-namespace:MultiAlign.Windows.Wizard"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              Name="thisControl"
              d:DesignHeight="600" d:DesignWidth="600">
     <UserControl.Resources>
@@ -14,9 +14,9 @@
     </UserControl.Resources>
 
     <ScrollViewer
-                                  Margin="5"                                 
+                                  Margin="5"
                                  VerticalScrollBarVisibility="Auto"
-                                  
+
                                   >
         <Grid
         Background="White"
@@ -29,7 +29,7 @@
         </Grid.RowDefinitions>
         <GroupBox
             Grid.Row="0"
-            Header="Alignment Type"  
+            Header="Alignment Type"
             FontSize="20"
             Foreground="DarkGray"
             Margin="5"
@@ -44,20 +44,20 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <RadioButton                 
+                <RadioButton
                         IsChecked="{Binding IsBaselineDataset}"
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5">
-                    <Button 
+                    <Button
                         Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                         Width="180"
-                        Height="64"     
+                        Height="64"
                         Command="{Binding SetBaselineToDataset}"
                         Content="Align Dataset(s) to Dataset" Margin="0" />
                 </RadioButton>
-                <ComboBox                    
-                    IsEnabled="{Binding Path=IsBaselineDataset}"                    
+                <ComboBox
+                    IsEnabled="{Binding Path=IsBaselineDataset}"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Left"
                     HorizontalAlignment="Stretch"
@@ -74,16 +74,16 @@
                         Grid.Row="1"
                         Grid.Column="0">
                     <Button
-                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}" 
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                         Width="180"
                         Height="64"
                         Command="{Binding SetBaselineToDatabase}"
-                        VerticalAlignment="Center"                    
+                        VerticalAlignment="Center"
                         Content="Align Dataset(s) to Database"  />
                 </RadioButton>
 
-                <Label          
-                    Visibility="{Binding  RequiresDatabaseSelection}"                    
+                <Label
+                    Visibility="{Binding  RequiresDatabaseSelection}"
                     VerticalContentAlignment="Center"
                     Grid.Row="1"
                     Grid.Column="1">
@@ -96,17 +96,17 @@
             Grid.Row="1"
             FontSize="20"
             Foreground="DarkGray"
-            Header="Database for Alignment and/or Identification"  
+            Header="Database for Alignment and/or Identification"
             Margin="5"
             >
             <StackPanel>
-                <Button 
+                <Button
                         Command="{Binding ClearDatabase}"
-                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                        
+                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
                         Width="128"
                         Margin="5">Don't use database</Button>
 
-                <Grid                     
+                <Grid
                     Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -130,7 +130,7 @@
                         Width="180"
                         Height="64"
                         Command="{Binding SetDatabaseToLocal}"
-                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                         >
                             Use Local Database
                         </Button>
@@ -149,14 +149,14 @@
                             Use Server Database
                         </Button>
                     </RadioButton>
-                    <Label       Grid.Column="1" 
-                             Grid.Row="0"                        
+                    <Label       Grid.Column="1"
+                             Grid.Row="0"
                              HorizontalContentAlignment="Left"
                              VerticalContentAlignment="Center"
                              Content="{Binding Path=DatabaseFilePath, Mode=TwoWay}"
                              Margin="10,5,10,5"/>
-                    <Button Grid.Column="2" 
-                        Grid.Row="0" 
+                    <Button Grid.Column="2"
+                        Grid.Row="0"
                         Width="180"
                         Height="64"
                         Command="{Binding FindLocalDatabase}"
@@ -164,17 +164,17 @@
                         Margin="5"
                         Content="Browse"/>
 
-                    <Label      Grid.Column="1" 
-                            Grid.Row="1" 
+                    <Label      Grid.Column="1"
+                            Grid.Row="1"
                             HorizontalContentAlignment="Left"
                             VerticalContentAlignment="Center"
                             Content="{Binding Path=SelectedDatabaseServer.DatabaseName, Mode=OneWay}"
                             Margin="5"/>
 
                     <Button Grid.Column="2"
-                        Grid.Row="1" 
+                        Grid.Row="1"
                         Command="{Binding FindDmsDatabase}"
-                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                        
+                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
                         Width="180"
                         Height="64"
                         Margin="5">Find</Button>
@@ -204,7 +204,7 @@
                     </Expander>
                 </StackPanel>
             </Border>
-        
+
     </Grid>
     </ScrollViewer>
 </UserControl>

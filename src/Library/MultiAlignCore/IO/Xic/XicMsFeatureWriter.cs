@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Creates an XIC based on the old way features were reported.
     /// </summary>
-    public class XicMsFeatureWriter : IXicWriter 
+    public class XicMsFeatureWriter : IXicWriter
     {
         public void WriteXics(string path,
                               List<UMCLight> features)
@@ -31,7 +31,7 @@ namespace MultiAlignCore.IO.Features
                         foreach (XYZData point in gram)
                         {
                             writer.WriteLine("{0}\t{1}t{2}", point.Z, point.X, point.Y);
-                        }                        
+                        }
                     }
                 }
             }

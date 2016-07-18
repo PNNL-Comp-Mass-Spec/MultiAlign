@@ -152,7 +152,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     if (clusterI.Id == clusterJ.Id)
                         continue;
 
-                    // Don't cluster from the same dataset.  Let the linkage algorithm decide if they 
+                    // Don't cluster from the same dataset.  Let the linkage algorithm decide if they
                     // belong in the same cluster, and later, go back and determine if the cluster is valid or not.
                     if (featureI.GroupId == featureJ.GroupId)
                         continue;
@@ -190,7 +190,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                             }
 
 
-                            // Compute similarity 
+                            // Compute similarity
                             var score = SpectralComparer.CompareSpectra(featureI.MSnSpectra[0], featureJ.MSnSpectra[0]);
 
                             if (score >= similarityTolerance)
@@ -229,7 +229,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         {
 
             UpdateStatus("Mapping UMC's to MS/MS spectra using intensity profile.");
-            // Step 1: Cluster the spectra 
+            // Step 1: Cluster the spectra
             // Create the collection of samples.
             var msFeatures = new List<MSFeatureLight>();
 
@@ -306,7 +306,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             }
             UpdateStatus("Finishing last cluster data.");
 
-            // Cluster the rest 
+            // Cluster the rest
             if ((j - h) > 1)
             {
                 var data = Cluster(h,

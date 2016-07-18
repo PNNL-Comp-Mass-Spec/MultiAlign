@@ -11,21 +11,21 @@ namespace MultiAlignTestSuite.IO.MTDB
     public sealed class MtdbLoaderTests
     {
         [Test]
-        [TestCase("elmer", "MT_Human_Sarcopenia_MixedLC_P692", Description = "MTS Based Tests")] 
+        [TestCase("elmer", "MT_Human_Sarcopenia_MixedLC_P692", Description = "MTS Based Tests")]
         public void OnlyLoadWithDriftTime(string server, string databaseName)
         {
             var analysis                          = new MultiAlignAnalysis();
             analysis.Options.MassTagDatabaseOptions.OnlyLoadTagsWithDriftTime = true;
-            
+
             analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.MassTagSystemSql)
             {
                 DatabaseServer = server,
                 DatabaseName = databaseName
             };
 
-            var loader      = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);            
+            var loader      = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);
             var database    = loader.LoadDatabase();
-            
+
             foreach(var tag in database.MassTags)
             {
                 Assert.IsTrue(tag.DriftTime > 0);
@@ -44,10 +44,10 @@ namespace MultiAlignTestSuite.IO.MTDB
                 DatabaseName = databaseName
             };
 
-            MassTagDatabaseLoader loader = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);            
+            MassTagDatabaseLoader loader = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);
             var database                 = loader.LoadDatabase();
 
-            MassTagDatabaseLoader loader2   = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);            
+            MassTagDatabaseLoader loader2   = new MTSMassTagDatabaseLoader(databaseName, server, analysis.Options.MassTagDatabaseOptions);
             loader2.Options.OnlyLoadTagsWithDriftTime = true;
             var database2                   = loader.LoadDatabase();
 

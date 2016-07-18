@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         public double IdScore { get; set; }
         public SpectralComparison ComparerType { get; set; }
         /// <summary>
-        /// Gets or sets the number of required peaks 
+        /// Gets or sets the number of required peaks
         /// </summary>
         public int RequiredPeakCount { get; set; }
     }

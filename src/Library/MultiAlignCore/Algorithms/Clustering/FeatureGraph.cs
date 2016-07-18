@@ -29,7 +29,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             m_edges[vertex].RemoveEdge(edge);
         }
         /// <summary>
-        /// Removes the edge using the vertices 
+        /// Removes the edge using the vertices
         /// </summary>
         /// <param name="edge"></param>
         public void RemoveEdge(Edge<T> edge)
@@ -90,13 +90,13 @@ namespace MultiAlignCore.Algorithms.Clustering
             m_edges.Clear();
         }
         /// <summary>
-        /// Creates a graph based 
+        /// Creates a graph based
         /// </summary>
         /// <param name="edges"></param>
         public void CreateGraph(List<Edge<T>> edges)
         {
             // Sort out the distances so we dont have to recalculate distances.
-            
+
             foreach (var edge in edges)
             {
                 AddVertex(edge.VertexA);

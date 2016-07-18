@@ -23,7 +23,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         //                                                                SpectralOptions            options,
         //                                                                bool skipComparison        = true)
         //{
-        //    var matches = new List<SpectralAnchorPointMatch>();                    
+        //    var matches = new List<SpectralAnchorPointMatch>();
         //    var scanDataX  = readerX.GetScanData(0);
         //    var scanDataY  = readerY.GetScanData(0);
 
@@ -43,25 +43,25 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
         //    ySpectraSummary.Sort((x, y) => x.PrecursorMZ.CompareTo(y.PrecursorMZ));
         //    xSpectraSummary.Sort((x, y) => x.PrecursorMZ.CompareTo(y.PrecursorMZ));
-            
+
         //    double mzTolerance = options.MzTolerance;
 
         //    foreach (var xsum in xSpectraSummary)
         //    {
-        //        int scanx = xsum.Scan;              
+        //        int scanx = xsum.Scan;
 
         //        // Grab the first spectra
-        //        var spectrumX     = SpectralUtilities.GetSpectra(options.MzBinSize, 
-        //                                                            options.TopIonPercent, 
-        //                                                            filter, 
-        //                                                            readerX, 
+        //        var spectrumX     = SpectralUtilities.GetSpectra(options.MzBinSize,
+        //                                                            options.TopIonPercent,
+        //                                                            filter,
+        //                                                            readerX,
         //                                                            scanx,
         //                                                            options.RequiredPeakCount);
 
         //        spectrumX.PrecursorMZ   = xsum.PrecursorMZ;
 
 
-        //        // Here we make sure that we are efficiently using the cache...we want to clear any 
+        //        // Here we make sure that we are efficiently using the cache...we want to clear any
         //        // cached spectra that we arent using.  We know that the summaries are sorted by m/z
         //        // so if the xsum m/z is greater than anything in the cache, dump the spectra...
         //        double currentMz = xsum.PrecursorMZ;
@@ -78,9 +78,9 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         //            }
         //            else
         //            {
-        //                // Because if we are here, we are within range...AND! 
+        //                // Because if we are here, we are within range...AND!
         //                // ...the m/z of i + 1 > i...because they are sorted...
-        //                // so if the m/z comes within range (positive) then 
+        //                // so if the m/z comes within range (positive) then
         //                // that means we need to evaluate the tolerance.
         //                break;
         //            }
@@ -95,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         //            GC.WaitForPendingFinalizers();
         //        }
 
-        //        // Iterate through the other analysis.  
+        //        // Iterate through the other analysis.
         //        foreach (var ysum in ySpectraSummary)
         //        {
         //            int scany = ysum.Scan;
@@ -146,7 +146,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
         //            if (spectralSimilarity < options.SimilarityCutoff)
         //                continue;
-                                      
+
         //            var pointX      = new SpectralAnchorPoint
         //            {
         //                Net = netX,
@@ -173,8 +173,8 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         //                IsValidMatch    = AnchorPointMatchType.FalseMatch
         //            };
 
-        //            matches.Add(match);                    
-        //        }                    
+        //            matches.Add(match);
+        //        }
         //    }
 
         //    return matches;
@@ -241,7 +241,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
                 while (j < yTotal && ySpectraSummary[j].PrecursorMz < (precursorX - mzTolerance))
                 {
-                    // Here we make sure we arent caching something 
+                    // Here we make sure we arent caching something
                     var scany = ySpectraSummary[j].Scan;
                     if (cache.ContainsKey(scany))
                     {
@@ -323,7 +323,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                                     cache.Add(scany, spectrumY);
                                 }
                                 else continue; // This spectra does not have enough peaks or did not pass our filters, throw it away!
-                            }                            
+                            }
                         }
 
                         if (spectrumX == null || spectrumY == null)

@@ -129,7 +129,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Takes a List of UMCLight data and applies the NET/Mass Function to the dataset and
         /// aligns it to the baseline. Updates the data in place for the calibrated Masses and
-        /// Alignment. 
+        /// Alignment.
         /// </summary>
         /// <param name="data"></param>
         public List<UMCLight> ApplyNetMassFunctionToAligneeDatasetFeatures(List<UMCLight> data)
@@ -231,7 +231,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// 
+        ///
         /// Use the NET value of the UMCs in the List as the value to align to, the predictor variable
         /// </summary>
         /// <param name="umcData"></param>
@@ -567,7 +567,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Method to return the heatmap of the alignment (as a 2D array of doubles) based on
-        /// the output scores 
+        /// the output scores
         /// </summary>
         /// <returns></returns>
         public double[,] GetAlignmentHeatMap()

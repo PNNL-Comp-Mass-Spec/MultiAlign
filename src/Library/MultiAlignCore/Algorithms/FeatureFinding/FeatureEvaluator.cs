@@ -88,7 +88,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                         totalSamples);
                 }
             }
-            // Then calculate all of the fits for each 
+            // Then calculate all of the fits for each
             foreach (var charge in feature.IsotopeChromatograms.Keys)
             {
                 foreach (var gram in feature.IsotopeChromatograms[charge])

@@ -43,7 +43,7 @@ namespace MultiAlignRogue.AMTMatching
         /// <summary>
         /// All possible datasets to run AMT tag matching on.
         /// </summary>
-        private readonly ObservableCollection<DatasetInformationViewModel> datasets; 
+        private readonly ObservableCollection<DatasetInformationViewModel> datasets;
 
         /// <summary>
         /// A value indicating whether the total progress bar should be displayed.
@@ -351,7 +351,7 @@ namespace MultiAlignRogue.AMTMatching
                 // Todo: Add this: if (!GlobalSettings.AutomatedAnalysisMode)
                     MessageBox.Show(errMsg);
             }
-            
+
             this.ShouldShowTotalProgress = false;
 
             datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Matched);
@@ -438,7 +438,7 @@ namespace MultiAlignRogue.AMTMatching
                         match.Target.QualityScore,
                         match.Target.MsgfSpecProbMax,
                         match.Confidence);
-                    ////match.Uniqueness);      
+                    ////match.Uniqueness);
 
                     foreach (var dataset in datasetHash)
                     {

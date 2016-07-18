@@ -33,7 +33,7 @@ namespace MultiAlign.ViewModels
         private ClusterDetailViewModel m_clusterViewModel;
         private PlotBase m_clustersPlotModel;
         private GlobalStatisticsViewModel m_globalStatistics;
-        private bool m_hasIdentifications;        
+        private bool m_hasIdentifications;
         private ObservableCollection<MassTagToCluster> m_massTags;
         private string m_selectedClusterName;
         private bool m_showDriftTime;
@@ -106,7 +106,7 @@ namespace MultiAlign.ViewModels
             m_clusterTreeModel.Filter(mass, net);
         }
 
-        #region Loading 
+        #region Loading
 
         private void LoadClusters(IEnumerable<UMCClusterLightMatched> clusters)
         {
@@ -130,7 +130,7 @@ namespace MultiAlign.ViewModels
                 return x.DatasetName.CompareTo(y.DatasetName);
             });
 
-            // Make the dataset plots.                    
+            // Make the dataset plots.
             var plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
             if (Directory.Exists(plotPath))
             {
@@ -143,7 +143,7 @@ namespace MultiAlign.ViewModels
 
         #endregion
 
-        #region Cluster Tree Event Handlers 
+        #region Cluster Tree Event Handlers
 
         public string SelectedClusterName
         {

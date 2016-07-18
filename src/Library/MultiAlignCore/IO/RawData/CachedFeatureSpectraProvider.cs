@@ -28,7 +28,7 @@ namespace MultiAlignCore.IO.RawData
             m_spectraMap = new Dictionary<int, MSSpectra>();
 
             // Sort out the features to make a dictionary so we can look up spectra
-            // and summary information later on without having to touch the disk again...and 
+            // and summary information later on without having to touch the disk again...and
             // this restricts all possible spectra to those that came from deisotoped data.
             foreach (var feature in features)
             {

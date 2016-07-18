@@ -15,7 +15,7 @@ namespace MultiAlignCore.Utilities
             if (peptide == null)
                 return false;
 
-            if (peptide.Fdr   > fdr)    return false;            
+            if (peptide.Fdr   > fdr)    return false;
             return !(peptide.Score > score);
         }
 
@@ -61,8 +61,8 @@ namespace MultiAlignCore.Utilities
         }
         /// <summary>
         /// Maps peptide sequences to a dictionary based on scan
-        /// </summary>   
-        [UsedImplicitly]     
+        /// </summary>
+        [UsedImplicitly]
         public static Dictionary<int, List<Peptide>> MapScan(IEnumerable<Peptide> peptides)
         {
 
@@ -70,8 +70,8 @@ namespace MultiAlignCore.Utilities
 
             foreach (var p in peptides)
             {
-                if (!map.ContainsKey(p.Scan))                
-                    map.Add(p.Scan, new List<Peptide>());                
+                if (!map.ContainsKey(p.Scan))
+                    map.Add(p.Scan, new List<Peptide>());
                 map[p.Scan].Add(p);
             }
 
@@ -92,7 +92,7 @@ namespace MultiAlignCore.Utilities
             {
                 var items = peptides[scan];
                 var p           = items.OrderBy(x => x.Score).FirstOrDefault();
-                map.Add(scan, p);                                
+                map.Add(scan, p);
             }
 
             return map;

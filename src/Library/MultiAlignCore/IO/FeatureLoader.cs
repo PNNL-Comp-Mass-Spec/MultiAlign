@@ -32,14 +32,14 @@ namespace MultiAlignCore.IO
         public void CacheFeatures(IList<UMCLight> features, IProgress<ProgressData> progress = null)
         {
             // SpectraTracker - Makes sure that we only record a MS spectra once, before we cache
-            // this keeps us from trying to put duplicate entries into the MS/MS data 
+            // this keeps us from trying to put duplicate entries into the MS/MS data
             // table/container.
             var spectraTracker = new Dictionary<int, MSSpectra>();
             var msmsFeatures = new List<MSSpectra>();
             var mappedPeptides = new List<DatabaseSearchSequence>();
             var sequenceMaps = new List<SequenceToMsnFeature>();
 
-            // This dictionary makes sure that the peptide was not seen already, since a peptide can be mapped multiple times...?                
+            // This dictionary makes sure that the peptide was not seen already, since a peptide can be mapped multiple times...?
             var matches = new List<MSFeatureToMSnFeatureMap>();
             var msFeatures = new List<MSFeatureLight>();
             var peptideId = 0;
@@ -56,7 +56,7 @@ namespace MultiAlignCore.IO
                 foreach (var msFeature in feature.MsFeatures)
                 {
                     totalMsMs += msFeature.MSnSpectra.Count;
-                    // For each MS / MS 
+                    // For each MS / MS
                     foreach (var spectrum in msFeature.MSnSpectra)
                     {
                         var match = new MSFeatureToMSnFeatureMap
@@ -76,9 +76,9 @@ namespace MultiAlignCore.IO
                         msmsFeatures.Add(spectrum);
                         spectraTracker.Add(spectrum.Id, spectrum);
 
-                        // We are prepping the sequences that we found from peptides that were 
-                        // matched only, not all of the results. 
-                        // These maps here are made to help establish database search results to msms 
+                        // We are prepping the sequences that we found from peptides that were
+                        // matched only, not all of the results.
+                        // These maps here are made to help establish database search results to msms
                         // spectra
                         foreach (var peptide in spectrum.Peptides)
                         {
@@ -185,8 +185,8 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        /// Make sure the value for options.MaximumScanRange, which is used by the Feature Finder, 
-        /// is at least as large as the filterOptions.FeatureLengthRange.Maximum value, 
+        /// Make sure the value for options.MaximumScanRange, which is used by the Feature Finder,
+        /// is at least as large as the filterOptions.FeatureLengthRange.Maximum value,
         /// which is used for filtering the features by length
         /// </summary>
         /// <param name="information"></param>
@@ -252,14 +252,14 @@ namespace MultiAlignCore.IO
                     dataset.DatasetName));
 
                 var isosFilterOptions = dataLoadOptions.GetIsosFilterOptions();
-                msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path, isosFilterOptions);   
+                msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path, isosFilterOptions);
             }
 
             progData.StepRange(3);
             progData.Status = "Loading scan summaries.";
             ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             ////dataset.BuildScanTimes(scansInfo);
-            
+
             progData.StepRange(100);
 
             var msnSpectra = new List<MSSpectra>();

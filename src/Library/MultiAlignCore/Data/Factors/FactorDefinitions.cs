@@ -36,7 +36,7 @@ namespace MultiAlignCore.Data.Factors
             m_factors = new Dictionary<string, FactorInformation>();
         }
 
-        #region Properties 
+        #region Properties
 
         /// <summary>
         ///     Gets whether the factors are fully defined or not.
@@ -144,9 +144,9 @@ namespace MultiAlignCore.Data.Factors
             if (string.IsNullOrEmpty(factorName))
                 return false;
 
-            /// 
+            ///
             /// See if we need to delete to factor
-            /// 
+            ///
             if (!m_factors.ContainsKey(factorName))
                 return false;
 
@@ -197,9 +197,9 @@ namespace MultiAlignCore.Data.Factors
             // Create a new deep list reference of the values
             var information = m_factors[oldFactorName];
 
-            /// 
+            ///
             /// Remove the old, add the new
-            /// 
+            ///
             m_factors.Remove(oldFactorName);
             m_factors.Add(newFactorName, information);
 

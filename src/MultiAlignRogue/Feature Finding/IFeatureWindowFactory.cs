@@ -6,7 +6,7 @@ namespace MultiAlignRogue.Feature_Finding
 
     using MultiAlignCore.Data.MetaData;
 
-    
+
     public interface IFeatureWindowFactory
     {
         void CreateNewWindow();

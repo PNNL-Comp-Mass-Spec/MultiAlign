@@ -56,11 +56,11 @@ namespace MultiAlignCore.Algorithms.Clustering
             var newClusters                 = new List<U>();
             var distances = new List<Data.PairwiseDistance<T>>();
 
-            // There is an edge case with this setup that a singleton outside of the range 
-            // of other features made it into the batch of edges, but there is no corresponding edge 
+            // There is an edge case with this setup that a singleton outside of the range
+            // of other features made it into the batch of edges, but there is no corresponding edge
             // to the rest of the graph(s).  So here we hash all features
-            // then we ask for within the range, pare down that hash to a set of features that 
-            // have no corresponding edge.  These guys would ultimately be singletons we want 
+            // then we ask for within the range, pare down that hash to a set of features that
+            // have no corresponding edge.  These guys would ultimately be singletons we want
             // to capture...
             var clusterMap = new HashSet<T>();
             foreach (var cluster in clusters.Values)
@@ -103,21 +103,21 @@ namespace MultiAlignCore.Algorithms.Clustering
             var newDistances = (from element in potentialDistances
                                                         orderby element.Distance
                                                         select element).ToList();
-            
+
             var queue  = new Queue<Edge<T>>();
             var graph = new FeatureGraph<T>();
 
             // Sort out the distances so we dont have to recalculate distances.
             var id = 0;
-            var edges = new List<Edge<T>>();            
-            newDistances.ForEach(x => edges.Add(new Edge<T>(id++, 
+            var edges = new List<Edge<T>>();
+            newDistances.ForEach(x => edges.Add(new Edge<T>(id++,
                                                             x.Distance,
                                                             x.FeatureX,
                                                             x.FeatureY)));
             graph.CreateGraph(edges);
             edges.ForEach(x => queue.Enqueue(x));
 
-            // This makes sure we have 
+            // This makes sure we have
             var seenEdge   = new HashSet<int>();
 
 
@@ -184,9 +184,9 @@ namespace MultiAlignCore.Algorithms.Clustering
                 var cutoff = NSigma; // *stdev; // stdev* NSigma;
 
                 var mstClusters = CreateClusters(mstGroup, cutoff);
-                newClusters.AddRange(mstClusters);                
-            }   
-                     
+                newClusters.AddRange(mstClusters);
+            }
+
             return newClusters;
         }
         /// <summary>
@@ -197,8 +197,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="cutoff">Cutoff score</param>
         /// <returns>List of clusters</returns>
         private List<U> CreateClusters(MinimumSpanningTree<T> mst, double cutoff)
-        {            
-            var clusters        = new List<U>();     
+        {
+            var clusters        = new List<U>();
             if (mst.LinearRelationship.Count < 1)
                 return clusters;
 
@@ -206,34 +206,34 @@ namespace MultiAlignCore.Algorithms.Clustering
             var hashedFeatures = new HashSet<T>(); // Tracks the current feature
 
             // These are the features that dont ever get included into a cluster...
-            // This can only happen if the MST building picked a bunch of low-life features that 
+            // This can only happen if the MST building picked a bunch of low-life features that
             // dont ever construct a graph...
             var lowLifeFeatures = new List<T>();
 
             for (var i = 0; i < mst.LinearRelationship.Count; i++)
             {
                 // note this isnt O(n^2), this is just the search for a sub cluster
-                //                 
+                //
                 var currentEdge = mst.LinearRelationship[i];
                 var vertexA = currentEdge.VertexA;
                 var vertexB = currentEdge.VertexB;
-                
+
                 var seenA = hashedFeatures.Contains(vertexA);
                 var seenB = hashedFeatures.Contains(vertexB);
 
                 if (currentEdge.Length < cutoff)
                 {
-                    if (!seenA)                        
+                    if (!seenA)
                     {
-                        hashedFeatures.Add(vertexA);                            
+                        hashedFeatures.Add(vertexA);
                         currentCluster.AddChildFeature(vertexA);
                     }
-                        
-                    if (!seenB)              
+
+                    if (!seenB)
                     {
-                        hashedFeatures.Add(vertexB);                                    
+                        hashedFeatures.Add(vertexB);
                         currentCluster.AddChildFeature(vertexB);
-                    }                        
+                    }
                 }
                 else
                 {
@@ -250,7 +250,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                         lowLifeFeatures.Add(vertexB);
 
                         // We dont hash these guys yet, because later we'll see if they hit the market
-                        // with their fake DVD's 
+                        // with their fake DVD's
                     }
                     else if (!seenA)
                     {
@@ -262,7 +262,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                         hashedFeatures.Add(vertexB);
                         currentCluster.AddChildFeature(vertexB);
                     }
-                }                                                                
+                }
             }
 
             // Make sure we add the current cluster if it's not full yet...
@@ -285,31 +285,31 @@ namespace MultiAlignCore.Algorithms.Clustering
         }
 
         /// <summary>
-        /// constructs a sub-tree 
+        /// constructs a sub-tree
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="visitedEdges"></param>
         /// <param name="startEdge"></param>
         /// <returns></returns>
-        private MinimumSpanningTree<T> ConstructSubTree(FeatureGraph<T> graph,  
-                                                        HashSet<int>    visitedEdges,                                         
+        private MinimumSpanningTree<T> ConstructSubTree(FeatureGraph<T> graph,
+                                                        HashSet<int>    visitedEdges,
                                                         Edge<T>         startEdge)
         {
             // Manages the tree being constructed.
-            var tree = new MinimumSpanningTree<T>();    
-                    
+            var tree = new MinimumSpanningTree<T>();
+
             // Manages the list of candidate edges
             var tempEdges = new UniqueEdgeList<T>();
-             
+
             // Seed of the breadth first search (BFS)
-            tempEdges.AddEdge(startEdge);            
+            tempEdges.AddEdge(startEdge);
 
             // Start BFS
             while (tempEdges.Count > 0)
             {
                 // Sort the edges based on distace.
                 tempEdges.Sort();
-                               
+
                 Edge<T> shortestEdge = null;
                 var edgesToRemove = new List<Edge<T>>();
 
@@ -349,16 +349,16 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 visitedEdges.Add(shortestEdge.ID);
 
-                // Removes the shortest edge from the graph...                
+                // Removes the shortest edge from the graph...
                 graph.RemoveEdge(shortestEdge);
 
                 var adjacentEdges = graph.GetAdjacentEdgesFromEdgeVertices(shortestEdge);
                 //adjacentEdges.Sort();
 
-                tempEdges.AddEdges(adjacentEdges.Edges);                              
+                tempEdges.AddEdges(adjacentEdges.Edges);
 
-                // Remove the shortest edge from the list of available edges left...                
-                tempEdges.RemoveEdge(shortestEdge);       
+                // Remove the shortest edge from the list of available edges left...
+                tempEdges.RemoveEdge(shortestEdge);
             }
 
             return tree;

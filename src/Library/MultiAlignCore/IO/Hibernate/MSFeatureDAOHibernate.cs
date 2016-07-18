@@ -26,7 +26,7 @@ namespace MultiAlignCore.IO.Hibernate
         public void DeleteByDatasetId(int datasetId)
         {
             DeleteByCriteria("T_MSFeatures", "DATASET_ID", datasetId);
-        } 
+        }
 
         public List<MSFeatureLight> FindByFeatureId(int datasetId, int featureId)
         {

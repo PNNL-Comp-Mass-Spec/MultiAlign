@@ -52,24 +52,24 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
         /// <param name="spectra">Spectra to link to.</param>
         /// <param name="rawSpectraProvider">Provides access to raw scans if more data is required.</param>
         /// <returns>A map of a ms spectra id to the number of times it was mapped.</returns>
-        public Dictionary<int, int>  LinkMSFeaturesToMSn(List<MSFeatureLight> features, 
+        public Dictionary<int, int>  LinkMSFeaturesToMSn(List<MSFeatureLight> features,
             List<MSSpectra> fragmentSpectra)
         {
             // First  - Sort the MSn features based on scan
             // Second - map all the features to a scan number for MS Features
-            //          and a parent scan number of MSn features.  
+            //          and a parent scan number of MSn features.
             //          The MSSpectra list should have missing scan numbers so when sorted
             //          will be monotonically increasing with 1, 2, 3, 5, 6, 7, 9, 10, 11, 13
             //          This indicates the parent scan these features were fragmented from.
             // Third  - Once these spectra have been mapped, then we can do a quicker search
             var spectra = new List<MSSpectra>();
-            spectra.AddRange(fragmentSpectra);           
+            spectra.AddRange(fragmentSpectra);
             spectra.OrderBy(x => x.Scan);
-                         
+
             // Map the scans
             var featureMap    = new Dictionary<int, List<MSFeatureLight>>();
             var spectraMap         = new Dictionary<int, List<MSSpectra>>();
-            var mappedMSSpectra                = new Dictionary<int,int>();             
+            var mappedMSSpectra                = new Dictionary<int,int>();
             foreach(var feature in features)
             {
                 var scan                = feature.Scan;
@@ -80,7 +80,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
                 }
                 featureMap[scan].Add(feature);
             }
-            
+
             var totalSpectra        = spectra.Count;
             var scans   = new List<MSSpectra>();
             var parentScan          = spectra[0].Scan - 1;
@@ -102,18 +102,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
                 scans.Add(spectra[i]);
             }
 
-            // then we search for links          
+            // then we search for links
             var ppmRange     = Tolerances.Mass;
             var protonMass   = AdductMass;
 
-            // Go through each scan, and see if there is a corresponding 
+            // Go through each scan, and see if there is a corresponding
             // MSMS scan range of spectra associated, some may not have it.
             foreach(var scan in  featureMap.Keys)
             {
                 var containsMSMSFragments = spectraMap.ContainsKey(scan);
                 if (containsMSMSFragments)
                 {
-                    // If MSMS exists there, then search all features in that mass spectra window for 
+                    // If MSMS exists there, then search all features in that mass spectra window for
                     // close spectra.
                     var suspectSpectra = spectraMap[scan];
                     foreach (var feature in featureMap[scan])
@@ -121,7 +121,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
                         // Use the most abundant mass because it had a higher chance of being fragmented.
                         var mass = feature.Mz;
 
-                        var matching = suspectSpectra.Where(x => Math.Abs(x.PrecursorMz - mass) <= ppmRange);                        
+                        var matching = suspectSpectra.Where(x => Math.Abs(x.PrecursorMz - mass) <= ppmRange);
 
                         // Finally link!
                         foreach (var spectrum in matching)
@@ -138,7 +138,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.MSnLinker
                             spectrum.ParentFeature = feature;
                         }
                     }
-                }                
+                }
             }
             return mappedMSSpectra;
         }

@@ -567,7 +567,7 @@ namespace MultiAlignCore.Algorithms
             // Build Plot Path
             m_config.plotSavePath = AnalysisPathUtils.BuildPlotPath(m_config.AnalysisPath);
 
-            // Build analysis name                  
+            // Build analysis name
             var containsExtensionDb3 = m_config.AnalysisName.EndsWith(".db3");
             if (!containsExtensionDb3)
             {
@@ -949,7 +949,7 @@ namespace MultiAlignCore.Algorithms
             // Builds the list of algorithm providers.
             var builder = new AlgorithmBuilder();
 
-            // Use this to signal when the analysis is done.              
+            // Use this to signal when the analysis is done.
             m_config.triggerEvent = new ManualResetEvent(false);
             m_config.errorEvent = new ManualResetEvent(false);
             m_config.stopEvent = new ManualResetEvent(false);
@@ -959,7 +959,7 @@ namespace MultiAlignCore.Algorithms
             m_config.Analysis.MetaData.AnalysisPath = m_config.AnalysisPath;
             m_config.Analysis.MetaData.AnalysisName = m_config.AnalysisName;
 
-            // Setup log path, analysis path, and print version to log file.            
+            // Setup log path, analysis path, and print version to log file.
             SetupAnalysisEssentials();
 
             // Determine if we have specified a valid database to extract
@@ -1004,7 +1004,7 @@ namespace MultiAlignCore.Algorithms
             // Builds the list of algorithm providers.
             var builder = new AlgorithmBuilder();
 
-            // Use this to signal when the analysis is done.              
+            // Use this to signal when the analysis is done.
             config.triggerEvent = new ManualResetEvent(false);
             config.errorEvent = new ManualResetEvent(false);
             m_config.stopEvent = new ManualResetEvent(false);
@@ -1028,7 +1028,7 @@ namespace MultiAlignCore.Algorithms
                 return 0;
             }
 
-            // Setup log path, analysis path, and print version to log file.            
+            // Setup log path, analysis path, and print version to log file.
             SetupAnalysisEssentials();
 
             // Determine if we have specified a valid database to extract
@@ -1089,7 +1089,7 @@ namespace MultiAlignCore.Algorithms
                 var handles = new WaitHandle[] { m_workerManager.SynchEvent };
                 WaitHandle.WaitAll(handles, 1000);
 
-                // Then the background worker threads.  
+                // Then the background worker threads.
                 // Processing thread does all of the post-analysis report generation and is based on the Console
                 // Application way of running and waiting for the analysis to complete.  It's a bit of overhead
                 // threadwise to do it this way from teh GUI perspective but remains in tact to not change
@@ -1264,7 +1264,7 @@ namespace MultiAlignCore.Algorithms
                 analysisSetupInformation.FactorFile = factorFile;
             }
 
-            // Creates or connects to the underlying analysis database.            
+            // Creates or connects to the underlying analysis database.
             var providers = SetupDataProviders(createDatabase);
 
             // Create the clustering, analysis, and plotting paths.
@@ -1299,7 +1299,7 @@ namespace MultiAlignCore.Algorithms
             PrintParameters(config.Analysis, createDatabase);
             Logger.PrintSpacer();
 
-            // Setup the processor.            
+            // Setup the processor.
             var processor = ConstructAnalysisProcessor(builder, providers);
 
             // Tell the processor whether to load data or not.
@@ -1380,7 +1380,7 @@ namespace MultiAlignCore.Algorithms
                 return;
             }
 
-            // Find all the datasets 
+            // Find all the datasets
             var datasets = providers.DatasetCache.FindAll();
             if (datasets == null || datasets.Count == 0)
             {
@@ -1411,7 +1411,7 @@ namespace MultiAlignCore.Algorithms
                 return;
             }
 
-            // Find all the datasets 
+            // Find all the datasets
             var datasetsFactors = providers.DatasetCache.FindAll();
             if (datasetsFactors == null || datasetsFactors.Count == 0)
             {

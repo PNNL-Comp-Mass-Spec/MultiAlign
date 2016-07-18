@@ -20,7 +20,7 @@ namespace MultiAlignCore.Extensions
             }
             return results;
         }
-        
+
         /// <summary>
         /// Converts an XY Data List into a dictionary mapping the scan to the intensity. (X, Y)
         /// </summary>

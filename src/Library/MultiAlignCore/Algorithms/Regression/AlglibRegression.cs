@@ -11,7 +11,7 @@ namespace MultiAlignCore.Algorithms.Regression
         {
 
             var functionSelector = BasisFunctionFactory.BasisFunctionSelector(basisFunction);
-            
+
             //incase the coefficients input are the wrong dimension
             var coeffCount = functionSelector.Coefficients.Count();
             if(coeffs.Length!=coeffCount)
@@ -26,7 +26,7 @@ namespace MultiAlignCore.Algorithms.Regression
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -42,11 +42,11 @@ namespace MultiAlignCore.Algorithms.Regression
             var solver = new LevenburgMarquadtSolver();
             solver.BasisFunction = myDelegate;
             var worked = solver.Solve(x, y, ref coeffs);
-            
+
             //for (int i = 0; i < x.Count; i++)
             //{
 
-            //    // This is what we are fitting 
+            //    // This is what we are fitting
             //    double xValue = x[i];
 
             //    // This is what it should fit to

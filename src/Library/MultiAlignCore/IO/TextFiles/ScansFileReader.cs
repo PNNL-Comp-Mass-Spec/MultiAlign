@@ -21,7 +21,7 @@ namespace MultiAlignCore.IO.TextFiles
         #endregion
 
         /// <summary>
-        /// Maps the .scans file header to a dictionary for column mapping.  
+        /// Maps the .scans file header to a dictionary for column mapping.
         /// </summary>
         /// <param name="textReader"></param>
         /// <returns></returns>
@@ -39,7 +39,7 @@ namespace MultiAlignCore.IO.TextFiles
                 columnTitles = readLine.Split(',', '\t');
             else
                 columnTitles = readLine.Split(Delimiter);
-           
+
             var numOfColumns = columnTitles.Length;
 
             for (var i = 0; i < numOfColumns; i++)

@@ -51,11 +51,11 @@ namespace MultiAlignRogue
 
             FindMSFeaturesCommand = new RelayCommand(
                                         async () => await LoadMSFeaturesAsync(),
-                                        () => this.selectedDatasets != null && 
-                                              this.selectedDatasets.Count > 0 && 
+                                        () => this.selectedDatasets != null &&
+                                              this.selectedDatasets.Count > 0 &&
                                               this.selectedDatasets.Any(file => !file.DoingWork));
             PlotMSFeaturesCommand = new RelayCommand(
-                                        async () => await PlotMSFeatures(), 
+                                        async () => await PlotMSFeatures(),
                                         () => this.selectedDatasets.Any(file => file.FeaturesFound));
         }
 
@@ -204,7 +204,7 @@ namespace MultiAlignRogue
                 this.analysis.Options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
                 this.RaisePropertyChanged();
             }
-        } 
+        }
 
         public async Task LoadMSFeaturesAsync()
         {

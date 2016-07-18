@@ -26,7 +26,7 @@ namespace MultiAlignCore.Data.Features
                 map.Add(feature.Id, feature);
             }
             return map;
-        }     
+        }
 
         /// <summary>
         ///     Converts mass tags to UMC's.
@@ -36,7 +36,7 @@ namespace MultiAlignCore.Data.Features
         public static List<UMCLight> ConvertToUMC(List<MassTagLight> massTags)
         {
             var baselineFeatures = new List<UMCLight>();
-            // Convert the mass tags to features.                
+            // Convert the mass tags to features.
             foreach (var tag in massTags)
             {
                 var umc = new UMCLight

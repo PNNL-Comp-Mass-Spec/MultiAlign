@@ -3,7 +3,7 @@
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T">child features</typeparam>
     /// <typeparam name="U">parent features</typeparam>

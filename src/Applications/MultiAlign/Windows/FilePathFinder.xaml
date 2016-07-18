@@ -17,7 +17,7 @@
         <Label
             Grid.Column="0"
             Margin="5"
-            Content="{Binding Path=LabelText, 
+            Content="{Binding Path=LabelText,
                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                     UpdateSourceTrigger=PropertyChanged,
                     NotifyOnSourceUpdated=True}" />
@@ -25,10 +25,10 @@
         <TextBox
             Grid.Column="1"
             Margin="5"
-            Text="{Binding Path=FilePath, 
+            Text="{Binding Path=FilePath,
                     Mode=TwoWay,
                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                    UpdateSourceTrigger=PropertyChanged, 
+                    UpdateSourceTrigger=PropertyChanged,
                     NotifyOnTargetUpdated=True,
                     NotifyOnSourceUpdated=True}" />
         <Button

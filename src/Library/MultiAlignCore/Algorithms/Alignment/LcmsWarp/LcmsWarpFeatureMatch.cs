@@ -24,7 +24,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// PPM Mass Error 
+        /// PPM Mass Error
         /// Equal to the difference between the feature Mass and the baseline Mass
         /// auto property
         /// </summary>
@@ -59,7 +59,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the feature that this match corresponds to
-        /// Auto property - 
+        /// Auto property -
         /// </summary>
         public int FeatureIndex { get; set; }
 

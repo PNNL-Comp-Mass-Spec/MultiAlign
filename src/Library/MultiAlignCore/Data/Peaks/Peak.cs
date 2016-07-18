@@ -12,9 +12,9 @@ namespace MultiAlignCore.Data.Peaks
         private const float DEFAULT_HEIGHT = 0;
         private const float DEFAULT_WIDTH  = 0;
         private const float DEFAULT_XVALUE = 0;
-                        
+
         /// <summary>
-        /// Default constructor. 
+        /// Default constructor.
         /// </summary>
         public Peak()
         {
@@ -56,14 +56,14 @@ namespace MultiAlignCore.Data.Peaks
         }
         /// <summary>
         /// Gets or sets the X-Value of the peak (e.g. time, scan, m/z)
-        /// </summary>        
+        /// </summary>
         public double XValue
         {
             get;
             set;
         }
         /// <summary>
-        /// Gets or sets the width of a peak.  
+        /// Gets or sets the width of a peak.
         /// </summary>
         public float Width
         {
@@ -97,7 +97,7 @@ namespace MultiAlignCore.Data.Peaks
         /// <summary>
         /// Gets or sets local signal to noise ratio.
         /// </summary>
-        public float LocalSignalToNoise 
+        public float LocalSignalToNoise
         {
             get;
             set;

@@ -29,7 +29,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
         [TestCase(@"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18_isos.csv",
                   @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features", Ignore = false)]
         public void CreateFeaturesTest(string relativePath, string outputPath)
-        {            
+        {
             var path = GetPath(relativePath);
 
             var tolerances  = new FeatureTolerances
@@ -61,7 +61,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
                 {
                     Maximum = 30,
                     Minimum = 10
-                }                
+                }
             };
             features        = LcmsFeatureFilters.FilterFeatures(features, filterOptions);
 

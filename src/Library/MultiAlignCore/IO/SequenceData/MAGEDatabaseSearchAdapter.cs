@@ -40,14 +40,14 @@ namespace MultiAlignCore.IO.SequenceData
                 return;
             }
             var reader = new DelimitedFileReader();
-            
+
             reader.Delimiter = "\t";
             reader.FilePath = path;
 
             var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
             pipeline.RunRoot(null);
             sink.CommitChanges();
-            
+
         }
 
         #region IProgressNotifer Members

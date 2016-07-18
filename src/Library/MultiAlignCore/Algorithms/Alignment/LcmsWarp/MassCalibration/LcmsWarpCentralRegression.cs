@@ -228,7 +228,7 @@
         private void SetUnmatchedScoreMatrix()
         {
             // Assigns each section's score to the minimum for that section
-            // for each possible matching sections, the minimum score would correspond 
+            // for each possible matching sections, the minimum score would correspond
             // to the situation that all points in the section lie outside the tolerance
             this._matchScores.Clear();
 

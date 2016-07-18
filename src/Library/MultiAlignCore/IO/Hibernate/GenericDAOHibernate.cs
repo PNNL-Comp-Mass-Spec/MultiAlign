@@ -316,7 +316,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="criterionList">A list of Hibernate ICriterion - refer to Hibernate docs</param>
         /// <returns>A List of T Objects</returns>
         protected List<T> FindByCriteria(List<ICriterion> criterionList)
-        {   
+        {
             List<T> list = null;
             using (var session = GetSession())
             {

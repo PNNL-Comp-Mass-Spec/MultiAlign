@@ -15,7 +15,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         /// </summary>
         public List<XYData> Threshold(List<XYData> peaks, double threshold)
         {
-            
+
             var filteredPeaks = (from peak in peaks
                                  where peak.Y > threshold
                                  orderby peak.X ascending

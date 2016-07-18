@@ -21,7 +21,7 @@ namespace AlignmentPaperTestSuite.Figures
     /// <summary>
     ///     Creates all figures used in the alignment paper
     /// </summary>
-    
+
     public class FigureBase
     {
         [SetUp]
@@ -121,7 +121,7 @@ namespace AlignmentPaperTestSuite.Figures
                     all.Add(scan, match);
                 }
             }
-            // Write the analysis 
+            // Write the analysis
             writer.Write(analysis);
 
             // Then generate the NET Alignment using R1

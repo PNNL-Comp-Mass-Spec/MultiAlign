@@ -55,7 +55,7 @@ namespace MultiAlignCore.Data
                 isosFilterOptions.AbundanceMinimum = MinimumAbundance;
                 isosFilterOptions.AbundanceMaximum = MaximumAbundance;
             }
-            
+
             if (UseLCScanFilter)
             {
                 isosFilterOptions.LCScanStart = MinimumLCScan;

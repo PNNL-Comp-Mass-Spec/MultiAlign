@@ -171,13 +171,13 @@ namespace MultiAlign.Windows.Plots
             var massHistogram = HistogramFactory.CreateHistogram(alignmentData.NetErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var residuals = alignmentData.ResidualData;
-            
+
             var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.LinearCustomNet,
                 residuals.LinearNet, "NET Residuals", "Scans", "NET");
-            
+
             var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
-            
+
             var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Net, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 

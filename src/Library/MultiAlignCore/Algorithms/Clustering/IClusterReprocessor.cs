@@ -3,7 +3,7 @@ using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
-    public interface IClusterReprocessor<T, U> 
+    public interface IClusterReprocessor<T, U>
         where T : FeatureLight, Data.Features.IChildFeature<U>, new()
         where U : FeatureLight, Data.Features.IFeatureCluster<T>, new()
     {

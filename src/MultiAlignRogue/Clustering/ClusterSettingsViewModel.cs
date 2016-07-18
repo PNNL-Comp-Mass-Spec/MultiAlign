@@ -161,7 +161,7 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
-        public ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType> PostProcessingComparisonType { get; private set; } 
+        public ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType> PostProcessingComparisonType { get; private set; }
 
         public ClusterPostProcessingOptions.ClusterComparisonType ClusterComparisonType
         {
@@ -232,7 +232,7 @@ namespace MultiAlignRogue.Clustering
             await Task.Run(() => this.ClusterFeatures());
         }
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         internal void ClusterFeatures(IProgress<ProgressData> workflowProgress = null)
         {
@@ -257,7 +257,7 @@ namespace MultiAlignRogue.Clustering
                 promexClusterer.Readers = this.analysis.DataProviders.ScanSummaryProviderCache;
             }
 
-            // This just tells us whether we are using mammoth memory partitions or not.          
+            // This just tells us whether we are using mammoth memory partitions or not.
             var clusterCount = 0;
             var providers = this.analysis.DataProviders;
 
@@ -275,7 +275,7 @@ namespace MultiAlignRogue.Clustering
             this.ShouldShowProgress = true;
 
             // Here we see if we need to separate the charge...
-            // IMS is said to require charge separation 
+            // IMS is said to require charge separation
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
                 var progData = new ProgressData(internalProgress);
@@ -472,7 +472,7 @@ namespace MultiAlignRogue.Clustering
             var clusterMap = clusters.ToDictionary(cluster => cluster.Id);
             var massTagMap = this.analysis.DataProviders.MassTags.FindAll().ToDictionary(massTag => massTag.Id);
             var massTagMatches = this.analysis.DataProviders.MassTagMatches.FindAll();
-            
+
             // Add cluster-mass tag matches
             foreach (var match in massTagMatches)
             {

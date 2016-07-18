@@ -4,9 +4,9 @@ using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.SpectralProcessing
 {
-    public class SpectralDotProductComprarer: ISpectralComparer 
+    public class SpectralDotProductComprarer: ISpectralComparer
     {
-        
+
         /// <summary>
         /// Constructor that keeps the top forty percent of ions in a spectra by default.
         /// </summary>
@@ -73,15 +73,15 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
             xTopIons.Sort();
             yTopIons.Sort();
-            
+
             var xTop = Math.Max(0, xTopIons.Count - System.Convert.ToInt32(System.Convert.ToDouble(xTotalNonZero) * TopPercent));
             var yTop = Math.Max(0, yTopIons.Count - System.Convert.ToInt32(System.Convert.ToDouble(yTotalNonZero) * TopPercent));
-            
+
             xTop = Math.Min(xTopIons.Count - 1, xTop);
             yTop = Math.Min(yTopIons.Count - 1, yTop);
 
             var xThreshold = xTopIons[xTop];
-            var yThreshold = yTopIons[yTop];                       
+            var yThreshold = yTopIons[yTop];
 
             // Normalize each component and calculate the dot product.
             double sum = 0;
@@ -95,10 +95,10 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
                 if (yIon <= yThreshold)
                     yIon = 0;
-                
+
                 sum += (xIon * yIon);
             }
-            
+
             return sum;
         }
         #endregion

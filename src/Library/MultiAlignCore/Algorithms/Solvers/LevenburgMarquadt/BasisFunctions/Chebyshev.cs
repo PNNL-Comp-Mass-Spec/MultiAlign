@@ -16,7 +16,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions
         {
             m_min = double.MaxValue;
             m_max = double.MinValue;
-            
+
             foreach (var d in x)
             {
                 m_max = Math.Max(m_max, d);
@@ -36,11 +36,11 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions
 
             var tx      = (x[0] - m_min) / (m_max - m_min);
             tx             -= 1.0; // This scales the value between -1 and 1
-            
+
             var t0   = c[0];
             var t1   = c[1] * tx;
             var sum  = t0 + t1;
-            var prev = t1;            
+            var prev = t1;
             double n    = 2;
             var acos = Math.Acos(tx);
 

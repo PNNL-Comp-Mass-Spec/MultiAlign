@@ -23,7 +23,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
 
             //<class name="AlignmentData" table="T_AlignmentData" lazy="false">
             //  <composite-id>
-            //    <key-property name="DatasetID" column="Dataset_ID" type="int" />      
+            //    <key-property name="DatasetID" column="Dataset_ID" type="int" />
             //  </composite-id>
             //<property name="NETRsquared"              column="Net_R_Squared"  type="double" not-null="false" />
             //<property name="NETSlope"                 column="Net_Slope"      type="double" not-null="false" />

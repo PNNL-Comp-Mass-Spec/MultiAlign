@@ -134,6 +134,6 @@ namespace TestWrapper
             //PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
             PlotImageUtility.SaveImage(massHistogram, directory + "_massHistogram.svg", encoder);
         }
-       
+
     }
 }

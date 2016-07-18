@@ -176,7 +176,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Whether or not promiscuous matches are kept in the scoring function for alignment
-        /// to a MT database. 
+        /// to a MT database.
         /// </summary>
         /// <remarks>
         /// This should be true for MTDBs because they do not have split UMCs
@@ -240,7 +240,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public LcmsWarp(LcmsWarpAlignmentOptions options)
         {
             // Applies the alignment options to the LCMSWarper, setting the Mass
-            // and NET Tolerances, the options for NET Alignment options for 
+            // and NET Tolerances, the options for NET Alignment options for
             // Mass calibration, the Least Squares options and the calibration type
             MzRecalibration = new LcmsWarpCombinedRegression();
             NetRecalibration = new LcmsWarpCombinedRegression();

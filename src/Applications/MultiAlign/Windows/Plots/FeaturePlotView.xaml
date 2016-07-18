@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="600">
-    <DockPanel>        
+    <DockPanel>
         <Label
             DockPanel.Dock="Top"
             FontSize="14pt"
             Height="24pt"
-            HorizontalContentAlignment="Center"            
+            HorizontalContentAlignment="Center"
             Content="{Binding PlotName}"/>
-        <Image Source="{Binding Path=FeaturesImage}" />        
+        <Image Source="{Binding Path=FeaturesImage}" />
     </DockPanel>
 </UserControl>

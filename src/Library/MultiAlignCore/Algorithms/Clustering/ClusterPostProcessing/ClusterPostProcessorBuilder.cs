@@ -15,7 +15,7 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     public class ClusterPostProcessorBuilder
     {
         public static ClusterPostProcessor<T, U> GetClusterPostProcessor<T, U>(ClusterPostProcessingOptions options, FeatureDataAccessProviders dataProviders)
-            where T : FeatureLight, IFeatureCluster<U>, new() 
+            where T : FeatureLight, IFeatureCluster<U>, new()
             where U : FeatureLight, IChildFeature<T>, new()
         {
             IFeatureComparisonScorer scorer;

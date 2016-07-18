@@ -5,7 +5,7 @@ using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
-    public class MSFeatureSingleLinkageClustering <T, U>: IClusterer<T,U> 
+    public class MSFeatureSingleLinkageClustering <T, U>: IClusterer<T,U>
         where T: FeatureLight,  new()
         where U : FeatureLight, IFeatureCluster<T>, new()
     {
@@ -44,7 +44,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             var progressData = new ProgressData(progress);
             var centroidType  = ClusterCentroidRepresentation.Apex;
             List<U> features                            = null;
-            
+
             var featureIDToClusterID = new Dictionary<int, int>();
             foreach (var feature in rawMSFeatures)
             {
@@ -52,7 +52,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 featureIDToClusterID.Add(feature.Id, -1);
             }
 
-            var maxDistance  = Parameters.MaxDistance;            
+            var maxDistance  = Parameters.MaxDistance;
             var currentIndex    = 0;
             var N               = rawMSFeatures.Count;
             var numUmcsSoFar    = 0;
@@ -74,7 +74,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 {
                     idFeatureMap.Add(numUmcsSoFar, new List<T>());
                     idFeatureMap[numUmcsSoFar].Add(currentFeature);
-                    
+
                     currentFeatureClusterID                 = numUmcsSoFar;
                     featureIDToClusterID[currentFeature.Id] = numUmcsSoFar++;
                 }
@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 while (matchPeak.MassMonoisotopicAligned < maxMass)
                 {
                     var matchClusterID =  featureIDToClusterID[matchPeak.Id];
-                    
+
                     //this is asking if they are already clustered together.
                     if (matchClusterID != currentFeatureClusterID)
                     {
@@ -112,7 +112,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                                 var oldID = matchClusterID;
                                 foreach (var tempFeature in tempFeatures)
                                 {
-                                    featureIDToClusterID[tempFeature.Id] = currentFeatureClusterID;                                    
+                                    featureIDToClusterID[tempFeature.Id] = currentFeatureClusterID;
                                 }
                                 idFeatureMap[currentFeatureClusterID].AddRange(tempFeatures);
                                 idFeatureMap.Remove(oldID);
@@ -146,7 +146,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 umc.CalculateStatistics(centroidType);
                 features.Add(umc);
             }
-            
+
             var id = 0;
             foreach (var feature in features)
             {

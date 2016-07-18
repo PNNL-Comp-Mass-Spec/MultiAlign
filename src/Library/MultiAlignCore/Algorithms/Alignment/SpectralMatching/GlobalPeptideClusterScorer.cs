@@ -51,7 +51,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                     peptides[peptide.Sequence].Add(peptide);
                 }
             }
-           
+
             // analyze now...
             var matches = new GlobalClusterPeptideStatistics();
 
@@ -88,6 +88,6 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                matches.Maps.Add(sequence, map);
             }
             return matches;
-        }    
+        }
     }
 }

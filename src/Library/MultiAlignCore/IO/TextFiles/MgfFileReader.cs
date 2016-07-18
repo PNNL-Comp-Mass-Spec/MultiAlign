@@ -64,7 +64,7 @@ namespace MultiAlignCore.IO.TextFiles
                     catch
                     {
                     }
-                }                
+                }
             }
 
             return spectra;

@@ -147,9 +147,9 @@ namespace MultiAlignCore.Data.Factors
             if (m_datasetList.Count <= 0)
                 return m_currentTree;
 
-            /// 
+            ///
             /// Now build the tree
-            /// 			
+            ///
             var root = m_currentTree;
 
             foreach (FactorDataset data in  m_datasetList)
@@ -159,12 +159,12 @@ namespace MultiAlignCore.Data.Factors
                 long i = 0;
                 ///
                 /// Foreach factor, find where the tree needs to branch.
-                /// 
+                ///
                 foreach (FactorData factor in m_factorList)
                 {
-                    /// 
+                    ///
                     /// Get the factor value information
-                    /// 
+                    ///
                     var factorValue = data.Values[factor.Name] as string;
                     // If we have children compare to the last item.
                     if (factorValue == null)
@@ -174,9 +174,9 @@ namespace MultiAlignCore.Data.Factors
                     }
                     else if (createNew == false && tempRootNode.Children != null && tempRootNode.Children.Count > 0)
                     {
-                        /// 
+                        ///
                         /// The last node should be the one we need to examine against.
-                        /// 
+                        ///
                         var node = tempRootNode.Children[tempRootNode.Children.Count - 1] as TreeNode;
                         if (node.Name != factorValue)
                             createNew = true;
@@ -199,9 +199,9 @@ namespace MultiAlignCore.Data.Factors
                     i++;
                 }
 
-                /// 
-                /// Add the dataset 
-                /// 
+                ///
+                /// Add the dataset
+                ///
                 var dataNode = new TreeNode();
                 dataNode.Name = data.Name;
                 dataNode.Parent = tempRootNode;
@@ -211,7 +211,7 @@ namespace MultiAlignCore.Data.Factors
             return m_currentTree;
         }
 
-        #region IComparer Members			
+        #region IComparer Members
 
         /// <summary>
         ///     Compares two objects of clsFactorDataset type.
@@ -224,20 +224,20 @@ namespace MultiAlignCore.Data.Factors
             var data1 = x as FactorDataset;
             var data2 = y as FactorDataset;
 
-            /// 
+            ///
             /// We have to look at all the factor information
-            /// 
+            ///
             foreach (FactorData factor in m_factorList)
             {
                 var factorValue1 = data1.Values[factor.Name] as string;
                 var factorValue2 = data2.Values[factor.Name] as string;
 
-                /// 
+                ///
                 /// If they are both the same, continue on, even if they are null
-                /// This compares the two strings, if they are equal, dont bother 
+                /// This compares the two strings, if they are equal, dont bother
                 /// hashing the factor table for their respective values
                 /// If they are both null....great...continue on.
-                /// 
+                ///
                 if (factorValue1 == factorValue2)
                     continue;
 
@@ -338,13 +338,13 @@ namespace MultiAlignCore.Data.Factors
             m_name = name;
             m_factorValues = new Hashtable();
 
-            /// 
+            ///
             /// For every string in the string collection
-            /// add it to the hash table, store the order it was added because the 
-            /// string collection should already be sorted for us.  This way 
+            /// add it to the hash table, store the order it was added because the
+            /// string collection should already be sorted for us.  This way
             /// later we can hash out the order of the value for a comparison in a sorting
             /// algorithm.
-            /// 
+            ///
             long i = 0;
             foreach (var factorValueString in factorValues)
             {

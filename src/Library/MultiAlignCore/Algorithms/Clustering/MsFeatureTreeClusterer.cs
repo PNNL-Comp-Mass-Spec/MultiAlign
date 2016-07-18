@@ -27,8 +27,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         : IProgressNotifer, IClusterer<TChildFeature, TParentFeature>
         where TChildFeature : FeatureLight, new()
         where TParentFeature : FeatureLight, IFeatureCluster<TChildFeature>, new()
-        
-        
+
+
     {
         private const int CONST_SCAN_TOLERANCE = 30; // was 50
 
@@ -85,7 +85,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
         /// <summary>
-        /// Gets or sets the value between 
+        /// Gets or sets the value between
         /// </summary>
         [UsedImplicitly]
         public int ScanTolerance { get; set; }
@@ -96,14 +96,14 @@ namespace MultiAlignCore.Algorithms.Clustering
         }
 
         /// <summary>
-        /// Clusters features based on some specified values. 
+        /// Clusters features based on some specified values.
         /// </summary>
         /// <param name="features"></param>
         /// <returns></returns>
         public List<TParentFeature> Cluster(List<TChildFeature> features, IProgress<ProgressData> progress = null)
         {
             var progressData = new ProgressData(progress);
-            var clusters            = new List<TParentFeature>();            
+            var clusters            = new List<TParentFeature>();
             var currentIndex        = 0;
             int i = 0;
             //var n                   = features.Count();
@@ -149,7 +149,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 currentIndex = lastIndex;
 
                 // Now that we have a gap...let's go a head and start building the features
-                // first we build a scan dictionary 
+                // first we build a scan dictionary
                 // sorted by scans
                 var featureMap = new Dictionary<int, List<TChildFeature>>();
                 foreach (var feature in gapFeatures)
@@ -173,7 +173,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 clusters.AddRange(newFeatures);
                 progressData.Report(i, n);
             }
-            return clusters;          
+            return clusters;
         }
 
         void generator_Progress(object sender, ProgressNotifierArgs e)
@@ -193,7 +193,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             if (Math.Abs(mzDiff) < Tolerances.Mass && featureX.ChargeState == featureY.ChargeState)
             {
                 // otherwise make sure that our scan value is within range
-                var scanDiff = featureX.Net - featureY.Net;                
+                var scanDiff = featureX.Net - featureY.Net;
                 return Math.Abs(scanDiff) <= Tolerances.Net ? 0 : 1;
             }
             if (mzDiff < 0)
@@ -209,7 +209,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             var mzDiff = FeatureLight.ComputeMassPPMDifference(featureX.Mz, featureY.Mz);
             if (Math.Abs(mzDiff) < Tolerances.Mass )
             {
-                // otherwise make sure that our scan value is within range                
+                // otherwise make sure that our scan value is within range
                 var scanDiff = featureX.Scan - featureY.Scan;
                 if (Math.Abs(scanDiff) > ScanTolerance)
                     return 1;
@@ -219,7 +219,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             if (mzDiff < 0)
                 return -1;
             return 1;
-        } 
+        }
         #endregion
 
 

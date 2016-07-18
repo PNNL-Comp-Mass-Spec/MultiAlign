@@ -16,7 +16,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <summary>
         /// Finds features from the file of MS Features.
         /// </summary>
-        List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features,
                                     LcmsFeatureFindingOptions options,
                                     IScanSummaryProvider provider,
                                     IProgress<ProgressData> progress = null);

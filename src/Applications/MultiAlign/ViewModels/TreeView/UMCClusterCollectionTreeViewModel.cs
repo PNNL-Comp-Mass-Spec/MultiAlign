@@ -151,7 +151,7 @@ namespace MultiAlign.ViewModels.TreeView
             DateTime dtStart = DateTime.UtcNow;
 
             try
-            {           
+            {
                 Console.WriteLine(DateTime.Now.ToString("mm:ss:fff") + ", " + DateTime.UtcNow.Subtract(dtStart).TotalSeconds.ToString("0.000") + " sec: Instantiate model");
                 var model = sender as UMCClusterTreeViewModel;
                 if (model == null)

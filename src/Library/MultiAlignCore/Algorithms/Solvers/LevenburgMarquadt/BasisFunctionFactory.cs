@@ -4,12 +4,12 @@ using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
 {
     public class BasisFunctionFactory
-    {        
+    {
         public static BasisFunctionBase BasisFunctionSelector(BasisFunctionsEnum functionChoise)
         {
             //default
             BasisFunctionBase solver = null;
-            
+
             switch (functionChoise)
             {
                 case BasisFunctionsEnum.AsymmetricGaussian:
@@ -104,5 +104,5 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         }
     }
 
-    
+
 }

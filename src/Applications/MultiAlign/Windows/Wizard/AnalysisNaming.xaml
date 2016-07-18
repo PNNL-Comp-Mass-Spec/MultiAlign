@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Wizard.AnalysisNaming"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="448" d:DesignWidth="694">
     <Grid
         Background="White"
@@ -21,8 +21,8 @@
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label             
-            FontSize="24"            
+        <Label
+            FontSize="24"
             Foreground="LightGray"
             HorizontalContentAlignment="Left"
             Grid.Row="1"
@@ -34,22 +34,22 @@
             Grid.Row="2"
             HorizontalContentAlignment="Left"
             Text="{Binding Path=Path}"
-            Margin="5"          
-            Grid.Column="1"             
+            Margin="5"
+            Grid.Column="1"
             />
-        <Button            
+        <Button
             Margin="5,5,5,5"
             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
             Grid.Column="2"
             Grid.Row="2"
-            Width="72"            
+            Width="72"
             BorderThickness="2"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center"       
+            HorizontalAlignment="Center"
             Command="{Binding Path=BrowseCommand}"
             Content="Browse"  />
-        <Label             
-            FontSize="24"            
+        <Label
+            FontSize="24"
             Foreground="LightGray"
             HorizontalContentAlignment="Left"
             Grid.Row="3"
@@ -59,9 +59,9 @@
         <TextBox
             FontSize="24"
             Text="{Binding Path=Name}"
-            Margin="5"   
+            Margin="5"
             Grid.Row="4"
-            Grid.Column="1"             
+            Grid.Column="1"
             HorizontalContentAlignment="Left" />
     </Grid>
 </UserControl>

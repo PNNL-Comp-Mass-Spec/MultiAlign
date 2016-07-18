@@ -1,21 +1,21 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.GlobalStatistics"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
              xmlns:wpf="http://oxyplot.org/wpf"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800">
     <Border
-        Style="{DynamicResource BorderStyle}">        
+        Style="{DynamicResource BorderStyle}">
         <TabControl
             Margin="5">
             <TabItem
                     Header="Charge States"
                     Style="{DynamicResource SimpleTabItem}"
                     >
-                    <Grid            
+                    <Grid
                         >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50*"/>
@@ -26,13 +26,13 @@
                             <ColumnDefinition Width="50*"/>
                         </Grid.ColumnDefinitions>
 
-                        <wpf:PlotView 
+                        <wpf:PlotView
                             Grid.Column="0"
                             Grid.Row="0"
                             Margin="5"
                             Model="{Binding AllChargeHistogramModel.Model}"/>
-                        
-                        <wpf:PlotView 
+
+                        <wpf:PlotView
                             Grid.Column="1"
                             Grid.Row="0"
                             Margin="5"

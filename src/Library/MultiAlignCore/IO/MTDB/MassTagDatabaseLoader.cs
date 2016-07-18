@@ -181,9 +181,9 @@ namespace MultiAlignCore.IO.MTDB
                                     double msgf = 0;
 
 
-                                    if (reader["Peptide"] != DBNull.Value) 
+                                    if (reader["Peptide"] != DBNull.Value)
                                         peptide = reader["Peptide"].ToString();
-                                    
+
                                     if (reader["Net_Value_to_Use"] != DBNull.Value)
                                     {
                                         ganet = Convert.ToSingle(reader["Net_Value_to_Use"]);
@@ -198,7 +198,7 @@ namespace MultiAlignCore.IO.MTDB
 
                                     if (reader["Monoisotopic_Mass"] != DBNull.Value)
                                         monoMass = Convert.ToDouble(reader["Monoisotopic_Mass"]);
-                                    
+
                                     if (reader["Min_MSGF_SpecProb"] != DBNull.Value)
                                         msgf = Convert.ToDouble(reader["Min_MSGF_SpecProb"]);
                                     if (reader["Peptide_Obs_Count_Passing_Filter"] != DBNull.Value)
@@ -241,7 +241,7 @@ namespace MultiAlignCore.IO.MTDB
                                         massTag.DiscriminantMax = highDiscriminant;
                                         massTag.MassMonoisotopic = monoMass;
                                         massTag.ConformationId = conformerID;
-                                        
+
                                         massTag.ObservationCount = numObservations;
                                         massTag.DriftTime = driftTime;
                                         massTag.PriorProbability = highPeptideProphetProbability;
@@ -259,9 +259,9 @@ namespace MultiAlignCore.IO.MTDB
 
                                         var shouldAdd = false;
 
-                                        // If we are using drift time, then we should only 
+                                        // If we are using drift time, then we should only
                                         // use mass tags that have drift time.
-                                        if (massTag.Net >= Options.MinimumNet && 
+                                        if (massTag.Net >= Options.MinimumNet &&
                                             massTag.Net <= Options.MaximumNet &&
                                             massTag.MassMonoisotopic >= Options.MinimumMass &&
                                             massTag.MassMonoisotopic <= Options.MaximumMass)

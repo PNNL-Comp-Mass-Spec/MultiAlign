@@ -6,7 +6,7 @@ namespace MultiAlignRogue.Clustering
 {
     using System.Drawing;
 
-    
+
     using QuadTreeLib;
 
     public class ClusterPoint : IHasRect, IScatterPointProvider

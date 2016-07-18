@@ -19,7 +19,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         private DenseMatrix m_meanVectorF;
         private DenseMatrix m_covarianceMatrixF;
 
-		private FeatureMatcherTolerances m_refinedTolerances;
+        private FeatureMatcherTolerances m_refinedTolerances;
 
         private uint m_iteration;
 
@@ -69,14 +69,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             get { return m_covarianceMatrixF; }
             set { m_covarianceMatrixF = value; }
         }
-		/// <summary>
-		/// Gets or sets the the refined tolerances calculated during STAC training.
-		/// </summary>
-		public FeatureMatcherTolerances RefinedTolerances
-		{
-			get { return m_refinedTolerances; }
-			set { m_refinedTolerances = value; }
-		}
+        /// <summary>
+        /// Gets or sets the the refined tolerances calculated during STAC training.
+        /// </summary>
+        public FeatureMatcherTolerances RefinedTolerances
+        {
+            get { return m_refinedTolerances; }
+            set { m_refinedTolerances = value; }
+        }
         # endregion
 
         #region Constructors
@@ -128,14 +128,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <typeparam name="TU">Feature to be matched to. Derived from Feature. Usually AMTTag.</typeparam>
         /// <param name="featureMatchList">List of FeatureMatches to train parameters on.</param>
         /// <param name="uniformTolerances">User provided tolerances.</param>
-        /// <param name="useDriftTime">Whether to train the data on the drift time dimension.</param>        
+        /// <param name="useDriftTime">Whether to train the data on the drift time dimension.</param>
         /// <returns>A boolean flag indicating whether convergence was reached.</returns>
         public bool TrainStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime)
             where T  : FeatureLight, new()
             where TU : FeatureLight, new()
         {
             return TrainStac(featureMatchList, uniformTolerances, useDriftTime, usePrior:false);
-                           
+
         }
 
         private bool TrainStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
@@ -156,13 +156,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 
             if (!usePrior || typeof (TU) != typeof (MassTagLight))
             {
-                return TrainWithoutPrior(featureMatchList, uniformDensity, useDriftTime);                
+                return TrainWithoutPrior(featureMatchList, uniformDensity, useDriftTime);
             }
 
             var newFeatureMatchList = ConvertFeatureMatchListToMassTagLightList(featureMatchList);
 
             return TrainWithPrior(newFeatureMatchList, uniformDensity, useDriftTime);
-            
+
         }
 
         /// <summary>
@@ -216,12 +216,12 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             foreach (var match in featureMatchList)
             {
                 var newMatch = match as FeatureMatch<T, MassTagLight>;
-                
+
                 if (newMatch != null)
                     newMatch.STACScore = ComputeStacMassTag(newMatch, uniformDensity, usePrior);
-                
-            }                     
-           
+
+            }
+
         }
 
         /// <summary>
@@ -273,34 +273,34 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             var matchIndex = 0;
             var endIndex = matchIndex;
 
-			// If only 1 match, the Specificity score should be 1
-			if (featureMatchList.Count == 1)
-			{
-				featureMatchList[0].STACSpecificity = 1;
-				return;
-			}
+            // If only 1 match, the Specificity score should be 1
+            if (featureMatchList.Count == 1)
+            {
+                featureMatchList[0].STACSpecificity = 1;
+                return;
+            }
 
             while (matchIndex < featureMatchList.Count)
             {
-				var maxCount = 0;
+                var maxCount = 0;
                 while (endIndex < featureMatchList.Count && featureMatchList[endIndex].ObservedFeature.Id == featureMatchList[matchIndex].ObservedFeature.Id)
                 {
-					if (featureMatchList[endIndex].TargetFeature.ObservationCount > maxCount)
-					{
-						maxCount = featureMatchList[endIndex].TargetFeature.ObservationCount;
-					}
+                    if (featureMatchList[endIndex].TargetFeature.ObservationCount > maxCount)
+                    {
+                        maxCount = featureMatchList[endIndex].TargetFeature.ObservationCount;
+                    }
                     endIndex++;
                 }
                 var denominator = 0.0;
                 for (var i = matchIndex; i < endIndex; i++)
                 {
-					var match = featureMatchList[i];
-					denominator += match.TargetFeature.ObservationCount * Math.Exp(Math.Log(maxCount) + (maxCount - 1) * Math.Log(match.STACScore));
+                    var match = featureMatchList[i];
+                    denominator += match.TargetFeature.ObservationCount * Math.Exp(Math.Log(maxCount) + (maxCount - 1) * Math.Log(match.STACScore));
                 }
                 for (var i = matchIndex; i < endIndex; i++)
                 {
-					var match = featureMatchList[i];
-					match.STACSpecificity = (match.TargetFeature.ObservationCount * Math.Exp(Math.Log(maxCount) + (maxCount - 1) * Math.Log(match.STACScore))) / denominator;
+                    var match = featureMatchList[i];
+                    match.STACSpecificity = (match.TargetFeature.ObservationCount * Math.Exp(Math.Log(maxCount) + (maxCount - 1) * Math.Log(match.STACScore))) / denominator;
                 }
                 matchIndex = endIndex;
             }
@@ -318,13 +318,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where T : FeatureLight, new()
             where TU : FeatureLight, new()
         {
-			ReportMessage("Training STAC");
+            ReportMessage("Training STAC");
             TrainStac(featureMatchList, uniformTolerances, useDriftTime);
 
-			ReportMessage("Calculating final STAC Scores");
+            ReportMessage("Calculating final STAC Scores");
             SetStacScores(featureMatchList, uniformTolerances, useDriftTime);
 
-			ReportMessage("Calculating STAC_UP Scores");
+            ReportMessage("Calculating STAC_UP Scores");
             SetStacSpecificitiesFeature(featureMatchList);
         }
 
@@ -339,7 +339,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <param name="usePrior">Whether to use prior probabilities in the calculation of the STAC score.</param>
         public void PerformStac<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, FeatureMatcherTolerances uniformTolerances, bool useDriftTime, bool usePrior)
             where T : FeatureLight, new()
-            where TU : FeatureLight, new()           
+            where TU : FeatureLight, new()
         {
             ReportMessage("Training STAC");
             TrainStac(featureMatchList, uniformTolerances, useDriftTime, usePrior);
@@ -365,7 +365,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         #endregion
 
         #region Private functions
-        
+
         /// <summary>
         /// Overload Clear function to reset number of iterations.
         /// </summary>
@@ -386,7 +386,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <returns>A boolean flag indicating the convergence state of the algorithm.</returns>
         private bool TrainWithPrior<T, TU>(List<FeatureMatch<T, TU>> featureMatchList, double uniformDensity, bool useDriftTime)
             where T : FeatureLight, new()
-			where TU : MassTagLight, new()
+            where TU : MassTagLight, new()
         {
             Clear();
             var converges = false;
@@ -414,16 +414,16 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 m_covarianceMatrixF = ExpectationMaximization.UpdateNormalCovarianceMatrix(dataList, m_meanVectorF, alphaList, priorList, false, true);
 
                 // Calculate the loglikelihood based on the new parameters.
-				var nextLogLikelihood = CalculateNnuLogLikelihood(featureMatchList, uniformDensity, useDriftTime, ref alphaList);
+                var nextLogLikelihood = CalculateNnuLogLikelihood(featureMatchList, uniformDensity, useDriftTime, ref alphaList);
 
                 OnIterate(new ProgressNotifierArgs("."));
-				PrintCurrentStatistics(nextLogLikelihood);
+                PrintCurrentStatistics(nextLogLikelihood);
 
                 // Increment the counter to show that another iteration has been completed.
                 m_iteration++;
 
                 // Set the convergence flag and exit the while loop if the convergence criteria is met.
-				if (m_iteration > 10 && Math.Abs(nextLogLikelihood - m_logLikelihood) < EPSILON)
+                if (m_iteration > 10 && Math.Abs(nextLogLikelihood - m_logLikelihood) < EPSILON)
                 {
                     converges = true;
                     break;
@@ -473,15 +473,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 m_mixtureProportion = UpdateNUMixtureParameter(featureMatchList, uniformDensity, ref alphaList);
                 m_meanVectorT = ExpectationMaximization.UpdateNormalMeanVector(dataList, alphaList);
                 m_covarianceMatrixT = ExpectationMaximization.UpdateNormalCovarianceMatrix(dataList, m_meanVectorT, alphaList, false);
-                
-				// Calculate the loglikelihood based on the new parameters.
+
+                // Calculate the loglikelihood based on the new parameters.
                 var nextLogLikelihood = CalculateNuLogLikelihood(featureMatchList, uniformDensity, useDriftTime);
 
-				// Print statistics every 10 iterations
-				if (m_iteration % 10 == 0)
-				{
-					PrintCurrentStatistics(nextLogLikelihood);
-				}
+                // Print statistics every 10 iterations
+                if (m_iteration % 10 == 0)
+                {
+                    PrintCurrentStatistics(nextLogLikelihood);
+                }
 
                 // Increment the counter to show that another iteration has been completed.
                 m_iteration++;
@@ -537,11 +537,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where TU : FeatureLight, new()
         {
             var loglikelihood = 0.0;
-			var stacScore = 0.0;
+            var stacScore = 0.0;
             foreach (var match in featureMatchList)
             {
                 loglikelihood += CalculateNuLogLikelihood(match, uniformDensity, ref stacScore);
-				match.STACScore = stacScore;
+                match.STACScore = stacScore;
             }
             return loglikelihood;
         }
@@ -588,13 +588,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where T : FeatureLight, new()
             where TU : FeatureLight, new()
         {
-			var alphaSum = 0.0;
-			foreach (var alpha in alphaList)
-			{
-				alphaSum += alpha;
-			}
+            var alphaSum = 0.0;
+            foreach (var alpha in alphaList)
+            {
+                alphaSum += alpha;
+            }
 
-			return alphaSum / alphaList.Count;
+            return alphaSum / alphaList.Count;
         }
         /// <summary>
         /// Calculate the loglikelihood for a match with the current parameters.
@@ -611,27 +611,27 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         {
             if (featureMatch.UseDriftTimePredicted)
             {
-				return ExpectationMaximization.NormalNormalUniformLogLikelihood(
-                    featureMatch.ReducedDifferenceVector, 
-                    featureMatch.TargetFeature.PriorProbability, 
-                    MatrixUtilities.RemoveRow(m_meanVectorT, 3), 
+                return ExpectationMaximization.NormalNormalUniformLogLikelihood(
+                    featureMatch.ReducedDifferenceVector,
+                    featureMatch.TargetFeature.PriorProbability,
+                    MatrixUtilities.RemoveRow(m_meanVectorT, 3),
                     MatrixUtilities.ReduceMatrix(m_covarianceMatrixT, 3),
-                    MatrixUtilities.RemoveRow(m_meanVectorF, 3), 
-                    MatrixUtilities.ReduceMatrix(m_covarianceMatrixF, 3), 
-                    uniformDensity, 
-                    m_mixtureProportion, 
+                    MatrixUtilities.RemoveRow(m_meanVectorF, 3),
+                    MatrixUtilities.ReduceMatrix(m_covarianceMatrixF, 3),
+                    uniformDensity,
+                    m_mixtureProportion,
                     ref stacScore);
             }
 
             return ExpectationMaximization.NormalNormalUniformLogLikelihood(
-                featureMatch.ReducedDifferenceVector, 
-                featureMatch.TargetFeature.PriorProbability, 
-                m_meanVectorT, 
-                m_covarianceMatrixT, 
-                m_meanVectorF, 
-                m_covarianceMatrixF, 
-                uniformDensity, 
-                m_mixtureProportion, 
+                featureMatch.ReducedDifferenceVector,
+                featureMatch.TargetFeature.PriorProbability,
+                m_meanVectorT,
+                m_covarianceMatrixT,
+                m_meanVectorF,
+                m_covarianceMatrixF,
+                uniformDensity,
+                m_mixtureProportion,
                 ref stacScore);
         }
 
@@ -648,11 +648,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where TU : MassTagLight, new()
         {
             var loglikelihood = 0.0;
-			var stacScore = 0.0;
+            var stacScore = 0.0;
             foreach (var match in featureMatchList)
             {
-				loglikelihood += CalculateNnuLogLikelihood(match, uniformDensity, ref stacScore);
-				match.STACScore = stacScore;
+                loglikelihood += CalculateNnuLogLikelihood(match, uniformDensity, ref stacScore);
+                match.STACScore = stacScore;
             }
             return loglikelihood;
         }
@@ -681,13 +681,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 
             var logLikelihood = ExpectationMaximization.NormalNormalUniformLogLikelihood(dataList, priorList, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion);
 
-			// Get new values for alpha list
-			alphaList.Clear();
-			alphaList = ExpectationMaximization.GetAlphaList(dataList, priorList, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion);
-			
+            // Get new values for alpha list
+            alphaList.Clear();
+            alphaList = ExpectationMaximization.GetAlphaList(dataList, priorList, m_meanVectorT, m_covarianceMatrixT, m_meanVectorF, m_covarianceMatrixF, uniformDensity, m_mixtureProportion);
+
             return logLikelihood;
         }
-        
+
         /// <summary>
         /// Use the covariance matrix to compute the refined tolerances
         /// </summary>
@@ -721,7 +721,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where T : FeatureLight, new()
             where TU : MassTagLight, new()
         {
-			var alphaSum = alphaList.Sum();
+            var alphaSum = alphaList.Sum();
 
             return alphaSum / alphaList.Count;
         }
@@ -736,7 +736,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// <returns>The STAC score corresponding to featureMatch.</returns>
         private double ComputeStacMassTag<T>(FeatureMatch<T, MassTagLight> featureMatch, double uniformDensity, bool usePrior) where T : FeatureLight, new()
         {
-			var stacScore = 0.0;
+            var stacScore = 0.0;
 
             if (usePrior)
             {
@@ -747,7 +747,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
                 CalculateNuLogLikelihood(featureMatch, uniformDensity, ref stacScore);
             }
 
-			return stacScore;
+            return stacScore;
         }
 
         /// <summary>
@@ -762,9 +762,9 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             where T : FeatureLight, new()
             where TU : FeatureLight, new()
         {
-			var stacScore = 0.0;
+            var stacScore = 0.0;
             CalculateNuLogLikelihood(featureMatch, uniformDensity, ref stacScore);
-			return stacScore;
+            return stacScore;
         }
 
         private List<FeatureMatch<T, MassTagLight>> ConvertFeatureMatchListToMassTagLightList<T, TU>(IEnumerable<FeatureMatch<T, TU>> featureMatchList)
@@ -792,19 +792,19 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             return Math.Sin(Math.PI * alpha) / Math.PI * Math.Pow(stac, (alpha - 1)) * Math.Pow((1 - stac), (-1 * alpha));
         }
 
-		private void PrintCurrentStatistics(double logLikelihood)
-		{
+        private void PrintCurrentStatistics(double logLikelihood)
+        {
             ReportDebug( "Parameters after " + m_iteration + " iterations:" + Environment.NewLine +
-			             "\tLoglikelihood = " + logLikelihood + "\tAlpha = " + m_mixtureProportion + Environment.NewLine +
-			             "Epsilon = " + EPSILON);
-			
-		}
+                         "\tLoglikelihood = " + logLikelihood + "\tAlpha = " + m_mixtureProportion + Environment.NewLine +
+                         "Epsilon = " + EPSILON);
+
+        }
 
         #endregion
 
         #region "Events and related functions"
 
-        
+
         public event EventHandler<ProgressNotifierArgs> IterationEvent;
         public event EventHandler<ProgressNotifierArgs> MessageEvent;
         public event EventHandler<ProgressNotifierArgs> DebugEvent;
@@ -813,7 +813,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// Report detailed debugging information using OnDebugEvent
         /// </summary>
         /// <param name="message"></param>
-        private void ReportDebug(string message) 
+        private void ReportDebug(string message)
         {
             OnDebugEvent(new ProgressNotifierArgs(message));
         }
@@ -822,25 +822,25 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// Report a progress message using OnMessage
         /// </summary>
         /// <param name="message"></param>
-        private void ReportMessage(string message) 
+        private void ReportMessage(string message)
         {
             OnMessage(new ProgressNotifierArgs(message));
         }
 
 
-        private void OnIterate(ProgressNotifierArgs e) 
+        private void OnIterate(ProgressNotifierArgs e)
         {
             if (IterationEvent != null)
                 IterationEvent(this, e);
         }
 
-        private void OnMessage(ProgressNotifierArgs e) 
+        private void OnMessage(ProgressNotifierArgs e)
         {
             if (MessageEvent != null)
                 MessageEvent(this, e);
         }
 
-        private void OnDebugEvent(ProgressNotifierArgs e) 
+        private void OnDebugEvent(ProgressNotifierArgs e)
         {
             if (DebugEvent != null)
                 DebugEvent(this, e);

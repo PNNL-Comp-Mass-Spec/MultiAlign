@@ -189,7 +189,7 @@ namespace MultiAlignCore.Extensions
         /// <param name="providers"></param>
         public static void ReconstructMSFeature(this MSFeatureLight msFeature, FeatureDataAccessProviders providers)
         {
-            // We are reconstruction the objects here.  But 
+            // We are reconstruction the objects here.  But
             // I want to reduce the number of transactions to make.
             // So I go back through the database and pull out all msms spectra first
             // then sort it out in memory.
@@ -228,7 +228,7 @@ namespace MultiAlignCore.Extensions
                 map[subFeature.MSDatasetID].Add(subFeature.MSFeatureID, subFeature);
             }
 
-            // Now we get all the spectra, map to the UMC, then the ms/ms spectra. 
+            // Now we get all the spectra, map to the UMC, then the ms/ms spectra.
             var spectra = providers.MSnFeatureCache.FindBySpectraId(ids);
 
             var spectraMap = new Dictionary<int, Dictionary<int, MSSpectra>>();

@@ -17,8 +17,8 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //  <composite-id>
             //    <key-property name="FactorID" column="Factor_ID" type="int" />
             //  </composite-id>
-            //	<property name="Name" column="Factor_Name" type="string" not-null="false" />
-            //	<property name="Value" column="Factor_Value" type="string" not-null="false" />
+            //  <property name="Name" column="Factor_Name" type="string" not-null="false" />
+            //  <property name="Value" column="Factor_Value" type="string" not-null="false" />
             //</class>
         }
     }

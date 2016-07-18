@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.TextFiles
 
             var columnTitles = readLine.Split('\t', '\n');
             var numOfColumns = columnTitles.Length;
-        
+
             for (var i = 0; i < numOfColumns; i++)
             {
                 var column = columnTitles[i].ToLower().Trim();
@@ -34,7 +34,7 @@ namespace MultiAlignCore.IO.TextFiles
                     case "peptide":
                         columnMap.Add("Peptide.Sequence", i);
                         break;
-                    case "msgfdb_specprob":                        
+                    case "msgfdb_specprob":
                         columnMap.Add("Peptide.ScorePRISM", i);
                         break;
                     case "specprob":

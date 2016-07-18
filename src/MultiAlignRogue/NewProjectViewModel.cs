@@ -194,7 +194,7 @@ namespace MultiAlignRogue
                 if (string.IsNullOrWhiteSpace(this.LastOutputDirectory))
                 {
                     LastOutputDirectory = value;
-                }          
+                }
 
                 this.CreateCommand.RaiseCanExecuteChanged();
                 this.RaisePropertyChanged();
@@ -223,7 +223,7 @@ namespace MultiAlignRogue
             var saveFileDialog = new SaveFileDialog
             {
                 DefaultExt = ".db3",
-                Filter = @"Supported Files|*.db3"                
+                Filter = @"Supported Files|*.db3"
             };
 
             if (!string.IsNullOrWhiteSpace(this.LastProjectDirectory))
@@ -302,7 +302,7 @@ namespace MultiAlignRogue
                 var datasetInformationViewModel = new DatasetInformationViewModel(dataset);
                 datasetInformationViewModel.RemovalRequested += (s, e) => this.Datasets.Remove(datasetInformationViewModel);
                 this.Datasets.Add(datasetInformationViewModel);
-                this.CreateCommand.RaiseCanExecuteChanged();                
+                this.CreateCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -330,6 +330,6 @@ namespace MultiAlignRogue
             }
 
             return datasets;
-        } 
+        }
     }
 }

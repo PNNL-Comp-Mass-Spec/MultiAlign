@@ -27,10 +27,10 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //  <id name="Id" column="Cluster_ID" type="int">
             //    <generator class="assigned" />
             //  </id>
-            //  <property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />		
-            //  <property name="Net"                      column="NET"                  type="double" not-null="false" />				
+            //  <property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />
+            //  <property name="Net"                      column="NET"                  type="double" not-null="false" />
             //  <property name="DriftTime"                column="Drift_Time"           type="double" not-null="false" />
-            //  <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />    
+            //  <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />
             //  <property name="AmbiguityScore"           column="Ambiguity_Score"      type="double" not-null="false" />
             //  <property name="Abundance"                column="Abundance"            type="double" not-null="false" />
             //  <property name="MemberCount"              column="Member_Count"         type="int"    not-null="false" />

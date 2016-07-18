@@ -17,6 +17,6 @@
             //Y=ax^2 + bx + c
             functionResult = 0;
             functionResult = (c[0] * x[0] * x[0]) + (c[1] * x[0]) + c[2];
-        }        
-    }  
+        }
+    }
 }

@@ -15,10 +15,10 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
                 .KeyProperty(x => x.FactorID, "Factor_ID");
 
             //<class name="DatasetToExperimentalFactorMap" table="T_Datasets_To_Factors_Map" lazy="false">
-            //	<composite-id>
+            //  <composite-id>
             //    <key-property name="DatasetID" column="Dataset_ID" type="int" />
             //    <key-property name="FactorID" column="Factor_ID" type="int" />
-            //	</composite-id>		
+            //  </composite-id>
             //</class>
         }
     }

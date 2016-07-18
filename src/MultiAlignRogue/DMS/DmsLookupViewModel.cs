@@ -48,7 +48,7 @@ namespace MultiAlignRogue.DMS
         /// Set to true when a search has been performed that yielded 0 results.
         /// </summary>
         private bool isNoResultsShown;
-        
+
         /// <summary>
         /// The number of weeks in the past to search for datasets.
         /// </summary>
@@ -96,7 +96,7 @@ namespace MultiAlignRogue.DMS
         {
             this.SearchCommand = new RelayCommand(this.SearchImpl, () => !string.IsNullOrWhiteSpace(this.dataSetFilter) && this.numberOfWeeks > 0);
             this.OpenCommand = new RelayCommand(
-                                                async () => await this.OpenImpl(), 
+                                                async () => await this.OpenImpl(),
                                                 () => this.Datasets.Any(ds => ds.Selected) &&
                                                       this.ValidateDataSet() &&
                                                       !string.IsNullOrEmpty(this.OutputDirectory) &&
@@ -146,7 +146,7 @@ namespace MultiAlignRogue.DMS
         /// <summary>
         /// Gets the list of available files for a certain dataset.
         /// </summary>
-        public ObservableCollection<string> AvailableFiles { get; private set; } 
+        public ObservableCollection<string> AvailableFiles { get; private set; }
 
         /// <summary>
         /// Gets a command that searches DMS for data sets.

@@ -14,7 +14,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching
         /// <param name="peptideMapX"></param>
         /// <param name="peptideMapY"></param>
         /// <param name="options"></param>
-        public void Match(IEnumerable<SpectralAnchorPointMatch> matches,             
+        public void Match(IEnumerable<SpectralAnchorPointMatch> matches,
                             Dictionary<int, Peptide>        peptideMapX,
                             Dictionary<int, Peptide>        peptideMapY,
                             SpectralOptions                 options)
@@ -50,7 +50,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching
 
                 // Make sure the peptides are equivalent.
                 if (peptidex.Sequence.Equals(peptidey.Sequence) && !string.IsNullOrWhiteSpace(peptidey.Sequence))
-                    isMatch = AnchorPointMatchType.TrueMatch;                
+                    isMatch = AnchorPointMatchType.TrueMatch;
                 else
                     isMatch = AnchorPointMatchType.FalseMatch;
 
@@ -58,7 +58,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching
                 match.AnchorPointX.Peptide  = peptidex;
                 match.AnchorPointY.Peptide  = peptidey;
                 match.IsValidMatch          = isMatch;
-            }            
+            }
         }
     }
 }

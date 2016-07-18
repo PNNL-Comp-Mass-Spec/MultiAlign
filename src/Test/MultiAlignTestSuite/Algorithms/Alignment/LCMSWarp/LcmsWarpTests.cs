@@ -20,7 +20,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
     using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
 
     [TestFixture]
-    public sealed class LcmsWarpTests: TestBase 
+    public sealed class LcmsWarpTests: TestBase
     {
         [Test(Description = "This tests the new LCMSWarp port between two database search results converted to UmcLights")]
         [TestCase(
@@ -53,8 +53,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 AlignType = LcmsWarpAlignmentType.NET_MASS_WARP,
                 CalibrationType = LcmsWarpCalibrationType.Both
             };
-            var aligner         = new LcmsWarpFeatureAligner(options); 
-           
+            var aligner         = new LcmsWarpFeatureAligner(options);
+
             var rawBaselineData = File.ReadAllLines(baselinePath);
             var rawFeaturesData = File.ReadAllLines(aligneePath);
             var outputPath      = GetOutputPath(relativeOutput);
@@ -104,7 +104,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
             var outputData  = aligner.Align(baseline, features);
             var residuals   = outputData.ResidualData;
-            
+
             var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores, false);
             var netHistogram   = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
             var massHistogram  = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
@@ -119,7 +119,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var directory   = Path.Combine(outputPath, name);
 
             var encoder     = new SvgEncoder();
-            PlotImageUtility.SaveImage(heatmap,             directory + "_heatmap.svg",             encoder);            
+            PlotImageUtility.SaveImage(heatmap,             directory + "_heatmap.svg",             encoder);
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
@@ -229,7 +229,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var directory   = Path.Combine(outputPath, name);
 
             var encoder     = new SvgEncoder();
-            PlotImageUtility.SaveImage(heatmap,             directory + "_heatmap.svg",             encoder);            
+            PlotImageUtility.SaveImage(heatmap,             directory + "_heatmap.svg",             encoder);
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);

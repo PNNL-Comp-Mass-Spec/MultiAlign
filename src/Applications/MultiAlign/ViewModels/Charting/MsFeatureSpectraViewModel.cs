@@ -202,7 +202,7 @@ namespace MultiAlign.ViewModels.Charting
                             MinimumX = fragmentation.PrecursorMz,
                             MaximumX = fragmentation.PrecursorMz + MsmsDistanceUpper
                         };
-                        
+
                         Model.Annotations.Add(upperMz);
                         Model.Annotations.Add(lowerMz);
                     }

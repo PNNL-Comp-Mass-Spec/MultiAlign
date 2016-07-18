@@ -12,7 +12,7 @@ namespace MultiAlignRogue.Alignment
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.MetaData;
 
-    
+
     class LCMSFeatureAligner
     {
 
@@ -25,12 +25,12 @@ namespace MultiAlignRogue.Alignment
             IProgress<ProgressData> progress = null)
         {
             progress = progress ?? new Progress<ProgressData>();
-            // Align pairwise and cache results intermediately.           
+            // Align pairwise and cache results intermediately.
             var aligner = this.m_algorithms.DatasetAligner;
             aligner.Progress += aligner_Progress;
 
             var alignmentData = aligner.Align(baselineFeatures, features, progress);
-            
+
             if (alignmentData != null)
             {
                 alignmentData.AligneeDataset = datasetInfo.DatasetName;

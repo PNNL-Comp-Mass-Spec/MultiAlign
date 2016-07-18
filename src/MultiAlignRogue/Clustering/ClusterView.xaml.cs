@@ -42,7 +42,7 @@
                 this.LoadNewViewModel();
                 this.isLoaded = true;
             };
-            
+
             // Update layout when view model changes.
             this.DataContextChanged += (o, e) =>
             {
@@ -58,7 +58,7 @@
                 this,
                 args =>
             {
-                if (args.Sender == this.viewModel && 
+                if (args.Sender == this.viewModel &&
                     args.PropertyName == "LayoutRoot" &&
                     this.AvDock.Layout != args.NewValue &&
                     this.isLoaded)

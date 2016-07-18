@@ -614,7 +614,7 @@
                     this.alignmentInformation.Add(alignment);
                 }
                 file.Dataset.AlignmentData = alignment;
-                
+
                 this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
                 featureCache.CacheFeatures(features);
                 this.analysis.DataProviders.DatabaseLock.ExitWriteLock();

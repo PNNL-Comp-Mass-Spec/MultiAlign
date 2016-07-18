@@ -197,7 +197,7 @@
         /// Determine which matches are promiscuous.
         /// A promiscuous match is a match such that more than N (N = options.MaxPromiscuity)
         /// alignee features map to a single baseline feature.
-        /// 
+        ///
         /// N points per promiscuous match are kept if options.UsePromiscuous points is set to true.
         /// Otherwise, the promiscuous matches are removed completely.
         /// </summary>
@@ -238,7 +238,7 @@
                         {   // First time this NET has been seen
                             netToMatches.Add(match.Net, new List<LcmsWarpFeatureMatch>());
                         }
-                        
+
                         // Keep only the first MaxPromiscuity matches at each time point.
                         if (netToMatches[match.Net].Count < this.options.MaxPromiscuity)
                         {

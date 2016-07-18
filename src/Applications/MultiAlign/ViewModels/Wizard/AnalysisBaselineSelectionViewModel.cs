@@ -288,7 +288,7 @@ namespace MultiAlign.ViewModels.Wizard
             }
         }
 
-        #region Commands 
+        #region Commands
 
         public ICommand SetBaselineToDataset { get; private set; }
         public ICommand SetBaselineToDatabase { get; private set; }

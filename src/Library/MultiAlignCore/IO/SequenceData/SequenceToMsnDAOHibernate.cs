@@ -31,7 +31,7 @@ namespace MultiAlignCore.IO.SequenceData
        {
           ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
           var criterionList = new List<ICriterion>();
-          criterionList.Add(criterionDataset);          
+          criterionList.Add(criterionDataset);
 
           return FindByCriteria(criterionList);
        }

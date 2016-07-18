@@ -16,10 +16,10 @@ namespace MultiAlignTestSuite.Algorithms.SpectralComparisons
             var spectrum        = new MSSpectra();
             spectrum.Peptides         = new List<Peptide>();
             IMsMsSpectraReader reader = new MgfFileReader();
-            var spectra   =  reader.Read(path);         
-   
+            var spectra   =  reader.Read(path);
+
             return spectra;
         }
-               
+
     }
 }

@@ -69,7 +69,7 @@ namespace MultiAlignCore.Algorithms.Regression
             m_minX = points.Min(x => x.X);
             m_maxX = points.Max(x => x.X);
             m_points.AddRange(points);
-            
+
             var numPoints = m_points.Count;
 
             var a = new DenseMatrix(numPoints, m_order + m_numKnots + 1);

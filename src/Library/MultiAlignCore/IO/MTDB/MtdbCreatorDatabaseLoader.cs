@@ -61,7 +61,7 @@ namespace MultiAlignCore.IO.MTDB
                         };
                         //TODO: Do something about the cleavage state and terminus state of a protein loaded from MTDBCreator database.
                         //protein.CleavageState = ??
-                        //protein.TerminusState = ??            
+                        //protein.TerminusState = ??
 
                         proteinMap.Add(newProtein.Id, newProtein);
                     }

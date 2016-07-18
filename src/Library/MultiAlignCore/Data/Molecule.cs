@@ -19,7 +19,7 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
-        } 
+        }
         public string Description
         {
             get;

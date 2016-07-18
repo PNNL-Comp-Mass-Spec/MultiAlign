@@ -9,8 +9,8 @@
         Ecd,
         Etd,
         Hcd,
-        Hid,        
+        Hid,
         None,
-        Other        
+        Other
     }
 }

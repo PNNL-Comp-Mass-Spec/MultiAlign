@@ -6,8 +6,8 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
-    public interface IFeatureMatcher<TObserved, TTarget> 
-        where TObserved : FeatureLight, new() 
+    public interface IFeatureMatcher<TObserved, TTarget>
+        where TObserved : FeatureLight, new()
         where TTarget : FeatureLight, new()
     {
         /// <summary>
@@ -67,7 +67,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// </summary>
         [UsedImplicitly]
         SLiCInformation SliCParameters { get; }
-        
+
         /// <summary>
         /// Find a list of matches between two lists.
         /// </summary>
@@ -87,7 +87,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         event EventHandler<ProgressNotifierArgs> ProcessingCompleteEvent;
 
         /// <summary>
-        /// Function to call to re-calculate algorithm results. 
+        /// Function to call to re-calculate algorithm results.
         /// </summary>
         void MatchFeatures();
     }

@@ -19,7 +19,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         {
             this.tolerance = tolerance;
         }
-        
+
         public double CompareSpectra(MSSpectra spectraX, MSSpectra spectraY)
         {
             var xIntensities = this.ExpandVector(spectraY.Peaks, spectraX.Peaks).Select(xpeak => xpeak.X).ToArray();

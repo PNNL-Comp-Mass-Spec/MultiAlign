@@ -148,7 +148,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                                     umcLight.Scan,
                                     umcLight.Abundance,
                                     umcLight.MinCharge,
-                                    umcLight.MaxCharge, 
+                                    umcLight.MaxCharge,
                                     umcLight.ScanStart,
                                     umcLight.ScanEnd,
                                     lcmsRun.GetElutionTime(umcLight.ScanStart),
@@ -195,7 +195,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         {
             if (!this.multiAlignToPromexDatasetIdMap.ContainsKey(multiAlignDatasetId))
             {
-                var maxPromexId = this.promexToMultiAlignDatasetIdMap.Keys.Any() ? 
+                var maxPromexId = this.promexToMultiAlignDatasetIdMap.Keys.Any() ?
                                   this.promexToMultiAlignDatasetIdMap.Keys.Max() :
                                   -1;
                 var promexId = maxPromexId + 1;

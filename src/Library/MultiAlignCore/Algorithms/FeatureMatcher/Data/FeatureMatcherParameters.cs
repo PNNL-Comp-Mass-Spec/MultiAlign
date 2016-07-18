@@ -2,7 +2,7 @@
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 {
-	public class FeatureMatcherParameters
+    public class FeatureMatcherParameters
     {
         #region Members
         private FeatureMatcherTolerances m_userTolerances;
@@ -27,9 +27,9 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// Default constructor for FeatureMatcherParameters.
         /// </summary>
         public FeatureMatcherParameters()
-		{
-			Clear();
-		}
+        {
+            Clear();
+        }
         #endregion
 
 
@@ -153,7 +153,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
         /// Resets all parameters to default values.
         /// </summary>
         private void Clear()
-		{
+        {
             m_userTolerances = new FeatureMatcherTolerances();
             m_useEllipsoid = true;
             m_shouldCalculateShiftFDR = true;
@@ -167,6 +167,6 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
             m_histogramBinWidth = 0.02;
             m_histogramMultiplier = 0.1;
         }
-        #endregion   
+        #endregion
     }
 }

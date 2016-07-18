@@ -25,7 +25,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
                 sumTwo += (y*y);
             }
 
-            
+
             return sum / (sumOne * sumTwo);
         }
     }

@@ -65,7 +65,7 @@ namespace MultiAlignCore.Data
             ShouldCreateChargeStatePlots = true;
         }
 
-        #region Properties 
+        #region Properties
 
         /// <summary>
         ///     Gets or sets the flag to say whether to create charge state plots.

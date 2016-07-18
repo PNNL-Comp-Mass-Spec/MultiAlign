@@ -6,7 +6,7 @@
 //        /// <summary>
 //        /// Maps the path to a group ID for reading multiple files.
 //        /// </summary>
-//        private Dictionary<string, int> m_pathMap = new Dictionary<string, int>();                                   
+//        private Dictionary<string, int> m_pathMap = new Dictionary<string, int>();
 //        private Tuple<List<UMCLight>, List<MSFeatureLight>> LoadFeatures(string path)
 //        {
 //            MultiAlignCore.Data.DatasetInformation info = new MultiAlignCore.Data.DatasetInformation();
@@ -17,8 +17,8 @@
 //            List<MSFeatureLight> msFeatures = MultiAlignCore.IO.Features.UMCLoaderFactory.LoadMsFeatureData(info, null);
 //            List<UMCLight> features = new List<UMCLight>();
 
-//            // Find the features 
-//            IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);            
+//            // Find the features
+//            IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);
 //            LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
 //            features                            = finder.FindFeatures(msFeatures, options);
 
@@ -102,8 +102,8 @@
 //            AnalysisOptions options     = new AnalysisOptions();
 //            AlgorithmProvider provider  = builder.GetAlgorithmProvider(options);
 //            IFeatureAligner aligner     = provider.Aligner;
-//            aligner.AlignFeatures(  featuresTupleX.Item1, 
-//                                    featuresTupleY.Item1, 
+//            aligner.AlignFeatures(  featuresTupleX.Item1,
+//                                    featuresTupleY.Item1,
 //                                    options.AlignmentOptions);
 
 //            // at this point we still have to link these data...
@@ -118,14 +118,14 @@
 //            // This guy filters the spectra, so that we only keep the N most intense ions for comparison
 //            ISpectraFilter filter = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
 
-//            // These track our matched and not matched 
+//            // These track our matched and not matched
 //            double step = .05;
 //            int N = Convert.ToInt32(1.0 / step);
 //            SpectralAnalysis analysis = new SpectralAnalysis();
 //            analysis.NetTolerance     = netTolerance;
 //            analysis.MassTolerance    = mzTolerance;
 
-//            // These arrays are for linking to MS features later.            
+//            // These arrays are for linking to MS features later.
 //            Dictionary<int, PeptideMatch> spectraY = new Dictionary<int, PeptideMatch>();
 //            Dictionary<int, PeptideMatch> spectraX = new Dictionary<int, PeptideMatch>();
 
@@ -177,14 +177,14 @@
 //                        // Grab the first spectra
 //                        MSSpectra spectrumX = GetSpectra(mzTolerance, percent, filter, readerX, scanDataX, scanx);
 
-//                        // Iterate through the other analysis.  
+//                        // Iterate through the other analysis.
 //                        foreach (int scany in scanDataY.Keys)
 //                        {
 //                            ScanSummary ysum = scanDataY[scany];
 //                            if (ysum.MsLevel != 2)
 //                                continue;
 
-//                            if (Math.Abs(xsum.PrecursorMZ - ysum.PrecursorMZ) >= mzTolerance)                            
+//                            if (Math.Abs(xsum.PrecursorMZ - ysum.PrecursorMZ) >= mzTolerance)
 //                                continue;
 
 
@@ -287,12 +287,12 @@
 
 //                                    // Here we track what spectra have been seen before...should only be once!
 //                                    bool doesKeyExist = spectraY.ContainsKey(scany);
-//                                    if (!doesKeyExist) 
+//                                    if (!doesKeyExist)
 //                                        spectraY.Add(scany, match);
 
 //                                }
 //                                else
-//                                {                                 
+//                                {
 //                                    analysis.AddFalseMatch(index);
 //                                }
 //                            }
@@ -304,7 +304,7 @@
 //            int jj = 0;
 //            // Now we determine what features are aligned with what.
 //            List<MSSpectra> spectra = new List<MSSpectra>();
-//            List<MSSpectra> matchedY = new List<MSSpectra>();            
+//            List<MSSpectra> matchedY = new List<MSSpectra>();
 //            foreach (int key in spectraY.Keys)
 //            {
 //                spectraY[key].SpectrumY.ID = jj;
@@ -330,7 +330,7 @@
 //                featuresTupleY.Item2.ForEach(X => X.MSnSpectra.Clear());
 //            }
 
-//            // Then we iterate through and find anything with MS/MS ...we should just directly do this above...but we are 
+//            // Then we iterate through and find anything with MS/MS ...we should just directly do this above...but we are
 //            // retrofitting here...
 //            Dictionary<int, UMCLight> mappedFeaturesX = new Dictionary<int, UMCLight>();
 //            Dictionary<int, UMCLight> mappedFeaturesY = new Dictionary<int, UMCLight>();
@@ -356,8 +356,8 @@
 
 //        private MSSpectra GetSpectra(double mzTolerance,
 //                                    double percent,
-//                                    ISpectraFilter filter, 
-//                                    ISpectraProvider readerY, 
+//                                    ISpectraFilter filter,
+//                                    ISpectraProvider readerY,
 //                                    Dictionary<int, ScanSummary> scanDataY,
 //                                    int scany)
 //        {
@@ -373,5 +373,5 @@
 //            return spectrumY;
 //        }
 //        #endregion
-//    }    
+//    }
 }

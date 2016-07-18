@@ -34,12 +34,12 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         //                                          readerY,
         //                                          comparer,
         //                                          filter,
-        //                                          options);            
+        //                                          options);
         //}
 
         public void ValidateMatches( IEnumerable<SpectralAnchorPointMatch> matches,
                                                                     IEnumerable<Peptide> peptidesA,
-                                                                    IEnumerable<Peptide> peptidesB,   
+                                                                    IEnumerable<Peptide> peptidesB,
                                                                     SpectralOptions options)
         {
             IEnumerable<SpectralAnchorPointMatch> anchorPointMatches = matches as SpectralAnchorPointMatch[] ?? matches.ToArray();

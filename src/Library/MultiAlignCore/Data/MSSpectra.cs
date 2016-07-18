@@ -21,8 +21,8 @@ namespace MultiAlignCore.Data
         /// Default constructor
         /// </summary>
         public MSSpectra ()
-        {                        
-            
+        {
+
             ScanMetaData            = new ScanSummary();
             MsLevel                 = CONST_DEFAULT_MS_LEVEL;
             CollisionType           = CollisionType.None;
@@ -72,16 +72,16 @@ namespace MultiAlignCore.Data
         /// </summary>
         public int PrecursorChargeState
         {
-            get; 
-            set; 
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the MS Level.
         /// </summary>
         public int MsLevel
         {
-            get; 
-            set; 
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the base peak.
@@ -190,7 +190,7 @@ namespace MultiAlignCore.Data
                                 PrecursorMz,
                                 PrecursorChargeState,
                                 GroupId);
-            
+
         }
         /// <summary>
         /// Compares two objects' values.
@@ -264,7 +264,7 @@ namespace MultiAlignCore.Data
         {
             Peaks          = null;
             PeaksProcessed = null;
-            PrecursorPeak  = null;                        
+            PrecursorPeak  = null;
             ParentSpectra  = null;
 
 

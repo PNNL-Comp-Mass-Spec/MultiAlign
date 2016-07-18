@@ -9,7 +9,7 @@ namespace MultiAlignCore.Algorithms.Clustering
     public class MsFeatureClusterParameters<T>:
         FeatureClusterParameters<T>
         where T : FeatureLight, new()
-        
+
     {
         /// <summary>
         /// Constructor.
@@ -35,7 +35,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
         /// <summary>
-        /// Gets or sets the log abundance weight 
+        /// Gets or sets the log abundance weight
         /// </summary>
         public double AbundanceLogWeight
         {
@@ -51,7 +51,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
         /// <summary>
-        /// Gets or sets the fit or score weight to use when calculating 
+        /// Gets or sets the fit or score weight to use when calculating
         /// distance between two features.
         /// </summary>
         public double FitWeight
@@ -60,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
         /// <summary>
-        /// Gets or sets the mono mass weight. 
+        /// Gets or sets the mono mass weight.
         /// </summary>
         public double MassMonoisotopicWeight
         {
@@ -68,7 +68,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
         /// <summary>
-        /// Gets or sets the mass constraint for 
+        /// Gets or sets the mass constraint for
         /// </summary>
         public double MassMonoisotopicAverageConstraint
         {
@@ -122,8 +122,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         {
             base.Clear();
 
-            MassMonoisotopicWeight              = .01;              
-            MassMonoisotopicAverageWeight       = .01;    
+            MassMonoisotopicWeight              = .01;
+            MassMonoisotopicAverageWeight       = .01;
             MassMonoisotopicAverageConstraint   = 10;   // ppm
             AbundanceLogWeight                  = .1;
             ScanWeight                          = .01;
@@ -133,6 +133,6 @@ namespace MultiAlignCore.Algorithms.Clustering
             MaxDistance                         = .1;
             ScanMinimum                         = int.MaxValue;
             ScanMaximum                         = int.MinValue;
-        }        
+        }
     }
 }

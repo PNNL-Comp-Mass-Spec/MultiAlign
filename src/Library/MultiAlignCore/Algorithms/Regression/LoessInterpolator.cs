@@ -14,7 +14,7 @@ namespace MultiAlignCore.Algorithms.Regression
          * a particular point, this fraction of source points closest
          * to the current point is taken into account for computing
          * a least-squares regression.
-         * 
+         *
          * A sensible value is usually 0.25 to 0.5.
          */
         private double bandwidth;
@@ -22,7 +22,7 @@ namespace MultiAlignCore.Algorithms.Regression
         /**
          * The number of robustness iterations parameter: this many
          * robustness iterations are done.
-         * 
+         *
          * A sensible value is usually 0 (just the initial fit without any
          * robustness iterations) to 4.
          */
@@ -61,7 +61,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
         private void Predict(double x,  out double res, out double residuals, double[] robustnessWeights, int[] bandwidthInterval, int i)
         {
-            
+
 
             var ileft  = bandwidthInterval[0];
             var iright = bandwidthInterval[1];
@@ -130,7 +130,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
             var alpha = meanY - beta * meanX;
             res          = beta * x + alpha;
-            residuals    = Math.Abs(m_yModel[i] - res);            
+            residuals    = Math.Abs(m_yModel[i] - res);
         }
 
         /// <summary>
@@ -148,12 +148,12 @@ namespace MultiAlignCore.Algorithms.Regression
             // Find index within the model...for the locally weighted regression
             var index = FindIndex(xValue, m_xModel);
             double res;
-            double residuals;            
-            
-            
+            double residuals;
+
+
             m_bandwidthInterval = new[] { 0, m_bandwidthInPoints - 1 };
 
-            // From the left 
+            // From the left
             var points = m_bandwidthInPoints / 2;
 
             // We are at the left edge.
@@ -173,9 +173,9 @@ namespace MultiAlignCore.Algorithms.Regression
                 m_bandwidthInterval[0] = index - points;
                 m_bandwidthInterval[1] = index + points - 1;
 
-            }            
-            // At each x, compute a local weighted linear regression                
-            Predict(xValue, out res, out residuals, m_robustnessWeights, m_bandwidthInterval, index);                                
+            }
+            // At each x, compute a local weighted linear regression
+            Predict(xValue, out res, out residuals, m_robustnessWeights, m_bandwidthInterval, index);
             return res;
         }
 
@@ -218,10 +218,10 @@ namespace MultiAlignCore.Algorithms.Regression
 
             if (m_modelSize == 1)
                 return new List<double> { m_yModel[0] };
-            
+
             if (m_modelSize == 2)
                 return new List<double> { m_yModel[0], m_yModel[1] };
-            
+
 
             m_bandwidthInPoints = (int)(bandwidth * m_modelSize);
 
@@ -241,7 +241,7 @@ namespace MultiAlignCore.Algorithms.Regression
             // Do an initial fit and 'robustnessIters' robustness iterations.
             // This is equivalent to doing 'robustnessIters+1' robustness iterations
             // starting with all robustness weights set to 1.
-            for (var i = 0; i < m_robustnessWeights.Length; i++) 
+            for (var i = 0; i < m_robustnessWeights.Length; i++)
                     m_robustnessWeights[i] = 1;
 
             for (var iter = 0; iter <= robustnessIters; ++iter)
@@ -276,7 +276,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
                 // Recompute the robustness weights.
                 // Find the median residual.
-                // An arraycopy and a sort are completely tractable here, 
+                // An arraycopy and a sort are completely tractable here,
                 // because the preceding loop is a lot more expensive
                 System.Array.Copy(m_residuals, m_sortedResiduals, m_modelSize);
                 Array.Sort(m_sortedResiduals);
@@ -295,7 +295,7 @@ namespace MultiAlignCore.Algorithms.Regression
             }
 
             return m_res;
-        }        
+        }
 
         /// <summary>
         /// Determines which part of the model the query value exists in.
@@ -318,7 +318,7 @@ namespace MultiAlignCore.Algorithms.Regression
                 {
                     tempDiff = diff;
                     j        = i;
-                }                
+                }
             }
             return j;
         }
@@ -343,7 +343,7 @@ namespace MultiAlignCore.Algorithms.Regression
             // The right edge should be adjusted if the next point to the right
             // is closer to xval[i] than the leftmost point of the current interval
             if (right < xval.Count - 1 && xval[right + 1] - xval[i] < xval[i] - xval[left])
-            {                
+            {
                    bandwidthInterval[0]++;
                    bandwidthInterval[1]++;
             }
@@ -379,7 +379,7 @@ namespace MultiAlignCore.Algorithms.Regression
         public double MaxDistance { get; set; }
 
         /**
-         * Compute the 
+         * Compute the
          * <a href="http://en.wikipedia.org/wiki/Local_regression#Weight_function">tricube</a>
          * weight function
          *

@@ -18,7 +18,7 @@ namespace MultiAlignRogue.Feature_Finding
     using OxyPlot.Axes;
     using OxyPlot.Series;
 
-    
+
     using QuadTreeLib;
 
     class MSFeatureViewModel : PlotViewModelBase
@@ -63,7 +63,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public MSFeatureViewModel()
         {
-            
+
         }
 
         public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, bool aligned, int numSectionsPerAxis = 10, int featuresPerSection = 50)
@@ -200,7 +200,7 @@ namespace MultiAlignRogue.Feature_Finding
                         if (currentMsFeatures.Points.Count > 0)
                         {
                             this.Model.Series.Add(currentMsFeatures);
-                        }   
+                        }
                     }
                     else
                     {
@@ -210,7 +210,7 @@ namespace MultiAlignRogue.Feature_Finding
                             Title = file.DatasetName,
                             MarkerType = MarkerType.Circle
                         };
-                        lcmsScatterSeries.Points.AddRange(featurePoints.Select(feature => new ScatterPoint(feature.Rectangle.X, feature.Rectangle.Y, 0.8)));  
+                        lcmsScatterSeries.Points.AddRange(featurePoints.Select(feature => new ScatterPoint(feature.Rectangle.X, feature.Rectangle.Y, 0.8)));
                         this.Model.Series.Add(lcmsScatterSeries);
                     }
 
@@ -226,7 +226,7 @@ namespace MultiAlignRogue.Feature_Finding
         }
 
         /// <summary>
-        /// Partition the current view into (numSectionsPerAxis)^2 sections and select the top 
+        /// Partition the current view into (numSectionsPerAxis)^2 sections and select the top
         /// "featuresPerSection" in each section.
         /// </summary>
         /// <param name="dataset">Dataset to get features points for.</param>

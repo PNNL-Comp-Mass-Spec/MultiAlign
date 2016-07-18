@@ -1,15 +1,15 @@
 /*////////////////////////////////////////////////////////////////////////
  *  File  : clsDatabaseDatasetLoader.cs
  *  Author: Brian LaMarche
- *  Date  : 9/08/2008 
- * 
+ *  Date  : 9/08/2008
+ *
  *  Pacific Northwest National Laboratory
  *  Instrument Development Laboratory
- * 
+ *
  *  Notes:
- *      Class responsible for loading dataset information from a DMS 
+ *      Class responsible for loading dataset information from a DMS
  *      server that contains dataset databases.
- * 
+ *
  *  Revisions:
  *      9-8-2008:
  *          - Moved data loading features from the User Interface control
@@ -46,13 +46,13 @@ namespace MultiAlignWin.Data
         /// </summary>
         public delegate void DelegateUpdateLoadingComplete();
         #endregion
-                    
+
         /// <summary>
         /// Class for loading a dataset from a database.
         /// </summary>
         public class clsDatabaseDatasetLoader
         {
-            
+
             #region Members
             /// <summary>
             /// Constant indicating to only load the dataset id numbers.
@@ -65,7 +65,7 @@ namespace MultiAlignWin.Data
             /// <summary>
             /// Called when a dataset is loaded.
             /// </summary>
-		 	public event DelegateDataSetLoaded              LoadedDataset;
+            public event DelegateDataSetLoaded              LoadedDataset;
             /// <summary>
             /// Called when the loading progress is updated.
             /// </summary>
@@ -73,11 +73,11 @@ namespace MultiAlignWin.Data
             /// <summary>
             /// Called when the loading of all datasets is complete or if there was a major error.
             /// </summary>
-            public event DelegateUpdateLoadingComplete      LoadingComplete;		
+            public event DelegateUpdateLoadingComplete      LoadingComplete;
             /// <summary>
             /// Arraylist containing all the present datasets.
             /// </summary>
-		    private ArrayList   marrDatasetInfo;		    
+            private ArrayList   marrDatasetInfo;
             /// <summary>
             /// Thread for loading a lot of the dataset ID's.
             /// </summary>
@@ -114,7 +114,7 @@ namespace MultiAlignWin.Data
 
                 marrDatasetInfo = new ArrayList();
             }
-            
+
             #region Properties
             public ArrayList DataSets
             {
@@ -173,8 +173,8 @@ namespace MultiAlignWin.Data
                 }
             }
             #endregion
-            
-            #region Query Setup 
+
+            #region Query Setup
 
             /// <summary>
             /// Sets up the select query.
@@ -183,85 +183,85 @@ namespace MultiAlignWin.Data
             /// <param name="flag"></param>
             /// <returns></returns>
             private string SetupQuery(string field, int flag)
-		    {
-			    string selectQry = null;
+            {
+                string selectQry = null;
                 switch(flag)
                 {
-                    case CONST_QUERY_DATASET_ALL:			        
-                        /// 
+                    case CONST_QUERY_DATASET_ALL:
+                        ///
                         /// SELECT
-                        /// 
-				        selectQry = "SELECT DISTINCT    ";
+                        ///
+                        selectQry = "SELECT DISTINCT    ";
                         selectQry += "  dbo.T_Dataset.Dataset_ID AS DatasetID " ;                               // 0
-				        selectQry += ", dbo.t_storage_path.SP_vol_name_client as volName " ;                    // 1 
-				        selectQry += ", dbo.t_storage_path.SP_path as path " ;                                  // 2
-				        selectQry += ", dbo.T_Dataset.DS_folder_name as datasetFolder " ;                       // 3
-				        selectQry += ", dbo.T_Analysis_Job.AJ_resultsFolderName resultsFolder " ;               // 4
-				        selectQry += ", dbo.T_Dataset.Dataset_Num AS datasetName " ;                            // 5
-				        selectQry += ", dbo.T_Analysis_Job.AJ_jobID as JobId " ;                                // 6
-				        selectQry += ", dbo.T_Dataset.DS_LC_column_ID as ColumnID " ;                           // 7
-				        selectQry += ", dbo.T_Dataset.Acq_Time_Start as AcquisitionTime" ;                      // 8
-				        selectQry += ", dbo.T_Experiments.Ex_Labelling as Labelling" ;                          // 9
-				        selectQry += ", dbo.T_Instrument_Name.IN_Name as InstrumentName" ;                      //10
-				        selectQry += ", dbo.T_Analysis_Job.AJ_analysisToolID as ToolID" ;                       //11
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Block as BlockNum" ;                    //12
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Name as ReplicateName" ;                //13
-				        selectQry += ", dbo.T_Dataset.Exp_ID as ExperimentID" ;                                 //14
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Run_Order as RunOrder" ;                //15
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_BatchID as BatchID" ;                   //16
-				        selectQry += ", dbo.V_Dataset_Folder_Paths.Archive_Folder_Path AS ArchPath" ;           //17 
-				        selectQry += ", dbo.V_Dataset_Folder_Paths.Dataset_Folder_Path AS DatasetFullPath" ;    //18
+                        selectQry += ", dbo.t_storage_path.SP_vol_name_client as volName " ;                    // 1
+                        selectQry += ", dbo.t_storage_path.SP_path as path " ;                                  // 2
+                        selectQry += ", dbo.T_Dataset.DS_folder_name as datasetFolder " ;                       // 3
+                        selectQry += ", dbo.T_Analysis_Job.AJ_resultsFolderName resultsFolder " ;               // 4
+                        selectQry += ", dbo.T_Dataset.Dataset_Num AS datasetName " ;                            // 5
+                        selectQry += ", dbo.T_Analysis_Job.AJ_jobID as JobId " ;                                // 6
+                        selectQry += ", dbo.T_Dataset.DS_LC_column_ID as ColumnID " ;                           // 7
+                        selectQry += ", dbo.T_Dataset.Acq_Time_Start as AcquisitionTime" ;                      // 8
+                        selectQry += ", dbo.T_Experiments.Ex_Labelling as Labelling" ;                          // 9
+                        selectQry += ", dbo.T_Instrument_Name.IN_Name as InstrumentName" ;                      //10
+                        selectQry += ", dbo.T_Analysis_Job.AJ_analysisToolID as ToolID" ;                       //11
+                        selectQry += ", dbo.T_Requested_Run_History.RDS_Block as BlockNum" ;                    //12
+                        selectQry += ", dbo.T_Requested_Run_History.RDS_Name as ReplicateName" ;                //13
+                        selectQry += ", dbo.T_Dataset.Exp_ID as ExperimentID" ;                                 //14
+                        selectQry += ", dbo.T_Requested_Run_History.RDS_Run_Order as RunOrder" ;                //15
+                        selectQry += ", dbo.T_Requested_Run_History.RDS_BatchID as BatchID" ;                   //16
+                        selectQry += ", dbo.V_Dataset_Folder_Paths.Archive_Folder_Path AS ArchPath" ;           //17
+                        selectQry += ", dbo.V_Dataset_Folder_Paths.Dataset_Folder_Path AS DatasetFullPath" ;    //18
                         ///
                         /// From - Inner Join
-                        /// 
-				        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON " ; 
-				        selectQry += " dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID " ; 
-				        selectQry += " INNER JOIN dbo.T_Experiments ON dbo.T_Dataset.Exp_ID = dbo.T_Experiments.Exp_ID" ; 
-				        selectQry += " INNER JOIN dbo.T_Instrument_Name ON dbo.T_Dataset.DS_instrument_name_id = dbo.T_Instrument_Name.Instrument_ID " ; 
-				        selectQry += " INNER JOIN dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID " ;
-				        selectQry += " left outer JOIN dbo.T_Requested_Run_History ON dbo.T_Requested_Run_History.DatasetID = dbo.T_Dataset.Dataset_ID" ; 
-				        selectQry += " INNER JOIN dbo.V_Dataset_Folder_Paths ON dbo.T_Dataset.Dataset_ID = dbo.V_Dataset_Folder_Paths.Dataset_ID" ;
-                        /// 
+                        ///
+                        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON " ;
+                        selectQry += " dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID " ;
+                        selectQry += " INNER JOIN dbo.T_Experiments ON dbo.T_Dataset.Exp_ID = dbo.T_Experiments.Exp_ID" ;
+                        selectQry += " INNER JOIN dbo.T_Instrument_Name ON dbo.T_Dataset.DS_instrument_name_id = dbo.T_Instrument_Name.Instrument_ID " ;
+                        selectQry += " INNER JOIN dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID " ;
+                        selectQry += " left outer JOIN dbo.T_Requested_Run_History ON dbo.T_Requested_Run_History.DatasetID = dbo.T_Dataset.Dataset_ID" ;
+                        selectQry += " INNER JOIN dbo.V_Dataset_Folder_Paths ON dbo.T_Dataset.Dataset_ID = dbo.V_Dataset_Folder_Paths.Dataset_ID" ;
+                        ///
                         /// WHERE
-                        /// 
-				        selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID = 2 OR ";
+                        ///
+                        selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID = 2 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 7 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 10 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 11 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 12 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 16 OR ";
                         selectQry += "         dbo.T_Analysis_Job.AJ_analysisToolID = 18 ) ";
-                        selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";                            
+                        selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";
                         break;
 
                     case CONST_QUERY_DATASET_IDS_ONLY:
-                        /// 
+                        ///
                         /// SELECT
-                        /// 
-			            selectQry = "SELECT DISTINCT    dbo.T_Dataset.Dataset_ID AS DatasetID " ;
+                        ///
+                        selectQry = "SELECT DISTINCT    dbo.T_Dataset.Dataset_ID AS DatasetID " ;
                         /// From - Inner Join
-			            selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON " ; 
-			            selectQry += "      dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID INNER JOIN " ; 
-			            selectQry += "      dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID " ;
-                        /// 
+                        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON " ;
+                        selectQry += "      dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID INNER JOIN " ;
+                        selectQry += "      dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID " ;
+                        ///
                         /// WHERE
-                        /// 
-			            selectQry += " WHERE  ( dbo.T_Analysis_Job.AJ_analysisToolID = 2 OR";
+                        ///
+                        selectQry += " WHERE  ( dbo.T_Analysis_Job.AJ_analysisToolID = 2 OR";
                         selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 7  OR ";
                         selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 10 OR ";
                         selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 11 OR ";
                         selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 12 OR ";
                         selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 16 OR ";
-                        selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 18 ) "; 
-			            selectQry += "          AND dbo.T_Dataset.Dataset_Num like \'" + field + "\'" ; 
+                        selectQry += "          dbo.T_Analysis_Job.AJ_analysisToolID = 18 ) ";
+                        selectQry += "          AND dbo.T_Dataset.Dataset_Num like \'" + field + "\'" ;
                         break;
-			    }				    
+                }
                 return selectQry;
             }
             #endregion
-            
-            #region Data Loading 
-             
+
+            #region Data Loading
+
             /// <summary>
             /// Loads the datasets from the filter provided by the UI.  The datasets should have already been loaded to the marrDatasetID's array.
             /// </summary>
@@ -271,10 +271,10 @@ namespace MultiAlignWin.Data
                 {
                     mstring_filter = filter;
                     if (thread == true)
-                    {                        
-                        /// 
-                        /// Create a new thread to do the loading.  
-                        /// 
+                    {
+                        ///
+                        /// Create a new thread to do the loading.
+                        ///
                         ThreadStart threadStart = new ThreadStart(LoadDatasetsThreadStart);
                         /// If another loading thread already exists, kill it.
                         if (mobj_loadingThread != null)
@@ -282,7 +282,7 @@ namespace MultiAlignWin.Data
                             CancelLoadingDatasets();
                         }
 
-                        /// Create a new thread to start.                            
+                        /// Create a new thread to start.
                         mobj_loadingThread = new Thread(threadStart);
 
                         try
@@ -300,8 +300,8 @@ namespace MultiAlignWin.Data
                    {
                        LoadDatasetsThreadStart();
                    }
-                }                                 
-            }            
+                }
+            }
 
             /// <summary>
             /// Threaded start in charge of loading the datasets from the database.
@@ -316,15 +316,15 @@ namespace MultiAlignWin.Data
 
                 string query = SetupQuery(mstring_filter, CONST_QUERY_DATASET_ALL);
 
-                /// 
+                ///
                 /// Create a connection to the database.
-                /// 
+                ///
                 SqlConnection myConnection = new SqlConnection(cString);
                 myConnection.Open();
 
-                /// 
+                ///
                 /// Create an adapter and fill it with the data we found.
-                /// 
+                ///
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(query, myConnection);
                 try
                 {
@@ -362,10 +362,10 @@ namespace MultiAlignWin.Data
                 int     numberLoaded  = 0;
                 double  percentLoaded = 0;
 
-                /// 
-                /// For each result stored in a row of the datatable found, load it 
+                ///
+                /// For each result stored in a row of the datatable found, load it
                 /// into a dataset info class.
-                /// 
+                ///
                 foreach (DataRow row in table.Rows)
                 {
                     string alias;
@@ -397,9 +397,9 @@ namespace MultiAlignWin.Data
 
                     datasetInfo.mstrInstrment = Convert.ToString(row[10]);
                     int toolId = Convert.ToInt32(row[11]);
-                    /// 
+                    ///
                     /// Tool Type
-                    /// 
+                    ///
                     if (toolId == 16 || toolId == 18)
                     {
                         datasetInfo.menmDeisotopingTool = MultiAlign.DeisotopingTool.Decon2LS;
@@ -409,9 +409,9 @@ namespace MultiAlignWin.Data
                         datasetInfo.menmDeisotopingTool = MultiAlign.DeisotopingTool.ICR2LS;
                     }
 
-                    /// 
+                    ///
                     /// Block ID
-                    /// 
+                    ///
                     if (row.IsNull(12) == false)
                     {
                         datasetInfo.mintBlockID = Convert.ToInt32(row[12]);
@@ -421,9 +421,9 @@ namespace MultiAlignWin.Data
                         datasetInfo.mintBlockID = 0;
                     }
 
-                    /// 
+                    ///
                     /// Replicate Name
-                    /// 
+                    ///
 
                     if (row.IsNull(13) == false)
                     {
@@ -434,9 +434,9 @@ namespace MultiAlignWin.Data
                         datasetInfo.mstrReplicateName = "";
                     }
 
-                    /// 
+                    ///
                     /// Experiment ID
-                    /// 
+                    ///
                     if (row.IsNull(14) == false)
                     {
                         datasetInfo.mintExperimentID = Convert.ToInt32(row[14]);
@@ -446,9 +446,9 @@ namespace MultiAlignWin.Data
                         datasetInfo.mintExperimentID = 0;
                     }
 
-                    /// 
+                    ///
                     /// Run Order
-                    /// 
+                    ///
                     if (row.IsNull(15) == false)
                     {
                         datasetInfo.mintRunOrder = Convert.ToInt32(row[15]);
@@ -458,9 +458,9 @@ namespace MultiAlignWin.Data
                         datasetInfo.mintRunOrder = 0;
                     }
 
-                    /// 
+                    ///
                     /// Batch ID
-                    /// 
+                    ///
                     if (row.IsNull(16) == false)
                     {
                         datasetInfo.mintBatchID = Convert.ToInt32(row[16]);
@@ -470,35 +470,35 @@ namespace MultiAlignWin.Data
                         datasetInfo.mintBatchID = 0;
                     }
 
-                    /// 
+                    ///
                     /// Data File Path
-                    /// 
-                    pekFilePath = Path.Combine(Convert.ToString(row[17]), datasetInfo.mstrResultsFolder);                    
-                    fileName = GetFileNameFromDatabasePath(pekFilePath);                      
+                    ///
+                    pekFilePath = Path.Combine(Convert.ToString(row[17]), datasetInfo.mstrResultsFolder);
+                    fileName = GetFileNameFromDatabasePath(pekFilePath);
                     datasetInfo.mstrLocalPath   = Path.Combine(pekFilePath, fileName);
                     datasetInfo.mstrDatasetName = fileName;
-                    
+
 
                     datasetInfo.mstrAlias = alias;
                     datasetInfo.selected  = false;
 
                     marrDatasetInfo.Add(datasetInfo);
 
-                    /// 
+                    ///
                     /// Give the user a pointer to the loaded dataset
-                    /// 
+                    ///
                     if (LoadedDataset != null)
                         LoadedDataset(datasetInfo);
 
-                    /// 
+                    ///
                     /// Update the user on how many are loaded
-                    /// 
+                    ///
                     numberLoaded++;
                     percentLoaded = Convert.ToDouble(numberLoaded) / Convert.ToDouble(table.Rows.Count);
                     if (LoadingProgress != null)
                         LoadingProgress(100.0*percentLoaded);
                 }
-            }       
+            }
             /// <summary>
             /// Cancels loading of the datasets.
             /// </summary>
@@ -520,68 +520,68 @@ namespace MultiAlignWin.Data
             /// </summary>
             /// <param name="query"></param>
             /// <returns>-1 if the call fails to make a connection to the database, or 0 or more indicating the number of datasets found </returns>
-		    public int GetDatasetIDCount(string filter)
-		    {
+            public int GetDatasetIDCount(string filter)
+            {
                 int datasetCount = 0;
-			    string server = "gigasax" ; 
-			    string userName = "dmswebuser" ; 
-			    string passwd = "icr4fun" ; 
-			    string cString = String.Format("database=DMS5;server={0};user id={1};Password={2}", 
-					                            server,
+                string server = "gigasax" ;
+                string userName = "dmswebuser" ;
+                string passwd = "icr4fun" ;
+                string cString = String.Format("database=DMS5;server={0};user id={1};Password={2}",
+                                                server,
                                                 userName,
                                                 passwd);
 
-                /// 
+                ///
                 /// Only get the dataset id's, by setting flag = 0
-                /// 
+                ///
                 string query = SetupQuery(filter, CONST_QUERY_DATASET_IDS_ONLY);
 
-			    SqlConnection myConnection = new SqlConnection(cString);
+                SqlConnection myConnection = new SqlConnection(cString);
 
-                /// 
+                ///
                 /// Try to open a connection to the database, if it fails, return -1
-                /// 
-			    try
-			    {
-				    myConnection.Open();
-			    }
-			    catch(Exception e)
-			    {
+                ///
+                try
+                {
+                    myConnection.Open();
+                }
+                catch(Exception e)
+                {
                     System.Diagnostics.Trace.WriteLine(e.Message);
-				    return -1;
-			    }
-    						  
+                    return -1;
+                }
+
                 DataTable table         = new DataTable();
                 SqlDataAdapter adapter  = new SqlDataAdapter(query, myConnection);
-			    try 
-			    {
+                try
+                {
                     adapter.Fill(table);
                     datasetCount = table.Rows.Count;
-			    }
-			    catch(Exception ex)
-			    {
-				    Console.WriteLine(ex.Message +  "DMS get information error") ;  
-			    }
-			    finally 
-			    {				    
-				    // always call Close when done reading.
-				    myConnection.Close();
-			    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message +  "DMS get information error") ;
+                }
+                finally
+                {
+                    // always call Close when done reading.
+                    myConnection.Close();
+                }
 
                 return datasetCount;
-		    }
+            }
             /// <summary>
             /// Gets the file name from the database path provided.
             /// </summary>
             /// <param name="sourcePath"></param>
             /// <returns></returns>
-		    private string GetFileNameFromDatabasePath(string sourcePath)
-		    {
-			    string fileName = null;                
-                string[] pekInfo  = Directory.GetFiles(sourcePath,"*.pek", SearchOption.TopDirectoryOnly);                
-                /// 
+            private string GetFileNameFromDatabasePath(string sourcePath)
+            {
+                string fileName = null;
+                string[] pekInfo  = Directory.GetFiles(sourcePath,"*.pek", SearchOption.TopDirectoryOnly);
+                ///
                 /// Search first for pek file names
-                /// 
+                ///
                 if (pekInfo.Length > 0)
                 {
                     foreach (string pekFileName in pekInfo)
@@ -604,11 +604,10 @@ namespace MultiAlignWin.Data
                         fileName = info.Name;
                     }
                 }
-			    return fileName ;
-		    }    		
-		    #endregion		
-	    }    		   
+                return fileName ;
+            }
+            #endregion
+        }
 }
 
 
-   

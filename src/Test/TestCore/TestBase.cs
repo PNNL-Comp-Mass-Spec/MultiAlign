@@ -39,7 +39,7 @@ namespace MultiAlignTestSuite
         }
         protected string TextDelimiter
         {
-            get; private set; 
-        }        
+            get; private set;
+        }
     }
 }

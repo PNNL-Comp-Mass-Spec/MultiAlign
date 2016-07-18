@@ -75,7 +75,7 @@ namespace MultiAlignCore.Algorithms.Regression
             {
                 throw new InvalidOperationException();
             }
-            var xprimeWx = m_xTranspose.Multiply(wx) as DenseMatrix; 
+            var xprimeWx = m_xTranspose.Multiply(wx) as DenseMatrix;
             if (xprimeWx == null)
             {
                 throw new InvalidOperationException();
@@ -101,7 +101,7 @@ namespace MultiAlignCore.Algorithms.Regression
                 throw new InvalidOperationException();
             }
 
-            
+
             m_regressionResult.Slope = beta.At(0, 0); // Create slope
             m_regressionResult.Intercept = beta.At(1, 0); // Create intercept
             var numPoints = m_x.RowCount;
@@ -139,7 +139,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -175,21 +175,21 @@ namespace MultiAlignCore.Algorithms.Regression
                     {
                         var pt = new RegressionPoint(x[ptNum], y[ptNum]);
                         m_regressionPoints.Add(pt);
-                    }                   
-                        
+                    }
+
                 }
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="observed"></param>
         /// <param name="predicted"></param>
         /// <returns></returns>
         public LinearRegressionResult CalculateRegression(IEnumerable<double> observed, IEnumerable<double> predicted)
         {
-            
+
             SetPoints(observed.ToArray(), predicted.ToArray());
             var numPoints = m_regressionPoints.Count;
 
@@ -198,7 +198,7 @@ namespace MultiAlignCore.Algorithms.Regression
             m_weights = new DenseMatrix(numPoints, numPoints);
             m_percentNormal = 0.5;
 
-            // set up X, Y and weights vector. 
+            // set up X, Y and weights vector.
             double sumX = 0;
             double sumXx = 0;
 

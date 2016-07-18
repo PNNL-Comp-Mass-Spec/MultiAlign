@@ -16,11 +16,11 @@ namespace MultiAlignCore.Algorithms.Distance
         public double Mahalanobis(List<T> x, T y)
         {
 
-            
+
            // DenseMatrix featureY = new DenseMatrix(
 
 
-           // return MahalanobisDistanceCalculator.CalculateMahalanobisDistance(featureX, featureY);            
+           // return MahalanobisDistanceCalculator.CalculateMahalanobisDistance(featureX, featureY);
 
            return 0;
         }

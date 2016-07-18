@@ -12,8 +12,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Finds features from the file of MS Features.
         /// </summary>
-        List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
-                                    LcmsFeatureFindingOptions   options,                                     
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features,
+                                    LcmsFeatureFindingOptions   options,
                                     IScanSummaryProvider provider);
     }
 }

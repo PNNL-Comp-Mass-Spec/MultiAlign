@@ -9,11 +9,11 @@ namespace MultiAlignCore.Algorithms.Features
 {
     public class ClusterErrorHistograms
     {
-        public void CalculateClusterErrorHistograms(List<UMCClusterLight> clusters, 
-                                                    List<double> massErrorPpm, 
+        public void CalculateClusterErrorHistograms(List<UMCClusterLight> clusters,
+                                                    List<double> massErrorPpm,
                                                     List<double> netError,
                                                     List<double> counts, FeatureTolerances tolerances,
-                                                    Dictionary<int, List<double>> ranges) 
+                                                    Dictionary<int, List<double>> ranges)
         {
             List<UMCClusterLight> sortedClusters = new List<UMCClusterLight>();
             sortedClusters.AddRange(clusters);
@@ -21,10 +21,10 @@ namespace MultiAlignCore.Algorithms.Features
             {
                 return x.MassMonoisotopic.CompareTo(y.MassMonoisotopic);
             });
-            
+
             foreach(UMCClusterLight x in sortedClusters)
             {
-                int count = 0;                
+                int count = 0;
                 List<double> netErrors = new List<double>();
                 foreach(UMCClusterLight y in sortedClusters)
                 {
@@ -37,10 +37,10 @@ namespace MultiAlignCore.Algorithms.Features
                         continue;
                     }
 
-                    double netDiff      = x.RetentionTime - y.RetentionTime;                        
+                    double netDiff      = x.RetentionTime - y.RetentionTime;
                     netErrors.Add(netDiff);
                     count = count + 1;
-                    
+
                     massErrorPpm.Add(ppmDiff);
                     netError.Add(netDiff);
                 }
@@ -52,7 +52,7 @@ namespace MultiAlignCore.Algorithms.Features
                     ranges.Add(count, new List<double>());
                 }
                 ranges[count].AddRange(netErrors);
-            }            
+            }
         }
         public void CalculateClusterErrorHistograms(FeatureDataAccessProviders providers, List<double> massErrorPpm, List<double> netError, List<double> counts, FeatureTolerances tolerances)
         {
@@ -64,7 +64,7 @@ namespace MultiAlignCore.Algorithms.Features
                 delegate (UMCLight x, UMCLight y)
                     {
                         return x.MassMonoisotopic.CompareTo(y.MassMonoisotopic);
-                    }                
+                    }
                 );
 
             featuresB.Sort(
@@ -72,7 +72,7 @@ namespace MultiAlignCore.Algorithms.Features
                 delegate (UMCLight x, UMCLight y)
                     {
                         return x.MassMonoisotopic.CompareTo(y.MassMonoisotopic);
-                    }                
+                    }
                 );
 
             int i = 0;
@@ -81,7 +81,7 @@ namespace MultiAlignCore.Algorithms.Features
                 double count = 0;
                 int j        = i + 1;
                 foreach (UMCLight featureB in featuresB)
-                {                   
+                {
                     double ppmDiff = Feature.ComputeMassPPMDifference(featureB.MassMonoisotopicAligned, featureA.MassMonoisotopicAligned);
                     if (Math.Abs(ppmDiff) > tolerances.Mass)
                     {
@@ -95,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Features
                     }
 
                     massErrorPpm.Add(ppmDiff);
-                    netError.Add(netDiff);                    
+                    netError.Add(netDiff);
                 }
                 i = j;
                 counts.Add(count);
@@ -114,7 +114,7 @@ namespace MultiAlignCore.Algorithms.Features
                 }
                 );
 
-           
+
             int i = 0;
             foreach (UMCLight featureA in featuresA)
             {
@@ -183,14 +183,14 @@ namespace MultiAlignCore.Algorithms.Features
             }
         }
 
-        public static void WriteRanges( string path,  
+        public static void WriteRanges( string path,
                                         Dictionary<int, List<double>> ranges)
         {
             List<int> keys = new List<int>();
 
             foreach (int neighborSize in ranges.Keys)
             {
-                keys.Add(neighborSize);   
+                keys.Add(neighborSize);
             }
             keys.Sort();
 
@@ -198,7 +198,7 @@ namespace MultiAlignCore.Algorithms.Features
             {
                 string header = string.Format("[net errors - {0}]", neighborSize);
                 WriteCDFData(path, header, ranges[neighborSize]);
-            }            
+            }
         }
     }
 }

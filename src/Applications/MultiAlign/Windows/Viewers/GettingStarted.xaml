@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.GettingStarted"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:maWindows="clr-namespace:MultiAlign.Windows"
              xmlns:maConverters="clr-namespace:MultiAlign.Converters"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="400"
              d:DesignWidth="804">
 
@@ -13,16 +13,16 @@
         <DataTemplate x:Key="RecentAnalysisItemTemplate">
             <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Width="Auto">
-                    <Button                         
+                    <Button
                         FontSize="14"
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Margin="5,5,5,5"
                         HorizontalContentAlignment="Left"
-                        Command="{Binding Path=LoadRecent}" 
+                        Command="{Binding Path=LoadRecent}"
                         CommandParameter="{Binding}"
                         Width="128">
                         <Button.Content>
-                            <TextBlock TextTrimming="WordEllipsis"                                       
+                            <TextBlock TextTrimming="WordEllipsis"
                                        ToolTip="{Binding Name}" >
                                         <TextBlock.Text>
                                             <Binding Path="Name" />
@@ -33,12 +33,12 @@
                 </StackPanel>
             </Border>
         </DataTemplate>
-    </UserControl.Resources>       
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        
+
         <Grid
             Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -64,11 +64,11 @@
                     <ColumnDefinition Width="32"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Image
                             Margin="5"
                             Grid.Row="0"
-                            Grid.Column="0"  
+                            Grid.Column="0"
                     Visibility="Hidden"
                             Width="16"
                             Height="16"
@@ -77,9 +77,9 @@
                             Source="/MultiAlign;component/Resources/molecule.png"
                             />
 
-                <Label 
+                <Label
                         Grid.Row="0"
-                        Grid.Column="1"  
+                        Grid.Column="1"
                     Visibility="Hidden"
                         FontSize="21pt">
                     Welcome!
@@ -88,11 +88,11 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     TextWrapping="Wrap"
-                    Foreground="Gray"    
+                    Foreground="Gray"
                     Visibility="Hidden"
                     >
-                        Start a new analysis by clicking "New Analysis" or select "Open Analysis" to open an existing MultiAlign database.                    
-                </TextBlock>         
+                        Start a new analysis by clicking "New Analysis" or select "Open Analysis" to open an existing MultiAlign database.
+                </TextBlock>
             </Grid>
 
             <Grid
@@ -105,23 +105,23 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
-                    
+
                 </Grid.RowDefinitions>
-                    <Label 
+                    <Label
                         Grid.Row="0"
                         FontSize="31pt"
                         Foreground="WhiteSmoke">
                         MultiAlign
                     </Label>
 
-                    <Label 
+                    <Label
                         Grid.Row="1"
                         FontSize="20pt"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5">
                         Start
                     </Label>
-                <Button               
+                <Button
                         Grid.Row="2"
                         FontSize="16"
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
@@ -130,37 +130,37 @@
                         Command="{Binding Path=StartNewAnalysis}"
                         Content="New Analysis"
                         Width="128"/>
-                <Button                 
-                        Grid.Row="3"        
+                <Button
+                        Grid.Row="3"
                         FontSize="16"
                         Margin="5"
                         Width="128"
                         HorizontalContentAlignment="Right"
-                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"                        
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Command="{Binding Path=LoadExistingAnalysis}"
                         Content="Open Analysis"/>
 
-                <Label 
+                <Label
                         Grid.Row="4"
                         FontSize="12pt"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5"
                         Content="Recent Analysis"/>
-                <ListBox                
+                <ListBox
                         Grid.Row="5"
                         Margin="1"
                         ItemsSource="{Binding Path=RecentAnalyses}"
-                        BorderThickness="0"  
+                        BorderThickness="0"
                         HorizontalContentAlignment="Stretch"
-                        ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                
+                        ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"
                         Background="Transparent" />
-                <Button             
+                <Button
                         Grid.Row="6"
                         FontSize="10"
                         Margin="5"
                         Width="Auto"
                         HorizontalAlignment="Left"
-                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"                        
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Foreground="DarkGray"
                         Command="{Binding Path=ClearRecentList}"
                         Content="Clear Recent List"/>
@@ -176,7 +176,7 @@
                     >
                     <ScrollViewer />
                 </TabItem>
-                <TabItem                    
+                <TabItem
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Latest"
                     >

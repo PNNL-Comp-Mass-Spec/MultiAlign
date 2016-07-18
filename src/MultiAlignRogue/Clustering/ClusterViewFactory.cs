@@ -84,7 +84,7 @@ namespace MultiAlignRogue.Clustering
                     histogram[key] = histogram[key] + 1;
                 }
             }
-            
+
             var viewModel = new ChargeHistogramPlot(histogram, "Dataset Histogram");
             var window = new UmcClusterDatasetHistogram
             {

@@ -14,7 +14,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         protected bool mShowDetails = false;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -27,19 +27,19 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
 
             coeffs = basisFunction.Coefficients;
             basisFunction.Scale(x);
-            
+
             alglib.ndimensional_pfunc myDelegate = basisFunction.FunctionDelegate;
-            var solver = new LevenburgMarquadtSolver();                        
+            var solver = new LevenburgMarquadtSolver();
             solver.BasisFunction = myDelegate;
             var worked = solver.Solve(x, y, ref coeffs);
-            
+
             Assert.IsTrue(worked.DidConverge);
 
             Console.WriteLine("{0}\t{1}\t{2}", "X", "YFit", "YRaw");
             for (var i = 0; i < x.Count; i++)
             {
 
-                // This is what we are fitting 
+                // This is what we are fitting
                 var xValue = x[i];
 
                 // This is what it should fit to
@@ -49,7 +49,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 double fitValue = 0;
                 //quadSolver2.FunctionDelegate(coeffs, new double[] { xValue }, ref fitValue, null);
                 myDelegate.Invoke(coeffs, new[] { xValue }, ref fitValue, null);
-            }         
+            }
 
             if (mShowDetails)
                 Console.WriteLine(Environment.NewLine);

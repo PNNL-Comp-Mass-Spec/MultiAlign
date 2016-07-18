@@ -77,7 +77,7 @@ namespace MultiAlignTestSuite.Drawing
 
             var xml = new XmlDocument();
             xml.LoadXml(svgString);
-            var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
+            var x = SvgDocument.Open(xml); // Svg.SvgDocument();
             var bmp = x.Draw();
             bmp.Save(GetPath(HEATMAP_RESULTS_FOLDER_BASE + "testbmp.jpg"));
 

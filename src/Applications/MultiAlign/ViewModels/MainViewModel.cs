@@ -202,7 +202,7 @@ namespace MultiAlign.ViewModels
 
         #endregion
 
-        #region Loading      
+        #region Loading
 
         /// <summary>
         ///     Loads a recent analysis

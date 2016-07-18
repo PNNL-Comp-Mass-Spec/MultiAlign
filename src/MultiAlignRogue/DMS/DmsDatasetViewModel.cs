@@ -25,7 +25,7 @@ namespace MultiAlignRogue.DMS
         /// <summary>
         /// The list of available files.
         /// </summary>
-        private readonly List<string> availableFiles; 
+        private readonly List<string> availableFiles;
 
         /// <summary>
         /// The id of the DMS data set.
@@ -63,7 +63,7 @@ namespace MultiAlignRogue.DMS
         private string datasetFolderPath;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DmsDatasetViewModel"/> class. 
+        /// Initializes a new instance of the <see cref="DmsDatasetViewModel"/> class.
         /// </summary>
         /// <param name="datasetInfo">Existing data set to edit.</param>
         public DmsDatasetViewModel(DmsLookupUtility.UdtDatasetInfo? datasetInfo = null)

@@ -8,13 +8,13 @@ using PNNLOmics.Utilities;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
-    public class FeatureMatcher<TObserved, TTarget> : 
-        IFeatureMatcher<TObserved, TTarget> 
+    public class FeatureMatcher<TObserved, TTarget> :
+        IFeatureMatcher<TObserved, TTarget>
         where TObserved : FeatureLight, new()
         where TTarget   : FeatureLight, new()
     {
         #region Members
-        
+
         private FeatureMatcherParameters m_matchParameters;
 
         private readonly List<TObserved> m_observedFeatureList;
@@ -36,7 +36,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
             m_observedFeatureList = observedFeatureList;
             m_targetFeatureList = targetFeatureList;
-            m_matchParameters = matchParameters;            
+            m_matchParameters = matchParameters;
         }
         #endregion
 
@@ -142,7 +142,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
 
             // Sort both lists by mass.
-			if (!double.IsNaN(shortObservedList[0].MassMonoisotopicAligned) && shortObservedList[0].MassMonoisotopicAligned > 0.0)
+            if (!double.IsNaN(shortObservedList[0].MassMonoisotopicAligned) && shortObservedList[0].MassMonoisotopicAligned > 0.0)
             {
                 shortObservedList.Sort(FeatureLight.MassAlignedComparison);
             }
@@ -150,14 +150,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             {
                 shortObservedList.Sort(FeatureLight.MassComparison);
             }
-			if (!double.IsNaN(shortTargetList[0].MassMonoisotopicAligned) && shortTargetList[0].MassMonoisotopicAligned > 0.0)
-			{
+            if (!double.IsNaN(shortTargetList[0].MassMonoisotopicAligned) && shortTargetList[0].MassMonoisotopicAligned > 0.0)
+            {
                 shortTargetList.Sort(FeatureLight.MassAlignedComparison);
-			}
-			else
-			{
+            }
+            else
+            {
                 shortTargetList.Sort(FeatureLight.MassComparison);
-			}
+            }
 
             // Locally store the tolerances.
             var massTolerancePpm = tolerances.MassTolerancePPM;
@@ -180,14 +180,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                     var targetFeature = shortTargetList[targetIndex];
 
                     // Check to see that the features are within the mass tolearance of one another.
-					double massDifference;
+                    double massDifference;
                     if (WithinMassTolerance(observedFeature, targetFeature, massTolerancePpm, shiftAmount, out massDifference))
                     {
                         var withinTolerances = WithinNETTolerance(observedFeature, targetFeature, netTolerance);
                         if (m_matchParameters.UseDriftTime)
                         {
                             withinTolerances = withinTolerances & WithinDriftTimeTolerance(observedFeature, targetFeature, driftTimeTolerance);
-							withinTolerances = withinTolerances & (observedFeature.ChargeState == targetFeature.ChargeState);
+                            withinTolerances = withinTolerances & (observedFeature.ChargeState == targetFeature.ChargeState);
                         }
                         // Create a temporary match between the two and check it against all tolerances before adding to the match list.
                         if (withinTolerances)
@@ -200,7 +200,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                     else
                     {
                         // Increase the lower bound if the the MassTag masses are too low or set the continueLoop flag to false if they are too high.
-						if (massDifference < massTolerancePpm)
+                        if (massDifference < massTolerancePpm)
                         {
                             lowerBound++;
                         }
@@ -221,22 +221,22 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <summary>
         /// Populate the FDR table with default cutoffs.
         /// </summary>
-		private List<STACFDR> SetSTACCutoffs()
+        private List<STACFDR> SetSTACCutoffs()
         {
-			var stacFdrList = new List<STACFDR>();
+            var stacFdrList = new List<STACFDR>();
 
             for (var cutoff = 0.99; cutoff > 0.90; cutoff -= 0.01)
             {
                 var tableLine = new STACFDR(Math.Round(cutoff, 2));
-				stacFdrList.Add(tableLine);
+                stacFdrList.Add(tableLine);
             }
             for (var cutoff = 0.90; cutoff >= 0; cutoff -= 0.10)
             {
                 var tableLine = new STACFDR(Math.Round(cutoff, 2));
-				stacFdrList.Add(tableLine);
+                stacFdrList.Add(tableLine);
             }
 
-			return stacFdrList;
+            return stacFdrList;
         }
         /// <summary>
         /// Fills in the values for the STAC FDR table.
@@ -244,57 +244,57 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         public List<STACFDR> PopulateStacfdrTable(List<FeatureMatch<TObserved,TTarget>> matchList)
         {
             var stacFdrList = SetSTACCutoffs();
-			matchList.Sort(FeatureMatch<TObserved, TTarget>.STACComparisonDescending);
+            matchList.Sort(FeatureMatch<TObserved, TTarget>.STACComparisonDescending);
 
-			// Iterate over all defined cutoff ranges
-			for (var cutoffIndex = 0; cutoffIndex < stacFdrList.Count; cutoffIndex++)
-			{
-				var falseDiscoveries = 0.0;
-				var conformationMatches = 0;
-				var amtMatches = 0;
-			    var uniqueIndexList = new HashSet<int>();
-				var uniqueIdList = new HashSet<int>();
+            // Iterate over all defined cutoff ranges
+            for (var cutoffIndex = 0; cutoffIndex < stacFdrList.Count; cutoffIndex++)
+            {
+                var falseDiscoveries = 0.0;
+                var conformationMatches = 0;
+                var amtMatches = 0;
+                var uniqueIndexList = new HashSet<int>();
+                var uniqueIdList = new HashSet<int>();
 
-				// Find all matches for this particular cutoff
-				foreach (var match in matchList)
-				{
-					var stac = match.STACScore;
-					if (stac >= stacFdrList[cutoffIndex].Cutoff)
-					{
+                // Find all matches for this particular cutoff
+                foreach (var match in matchList)
+                {
+                    var stac = match.STACScore;
+                    if (stac >= stacFdrList[cutoffIndex].Cutoff)
+                    {
                         if (uniqueIndexList.Contains(match.TargetFeature.Index))
                             continue;
 
-					    // Find out if this is a new, unique Mass Tag. If not, then it is just a new conformation.
-					    if (!uniqueIdList.Contains(match.TargetFeature.Id))
-					    {
-					        uniqueIdList.Add(match.TargetFeature.Id);
-					        amtMatches++;
-					    }
+                        // Find out if this is a new, unique Mass Tag. If not, then it is just a new conformation.
+                        if (!uniqueIdList.Contains(match.TargetFeature.Id))
+                        {
+                            uniqueIdList.Add(match.TargetFeature.Id);
+                            amtMatches++;
+                        }
 
                         uniqueIndexList.Add(match.TargetFeature.Index);
-					    falseDiscoveries += 1 - stac;
-					    conformationMatches++;
-					}
-					else
-					{
-						// Since we have sorted by descending STAC Score, if we get outside the cutoff range, we can stop
-						break;
-					}
-				}
+                        falseDiscoveries += 1 - stac;
+                        conformationMatches++;
+                    }
+                    else
+                    {
+                        // Since we have sorted by descending STAC Score, if we get outside the cutoff range, we can stop
+                        break;
+                    }
+                }
 
-				// After all matches have been found, report the FDR
-				if (conformationMatches > 0)
-				{
-				    var fdr = falseDiscoveries / conformationMatches;
-				    stacFdrList[cutoffIndex].FillLine(fdr, conformationMatches, amtMatches, falseDiscoveries);
-				}
-				else
-				{
-					stacFdrList[cutoffIndex].FillLine(0, 0, 0, 0);
-				}
-			}
+                // After all matches have been found, report the FDR
+                if (conformationMatches > 0)
+                {
+                    var fdr = falseDiscoveries / conformationMatches;
+                    stacFdrList[cutoffIndex].FillLine(fdr, conformationMatches, amtMatches, falseDiscoveries);
+                }
+                else
+                {
+                    stacFdrList[cutoffIndex].FillLine(0, 0, 0, 0);
+                }
+            }
 
-			return stacFdrList;
+            return stacFdrList;
         }
 
         /// <summary>
@@ -350,30 +350,30 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             ErrorHistogramFdr = countInBounds/((upperBound-lowerBound)*threshold);
         }
 
-        private bool WithinMassTolerance(TObserved observedFeature, TTarget targetFeature, double massTolerancePpm, double shiftAmount, out double difference)            
+        private bool WithinMassTolerance(TObserved observedFeature, TTarget targetFeature, double massTolerancePpm, double shiftAmount, out double difference)
         {
             if (massTolerancePpm > 0)
             {
-                double observedMass; 
+                double observedMass;
                 double targetMass;
-				if (!double.IsNaN(observedFeature.MassMonoisotopicAligned) && observedFeature.MassMonoisotopicAligned > 0.0)
+                if (!double.IsNaN(observedFeature.MassMonoisotopicAligned) && observedFeature.MassMonoisotopicAligned > 0.0)
                 {
-					observedMass = observedFeature.MassMonoisotopicAligned;
+                    observedMass = observedFeature.MassMonoisotopicAligned;
                 }
                 else
                 {
                     observedMass = observedFeature.MassMonoisotopic;
                 }
-				if (!double.IsNaN(targetFeature.MassMonoisotopicAligned) && targetFeature.MassMonoisotopicAligned > 0.0)
+                if (!double.IsNaN(targetFeature.MassMonoisotopicAligned) && targetFeature.MassMonoisotopicAligned > 0.0)
                 {
-					targetMass = targetFeature.MassMonoisotopicAligned;
+                    targetMass = targetFeature.MassMonoisotopicAligned;
                 }
                 else
                 {
                     targetMass = targetFeature.MassMonoisotopic;
                 }
-				
-				difference = (targetMass + shiftAmount - observedMass) / targetMass * 1E6;
+
+                difference = (targetMass + shiftAmount - observedMass) / targetMass * 1E6;
                 return (Math.Abs(difference)< massTolerancePpm);
             }
             difference = double.MaxValue;
@@ -436,7 +436,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
         #region Public functions
         /// <summary>
-        /// Function to call to re-calculate algorithm results. 
+        /// Function to call to re-calculate algorithm results.
         /// </summary>
         public void MatchFeatures()
         {
@@ -448,16 +448,16 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             {
                 var stacInformation = new STACInformation(m_matchParameters.UseDriftTime);
 
-                // Attach the event handlers 
-                stacInformation.MessageEvent += StacInformationMessageHandler;                
+                // Attach the event handlers
+                stacInformation.MessageEvent += StacInformationMessageHandler;
 
                 ReportMessage("Performing STAC");
                 PerformStac(stacInformation);
 
                 // Add the Refined Tolerances that STAC calculated
-				RefinedToleranceList.Add(stacInformation.RefinedTolerances);
+                RefinedToleranceList.Add(stacInformation.RefinedTolerances);
 
-				StacParameterList.Add(stacInformation);
+                StacParameterList.Add(stacInformation);
                 ReportMessage("Populating FDR table");
                 StacFdrTable = PopulateStacfdrTable(MatchList);
             }
@@ -484,26 +484,26 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
         protected virtual void PerformStac(STACInformation stacInformation)
         {
-            //stacInformation.PerformStac(m_matchList, m_matchParameters.UserTolerances, m_matchParameters.UseDriftTime, m_matchParameters.UsePriors);                        
+            //stacInformation.PerformStac(m_matchList, m_matchParameters.UserTolerances, m_matchParameters.UseDriftTime, m_matchParameters.UsePriors);
             stacInformation.PerformStac(MatchList,
                                         m_matchParameters.UserTolerances,
                                         m_matchParameters.UseDriftTime,
-                                        m_matchParameters.UsePriors);            
+                                        m_matchParameters.UsePriors);
         }
 
         #endregion
 
         #region "Events and related functions"
-        private void StacInformationMessageHandler(object sender, ProgressNotifierArgs e) 
+        private void StacInformationMessageHandler(object sender, ProgressNotifierArgs e)
         {
             ReportMessage(e);
         }
-        
+
         /// <summary>
         /// Report a progress message using OnMessage
         /// </summary>
         /// <param name="message"></param>
-        private void ReportMessage(string message) 
+        private void ReportMessage(string message)
         {
             OnMessage(new ProgressNotifierArgs(message));
         }
@@ -511,18 +511,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <summary>
         /// Report a progress message using OnMessage
         /// </summary>
-        private void ReportMessage(ProgressNotifierArgs e) 
+        private void ReportMessage(ProgressNotifierArgs e)
         {
             OnMessage(e);
         }
-        
-        private void OnMessage(ProgressNotifierArgs e) 
+
+        private void OnMessage(ProgressNotifierArgs e)
         {
             if (MessageEvent != null)
                 MessageEvent(this, e);
         }
 
-        private void OnProcessingComplete(ProgressNotifierArgs e) 
+        private void OnProcessingComplete(ProgressNotifierArgs e)
         {
             if (ProcessingCompleteEvent != null)
                 ProcessingCompleteEvent(this, e);

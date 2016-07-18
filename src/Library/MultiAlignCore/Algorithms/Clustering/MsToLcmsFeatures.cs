@@ -31,13 +31,13 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Clusterer for second pass clustering.
         /// </summary>
-        private readonly IClusterer<UMCLight, UMCLight> secondPassClusterer; 
+        private readonly IClusterer<UMCLight, UMCLight> secondPassClusterer;
 
         /// <summary>
         /// Options for clustering features (NET tolerance, Mass tolerance, M/Z tolerance).
         /// </summary>
         private readonly LcmsFeatureFindingOptions options;
-        
+
         public MsToLcmsFeatures(IScanSummaryProvider provider, LcmsFeatureFindingOptions options = null)
         {
             if (provider == null)
@@ -52,7 +52,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             this.provider = provider;
             this.options = options ?? new LcmsFeatureFindingOptions();
-            
+
             // Set clusterers
             if (this.options.FirstPassClusterer == MsFeatureClusteringAlgorithmType.BinarySearchTree)
             {
@@ -73,7 +73,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                                                             monoSort,
                                                             monoDiff,
                                                             MassComparison.Monoisotopic,
-                                                            this.options.InstrumentTolerances.Mass);   
+                                                            this.options.InstrumentTolerances.Mass);
             }
             else
             {
@@ -127,18 +127,18 @@ namespace MultiAlignCore.Algorithms.Clustering
                     features = this.CreateXics(features, internalProgress);
                     features.ForEach(feature => feature.CalculateStatistics());
                     stopWatch.Stop();
-                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);  
+                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
                 }
 
                 // Step 3
                 if (this.options.SecondPassClustering)
                 {
-                    stopWatch.Restart(); 
+                    stopWatch.Restart();
                     progressData.Status = "Second Pass Clustering";
                     progressData.StepRange(100);
                     features = this.SecondPassClustering(features, internalProgress);
                     stopWatch.Stop();
-                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);   
+                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
                 }
             }
 

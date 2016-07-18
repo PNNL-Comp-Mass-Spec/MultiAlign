@@ -8,7 +8,7 @@ namespace MultiAlignRogue.Feature_Finding
 
     using MultiAlignCore.Data.MetaData;
 
-    
+
     using QuadTreeLib;
 
     class FeaturePoint : IHasRect

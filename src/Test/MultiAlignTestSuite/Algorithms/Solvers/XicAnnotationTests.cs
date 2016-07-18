@@ -47,7 +47,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                     found       = true;
                     xic         = new Xic();
                     var splitLine = line.Split('\t');
-                    xic.id      = Convert.ToInt32(splitLine[1]);                    
+                    xic.id      = Convert.ToInt32(splitLine[1]);
                     xic.charge  = Convert.ToInt32(splitLine[3]);
                     xic.x = new List<double>();
                     xic.y = new List<double>();
@@ -61,7 +61,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 else if (line.Contains("reviewer"))
                 {
                     var splitLine  = line.Split('\t');
-                    xic.reviewer          = splitLine[1];                    
+                    xic.reviewer          = splitLine[1];
                 }
                 else if (!line.Contains("mz"))
                 {
@@ -71,7 +71,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                     xic.mz = Convert.ToDouble(splitLine[0]);
                 }
             }
-            if (found) 
+            if (found)
             {
                 data.Add(xic);
             }
@@ -79,7 +79,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
        // [TestCase(@"annotatedXicDatabase.xic", BasisFunctionsEnum.Gaussian)]
@@ -88,7 +88,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
         [Description("Fits the XIC's for testing .")]
         public void SolveAsymmetricGaussianFactory(string path, BasisFunctionsEnum functionChoise)
         {
-            var data = ReadXicDatabase(Path.Combine(TestPathSingleton.TestDirectory, path));                        
+            var data = ReadXicDatabase(Path.Combine(TestPathSingleton.TestDirectory, path));
             var newData   = new List<Xic>();
             foreach (var xic in data)
             {
@@ -107,7 +107,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 coefficients[2] = width * .5;
                 coefficients[3] = coefficients[2];
 
-                //Console.WriteLine("Xic {0}", xic.id); 
+                //Console.WriteLine("Xic {0}", xic.id);
                 //Console.WriteLine();
 
                 for (var i = 0; i < xic.x.Count; i++)
@@ -127,10 +127,10 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 {
                     continue;
                 }
-            
+
                 // First solve for the function
                 var solver  = new LevenburgMarquadtSolver();
-                
+
                 var numberOfSamples = 100;
 
                 // Calculate the width an spacing of each of the trapezoids.
@@ -153,14 +153,14 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 {
                     x += delta;
                     var y = basisFunction.Evaluate(coefficients, x);
-                             
+
                     newXic.x.Add(x);
                     newXic.y.Add(y);
                    // Console.WriteLine("{0}\t{1}", x, y);
-                } 
+                }
                 //Console.WriteLine();
 
-                newData.Add(newXic);                               
+                newData.Add(newXic);
             }
 
             var newPath = path.Replace(".xic", functionChoise + "_fit.xic");
@@ -170,7 +170,7 @@ namespace MultiAlignTestSuite.Algorithms.Solvers
                 {
                     writer.WriteLine("id\t{0}\tcharge\t{1}", feature.id, feature.charge);
                     writer.WriteLine("score\t{0}\tscoreName\t{1}", feature.score, feature.scoreName);
-                    writer.WriteLine("reviewer\t{0}", feature.reviewer); 
+                    writer.WriteLine("reviewer\t{0}", feature.reviewer);
                     writer.WriteLine("R2\t{0}", feature.report.RSquared);
                     writer.WriteLine("Rms\t{0}", feature.report.RmsError);
                     writer.WriteLine("Converged\t{0}", feature.report.DidConverge);

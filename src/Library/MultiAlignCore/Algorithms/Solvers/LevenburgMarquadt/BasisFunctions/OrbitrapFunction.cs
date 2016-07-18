@@ -21,7 +21,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions
             var hanningI = c[0];
             var hanningK = c[1];
             //double syncPct = c[2];
-           
+
             //double lorentzianW = c[0];
             //double lorentzianI = c[1];
 
@@ -31,7 +31,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions
             //double syncPct = 0.5;
 
             //functionResult = hanningI*(Math.Sin(2*pi*hanningK*(x[0] - xOffset))/(2*pi*hanningK*(x[0]-xOffset)) + 0.5*Math.Sin(2*pi*hanningK*(x[0]-xOffset) - pi)/(2*pi*hanningK*(x[0]-xOffset) - pi) + 0.5*Math.Sin(2*pi*hanningK*(x[0]-xOffset) + pi)/(2*pi*hanningK*(x[0]-xOffset) + pi))*syncPct + (1 - syncPct)*lorentzianI*1/pi*0.5*lorentzianW/(Math.Pow((x[0]-xOffset), 2) + 0.5*Math.Pow(lorentzianW, 2));
-            
+
             functionResult = hanningI*(Math.Sin(2*pi*hanningK*(x[0] - xOffset))/(2*pi*hanningK*(x[0] - xOffset)) + 0.5*Math.Sin(2*pi*hanningK*(x[0] - xOffset) - pi)/(2*pi*hanningK*(x[0] - xOffset) - pi) + 0.5*Math.Sin(2*pi*hanningK*(x[0] - xOffset) + pi)/(2*pi*hanningK*(x[0] - xOffset) + pi));
 
             //functionResult = lorentzianI * 1 / pi * 0.5 * lorentzianW / (Math.Pow(x[0] - xOffset, 2) + 0.5 * Math.Pow(lorentzianW, 2));

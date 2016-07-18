@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace MultiAlignCore.Data
 {
     public class XYData
-    {                
+    {
         public XYData(double newX, double newY)
         {
             X = newX;
@@ -22,7 +22,7 @@ namespace MultiAlignCore.Data
             set;
         }
         public static List<XYData> Bin(List<XYData> data, double binSize)
-        {            
+        {
             var lowMass       = data[0].X;
             var highMass      = data[data.Count - 1].X;
             return Bin(data, lowMass, highMass, binSize);

@@ -8,7 +8,7 @@ namespace MultiAlignTestSuite.Data.Features
     /// <summary>
     /// Test class for the UMC Clusters.
     /// </summary>
-    [TestFixture]    
+    [TestFixture]
     public sealed class UmcClusterTests
     {
         /// <summary>
@@ -37,10 +37,10 @@ namespace MultiAlignTestSuite.Data.Features
         [Test]
         [TestCase(100, 100, 50, 2, 15000, ClusterCentroidRepresentation.Median)]
         [TestCase(100, 100, 50, 2, 15000, ClusterCentroidRepresentation.Mean)]
-        public void CalculateStatisticsTestSingleUmc(   double  umcMass, 
+        public void CalculateStatisticsTestSingleUmc(   double  umcMass,
                                                         double  umcNet,
                                                         float   umcDriftTime,
-                                                        int     umcCharge, 
+                                                        int     umcCharge,
                                                         int     umcAbundance,
                                                         ClusterCentroidRepresentation representation)
         {
@@ -57,10 +57,10 @@ namespace MultiAlignTestSuite.Data.Features
             cluster.UmcList.Add(umc);
             cluster.CalculateStatistics(representation);
 
-			Assert.AreEqual(umc.MassMonoisotopicAligned, cluster.MassMonoisotopic, "Monoisotopic Mass");
+            Assert.AreEqual(umc.MassMonoisotopicAligned, cluster.MassMonoisotopic, "Monoisotopic Mass");
             Assert.AreEqual(umc.Net,                     cluster.Net,              "NET");
             Assert.AreEqual(umc.DriftTime,               cluster.DriftTime,        "Drift Time");
-            Assert.AreEqual(umc.ChargeState,             cluster.ChargeState,      "Charge State");            
+            Assert.AreEqual(umc.ChargeState,             cluster.ChargeState,      "Charge State");
         }
 
 
@@ -90,7 +90,7 @@ namespace MultiAlignTestSuite.Data.Features
             var k                   = numUmCs / 2;
             double  medianMass       = 0;
             double  medianNet        = 0;
-            double  medianDriftTime  = 0; 
+            double  medianDriftTime  = 0;
 
             for (var i = 0; i < numUmCs; i++)
             {
@@ -117,13 +117,13 @@ namespace MultiAlignTestSuite.Data.Features
                     medianNet       = umc.Net;
                     medianDriftTime = umc.DriftTime;
                 }
-                // Even 
+                // Even
                 else if ((numUmCs % 2) == 0)
-                {    
-                    // When we have an even number of features 
+                {
+                    // When we have an even number of features
                     // We want to calculate the median as the average between
                     // the two median features (k, k + 1), where k is numUMCs / 2
-                    // Remeber that we use k - 1 because i is zero indexed                    
+                    // Remeber that we use k - 1 because i is zero indexed
                     if (k - 1 == i)
                     {
                         medianMass      = umc.MassMonoisotopicAligned;
@@ -147,7 +147,7 @@ namespace MultiAlignTestSuite.Data.Features
             {
                 medianMass      /= numUmCs;
                 medianNet       /= numUmCs;
-                medianDriftTime /= numUmCs; 
+                medianDriftTime /= numUmCs;
             }
 
             cluster.CalculateStatistics(representation);
@@ -156,6 +156,6 @@ namespace MultiAlignTestSuite.Data.Features
             Assert.AreEqual(medianNet,       cluster.Net,              "NET");
             Assert.AreEqual(medianDriftTime, cluster.DriftTime,        "Drift Time");
             Assert.AreEqual(umcCharge,       cluster.ChargeState,      "Charge State");
-        }        
-    }    
+        }
+    }
 }

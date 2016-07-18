@@ -12,7 +12,7 @@ namespace MultiAlignSTACRunner
         public FilteringOptions()
             : this(20, 1, 1.5)
         {
-            
+
         }
 
         public int TotalDatasetMembers { get; private set; }

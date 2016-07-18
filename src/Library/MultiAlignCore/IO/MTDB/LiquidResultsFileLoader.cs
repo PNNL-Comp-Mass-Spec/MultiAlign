@@ -35,7 +35,7 @@
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LiquidResultsFileLoader"/> class. 
+        /// Initializes a new instance of the <see cref="LiquidResultsFileLoader"/> class.
         /// </summary>
         /// <param name="filePath">Full file path for Liquid results CSV file.</param>
         public LiquidResultsFileLoader(string filePath)
@@ -152,7 +152,7 @@
             {
                 var errorString = missingHeaders.Aggregate(
                                       "Liquid results file is missing expected headers:\n",
-                                      (current, missingHeader) => 
+                                      (current, missingHeader) =>
                                             current + string.Format("\t{0}\n", missingHeader));
 
                 throw new FormatException(errorString);

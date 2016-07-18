@@ -154,7 +154,7 @@ namespace MultiAlignTestSuite.Algorithms
                 MaximumNetRange = .002,
                 MaximumScanRange = 50
             };
-            
+
             var provider = RawLoaderFactory.CreateFileReader(rawPath, 0);
 
             var start = DateTime.Now;

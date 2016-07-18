@@ -25,35 +25,35 @@
             Grid.Row="1"
             Margin="5"
             LabelText="Features File"
-            FilePath="{Binding 
-                        Path=Dataset.Path, 
-                        Mode=TwoWay, 
+            FilePath="{Binding
+                        Path=Dataset.Path,
+                        Mode=TwoWay,
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}" />
         <windows:FilePathFinder
             Grid.Row="2"
             Margin="5"
             LabelText="Raw File"
-            FilePath="{Binding Path=Dataset.Raw.Path, 
-                        Mode=TwoWay, 
+            FilePath="{Binding Path=Dataset.Raw.Path,
+                        Mode=TwoWay,
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}" />
         <windows:FilePathFinder
             Grid.Row="3"
             Margin="5"
             LabelText="Sequences"
-            FilePath="{Binding 
+            FilePath="{Binding
                         Path=Dataset.Sequence.Path,
-                        Mode=TwoWay, 
+                        Mode=TwoWay,
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}" />
         <windows:FilePathFinder
             Grid.Row="4"
             Margin="5"
             LabelText="Peaks"
-            FilePath="{Binding 
+            FilePath="{Binding
                         Path=Dataset.Peaks.Path,
-                        Mode=TwoWay, 
+                        Mode=TwoWay,
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}" />
     </Grid>

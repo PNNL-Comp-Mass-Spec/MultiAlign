@@ -18,10 +18,10 @@ namespace MultiAlignCore.Data.MassTags
         {
             get;
             set;
-        }        
+        }
         public string Sequence
         {
-            get; 
+            get;
             set;
         }
         public double Score
@@ -29,7 +29,7 @@ namespace MultiAlignCore.Data.MassTags
             get;
             set;
         }
-       
+
         public string ExtendedSequence
         {
             get;
@@ -38,7 +38,7 @@ namespace MultiAlignCore.Data.MassTags
         public int CleavageState
         {
             get;
-            set;            
+            set;
         }
         public double QualityScore
         {

@@ -62,7 +62,7 @@
                         Height="25"
                         Command="{Binding Path=DatabaseSelectionViewModel.SelectAMTCommand}"
                         Content="Select Database" />
-                
+
                 <!-- Select Database file -->
                 <Button Grid.Row="0"
                         Grid.Column="2"

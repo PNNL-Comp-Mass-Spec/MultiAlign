@@ -6,14 +6,14 @@ using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Data.Peaks
 {
-    
+
     public class ProcessedPeak: Peak
-    {    
+    {
         public ProcessedPeak()
             : this(0, 0, 0)
-        {            
-            
-            
+        {
+
+
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace MultiAlignCore.Data.Peaks
         /// <param name="xValue">x value</param>
         /// <param name="height">y value</param>
         /// <param name="scan">center scan where peak was found</param>
-        public ProcessedPeak(double xValue, double height, int scan)            
+        public ProcessedPeak(double xValue, double height, int scan)
         {
             XValue = xValue;
             Height = height;
@@ -52,7 +52,7 @@ namespace MultiAlignCore.Data.Peaks
         /// the higher of the two local minima (highest between the minima lower in mass and the minima higher in mass)
         /// </summary>
         public double LocalHighestMinimaHeight { get; set; }
-        
+
         /// <summary>
         /// the closes minima on the lower mass side of the peak has this index.
         /// </summary>
@@ -92,7 +92,7 @@ namespace MultiAlignCore.Data.Peaks
         /// the Scan Number this peak was found in.
         /// </summary>
         public int ScanNumber { get; set; }
-        
+
         /// <summary>
         /// probability of this peak existing based on neighboring peaks
         /// </summary>
@@ -103,7 +103,7 @@ namespace MultiAlignCore.Data.Peaks
 
 
         /// <summary>
-        /// Peak is the standard object for the output collection and we need to convert processed peak lists.  
+        /// Peak is the standard object for the output collection and we need to convert processed peak lists.
         /// </summary>
         /// <returns>list of peaks</returns>
         public static Collection<Peak> ToPeaks(IEnumerable<ProcessedPeak> peaks)
@@ -121,6 +121,6 @@ namespace MultiAlignCore.Data.Peaks
             }
 
             return outputPeakList;
-        }        
+        }
     }
 }

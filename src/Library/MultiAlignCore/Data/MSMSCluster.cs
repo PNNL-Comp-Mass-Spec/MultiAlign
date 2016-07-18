@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data
         public MsmsCluster()
         {
             Features = new List<MSFeatureLight>();
-            MeanScore = double.NaN;            
+            MeanScore = double.NaN;
         }
 
         public int Id { get; set; }
@@ -24,7 +24,7 @@ namespace MultiAlignCore.Data
             private set;
         }
         /// <summary>
-        /// Gets or sets the list of spectra associated with the 
+        /// Gets or sets the list of spectra associated with the
         /// </summary>
         public double MeanScore
         {

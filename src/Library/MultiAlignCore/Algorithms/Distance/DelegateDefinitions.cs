@@ -2,7 +2,7 @@
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Distance
-{    
+{
     /// <summary>
     /// Function for calculating the distance between two features.
     /// </summary>
@@ -17,5 +17,5 @@ namespace MultiAlignCore.Algorithms.Distance
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    public delegate bool WithinTolerances<T>(T x, T y) where T : FeatureLight, new(); 
+    public delegate bool WithinTolerances<T>(T x, T y) where T : FeatureLight, new();
 }

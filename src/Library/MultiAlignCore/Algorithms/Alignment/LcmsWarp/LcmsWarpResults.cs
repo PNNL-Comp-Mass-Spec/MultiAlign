@@ -12,7 +12,7 @@
     public class LcmsWarpResults
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LcmsWarpResults"/> class. 
+        /// Initializes a new instance of the <see cref="LcmsWarpResults"/> class.
         /// </summary>
         public LcmsWarpResults()
         {

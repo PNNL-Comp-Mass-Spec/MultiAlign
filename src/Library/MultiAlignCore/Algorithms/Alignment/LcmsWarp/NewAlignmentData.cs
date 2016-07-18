@@ -15,7 +15,7 @@
         /// These include both the alignment function and the alignment statistics.
         /// </summary>
         public Dictionary<FeatureLight.SeparationTypes, LcmsWarpResults> SeparationAlignments { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the alignment data for the mass.
         /// This includes both the mass alignment function and the mass alignment statistics.
@@ -25,6 +25,6 @@
         /// <summary>
         /// Gets or sets the list of fully warped features.
         /// </summary>
-        public List<UMCLight> AlignedFeatures { get; set; } 
+        public List<UMCLight> AlignedFeatures { get; set; }
     }
 }

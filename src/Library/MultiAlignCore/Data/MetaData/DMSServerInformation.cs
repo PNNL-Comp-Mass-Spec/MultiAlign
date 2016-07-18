@@ -1,11 +1,11 @@
 /*////////////////////////////////////////////////////////////////////////
  *  File  : clsDMSServerInformation.cs
  *  Author: Brian LaMarche
- *  Date  : 9/11/2008 
- * 
+ *  Date  : 9/11/2008
+ *
  *  Pacific Northwest National Laboratory
  *  Instrument Development Laboratory
- * 
+ *
  *  Notes:
  *      Class that holds information about a connection to DMS.
  *  Revisions:

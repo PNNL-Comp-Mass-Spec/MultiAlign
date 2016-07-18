@@ -58,7 +58,7 @@ namespace MultiAlignCore.Data.Features
 
             return newFeatures.Where(x => x.Abundance > 0).ToList();
         }
-        
+
         /// <summary>
         /// Filters the list of MS Features based on user defined filtering criteria.
         /// </summary>
@@ -111,8 +111,8 @@ namespace MultiAlignCore.Data.Features
                 return scanTime;
 
             // Exact match not found; find the elution time of the nearest scan
-			// ToDo: Interpolate between the two nearest scans
-			
+            // ToDo: Interpolate between the two nearest scans
+
             var indexNearest = ~(knownScanNumbers.BinarySearch(scanNumber));
 
             if (indexNearest <= 0)

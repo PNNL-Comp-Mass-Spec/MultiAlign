@@ -1,13 +1,13 @@
 ﻿/*////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * 
+ *
  * Name:    Feature Tolerances
  * File:    FeatureTolerances.cs
- * Author:  Brian LaMarche 
+ * Author:  Brian LaMarche
  * Purpose: Tolerances for clustering feature data. (MS, UMC, etc.)
  * Date:    5-19-2010
  * Revisions:
  *          05-19-2010 - BLL -  Created clustering class and algorithm.
- *          08-02-2010 - BLL -  Moved the tolerances out of the feature clustering namespace and into 
+ *          08-02-2010 - BLL -  Moved the tolerances out of the feature clustering namespace and into
  *                              a more generic namespace since they are not specific to the UMC clustering
  *                              algorithm.
  *          09-23-2010 - BLL -  Renamed to Feature Tolerances.
@@ -42,7 +42,7 @@ namespace MultiAlignCore.Algorithms
             Clear();
         }
 
-        #region Properties 
+        #region Properties
         /// <summary>
         /// Gets or sets the approximate size of a fragmentation window.
         /// </summary>

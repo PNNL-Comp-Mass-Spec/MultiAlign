@@ -210,7 +210,7 @@ namespace MultiAlignCore.IO.TextFiles
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="columns"></param>
         /// <param name="columnMapping"></param>
@@ -322,7 +322,7 @@ namespace MultiAlignCore.IO.TextFiles
                 //If mono_plus2_abundance is 0, we don't want to count this as a real feature.
                 //TODO: Make an optional filter. This biases against low abundance features.
                 //if (columnMapping.ContainsKey(MONO_2_ABUNDANCE))
-                //    if (double.Parse(columns[columnMapping[MONO_2_ABUNDANCE]]) <= 0) continue; 
+                //    if (double.Parse(columns[columnMapping[MONO_2_ABUNDANCE]]) <= 0) continue;
 
                 // In case this file does not have drift time, we need to make sure we clean up the
                 // feature so the downstream processing can complete successfully.
@@ -339,7 +339,7 @@ namespace MultiAlignCore.IO.TextFiles
                 feature.Net = Convert.ToDouble(feature.Scan);
 
                 if (IsosFilteroptions.UseScanFilter && (feature.Scan < IsosFilteroptions.LCScanStart || feature.Scan > IsosFilteroptions.LCScanEnd))
-                {                
+                {
                     mDataPointsSkipped++;
                     continue;
                 }
@@ -349,7 +349,7 @@ namespace MultiAlignCore.IO.TextFiles
                 feature.Abundance = GetAbundance(columns, columnMapping) ?? 0;
 
                 if (feature.Abundance < dataCountFilterMinimumAbundance ||
-                     IsosFilteroptions.UseAbundanceFilter && 
+                     IsosFilteroptions.UseAbundanceFilter &&
                      (feature.Abundance < IsosFilteroptions.AbundanceMinimum || feature.Abundance > IsosFilteroptions.AbundanceMaximum))
                 {
                     mDataPointsSkipped++;

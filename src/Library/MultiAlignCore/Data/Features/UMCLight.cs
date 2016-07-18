@@ -7,36 +7,36 @@ namespace MultiAlignCore.Data.Features
     using System.Security.Permissions;
 
     /// <summary>
-	/// Representation of a UMC with only basic information
-	/// </summary>
+    /// Representation of a UMC with only basic information
+    /// </summary>
     public class UMCLight : FeatureLight,
                             IFeatureCluster<MSFeatureLight>,        // This allows for ms features
                             IFeatureCluster<UMCLight>,              // This allows for labeled development
                             IChildFeature<UMCClusterLight>,
                             IChildFeature<UMCLight>
-	{
-		/// <summary>
-		/// Default group ID.
-		/// </summary>
-		private const int DEFAULT_GROUP_ID = -1;
+    {
+        /// <summary>
+        /// Default group ID.
+        /// </summary>
+        private const int DEFAULT_GROUP_ID = -1;
         private readonly List<UMCLight> m_umcList;
-		
-		/// <summary>
-		/// Default constructor.
-		/// </summary>
-		public UMCLight()
-		{
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public UMCLight()
+        {
             ChargeStateChromatograms = new Dictionary<int, Chromatogram>();
             IsotopeChromatograms     = new Dictionary<int, List<Chromatogram>>();
 
-			GroupId		= DEFAULT_GROUP_ID;
-			UmcCluster	= null;
+            GroupId     = DEFAULT_GROUP_ID;
+            UmcCluster  = null;
             Scan        = -1;
             ScanEnd     = Scan;
             ScanStart   = Scan;
             MsMsCount   = 0;
-		    this.MinCharge = 1;
-		    this.MaxCharge = 1;
+            this.MinCharge = 1;
+            this.MaxCharge = 1;
 
             if (MsFeatures == null)
                 MsFeatures = new List<MSFeatureLight>();
@@ -44,8 +44,8 @@ namespace MultiAlignCore.Data.Features
 
             if (m_umcList == null)
                 m_umcList = new List<UMCLight>();
-            m_umcList.Clear();		
-		}
+            m_umcList.Clear();
+        }
 
         [UsedImplicitly]
         public UMCLight(UMCLight feature)
@@ -54,13 +54,13 @@ namespace MultiAlignCore.Data.Features
             AbundanceSum                       = feature.AbundanceSum;
             AmbiguityScore                     = feature.AmbiguityScore;
             AverageDeconFitScore               = feature.AverageDeconFitScore;
-            AverageInterferenceScore           = feature.AverageInterferenceScore;           
+            AverageInterferenceScore           = feature.AverageInterferenceScore;
             ChargeState                        = feature.ChargeState;
             ClusterId                          = feature.ClusterId;
             ConformationFitScore               = feature.ConformationFitScore;
             ConformationId                     = feature.ConformationId;
             DriftTime                          = feature.DriftTime;
-            GroupId                            = feature.GroupId; 
+            GroupId                            = feature.GroupId;
             Id                                 = feature.Id;
             IdentifiedSpectraCount             = feature.IdentifiedSpectraCount;
             Index                              = feature.Index;
@@ -83,16 +83,16 @@ namespace MultiAlignCore.Data.Features
             MinCharge                          = feature.MinCharge;
             MaxCharge                          = feature.MaxCharge;
             // UmcCluster                      = feature.UmcCluster;
-            
+
             // Charge state and Isotopic Chromatograms
-            ChargeStateChromatograms           = new Dictionary<int, Chromatogram>();    
+            ChargeStateChromatograms           = new Dictionary<int, Chromatogram>();
             IsotopeChromatograms               = new Dictionary<int, List<Chromatogram>>();
-        } 
+        }
 
         /// <summary>
-		/// Gets or sets the UMC Cluster this feature is part of.
-		/// </summary>
-		public UMCClusterLight UmcCluster { get; set; }
+        /// Gets or sets the UMC Cluster this feature is part of.
+        /// </summary>
+        public UMCClusterLight UmcCluster { get; set; }
 
         /// <summary>
         /// Gets or sets the list of MS features for the given UMC.
@@ -174,47 +174,47 @@ namespace MultiAlignCore.Data.Features
         #region Overriden Base Methods
 
         /// <summary>
-		/// Returns a basic string representation of the cluster.
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return "UMCLight Group ID " + GroupId + " " + base.ToString();
-		}
-		/// <summary>
-		/// Compares two objects' values to each other.
-		/// </summary>
-		/// <param name="obj">Object to compare to.</param>
-		/// <returns>True if similar, False if not.</returns>
-		public override bool Equals(object obj)
-		{
-			if (obj == null)
-				return false;
+        /// Returns a basic string representation of the cluster.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "UMCLight Group ID " + GroupId + " " + base.ToString();
+        }
+        /// <summary>
+        /// Compares two objects' values to each other.
+        /// </summary>
+        /// <param name="obj">Object to compare to.</param>
+        /// <returns>True if similar, False if not.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
 
-			var umc = obj as UMCLight;
-			if (umc == null)
-				return false;
+            var umc = obj as UMCLight;
+            if (umc == null)
+                return false;
 
-			if (Id != umc.Id)
-				return false;
+            if (Id != umc.Id)
+                return false;
 
-			var isBaseEqual = base.Equals(umc);
-			if (!isBaseEqual)
-				return false;
-			
-			return true;
-		}
-		/// <summary>
-		/// Computes a hash code for the cluster.
-		/// </summary>
-		/// <returns>Hashcode as an integer.</returns>
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
+            var isBaseEqual = base.Equals(umc);
+            if (!isBaseEqual)
+                return false;
 
-		#endregion
-        
+            return true;
+        }
+        /// <summary>
+        /// Computes a hash code for the cluster.
+        /// </summary>
+        /// <returns>Hashcode as an integer.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
         /// <summary>
         /// Calculates the centroid and other statistics about the cluster.
         /// </summary>
@@ -231,7 +231,7 @@ namespace MultiAlignCore.Data.Features
             var net        = new List<double>();
             var mass       = new List<double>();
             var driftTime  = new List<double>();
-        
+
             double  sumNet          = 0;
             double  sumMass         = 0;
             double  sumDrifttime    = 0;
@@ -239,7 +239,7 @@ namespace MultiAlignCore.Data.Features
             var     minScan         = int.MaxValue;
             var     maxScan         = int.MinValue;
             var minNet              = double.PositiveInfinity;
-            var maxNet              = 0.0; 
+            var maxNet              = 0.0;
             double  maxAbundance = int.MinValue;
             double representativeMz = 0;
             foreach (var feature in MsFeatures)
@@ -270,7 +270,7 @@ namespace MultiAlignCore.Data.Features
                 maxScan          = Math.Max(feature.Scan, maxScan);
                 minNet           = Math.Min(feature.Net, minNet);
                 maxNet           = Math.Max(feature.Net, maxNet);
-            }            
+            }
             Abundance       = maxAbundance;
             AbundanceSum    = sumAbundance;
             ScanEnd         = maxScan;
@@ -305,7 +305,7 @@ namespace MultiAlignCore.Data.Features
                         median                  = Convert.ToInt32((numUmCs) / 2);
                         Net      = net[median];
                         DriftTime          = Convert.ToSingle(driftTime[median]);
-                    }                                        
+                    }
                     break;
                 case ClusterCentroidRepresentation.Apex:
                     double apexNet = 0;
@@ -360,7 +360,7 @@ namespace MultiAlignCore.Data.Features
         #region IFeatureCluster<MSFeatureLight> Members
 
         public void AddChildFeature(MSFeatureLight feature)
-        {            
+        {
             feature.SetParentFeature(this);
             MsFeatures.Add(feature);
         }
@@ -379,10 +379,10 @@ namespace MultiAlignCore.Data.Features
             UmcCluster = parentFeature;
         }
 
-	    public UMCClusterLight GetParentFeature()
-	    {
-	        return UmcCluster;
-	    }
+        public UMCClusterLight GetParentFeature()
+        {
+            return UmcCluster;
+        }
 
         #endregion
 
@@ -427,6 +427,6 @@ namespace MultiAlignCore.Data.Features
                 }
                 return -1;
             }
-        } 
+        }
     }
 }

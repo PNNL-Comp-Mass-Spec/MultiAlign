@@ -21,7 +21,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         /// <param name="alphaList">List of mixture estimates corresponding to differences.</param>
         /// <returns>Updated DenseMatrix containing mean of normal distribution.</returns>
         public static DenseMatrix UpdateNormalMeanVector(List<DenseMatrix> dataList, List<double> alphaList)
-        {                        
+        {
             var numerator = new DenseMatrix(dataList[0].RowCount, 1);
             var denominator = 0.0;
 
@@ -177,11 +177,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         /// <param name="independent">true/false:  Whether or not the multivariate normal distribution should be treated as independent, i.e. a diagonal covariance matrix.</param>
         /// <returns>A boolean flag indicating whether the EM algorithm achieved convergence.</returns>
         public static bool NormalUniformMixture(
-            List<DenseMatrix> dataList, 
-            ref DenseMatrix meanVector, 
-            ref DenseMatrix covarianceMatrix, 
-            DenseMatrix uniformTolerances, 
-            ref double mixtureParameter, 
+            List<DenseMatrix> dataList,
+            ref DenseMatrix meanVector,
+            ref DenseMatrix covarianceMatrix,
+            DenseMatrix uniformTolerances,
+            ref double mixtureParameter,
             bool independent)
         {
             var iteration = 0;
@@ -206,7 +206,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
             List<double> priorList;
 
             var alphaList = GetAlphaListNoPriors(dataList, mixtureParameter, out priorList);
-            
+
             // Step through the EM algorithm up to m_maxIterations time.
             while (iteration <= MAX_ITERATIONS)
             {
@@ -214,20 +214,20 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
                 mixtureParameter = UpdateNormalUniformMixtureParameter(dataList, meanVector, covarianceMatrix, mixtureParameter, uniformDensity, alphaList);
                 meanVector = UpdateNormalMeanVector(dataList, alphaList, priorList, false);
                 covarianceMatrix = UpdateNormalCovarianceMatrix(dataList, meanVector, alphaList, priorList, independent, false);
-                
+
                 // Calculate the loglikelihood based on the new parameters.
                 var nextLogLikelihood = NormalUniformLogLikelihood(dataList, meanVector, covarianceMatrix, uniformDensity, mixtureParameter);
-                
+
                 // Increment the counter to show that another iteration has been completed.
                 iteration++;
-                
+
                 // Set the convergence flag and exit the while loop if the convergence criteria is met.
                 if (Math.Abs(nextLogLikelihood - logLikelihood) < EPSILON)
                 {
                     converges = true;
                     break;
                 }
-                
+
                 // Update the loglikelihood.
                 logLikelihood = nextLogLikelihood;
             }
@@ -248,12 +248,12 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
             var normalDensity = MathUtilities.MultivariateNormalDensity(data, meanVector, covarianceMatrix);
             if (normalDensity > 0)
             {
-				var posteriorReal = mixtureParameter * normalDensity;
-				var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
+                var posteriorReal = mixtureParameter * normalDensity;
+                var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
 
-				stacScore = (posteriorReal) / (posteriorReal + posteriorFalse);
+                stacScore = (posteriorReal) / (posteriorReal + posteriorFalse);
 
-				return Math.Log(posteriorReal + posteriorFalse);
+                return Math.Log(posteriorReal + posteriorFalse);
             }
             return 0.0;
         }
@@ -269,7 +269,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         static public double NormalUniformLogLikelihood(List<DenseMatrix> dataList, DenseMatrix meanVector, DenseMatrix covarianceMatrix, double uniformDensity, double mixtureParameter)
         {
             var loglikelihood = 0.0;
-			var stacScore = 0.0;
+            var stacScore = 0.0;
             foreach (var data in dataList)
             {
                 loglikelihood += NormalUniformLogLikelihood(data, meanVector, covarianceMatrix, uniformDensity, mixtureParameter, ref stacScore);
@@ -287,15 +287,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         /// <param name="alphaList">A List of observation-wise mixture proportion estimates to be updated and returned.</param>
         /// <returns>The updated mixture parameter.</returns>
         static public double UpdateNormalUniformMixtureParameter(
-            List<DenseMatrix> dataList, 
-            DenseMatrix meanVector, 
-            DenseMatrix covarianceMatrix, 
-            double mixtureParameter, 
-            double uniformDensity, 
+            List<DenseMatrix> dataList,
+            DenseMatrix meanVector,
+            DenseMatrix covarianceMatrix,
+            double mixtureParameter,
+            double uniformDensity,
             List<double> alphaList)
         {
             var nextMixtureParameter = 0.0;
-			var stacScore = 0.0;
+            var stacScore = 0.0;
 
             for (var i = 0; i < dataList.Count; i++)
             {
@@ -326,46 +326,46 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
             var normalDensityF = MathUtilities.MultivariateNormalDensity(data, meanVectorF, covarianceMatrixF);
             if (normalDensityT > 0)
             {
-				var posteriorReal = mixtureParameter * prior * normalDensityT;
-				var posteriorIReal = mixtureParameter * (1 - prior) * normalDensityF;
-				var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
+                var posteriorReal = mixtureParameter * prior * normalDensityT;
+                var posteriorIReal = mixtureParameter * (1 - prior) * normalDensityF;
+                var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
 
-				stacScore = (posteriorReal) / (posteriorReal + posteriorIReal + posteriorFalse);
+                stacScore = (posteriorReal) / (posteriorReal + posteriorIReal + posteriorFalse);
 
-				return Math.Log(posteriorReal + posteriorIReal + posteriorFalse);
+                return Math.Log(posteriorReal + posteriorIReal + posteriorFalse);
             }
 
-			stacScore = 0.0;
+            stacScore = 0.0;
             return 0.0;
         }
 
-		/// <summary>
-		/// Compute the alpha value
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="prior"></param>
-		/// <param name="meanVectorT"></param>
-		/// <param name="covarianceMatrixT"></param>
-		/// <param name="meanVectorF"></param>
-		/// <param name="covarianceMatrixF"></param>
-		/// <param name="uniformDensity"></param>
-		/// <param name="mixtureParameter"></param>
-		/// <returns></returns>
-		static public double GetAlpha(DenseMatrix data, double prior, DenseMatrix meanVectorT, DenseMatrix covarianceMatrixT, DenseMatrix meanVectorF, DenseMatrix covarianceMatrixF, double uniformDensity, double mixtureParameter)
-		{
-			var normalDensityT = MathUtilities.MultivariateNormalDensity(data, meanVectorT, covarianceMatrixT);
-			var normalDensityF = MathUtilities.MultivariateNormalDensity(data, meanVectorF, covarianceMatrixF);
-		    if (!(normalDensityT > 0))
-		    {
-		        return 0.0;
-		    }
+        /// <summary>
+        /// Compute the alpha value
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="prior"></param>
+        /// <param name="meanVectorT"></param>
+        /// <param name="covarianceMatrixT"></param>
+        /// <param name="meanVectorF"></param>
+        /// <param name="covarianceMatrixF"></param>
+        /// <param name="uniformDensity"></param>
+        /// <param name="mixtureParameter"></param>
+        /// <returns></returns>
+        static public double GetAlpha(DenseMatrix data, double prior, DenseMatrix meanVectorT, DenseMatrix covarianceMatrixT, DenseMatrix meanVectorF, DenseMatrix covarianceMatrixF, double uniformDensity, double mixtureParameter)
+        {
+            var normalDensityT = MathUtilities.MultivariateNormalDensity(data, meanVectorT, covarianceMatrixT);
+            var normalDensityF = MathUtilities.MultivariateNormalDensity(data, meanVectorF, covarianceMatrixF);
+            if (!(normalDensityT > 0))
+            {
+                return 0.0;
+            }
 
-		    var posteriorReal = mixtureParameter * prior * normalDensityT;
-		    var posteriorIReal = mixtureParameter * (1 - prior) * normalDensityF;
-		    var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
+            var posteriorReal = mixtureParameter * prior * normalDensityT;
+            var posteriorIReal = mixtureParameter * (1 - prior) * normalDensityF;
+            var posteriorFalse = (1 - mixtureParameter) * uniformDensity;
 
-		    return (posteriorReal + posteriorIReal) / (posteriorReal + posteriorIReal + posteriorFalse);
-		}
+            return (posteriorReal + posteriorIReal) / (posteriorReal + posteriorIReal + posteriorFalse);
+        }
 
         /// <summary>
         /// Calculate the loglikelihood for a normal-normal-uniform mixture.
@@ -382,38 +382,38 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         static public double NormalNormalUniformLogLikelihood(List<DenseMatrix> dataList, List<double> prior, DenseMatrix meanVectorT, DenseMatrix covarianceMatrixT, DenseMatrix meanVectorF, DenseMatrix covarianceMatrixF, double uniformDensity, double mixtureParameter)
         {
             var logLikelihood = 0.0;
-			var stacScore = 0.0;
+            var stacScore = 0.0;
             for (var i = 0; i < dataList.Count; i++)
             {
-				logLikelihood += NormalNormalUniformLogLikelihood(dataList[i], prior[i], meanVectorT, covarianceMatrixT, meanVectorF, covarianceMatrixF, uniformDensity, mixtureParameter, ref stacScore);
+                logLikelihood += NormalNormalUniformLogLikelihood(dataList[i], prior[i], meanVectorT, covarianceMatrixT, meanVectorF, covarianceMatrixF, uniformDensity, mixtureParameter, ref stacScore);
             }
             return logLikelihood;
         }
-		
-		/// <summary>
-		/// Get the alpha list for the given dataList and priors
-		/// </summary>
-        /// <param name="dataList">List of Matrices of data.</param>
-		/// <param name="prior"></param>
-		/// <param name="meanVectorT"></param>
-		/// <param name="covarianceMatrixT"></param>
-		/// <param name="meanVectorF"></param>
-		/// <param name="covarianceMatrixF"></param>
-		/// <param name="uniformDensity"></param>
-        /// <param name="mixtureParameter">The proportion of the List thought to be from the normal distribution.  An initial estimate is passed and a refined proportion is returned.</param>
-		/// <returns></returns>
-		static public List<double> GetAlphaList(List<DenseMatrix> dataList, List<double> prior, DenseMatrix meanVectorT, DenseMatrix covarianceMatrixT, DenseMatrix meanVectorF, DenseMatrix covarianceMatrixF, double uniformDensity, double mixtureParameter)
-		{
-			var alphaList = new List<double>(dataList.Count);
-			for (var i = 0; i < dataList.Count; i++)
-			{
-				alphaList.Add(GetAlpha(dataList[i], prior[i], meanVectorT, covarianceMatrixT, meanVectorF, covarianceMatrixF, uniformDensity, mixtureParameter));
-			}
-			return alphaList;
-		}
 
         /// <summary>
-        /// 
+        /// Get the alpha list for the given dataList and priors
+        /// </summary>
+        /// <param name="dataList">List of Matrices of data.</param>
+        /// <param name="prior"></param>
+        /// <param name="meanVectorT"></param>
+        /// <param name="covarianceMatrixT"></param>
+        /// <param name="meanVectorF"></param>
+        /// <param name="covarianceMatrixF"></param>
+        /// <param name="uniformDensity"></param>
+        /// <param name="mixtureParameter">The proportion of the List thought to be from the normal distribution.  An initial estimate is passed and a refined proportion is returned.</param>
+        /// <returns></returns>
+        static public List<double> GetAlphaList(List<DenseMatrix> dataList, List<double> prior, DenseMatrix meanVectorT, DenseMatrix covarianceMatrixT, DenseMatrix meanVectorF, DenseMatrix covarianceMatrixF, double uniformDensity, double mixtureParameter)
+        {
+            var alphaList = new List<double>(dataList.Count);
+            for (var i = 0; i < dataList.Count; i++)
+            {
+                alphaList.Add(GetAlpha(dataList[i], prior[i], meanVectorT, covarianceMatrixT, meanVectorF, covarianceMatrixF, uniformDensity, mixtureParameter));
+            }
+            return alphaList;
+        }
+
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="dataList">List of Matrices of data.</param>
         /// <param name="mixtureParameter">The proportion of the List thought to be from the normal distribution.  An initial estimate is passed and a refined proportion is returned.</param>
@@ -421,11 +421,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Utilities
         public static List<double> GetAlphaListNoPriors(List<DenseMatrix> dataList, double mixtureParameter)
         {
             List<double> priorList;
-            return GetAlphaListNoPriors(dataList, mixtureParameter, out priorList);            
+            return GetAlphaListNoPriors(dataList, mixtureParameter, out priorList);
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="dataList">List of Matrices of data.</param>
         /// <param name="mixtureParameter">The proportion of the List thought to be from the normal distribution.  An initial estimate is passed and a refined proportion is returned.</param>

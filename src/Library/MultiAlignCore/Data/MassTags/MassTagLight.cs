@@ -5,7 +5,7 @@ namespace MultiAlignCore.Data.MassTags
 {
     public class MassTagLight: FeatureLight
     {
-        //TODO: [gord] agree on this... 
+        //TODO: [gord] agree on this...
 
         public int CleavageState
         {

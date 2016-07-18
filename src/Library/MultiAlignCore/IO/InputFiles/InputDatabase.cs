@@ -24,7 +24,7 @@ namespace MultiAlignCore.IO.InputFiles
             LocalPath = string.Empty;
             Organism = string.Empty;
             Description = string.Empty;
-            
+
             DatabaseFormat = MassTagDatabaseFormat.None;
 
             UserName = "mtuser";

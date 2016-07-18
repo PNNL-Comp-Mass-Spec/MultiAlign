@@ -7,8 +7,8 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
     {
         public LevenburgMarquadtSolver()
         {
-            DifferentialStep = 0.0001;            
-            Epsilon          = 0.000001; 
+            DifferentialStep = 0.0001;
+            Epsilon          = 0.000001;
         }
 
         public LevenburgMarquadtSolver(double differentialStep, double epsilon)
@@ -57,7 +57,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
             return Solve(x, y, ref coeffs);
         }
         /// <summary>
-        /// Least squares solver 
+        /// Least squares solver
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -66,7 +66,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public SolverReport Solve(List<double> x, List<double> y, ref double[] coeffs)
         {
             double epsf     = 0;
-            var maxits      = 400; 
+            var maxits      = 400;
             var info        = 0;
 
             alglib.lsfitstate   state;
@@ -80,7 +80,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
             {
                 xMatrix[i++, 0] = d;
             }
-            
+
             alglib.lsfitcreatef(xMatrix,
                                 y.ToArray(),
                                 coeffs,
@@ -100,8 +100,8 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
 
 
             alglib.lsfitresults(state,
-                                out info, 
-                                out coeffs, 
+                                out info,
+                                out coeffs,
                                 out report);
 
             //Info    -   completion code:
@@ -128,7 +128,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
     /// Contains information about the Levenburg-Marquadt execution.
     /// </summary>
     public class SolverReport
-    {        
+    {
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -163,9 +163,9 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
             private set;
         }
         /// <summary>
-        /// Gets the maximum error 
+        /// Gets the maximum error
         /// </summary>
-        public double MaxError 
+        public double MaxError
         {
             get;
             private set;
@@ -179,7 +179,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
             private set;
         }
         /// <summary>
-        /// Gets the weighted RMS value 
+        /// Gets the weighted RMS value
         /// </summary>
         public double WeightedRmsError
         {
@@ -209,8 +209,8 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         {
             get;
             private set;
-        }      
-  
+        }
+
         /*
         Least squares fitting report. This structure contains informational fields
         which are set by fitting functions provided by this unit.

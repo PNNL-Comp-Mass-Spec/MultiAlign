@@ -24,7 +24,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
         /// </summary>
         public static string TestDirectory
         {
-            get; private set; 
+            get; private set;
         }
 
         public static string OutputDirectory

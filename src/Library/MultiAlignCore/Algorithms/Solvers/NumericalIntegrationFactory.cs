@@ -13,12 +13,12 @@
         {
             //default
             NumericalIntegrationBase solver = null;
-            
+
             switch (functionChoice)
             {
                 case NumericalIntegrationEnum.Trapezoidal:
                     solver = new TrapezoidIntegration();
-                    break;   
+                    break;
                 default:
                     solver = null;
                     break;
@@ -27,5 +27,5 @@
         }
     }
 
-    
+
 }

@@ -2,7 +2,7 @@
 {
     public enum RegressionType
     {
-        LinearEm, 
+        LinearEm,
         MixtureRegression
     }
 }

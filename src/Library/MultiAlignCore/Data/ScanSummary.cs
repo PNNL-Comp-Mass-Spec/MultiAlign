@@ -1,5 +1,5 @@
 ﻿namespace MultiAlignCore.Data
-{    
+{
     /// <summary>
     /// Encapsulates MS Spectrum summary information (e.g. BPI, # of peaks, TIC)
     /// </summary>
@@ -83,5 +83,5 @@
 
             return hash;
         }
-    }    
+    }
 }

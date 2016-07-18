@@ -35,7 +35,7 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         ///     Save the plots to the specified path, with a specified width, height, and dpi
         /// </summary>
-        /// <remarks>If the DPI is not 96, the width and height will be scaled so that the image 
+        /// <remarks>If the DPI is not 96, the width and height will be scaled so that the image
         /// provides the needed pixel size for the specified size and DPI</remarks>
         /// <param name="pathAndPrefix">Path to save the images to, with a trailing '\' or name prefix</param>
         /// <param name="width"></param>

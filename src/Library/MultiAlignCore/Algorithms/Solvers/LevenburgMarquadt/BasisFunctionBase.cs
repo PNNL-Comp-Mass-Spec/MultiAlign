@@ -9,9 +9,9 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
     {
         public virtual void Scale(List<double> x)
         {
-            
+
         }
-        
+
         /// <summary>
         /// Coefficients found via solving.
         /// </summary>
@@ -47,6 +47,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         /// <param name="x"></param>
         /// <param name="functionResult"></param>
         /// <param name="obj"></param>
-        public abstract void FunctionDelegate(double[] c, double[] x, ref double functionResult, object obj);        
+        public abstract void FunctionDelegate(double[] c, double[] x, ref double functionResult, object obj);
     }
 }

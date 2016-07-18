@@ -7,7 +7,7 @@
     using MultiAlignCore.Data;
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class LcmsWarpAlignmentScorer
     {
@@ -31,7 +31,7 @@
         private readonly bool includeMassInMatchScore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LcmsWarpAlignmentScorer"/> class. 
+        /// Initializes a new instance of the <see cref="LcmsWarpAlignmentScorer"/> class.
         /// </summary>
         /// <param name="options">The user configuration options for this run of LcmsWarp.</param>
         /// <param name="includeMassInMatchScore">
@@ -90,7 +90,7 @@
         }
 
         /// <summary>
-        /// Compute match score for each possible match between 
+        /// Compute match score for each possible match between
         /// alignee section -> (baseline section + expansion width).
         /// </summary>
         /// <param name="aligneeSections">The alignee section info.</param>
@@ -157,7 +157,7 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sectionMatchScores"></param>
         /// <returns></returns>
@@ -417,7 +417,7 @@
         }
 
         /// <summary>
-        /// Calculate the match score for a alignee, baseline feature match. 
+        /// Calculate the match score for a alignee, baseline feature match.
         /// </summary>
         /// <param name="match">The match to compute the score for.</param>
         /// <param name="deltaNet">

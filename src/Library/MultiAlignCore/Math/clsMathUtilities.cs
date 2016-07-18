@@ -5,47 +5,47 @@ using System;
 #endregion
 
 /*
-	**************************************************************************
-	**
-	**    Class  SpecialFunction (C#)
-	**
-	**************************************************************************
-	**    Copyright (C) 1984 Stephen L. Moshier (original C version - Cephes Math Library)
-	**    Copyright (C) 1996 Leigh Brookshaw	(Java version)
-	**    Copyright (C) 2005 Miroslav Stampar	(C# version [->this<-])
-	**
-	**    This program is free software; you can redistribute it and/or modify
-	**    it under the terms of the GNU General Public License as published by
-	**    the Free Software Foundation; either version 2 of the License, or
-	**    (at your option) any later version.
-	**
-	**    This program is distributed in the hope that it will be useful,
-	**    but WITHOUT ANY WARRANTY; without even the implied warranty of
-	**    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	**    GNU General Public License for more details.
-	**
-	**    You should have received a copy of the GNU General Public License
-	**    along with this program; if not, write to the Free Software
-	**    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-	**************************************************************************
-	**
-	**    This class is an extension of System.Math. It includes a number
-	**    of special functions not found in the Math class.
-	**
-	*************************************************************************/
+    **************************************************************************
+    **
+    **    Class  SpecialFunction (C#)
+    **
+    **************************************************************************
+    **    Copyright (C) 1984 Stephen L. Moshier (original C version - Cephes Math Library)
+    **    Copyright (C) 1996 Leigh Brookshaw    (Java version)
+    **    Copyright (C) 2005 Miroslav Stampar   (C# version [->this<-])
+    **
+    **    This program is free software; you can redistribute it and/or modify
+    **    it under the terms of the GNU General Public License as published by
+    **    the Free Software Foundation; either version 2 of the License, or
+    **    (at your option) any later version.
+    **
+    **    This program is distributed in the hope that it will be useful,
+    **    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    **    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    **    GNU General Public License for more details.
+    **
+    **    You should have received a copy of the GNU General Public License
+    **    along with this program; if not, write to the Free Software
+    **    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+    **************************************************************************
+    **
+    **    This class is an extension of System.Math. It includes a number
+    **    of special functions not found in the Math class.
+    **
+    *************************************************************************/
 
 
 /**
-	 * This class contains physical constants and special functions not found
-	 * in the System.Math class.
-	 * Like the System.Math class this class is final and cannot be
-	 * subclassed.
-	 * All physical constants are in cgs units.
-	 * NOTE: These special functions do not necessarily use the fastest
-	 * or most accurate algorithms.
-	 *
-	 * @version $Revision: 1.8 $, $Date: 2005/09/12 09:52:34 $
-	 */
+     * This class contains physical constants and special functions not found
+     * in the System.Math class.
+     * Like the System.Math class this class is final and cannot be
+     * subclassed.
+     * All physical constants are in cgs units.
+     * NOTE: These special functions do not necessarily use the fastest
+     * or most accurate algorithms.
+     *
+     * @version $Revision: 1.8 $, $Date: 2005/09/12 09:52:34 $
+     */
 
 namespace Cephes
 {
@@ -1030,10 +1030,10 @@ namespace Cephes
 
 
         /**
-			* Returns the area under the left hand tail (from 0 to x)
-			* of the Chi square probability density function with
-			* v degrees of freedom.
-			**/
+            * Returns the area under the left hand tail (from 0 to x)
+            * of the Chi square probability density function with
+            * v degrees of freedom.
+            **/
 
         /// <summary>
         ///     Returns the chi-square function (left hand tail).
@@ -1050,10 +1050,10 @@ namespace Cephes
 
 
         /**
-			* Returns the area under the right hand tail (from x to
-			* infinity) of the Chi square probability density function
-			* with v degrees of freedom:
-			**/
+            * Returns the area under the right hand tail (from x to
+            * infinity) of the Chi square probability density function
+            * with v degrees of freedom:
+            **/
 
         /// <summary>
         ///     Returns the chi-square function (right hand tail).
@@ -1221,7 +1221,7 @@ namespace Cephes
             };
             double[] S =
             {
-                //1.00000000000000000000E0, 
+                //1.00000000000000000000E0,
                 2.26052863220117276590E0,
                 9.39603524938001434673E0,
                 1.20489539808096656605E1,
@@ -1511,8 +1511,8 @@ namespace Cephes
                 w = incbd(a, b, x)/xc;
 
             /* Multiply w by the factor
-				a      b   _             _     _
-				x  (1-x)   | (a+b) / ( a | (a) | (b) ) .   */
+                a      b   _             _     _
+                x  (1-x)   | (a+b) / ( a | (a) | (b) ) .   */
 
             y = a*Math.Log(x);
             t = b*Math.Log(xc);
@@ -1802,7 +1802,7 @@ namespace Cephes
             {
                 x = 1.0;
                 // Underflow.
-                //				mtherr( "incbi", UNDERFLOW );
+                //              mtherr( "incbi", UNDERFLOW );
                 x = 0.0;
                 goto done;
             }
@@ -1830,7 +1830,7 @@ namespace Cephes
                         x = x0 + di*(x1 - x0);
                         if (x == 0.0)
                         {
-                            //				mtherr( "incbi", UNDERFLOW );
+                            //              mtherr( "incbi", UNDERFLOW );
                             x = 0;
                             goto done;
                         }
@@ -1907,7 +1907,7 @@ namespace Cephes
                     dir -= 1;
                 }
             }
-//			mtherr( "incbi", PLOSS );
+//          mtherr( "incbi", PLOSS );
             if (x0 >= 1.0)
             {
                 x = 1.0 - MACHEP;
@@ -1915,7 +1915,7 @@ namespace Cephes
             }
             if (x <= 0.0)
             {
-//				mtherr( "incbi", UNDERFLOW );
+//              mtherr( "incbi", UNDERFLOW );
                 x = 0.0;
                 goto done;
             }
@@ -2084,7 +2084,7 @@ namespace Cephes
                 return (p);
             }
 
-            /*	compute integral from -t to + t */
+            /*  compute integral from -t to + t */
 
             if (t < 0)
                 x = -t;
@@ -2097,7 +2097,7 @@ namespace Cephes
             /* test if k is odd or even */
             if ((k & 1) != 0)
             {
-                /*	computation for odd k	*/
+                /*  computation for odd k   */
 
                 xsqk = x/Math.Sqrt(rk);
                 p = Math.Atan(xsqk);
@@ -2120,7 +2120,7 @@ namespace Cephes
 
             else
             {
-                /*	computation for even k	*/
+                /*  computation for even k  */
 
                 f = 1.0;
                 tz = 1.0;
@@ -2135,7 +2135,7 @@ namespace Cephes
                 p = f*x/Math.Sqrt(z*rk);
             }
 
-            /*	common exit	*/
+            /*  common exit */
 
 
             if (t < 0)

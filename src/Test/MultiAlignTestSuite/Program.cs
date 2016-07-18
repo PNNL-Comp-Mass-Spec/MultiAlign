@@ -13,7 +13,7 @@ namespace MultiAlignTestSuite
     /// Main application.
     /// </summary>
     class Program
-    {                
+    {
         #region Data Provider Setup
         /// <summary>
         /// Sets up the NHibernate caches for storing and retrieving data.
@@ -24,10 +24,10 @@ namespace MultiAlignTestSuite
         {
             try
             {
-                return DataAccessFactory.CreateDataAccessProviders(path, createNew);                
+                return DataAccessFactory.CreateDataAccessProviders(path, createNew);
             }
             catch (IOException ex)
-            {                
+            {
                 throw ex;
             }
         }
@@ -37,25 +37,25 @@ namespace MultiAlignTestSuite
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders(string path)
         {
-            return SetupDataProviders("test.db3", true);           
+            return SetupDataProviders("test.db3", true);
         }
         private static void CleanupDataProviders()
-        {            
+        {
             NHibernateUtil.Dispose();
         }
         #endregion
-                        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="args"></param>
-		static void Main(string[] args)
-		{
+        static void Main(string[] args)
+        {
             //MassTagDOATest massTagTest = new MassTagDOATest();
             SetupDataProviders(@"m:\data\proteomics\matest-gui\guitest.db3");
             MSFeatureDAOHibernate dao = new MSFeatureDAOHibernate();
             System.DateTime start = DateTime.Now;
-            List<MSFeatureLight> features = dao.FindByDatasetId(0);            
+            List<MSFeatureLight> features = dao.FindByDatasetId(0);
             System.DateTime end = DateTime.Now;
             //msFeatureTest.LoadMSFeaturesFromCache(@"m:\data\proteomics\matest-gui\guitest.db3");
             TimeSpan span = end.Subtract(start);

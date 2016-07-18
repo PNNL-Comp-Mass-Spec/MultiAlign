@@ -401,7 +401,7 @@ namespace MultiAlignTestSuite.OHSU
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            // Here we map the features onto the clusters 
+            // Here we map the features onto the clusters
 
             GC.Collect();
             GC.WaitForPendingFinalizers();

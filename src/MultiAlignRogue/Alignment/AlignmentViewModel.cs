@@ -16,7 +16,7 @@ namespace MultiAlignRogue.Alignment
         public BitmapImage MassMzImage { get; private set; }
         public BitmapImage MassScanImage { get; private set; }
         public string WindowTitle { get; private set; }
-        
+
         public AlignmentViewModel()
         {
 
@@ -27,13 +27,13 @@ namespace MultiAlignRogue.Alignment
             this.WindowTitle = string.Format("{0} Alignment Data",alignment.AligneeDataset);
 
             var plots = new AlignmentPlotCreator(alignment);
-            
+
             this.HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.Heatmap));
             this.NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.NetResidual));
             this.MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.MassHistogram));
             this.NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.NetHistogram));
             this.MassMzImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.MassMzResidual));
-            this.MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.MassScanResidual));          
+            this.MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plots.MassScanResidual));
         }
 
     }

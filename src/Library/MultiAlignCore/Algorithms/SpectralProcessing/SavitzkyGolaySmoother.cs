@@ -4,9 +4,9 @@
 // E-mail: gordon.slysz@pnl.gov
 // Website: http://panomics.pnnl.gov/software/
 // -------------------------------------------------------------------------------
-// 
+//
 // Licensed under the Apache License, Version 2.0; you may not use this file except
-// in compliance with the License.  You may obtain a copy of the License at 
+// in compliance with the License.  You may obtain a copy of the License at
 // http://www.apache.org/licenses/LICENSE-2.0
 
 
@@ -45,8 +45,8 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         /// <returns></returns>
         public List<XYData> Smooth(List<XYData> xyData)
         {
-            if (xyData == null || xyData.Count < 3 || xyData.Count <= PointsForSmoothing) return xyData;            
-            return SmoothOmicsList(xyData);            
+            if (xyData == null || xyData.Count < 3 || xyData.Count <= PointsForSmoothing) return xyData;
+            return SmoothOmicsList(xyData);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
              return inputValues;
          }
 
-        
+
         /// <summary>
         /// Performs SavitzkyGolay smoothing on a list of XYData
         /// </summary>

@@ -7,7 +7,7 @@ namespace MultiAlignCore.Algorithms.Distance
 {
     public class WeightedEuclideanDistance<T> where T: FeatureLight, new ()
     {
-        
+
 
         /// <summary>
         /// Constructor
@@ -21,7 +21,7 @@ namespace MultiAlignCore.Algorithms.Distance
         }
 
 
-        
+
         public WeightedEuclideanDistance(double mass, double net, double drift)
         {
             MassWeight  = mass;
@@ -54,7 +54,7 @@ namespace MultiAlignCore.Algorithms.Distance
         public double EuclideanDistance(T x, T y)
         {
             var meanMass         = (x.MassMonoisotopicAligned + y.MassMonoisotopicAligned)  / 2;
-            var massDifference   = (x.MassMonoisotopicAligned - y.MassMonoisotopicAligned) * 1e6 / meanMass; 
+            var massDifference   = (x.MassMonoisotopicAligned - y.MassMonoisotopicAligned) * 1e6 / meanMass;
             //  / MassWeight;
 
             var netDifference    = (x.Net - y.Net) / NetWeight;
@@ -74,7 +74,7 @@ namespace MultiAlignCore.Algorithms.Distance
         public double EuclideanDistanceDalton(T x, T y)
         {
             var massDifference   = x.MassMonoisotopicAligned - y.MassMonoisotopicAligned;
-            
+
             var netDifference    = x.Net - y.Net;
             var driftDifference  = x.DriftTime - y.DriftTime;
             var sum              = MassWeight *   (massDifference * massDifference) +
@@ -123,5 +123,5 @@ namespace MultiAlignCore.Algorithms.Distance
             differences.ForEach(x => squares.Add(x * x));
             return Math.Sqrt(squares.Sum());
         }
-    }    
+    }
 }

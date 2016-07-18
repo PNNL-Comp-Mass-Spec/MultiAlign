@@ -10,8 +10,8 @@ namespace MultiAlignCore.Data.MassTags
     /// Contains all the information for mass tag databases.
     /// </summary>
     public class MassTagDatabase : IDataset
-    {        
-        
+    {
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -92,7 +92,7 @@ namespace MultiAlignCore.Data.MassTags
             if (featureTest != null)
             {
                 DoesContainDriftTime = true;
-            }            
+            }
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace MultiAlignCore.Data.MassTags
         public void AddMassTagsAndProteins(List<MassTagLight>               massTags,
                                             Dictionary<int, List<Protein>>  massTagToProteinMap)
         {
-            
+
             MassTags.AddRange(massTags);
 
             var massTagMap = new Dictionary<int, MassTagLight>();
@@ -116,7 +116,7 @@ namespace MultiAlignCore.Data.MassTags
                     massTagMap.Add(tag.Id, tag);
                 }
             }
-            
+
             ProteinsToMassTags                  = new Dictionary<int, List<MassTagLight>>();
             var proteinMap = new Dictionary<int, Protein>();
 
@@ -137,7 +137,7 @@ namespace MultiAlignCore.Data.MassTags
                     if (!proteinMap.ContainsKey(p.RefId))
                     {
                         AllProteins.Add(p);
-                        proteinMap.Add(p.RefId, p);                        
+                        proteinMap.Add(p.RefId, p);
                     }
 
                     if (!ProteinsToMassTags.ContainsKey(p.ProteinId))

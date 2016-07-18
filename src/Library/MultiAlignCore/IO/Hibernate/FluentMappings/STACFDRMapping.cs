@@ -24,7 +24,7 @@ namespace MultiAlignCore.IO.Hibernate.FluentMappings
             //  <property name="AMTMatches" column="Num_AMT_Matches" type="int" not-null="false" />
             //  <property name="ConformationMatches" column="Conformation_Matches" type="int" not-null="false" />
             //  <property name="FalseMatches" column="False_Matches" type="int" not-null="false" />
-            //  <property name="Label" column="Label" type="string" not-null="false" />    
+            //  <property name="Label" column="Label" type="string" not-null="false" />
             //</class>
         }
     }

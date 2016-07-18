@@ -53,7 +53,7 @@ namespace MultiAlignCore.Data.MetaData
                 /// If not then let's update it.
                 if (m_baseline != value)
                 {
-                    // Since it's not the same, then it could be 
+                    // Since it's not the same, then it could be
                     // an older dataset, in which case we want to change
                     // the old one to no longer be tagged as the baseline.
                     if (m_baseline != null)

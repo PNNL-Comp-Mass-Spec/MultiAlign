@@ -18,7 +18,7 @@ namespace MultiAlignCore.IO.Features
         ///     Constructor for passing in a StreamReader object
         /// </summary>
         /// <param name="streamReader">StreamReader object for UMC csv file to be read</param>
-        public UmcReader(StreamReader streamReader) 
+        public UmcReader(StreamReader streamReader)
             : base(streamReader)
         {
             m_umcList = SaveDataToUmcList();
@@ -35,7 +35,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
- 
+
         #region Private Methods
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace MultiAlignCore.IO.Features
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                string[] columns; 
+                string[] columns;
 
                 var umc = ParseLine(line, previousId, ref idIndex, out columns);
 
@@ -63,7 +63,7 @@ namespace MultiAlignCore.IO.Features
                     // The new UMC ID matched the previous UMC ID
                     continue;
                 }
-                
+
                 // Store fields specific to a UMC file
 
                 if (m_columnMap.ContainsKey("Umc.ScanAligned"))
@@ -89,18 +89,18 @@ namespace MultiAlignCore.IO.Features
                     umc.ChargeRepresentative = int.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
                     umc.ChargeMax = Math.Max(umc.ChargeMax, umc.ChargeRepresentative);
                 }
-                
+
                 if (m_columnMap.ContainsKey("Umc.ChargeMax"))
                 {
                     umc.ChargeMax = int.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
                 }
-                
+
                 if (m_columnMap.ContainsKey("Umc.MZForCharge"))
                     umc.MZForCharge = double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
-                
+
                 if (m_columnMap.ContainsKey("Umc.DriftTimeUncorrected"))
                     umc.DriftTimeUncorrected = double.Parse(columns[m_columnMap["Umc.DriftTimeUncorrected"]]);
-               
+
                 umcList.Add(umc);
 
                 previousId = umc.Id;

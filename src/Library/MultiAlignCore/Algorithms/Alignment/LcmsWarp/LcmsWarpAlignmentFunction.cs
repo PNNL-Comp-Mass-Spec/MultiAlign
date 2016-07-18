@@ -86,7 +86,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Sets up Net function using alignee times and reference times as well as the reference scans in the 
+        /// Sets up Net function using alignee times and reference times as well as the reference scans in the
         /// time output, function requires initialized lists
         /// </summary>
         /// <param name="aligneeNets"></param>

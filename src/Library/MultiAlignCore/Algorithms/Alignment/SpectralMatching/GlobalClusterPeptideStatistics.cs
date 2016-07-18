@@ -4,7 +4,7 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 {
     /// <summary>
-    /// Handles tracking how many 
+    /// Handles tracking how many
     /// </summary>
     public sealed class GlobalClusterPeptideStatistics
     {

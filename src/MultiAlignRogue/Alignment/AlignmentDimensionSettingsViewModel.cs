@@ -24,7 +24,7 @@
         private string selectedBaselineDatasetName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AlignmentDimensionSettingsViewModel"/> class. 
+        /// Initializes a new instance of the <see cref="AlignmentDimensionSettingsViewModel"/> class.
         /// </summary>
         /// <param name="dimensionSettings">Dialog service for opening dialogs from view model.</param>
         public AlignmentDimensionSettingsViewModel(AlignmentDimensionSettings dimensionSettings)
@@ -119,7 +119,7 @@
         /// <summary>
         /// Get or sets a value indicating how much this dimension's sections can
         /// expand or contract.
-        /// 
+        ///
         /// Each section can expand to (ContractionFactor)^2 or
         /// contract to 1 / ContractionFactor.
         /// </summary>
@@ -168,6 +168,6 @@
                     this.RaisePropertyChanged();
                 }
             }
-        } 
+        }
     }
 }
