@@ -71,7 +71,7 @@
       <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MTDBFramework, Version=1.0.5655.19433, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="MTDBFramework, Version=1.0.5656.13514, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
     </Reference>
