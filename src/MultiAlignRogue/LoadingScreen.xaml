@@ -31,7 +31,7 @@
 
                 <ProgressBar Grid.Row="1"
                              Margin="6"
-                             Value="{Binding LoadProgress}" />
+                             Value="{Binding LoadProgress, Mode=OneWay}" />
             </Grid>
         </Border>
     </Grid>

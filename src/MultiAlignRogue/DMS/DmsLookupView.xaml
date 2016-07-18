@@ -182,7 +182,7 @@
                          HorizontalAlignment="Left"
                          Maximum="100"
                          Minimum="0"
-                         Value="{Binding Progress}" />
+                         Value="{Binding Progress, Mode=OneWay}" />
             <TextBlock Text="{Binding CopyStatusText}" />
         </StackPanel>
 

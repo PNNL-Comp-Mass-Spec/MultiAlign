@@ -84,7 +84,7 @@
                                  Height="25"
                                  Visibility="{Binding Path=DatabaseSelectionViewModel.ShowMassTagProgress,
                                                       Converter={StaticResource BoolToVis}}"
-                                 Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress}" />
+                                 Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress, Mode=OneWay}" />
                     <Label Grid.Row="2"
                            Grid.RowSpan="2"
                            Grid.Column="1"
@@ -330,7 +330,7 @@
                      Height="25"
                      Visibility="{Binding ShowAlignmentProgress,
                                           Converter={StaticResource BoolToVis}}"
-                     Value="{Binding AlignmentProgress}" />
+                     Value="{Binding AlignmentProgress, Mode=OneWay}" />
 
         <!--  Buttons  -->
         <Button Grid.Row="2"

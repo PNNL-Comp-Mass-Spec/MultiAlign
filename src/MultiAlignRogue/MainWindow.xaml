@@ -95,7 +95,7 @@
                                      RenderTransformOrigin="0.5,0.5"
                                      Visibility="{Binding ShouldShowProgress,
                                                           Converter={StaticResource BoolToVis}}"
-                                     Value="{Binding ProgressTracker}">
+                                     Value="{Binding ProgressTracker, Mode=OneWay}">
                             <ProgressBar.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform ScaleY="-1" />
@@ -131,7 +131,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid>
-                                                <ProgressBar Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" Value="{Binding Progress}" />
+                                                <ProgressBar Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" Value="{Binding Progress, Mode=OneWay}" />
                                                 <TextBlock HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Text="{Binding Dataset.DatasetName}" />

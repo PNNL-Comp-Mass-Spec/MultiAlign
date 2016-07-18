@@ -78,7 +78,7 @@
                              Margin="0,5,0,0"
                              Visibility="{Binding Path=DatabaseSelectionViewModel.ShowMassTagProgress,
                                                   Converter={StaticResource BoolToVis}}"
-                             Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress}" />
+                             Value="{Binding Path=DatabaseSelectionViewModel.MassTagLoadProgress, Mode=OneWay}" />
             </Grid>
         </GroupBox>
 
@@ -245,7 +245,7 @@
                      Height="25"
                      Visibility="{Binding ShouldShowTotalProgress,
                                           Converter={StaticResource BoolToVis}}"
-                     Value="{Binding TotalProgress}" />
+                     Value="{Binding TotalProgress, Mode=OneWay}" />
         <!--  Buttons  -->
         <Button Grid.Row="9"
                 Width="125"

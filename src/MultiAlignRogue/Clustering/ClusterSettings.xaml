@@ -128,7 +128,7 @@
                      Grid.ColumnSpan="3"
                      Visibility="{Binding ShouldShowProgress,
                                           Converter={StaticResource BoolToVis}}"
-                     Value="{Binding ProgressPercent}" />
+                     Value="{Binding ProgressPercent, Mode=OneWay}" />
 
         <Button Grid.Row="10"
                 Grid.Column="0"
