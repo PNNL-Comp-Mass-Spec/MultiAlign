@@ -1,5 +1,4 @@
-﻿
-using InformedProteomics.Backend.Utils;
+﻿using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 

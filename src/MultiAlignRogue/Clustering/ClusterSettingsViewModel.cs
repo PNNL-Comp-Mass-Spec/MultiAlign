@@ -514,7 +514,6 @@ namespace MultiAlignRogue.Clustering
         private void WriteClusterData(string path, IEnumerable<UMCClusterLight> clusters)
         {
             //var progData = new ProgressData { ProgressObj = progress };
-            int i = 1;
 
             using (var writer = File.CreateText(path))
             {

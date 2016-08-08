@@ -25,7 +25,9 @@ namespace MultiAlignCore.IO.Features
         public FeatureDataAccessProviders()
         {
             this.DatabaseLock = new ReaderWriterLockSlim();
+#pragma warning disable 618
             Synch = new object();
+#pragma warning restore 618
             this.ScanSummaryProviderCache = new ScanSummaryProviderCache();
             this.IdentificationProviderCache = new IdentificationProviderCache();
         }
