@@ -185,15 +185,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var alignmentData = new AlignmentData();
             OnStatus("Starting alignment of features.");
 
-            // Set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
-            // The values will be updated later
-            // Find out the max scan or NET value to use for the range depending on what
-            // type of baseline dataset it was (MTDB or dataset).
-            if (alignmentOptions.AlignToMassTagDatabase)
-            {
-                alignmentData.MinMTDBNET = (float)alignmentProcessor.MinReferenceNet;
-                alignmentData.MaxMTDBNET = (float)alignmentProcessor.MaxReferenceNet;
-            }
+            // Set minMtdbnet and maxMtdbnet to 0
+            alignmentData.MinMTDBNET = 0;
+            alignmentData.MaxMTDBNET = 0;
+            
 
             var umcLights = features as List<UMCLight> ?? features.ToList();
 
@@ -238,8 +233,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 map[featureId].ScanAligned = feature.ScanAligned;
             }
 
+            // Update the scan and NET ranges
             alignmentData.MinScanBaseline = minScanBaseline;
             alignmentData.MaxScanBaseline = maxScanBaseline;
+            alignmentData.MinMTDBNET = (float)alignmentProcessor.MinReferenceNet;
+            alignmentData.MaxMTDBNET = (float)alignmentProcessor.MaxReferenceNet;
 
             // Pull out the heat maps...
             OnStatus("Retrieving alignment data.");
