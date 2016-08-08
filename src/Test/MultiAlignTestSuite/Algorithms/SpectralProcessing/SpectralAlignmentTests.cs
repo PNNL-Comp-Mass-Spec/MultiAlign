@@ -45,7 +45,7 @@
 //                    1,
 //                    .7,
 //                    .01,
-//                    .5, Ignore = true)]
+//                    .5, Ignore = "true")]
 //        [TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
 //                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
 //                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
@@ -57,7 +57,7 @@
 //                    .7,
 //                    .01,
 //                    .5
-//                    , Ignore = true)]
+//                    , Ignore = "true")]
 //        [TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
 //                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
 //                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",

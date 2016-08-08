@@ -11,7 +11,7 @@ namespace MultiAlignTestSuite.IO.Databases
     public class DatabaseIoTests
     {
         [Test]
-        [TestCase(@"M:\data\proteomics\Applications\Kyle_IFL001_NEG\Test\Kyle-IFL001_NEG_MultiAlign.db3", Ignore = true)]
+        [TestCase(@"M:\data\proteomics\Applications\Kyle_IFL001_NEG\Test\Kyle-IFL001_NEG_MultiAlign.db3", Ignore = "Local test file")]
         public void CreateIndex(string path)
         {
             using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))

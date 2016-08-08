@@ -54,11 +54,9 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-            Ignore = false)]
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW")]
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
-            @"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-            Ignore = false)]
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW")]
         public void TestUmcFeatures(string relativePath, string relativeRawPath)
         {
             // Get absolute paths
@@ -125,16 +123,13 @@ namespace MultiAlignTestSuite.Algorithms
         [Test]
         [TestCase(@"Data\Lewy\Lewy2_18Cs_2Nov13_Samwise_13-07-28_isos.csv",
             @"Data\Lewy\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
-            500,
-            Ignore = false)]
+            500)]
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
             @"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-            500,
-            Ignore = false)]
+            500)]
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
             @"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-            500,
-            Ignore = false)]
+            500)]
         public void TestUmcFeaturesMultipleCharges(string relativePath, string relativeRawPath, int maxScanDiff)
         {
             // Get absolute paths
@@ -222,7 +217,7 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallFeature.csv",
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void TestChargeStateSplit(string path)
         {
             var data = File.ReadAllLines(path);
@@ -286,13 +281,17 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-            ExpectedException = typeof (ScanOutOfRangeException))]
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW")]
         public void AskForBigScan(string relativePath)
         {
             // Get the absolute path
             var path = GetPath(relativePath);
 
+            Assert.Throws<ScanOutOfRangeException>(() => GetOutOfRangeScan(path));
+        }
+
+        private void GetOutOfRangeScan(string path)
+        {
             using (var provider = RawLoaderFactory.CreateFileReader(path, 0))
             {
                 var summary = provider.GetScanSummary(10000000);

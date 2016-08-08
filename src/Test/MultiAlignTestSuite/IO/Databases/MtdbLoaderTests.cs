@@ -20,7 +20,7 @@ namespace MultiAlignTestSuite.IO.Databases
         /// <param name="format"></param>
         /// <param name="expectedNumberOfTargets"></param>
         [Test]
-        [TestCase(@"m:\testDatabase-100-3.mtdb", MassTagDatabaseFormat.MtdbCreator, 100, Ignore = true)]
+        [TestCase(@"m:\testDatabase-100-3.mtdb", MassTagDatabaseFormat.MtdbCreator, 100, Ignore = "Local test file")]
         public void TestLocalMtdbLoader(string path, MassTagDatabaseFormat format, int expectedNumberOfTargets)
         {
             var input = new InputDatabase

@@ -35,7 +35,7 @@ namespace MultiAlignTestSuite.IO.DAO
         }
 
         [Test]
-        [TestCase(@"m:\data\proteomics\matest-gui\guitest.db3", Ignore=true)]
+        [TestCase(@"m:\data\proteomics\matest-gui\guitest.db3", Ignore = "Local test file")]
         public void TestLoad(string path)
         {
             SetupDataProviders(path);

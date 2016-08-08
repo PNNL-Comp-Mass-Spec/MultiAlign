@@ -26,7 +26,7 @@ namespace MultiAlignTestSuite.IO
         }
 
         [Test]
-        [TestCase(@"Kyle-IFL001_NEG_MultiAlign.db3", Ignore = true)]
+        [TestCase(@"Kyle-IFL001_NEG_MultiAlign.db3", Ignore = "Local test file")]
         public void TestClusterReconstruction(string name)
         {
             CreateUMCClusterLight(Path.Combine(m_basePath, name), false);

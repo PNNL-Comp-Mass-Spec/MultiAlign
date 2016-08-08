@@ -15,23 +15,21 @@ namespace MultiAlignTestSuite.Data.Features
         /// Calculates statistics for a null umc list clusters.
         /// </summary>
         [Test]
-        [TestCase(ExpectedException=typeof(NullReferenceException))]
         public void CalculateStatisticsTestNullUMC()
         {
             var cluster = new UMCClusterLight();
             cluster.UmcList         = null;
-            cluster.CalculateStatistics(ClusterCentroidRepresentation.Median);
+            Assert.Throws<NullReferenceException>(() => cluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
         }
         /// <summary>
         /// Calculates statistics for a empty UMC list.
         /// </summary>
         [Test]
-        [TestCase(ExpectedException = typeof(Exception))]
         public void CalculateStatisticsTestEmptyUMC()
         {
             var cluster = new UMCClusterLight();
             cluster.UmcList         = new List<UMCLight>();
-            cluster.CalculateStatistics(ClusterCentroidRepresentation.Median);
+            Assert.Throws<Exception>(() => cluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
         }
         /// <summary>
         /// Calculates statistics for a empty UMC list.

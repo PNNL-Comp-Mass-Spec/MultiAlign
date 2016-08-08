@@ -26,7 +26,7 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
             10,
-            Ignore=true)]
+            Ignore = "Local test file")]
         public void CreateDatasetMap(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -53,7 +53,7 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
             10,
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void TestClusterWriting(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -74,7 +74,7 @@ namespace MultiAlignTestSuite.OHSU
         [Test]
         [TestCase(
             @"M:\data\proteomics\OHSU\Data\dummy_database-charge.db3", 20, 400,
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void TestCreateDummyDatabase(string databasePath, int totalDatasets, int totalClusters)
         {
             File.Delete(databasePath);
@@ -157,7 +157,7 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\dummy_charge-1",
             1,
             1,
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void TestClusterGeneration(string databasePath,
             string crossPath,
             int charge,
@@ -260,7 +260,7 @@ namespace MultiAlignTestSuite.OHSU
             //@"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
             2,
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void CreateCrossTab(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);

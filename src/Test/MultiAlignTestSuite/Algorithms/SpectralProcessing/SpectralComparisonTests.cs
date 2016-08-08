@@ -155,15 +155,13 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             3726,
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             3541,
-            .5,
-            Ignore = false)]
+            .5)]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             7413,
-            1,
-            Ignore = false)]
+            1)]
         public void DisplayComparisonFigure(
             string pathX, int scanX,
             string pathY, int scanY,
@@ -200,7 +198,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             3541,
             SpectralComparison.NormalizedDotProduct,
             .5,
-            Ignore = true)]
+            Ignore = "true")]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             15304,
@@ -208,7 +206,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             17614,
             SpectralComparison.NormalizedDotProduct,
             .5,
-            Ignore = true)]
+            Ignore = "true")]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
@@ -217,8 +215,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             SpectralComparison.PeakCounts,
             SpectraFilters.TopPercent,
             .8,
-            1,
-            Ignore = false)]
+            1)]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
@@ -227,8 +224,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             SpectralComparison.PeakCounts,
             SpectraFilters.TopPercent,
             .8,
-            1,
-            Ignore = false)]
+            1)]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
@@ -237,8 +233,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             SpectralComparison.CosineDotProduct,
             SpectraFilters.TopPercent,
             .8,
-            1,
-            Ignore = false)]
+            1)]
         [TestCase(
             @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
@@ -247,8 +242,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             SpectralComparison.CosineDotProduct,
             SpectraFilters.TopPercent,
             .8,
-            1,
-            Ignore = false)]
+            1)]
         public void TestSpectralSimilarityScore(
             string pathX, int scanX,
             string pathY, int scanY,
@@ -453,12 +447,12 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 3541,
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
-        //            Ignore = true)]
+        //            Ignore = "true")]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 15304,
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 17614,
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
-        //            Ignore = true)]
+        //            Ignore = "true")]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            SpectralComparison.CosineDotProduct,
@@ -566,7 +560,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            @"M:\data\proteomics\Thesis\testpaa-tr-cp-00-00\tr-cp-00-00-1.0e+00_matches.csv",
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
-        //            Ignore=true)]
+        //            Ignore = "true")]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"M:\data\proteomics\Thesis\testpaa-tr-cp-00-00\tr-cp-00-00-1.0e+00_matches.csv",
@@ -766,7 +760,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            1,
         //            .7,
         //            .01,
-        //            .5, Ignore = false)]
+        //            .5)]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
@@ -778,7 +772,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            .7,
         //            .01,
         //            .5
-        //            , Ignore = true)]
+        //            , Ignore = "true")]
         //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
@@ -789,7 +783,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         //            1,
         //            .7,
         //            .01,
-        //            .5, Ignore=true)]
+        //            .5, Ignore = "true")]
         //public void TestRawPeptideMatchesDistributions  (string pathX,
         //                                                string pathY,
         //                                                string peptidePathX,

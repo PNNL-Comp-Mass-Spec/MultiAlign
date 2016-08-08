@@ -13,7 +13,7 @@ namespace MultiAlignTestSuite.IO
     [TestFixture]
     public class UMCFeatureDOATest
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             NHibernateUtil.CreateDatabase("test.db3");

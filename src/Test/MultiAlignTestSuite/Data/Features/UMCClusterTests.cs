@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Data.Features
@@ -15,21 +16,19 @@ namespace MultiAlignTestSuite.Data.Features
         /// Calculates statistics for a null umc list clusters.
         /// </summary>
         [Test]
-        [TestCase(ExpectedException=typeof(NullReferenceException))]
         public void CalculateStatisticsTestNullUmc()
         {
             var cluster      = new UMCClusterLight {UmcList = null};
-            cluster.CalculateStatistics(ClusterCentroidRepresentation.Median);
+            Assert.Throws<NullReferenceException>(() => cluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
         }
         /// <summary>
         /// Calculates statistics for a empty UMC list.
         /// </summary>
         [Test]
-        [TestCase(ExpectedException = typeof(Exception))]
         public void CalculateStatisticsTestEmptyUmc()
         {
             var cluster = new UMCClusterLight { UmcList = new List<UMCLight>() };
-            cluster.CalculateStatistics(ClusterCentroidRepresentation.Median);
+            Assert.Throws<Exception>(() => cluster.CalculateStatistics(ClusterCentroidRepresentation.Median));
         }
         /// <summary>
         /// Calculates statistics for a empty UMC list.

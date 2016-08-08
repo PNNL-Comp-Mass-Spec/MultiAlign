@@ -107,7 +107,7 @@ namespace MultiAlignTestSuite.OHSU
             16,
             .014,
             .3,
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void MassPartitionTest(string databasePath,
             int chargeState,
             double massTolerance,

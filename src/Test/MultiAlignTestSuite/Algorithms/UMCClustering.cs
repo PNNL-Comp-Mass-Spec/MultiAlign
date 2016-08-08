@@ -176,8 +176,8 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, true, Ignore=true)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, true, Ignore = true)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, true, Ignore = "Local test file")]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, true, Ignore = "Local test file")]
         public void TestRestrictiveBoxMethod(string path, DistanceMetric dist, bool useBoxMethod)
         {
             var features = ReadFeatures(path);
@@ -205,8 +205,8 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, Ignore = true)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, Ignore = true)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, Ignore = "Local test file")]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, Ignore = "Local test file")]
         public void TestDistanceDistributions(string path, DistanceMetric dist)
         {
             var features = ReadFeatures(path);
@@ -254,7 +254,7 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.WeightedEuclidean, Ignore = true)]
+        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.WeightedEuclidean, Ignore = "Local test file")]
         public void TestDistancesEuclidean(string path, DistanceMetric dist)
         {
             var func = DistanceFactory<UMCClusterLight>.CreateDistanceFunction(DistanceMetric.Euclidean);

@@ -27,21 +27,19 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
             @"C:\UnitTestFolder\dataset2.txt",
             "asdf",
             "asdfasdf",
-            Ignore = true
+            Ignore = "Local test file"
             )]
         [TestCase(
            @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
            @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"testResults\Alignment\QC-Shew-Annotated3\",
-           @"qc_shew_13_04_1b",
-           Ignore = false
+           @"qc_shew_13_04_1b"
            )]
         [TestCase(
            @"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
            @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
            @"testResults\Alignment\Schutzer-CF\",
-           @"Schutzer_CF_18_01_10",
-           Ignore = false
+           @"Schutzer_CF_18_01_10"
            )]
         public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -132,21 +130,19 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
             @"C:\UnitTestFolder\dataset2.txt",
             "asdf",
             "asdfasdf",
-            Ignore = true
+            Ignore = "Local test file"
             )]
         [TestCase(
            @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
            @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"testResults\Alignment\QC-Shew-Annotated3-CPP\",
-           @"qc_shew_13_04_1b",
-           Ignore = false
+           @"qc_shew_13_04_1b"
            )]
         [TestCase(
            @"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
            @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
            @"testResults\Alignment\Schutzer-CF-CPP\",
-           @"Schutzer_CF_18_01_10",
-           Ignore = false
+           @"Schutzer_CF_18_01_10"
            )]
         public void TestLcmsWarpPortCpp(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -240,7 +236,7 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
         [TestCase(
             @"C:\UnitTestFolder\dataset1.txt",
-            Ignore=true)]
+            Ignore = "Local test file")]
         public void TestCppSetReferenceFeatures(string baselinePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -286,7 +282,7 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
         [Test(Description = "Tests the old C++ version, to make sure it sets the alignee features correctly.")]
         [TestCase(
             @"C:\UnitTestFolder\dataset2.txt",
-            Ignore=true)]
+            Ignore = "Local test file")]
         public void TestSetAligneeFeatures(string aligneePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -328,7 +324,7 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
         [TestCase(
             @"C:\UnitTestFolder\dataset1.txt",
             @"C:\UnitTestFolder\dataset2.txt",
-            Ignore = true)]
+            Ignore = "Local test file")]
         public void TestPerformNetAlignment(string baselinePath, string aligneePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -378,7 +374,7 @@ namespace MultiAlignEngineComparisons.Algorithms.Alignment.LCMSWarp
 
 
         [Test(Description = "Testing the grid app being developed (will be moved to appropriate folder)")]
-        [TestCase(@"C:\UnitTestFolder\csvFolder\mz.csv", Ignore = true)]
+        [TestCase(@"C:\UnitTestFolder\csvFolder\mz.csv", Ignore = "Local test file")]
         public void TestLamarcheGridApp(string csvPath)
         {
             //Read a csv file, put the data into a new UMCLight for each one

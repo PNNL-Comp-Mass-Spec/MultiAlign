@@ -14,7 +14,7 @@ namespace MultiAlignTestSuite.IO.DAO
     [TestFixture]
     public class NHibernateFeatureTests
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             NHibernateUtil.CreateDatabase("test.db3");
