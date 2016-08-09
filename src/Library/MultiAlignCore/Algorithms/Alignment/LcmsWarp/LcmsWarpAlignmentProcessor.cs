@@ -44,12 +44,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private double _maxAligneeDatasetMz;
 
         // LCMSWarp instance that will do the alignment when processing
-        private LcmsWarp _lcmsWarp;
+        private readonly LcmsWarp _lcmsWarp;
 
         /// <summary>
         /// Alignment options
         /// </summary>
-        private LcmsWarpAlignmentOptions _options;
+        private readonly LcmsWarpAlignmentOptions _options;
 
         private readonly Dictionary<CurrentLcmsWarpTask, double> _currentTaskPercentCompleteAtStart;
         private double _percentCompleteAtStartOfTask;
@@ -66,6 +66,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private bool _aligningToMassTagDb;
 
         #region Public properties
+
+        public List<LcmsWarpFeatureMatch> FeatureMatches {
+            get { return _lcmsWarp.FeatureMatches; }
+        }
 
         /// <summary>
         /// Get property for the NET Intercept that LCMS Warp is holding
@@ -231,7 +235,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        ///
         /// Use the NET value of the UMCs in the List as the value to align to, the predictor variable
         /// </summary>
         /// <param name="umcData"></param>
@@ -360,10 +363,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
             else
             {
-                var referenceScans = referenceNets.Select(rNet => _minReferenceDatasetScan +
-                                             rNet * (_maxReferenceDatasetScan - _minReferenceDatasetScan));
-                var referenceTimes = referenceNets.Select(rNet => _minReferenceDatasetTime +
-                                             rNet * (_maxReferenceDatasetTime - _minReferenceDatasetTime));
+                var referenceScans = referenceNets.Select(
+                    rNet => _minReferenceDatasetScan + rNet * (_maxReferenceDatasetScan - _minReferenceDatasetScan)).ToList();
+
+                var referenceTimes = referenceNets.Select(
+                    rNet => _minReferenceDatasetTime + rNet * (_maxReferenceDatasetTime - _minReferenceDatasetTime)).ToList();
+
                 func.SetNetFunction(aligneeNets, referenceNets, referenceScans, referenceTimes);
             }
 
@@ -570,9 +575,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// the output scores
         /// </summary>
         /// <returns></returns>
-        public double[,] GetAlignmentHeatMap()
+        public double[,] GetAlignmentHeatMap(bool standardize = true)
         {
-            return _lcmsWarp.GetSubsectionMatchScore(true);
+            return _lcmsWarp.GetSubsectionMatchScore(standardize);
         }
 
         /// <summary>

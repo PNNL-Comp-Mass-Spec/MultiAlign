@@ -239,9 +239,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             alignmentData.MinMTDBNET = (float)alignmentProcessor.MinReferenceNet;
             alignmentData.MaxMTDBNET = (float)alignmentProcessor.MaxReferenceNet;
 
+            // Cache the matching features
+            alignmentData.FeatureMatches = alignmentProcessor.FeatureMatches;
+
             // Pull out the heat maps...
             OnStatus("Retrieving alignment data.");
-            alignmentData.HeatScores = alignmentProcessor.GetAlignmentHeatMap();
+            alignmentData.HeatScores = alignmentProcessor.GetAlignmentHeatMap(alignmentOptions.StandardizeHeatScores);
+
             // Mass and net error histograms!
             alignmentData.MassErrorHistogram = alignmentProcessor.GetMassErrorHistogram(alignmentOptions.MassBinSize);
             alignmentData.NetErrorHistogram = alignmentProcessor.GetNetErrorHistogram(alignmentOptions.NetBinSize);

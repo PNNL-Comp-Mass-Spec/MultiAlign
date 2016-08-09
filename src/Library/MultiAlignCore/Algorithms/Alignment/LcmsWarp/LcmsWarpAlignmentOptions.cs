@@ -183,6 +183,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public FeatureAlignmentType AlignmentAlgorithmType { get; set; }
 
+        /// <summary>
+        /// When true, standardizes the match scores of each subsection in the heatmap scores
+        /// </summary>
+        public bool StandardizeHeatScores { get; set; }
+
         #endregion
 
         /// <summary>
@@ -215,25 +220,24 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpAlignmentOptions()
         {
-            NumTimeSections = 100; // 100 in VIPER
+            NumTimeSections = 100;              // 100 in VIPER
             NumBaselineSections = this.NumTimeSections * this.ContractionFactor;
             TopFeatureAbundancePercent = 0;
-            ContractionFactor = 3; //   3 in VIPER
+            ContractionFactor = 3;              //   3 in VIPER
             MaxExpansionWidth = this.ContractionFactor * this.ContractionFactor;
-            MaxTimeDistortion = 10; //  10 in VIPER
-            MaxPromiscuity = 3; //   2 in VIPER
-            UsePromiscuousPoints = false;
-                // false for Dataset to Dataset alignment; true for Dataset to AMT tag alignment
+            MaxTimeDistortion = 10;             //  10 in VIPER
+            MaxPromiscuity = 3;                 //   2 in VIPER
+            UsePromiscuousPoints = false;       // false for Dataset to Dataset alignment; true for Dataset to AMT tag alignment
             MassCalibUseLsq = false;
-            MassCalibrationWindow = 40.0; //  50 ppm in VIPER
-            MassCalibNumXSlices = 12; //  20 in VIPER
-            MassCalibNumYSlices = 50; // 100 in VIPER
-            MassCalibMaxJump = 20; //  50 in VIPER
-            MassCalibMaxZScore = 3; //   3 in VIPER
-            MassCalibLsqMaxZScore = 2.5; //   3 in VIPER
-            MassCalibLsqNumKnots = 12; //  12 in VIPER
-            MassTolerance = 10; //  10 in VIPER
-            NetTolerance = 0.02; //   0.02 in VIPER
+            MassCalibrationWindow = 40.0;       //  50 ppm in VIPER
+            MassCalibNumXSlices = 12;           //  20 in VIPER
+            MassCalibNumYSlices = 50;           // 100 in VIPER
+            MassCalibMaxJump = 20;              //  50 in VIPER
+            MassCalibMaxZScore = 3;             //   3 in VIPER
+            MassCalibLsqMaxZScore = 2.5;        //   3 in VIPER
+            MassCalibLsqNumKnots = 12;          //  12 in VIPER
+            MassTolerance = 10;                 //  10 in VIPER
+            NetTolerance = 0.02;                //   0.02 in VIPER
 
             AlignType = LcmsWarpAlignmentType.NET_MASS_WARP;
             CalibrationType = LcmsWarpCalibrationType.Both;
@@ -246,14 +250,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             AMTTagFilterMassMin = 0;
             AMTTagFilterMassMax = 0;
 
-            MinimumAMTTagObsCount = 5; // 5 in VIPER
+            MinimumAMTTagObsCount = 5;          // 5 in VIPER
 
-            MassBinSize = 0.2; // 0.2 in VIPER
-            NetBinSize = 0.001; // 0.001 in VIPER
+            MassBinSize = 0.2;                  // 0.2 in VIPER
+            NetBinSize = 0.001;                 // 0.001 in VIPER
             DriftTimeBinSize = 0.03;
             StoreAlignmentFunction = false;
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
             SeparationTypes = new List<FeatureLight.SeparationTypes>();
+
+            StandardizeHeatScores = true;
         }
     }
 }
