@@ -40,6 +40,11 @@ namespace MultiAlignCore.Data.Alignment
         public bool BaselineIsAmtDB { get; set; }
 
         /// <summary>
+        /// Matching features
+        /// </summary>
+        public List<LcmsWarpFeatureMatch> FeatureMatches { get; set; }
+
+        /// <summary>
         /// Property to hold the heat scores for the alignment
         /// </summary>
         public double[,] HeatScores { get; set; }

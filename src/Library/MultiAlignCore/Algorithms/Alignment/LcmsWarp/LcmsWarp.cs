@@ -51,9 +51,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private double _muMass = 0;
         private double _muNet = 0;
         private readonly List<LcmsWarpAlignmentMatch> _alignmentFunc = new List<LcmsWarpAlignmentMatch>();
+
+        /// <summary>
+        /// Features that we are aligning to the baseline
+        /// </summary>
         private readonly List<UMCLight> _features = new List<UMCLight>();
+
+        /// <summary>
+        /// Baseline features that we are aligning to
+        /// Either features in a baseline dataset or AMT tags from an AMT tag database
+        /// </summary>
         private readonly List<UMCLight> _baselineFeatures = new List<UMCLight>();
 
+        /// <summary>
+        /// List of _features that matched entries in _baselineFeatures
+        /// </summary>
         public List<LcmsWarpFeatureMatch> FeatureMatches = new List<LcmsWarpFeatureMatch>();
 
         private double[,,] _subsectionMatchScores = null;
@@ -508,7 +520,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Updates the Alignee and Reference net lists with the data from the alignment
+        /// Updates the Alignee and Reference NET lists with the data from the alignment
         /// function determined by the warper with the Net start data
         /// </summary>
         /// <param name="aligneeNet"></param>
@@ -624,12 +636,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         //Calculate the mass and net errors
                         var netDiff = baselineFeature.Net - feature.NetAligned;
                         var driftDiff = baselineFeature.DriftTime - feature.DriftTime;
-                        var massDiff = (baselineFeature.MassMonoisotopic -
-                                        feature.MassMonoisotopic) * 1000000.0 / feature.MassMonoisotopic;
+                        var massDiff = baselineFeature.MassMonoisotopic - feature.MassMonoisotopic;
+                        var massDiffPpm = massDiff * 1000000.0 / feature.MassMonoisotopic;
 
                         //Calculate the match score
                         var matchScore = -0.5 * (netDiff * netDiff) / (_netStd * _netStd);
-                        matchScore -= 0.5 * (massDiff * massDiff) / (_massStd * _massStd);
+                        matchScore -= 0.5 * (massDiffPpm * massDiffPpm) / (_massStd * _massStd);
 
                         //If the match score is greater than the best match score, update the holding item
                         if (matchScore > bestMatchScore)
@@ -641,7 +653,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 BaselineFeatureIndex = baselineFeatureIndex,
                                 Net = feature.Net,
                                 NetError = netDiff,
-                                PpmMassError = massDiff,
+                                MassError = massDiff,
+                                PpmMassError = massDiffPpm,
                                 DriftError = driftDiff,
                                 BaselineNet = _baselineFeatures[baselineFeatureIndex].Net
                             };

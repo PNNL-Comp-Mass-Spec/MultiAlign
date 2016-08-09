@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     public class LcmsWarpFeatureMatch : IComparable<LcmsWarpFeatureMatch>
     {
         /// <summary>
-        /// Constructor, initializes the testing values to -1 to ensure ability to see
+        /// Constructor, initializes the values to -1 to ensure ability to see
         /// when there hasn't been a match made
         /// </summary>
         public LcmsWarpFeatureMatch()
@@ -24,42 +24,43 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
+        /// Mass Error
+        /// Equal to the difference between the feature Mass and the baseline Mass, in Da
+        /// </summary>
+        public double MassError { get; set; }
+
+        /// <summary>
         /// PPM Mass Error
-        /// Equal to the difference between the feature Mass and the baseline Mass
-        /// auto property
+        /// Equal to the difference between the feature Mass and the baseline Mass, in ppm
         /// </summary>
         public double PpmMassError { get; set; }
 
         /// <summary>
         /// Normalized Elution Time error
         /// Equal to the difference between the feature NET and the baseline NET
-        /// auto property
         /// </summary>
         public double NetError { get; set; }
 
         /// <summary>
         /// Drift Time Error
         /// Equal to the difference between the feature Drift time and the baseline Drift time
-        /// auto property
         /// </summary>
         public double DriftError { get; set; }
 
         /// <summary>
-        /// Normalized elution time of the feature auto property
+        /// Normalized elution time of the feature
         /// </summary>
         public double Net { get; set; }
 
         /// <summary>
-        /// Normalized elution time of the baseline feature that
-        /// this feature matches to.
-        /// Auto property
+        /// Normalized elution time of the baseline feature that this feature matches to.
+        /// The baseline feature is either an AMT tag or a feature in a baseline dataset
         /// </summary>
         public double BaselineNet { get; set; }
 
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the feature that this match corresponds to
-        /// Auto property -
         /// </summary>
         public int FeatureIndex { get; set; }
 
@@ -68,7 +69,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         //TODO: probably just point to the reference of the feature
         /// <summary>
         /// Index of the baseline feature that this match corresponds to
-        /// Auto property
+        /// The baseline feature is either an AMT tag or a feature in a baseline dataset
         /// </summary>
         public int BaselineFeatureIndex { get; set; }
 
