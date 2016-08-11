@@ -20,6 +20,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
     {
         private readonly LcmsWarpAlignmentOptions _options;
 
+        private Dictionary<int, double> _scanToNETMap;
+
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         public LcmsWarpFeatureAligner(LcmsWarpAlignmentOptions options)
@@ -57,6 +59,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         ///     Gets or sets the alignee spectra provider.
         /// </summary>
         public IScanSummaryProvider AligneeSpectraProvider { get; set; }
+
+        /// <summary>
+        /// Gets a map from scan number in the alignee features to aligned NET
+        /// </summary>
+        public Dictionary<int, double> ScanToNETMap
+        {
+            get { return _scanToNETMap; }
+        }
 
         /// <summary>
         /// Aligns a dataset to a mass tag database
@@ -156,6 +166,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
+
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
             var baselineMassTags = baseline as List<MassTagLight> ?? baseline.ToList();
             var aligneeFeatures = features as List<UMCLight> ?? features.ToList();
@@ -208,7 +219,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // Extract alignment function
             alignmentData.AlignmentFunction = alignmentProcessor.GetAlignmentFunction();
 
-            // Correct the features (updates MassMonoisotopicAligned)
+            // Extract the NET value for every scan
+            _scanToNETMap = alignmentProcessor.GetScanToNETMapping();
+
+            // Correct the features (updates NetAligned and MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
             umcLights = alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
 
@@ -220,17 +234,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 maxScanBaseline = Math.Max(maxScanBaseline, feature.Scan);
                 minScanBaseline = Math.Min(minScanBaseline, feature.Scan);
-                var featureId = feature.Id;
-                var isInMap = map.ContainsKey(featureId);
-                if (!isInMap)
-                    continue;
-
-                map[featureId].MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
-                map[featureId].NetAligned = feature.NetAligned;
-                map[featureId].Net = feature.Net;
-                map[featureId].NetStart = feature.NetStart;
-                map[featureId].NetEnd = feature.NetEnd;
-                map[featureId].ScanAligned = feature.ScanAligned;
             }
 
             // Update the scan and NET ranges
