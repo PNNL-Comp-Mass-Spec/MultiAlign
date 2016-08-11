@@ -537,6 +537,28 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
+        /// Determines the transformed NETs for a range of scans
+        /// </summary>
+        public Dictionary<int, double> GetScanToNETMapping(int scanStart, int scanEnd)
+        {
+            var dicSectionToIndex = new Dictionary<int, int>();
+            for (var i = 0; i < _alignmentFunc.Count; i++)
+            {
+                dicSectionToIndex.Add(_alignmentFunc[i].AligneeSectionStart, i);
+            }
+
+            var scanToNET = new Dictionary<int, double>();
+
+            for (var scan = scanStart; scan <= scanEnd; scan++)
+            {
+                var netValue = GetTransformedNet(scan, dicSectionToIndex);
+                scanToNET.Add(scan, netValue);
+            }
+
+            return scanToNET;
+        }
+
+        /// <summary>
         /// Determines the transformed NETs for the LCMSWarp function
         /// </summary>
         public void GetTransformedNets()
@@ -581,6 +603,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 }
 
                 msSectionIndex = dicSectionToIndex[msSection1];
+
+                // Typically msSectionIndex will point to the section in _alignmentFunc just after the one we actually want
+                // Check for this
+                while (msSectionIndex > 0 && _alignmentFunc[msSectionIndex].AligneeNetStart > aligneeNet)
+                {
+                    msSectionIndex--;
+                }
+
+                // Also check for msSectionIndex being too small
+                while (msSectionIndex < _alignmentFunc.Count - 1 && _alignmentFunc[msSectionIndex].AligneeNetEnd < aligneeNet)
+                {
+                    // This code will likely never be hit
+                    msSectionIndex++;
+                }
             }
 
             var netStart = _alignmentFunc[msSectionIndex].AligneeNetStart;
@@ -943,7 +979,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var ppm = FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
                 var netDiff = baselineFeature.Net - feature.NetAligned;
 
-                calibrations.Add(new RegressionPoint(feature.Mz, 0, netDiff, ppm));
+                calibrations.Add(new RegressionPoint(feature.Mz, ppm, netDiff, ppm));
             }
             MzRecalibration.CalculateRegressionFunction(calibrations);
 
@@ -973,7 +1009,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var ppm = FeatureLight.ComputeMassPPMDifference(feature.MassMonoisotopic, baselineFeature.MassMonoisotopic);
                 var netDiff = baselineFeature.Net - feature.NetAligned;
 
-                calibrations.Add(new RegressionPoint(feature.Net, 0, netDiff, ppm));
+                calibrations.Add(new RegressionPoint(feature.Net, ppm, netDiff, ppm));
             }
 
             NetRecalibration.CalculateRegressionFunction(calibrations);
