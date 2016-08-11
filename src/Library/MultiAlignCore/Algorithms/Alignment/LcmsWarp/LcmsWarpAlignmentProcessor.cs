@@ -61,7 +61,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private string _lastProgressMessage;
 
         /// <summary>
-        /// Flag for if the Processor is aligning to a Mass Tag Database
+        /// Flag for if the Processor is aligning to a Mass Tag Database (list of AMT tags)
         /// </summary>
         private bool _aligningToMassTagDb;
 
@@ -103,8 +103,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Public constructor for the LCMS Alignment Processor
         /// Initializes a new LCMSWarp object using the LCMS Alignment options
-        /// which were passed into the Processor
+        /// that are passed into the Processor
         /// </summary>
+        /// <remarks>
+        /// Store data using SetReferenceDatasetFeatures and SetAligneeDatasets, 
+        /// then call PerformAlignmentToMsFeatures, which calls either PerformNetWarp or PerformNetMassWarp</remarks>
         public LcmsWarpAlignmentProcessor(LcmsWarpAlignmentOptions options)
         {
             _options = options;
@@ -152,29 +155,40 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     _maxReferenceDatasetScan, _minReferenceDatasetTime, _maxReferenceDatasetTime);
             }
 
+            // Update sortedData using featureData
+
             var i = 0;
-            foreach (var point in featureData)
+            foreach (var point in featureData.OrderBy(x => x.Id))
             {
-                if (i < data.Count)
+                while (i < data.Count - 1 && sortedData[i].Id < point.Id)
                 {
-                    // Update the data without stomping the data that shouldn't change.
-                    // TODO: Are we updating the right data???
-                    sortedData[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
-                                                                                                                     : sortedData[i].MassMonoisotopic;
-                    sortedData[i].NetAligned = point.NetAligned;
-                    sortedData[i].NetStart = point.NetStart;
-                    sortedData[i].NetEnd = point.NetEnd;
-                    sortedData[i].DriftTime = point.DriftTime;
-                    if (!_aligningToMassTagDb)
-                    {
-                        sortedData[i].ScanAligned = point.ScanAligned;
-                        sortedData[i].DriftTimeAligned = point.DriftTimeAligned;
-                    }
+                    i++;
                 }
-                else
+
+                while (i > 0 && sortedData[i].Id > point.Id)
                 {
+                    i--;
+                }
+
+                if (sortedData[i].Id != point.Id)
+                {
+                    Console.WriteLine("Possible code bug; id {0} not found in sortedData: ", point.Id);
                     sortedData.Add(point);
+                    continue;
                 }
+
+                sortedData[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
+                                                                                                                 : sortedData[i].MassMonoisotopic;
+                sortedData[i].NetAligned = point.NetAligned;
+                sortedData[i].NetStart = point.NetStart;
+                sortedData[i].NetEnd = point.NetEnd;
+                sortedData[i].DriftTime = point.DriftTime;
+                if (!_aligningToMassTagDb)
+                {
+                    sortedData[i].ScanAligned = point.ScanAligned;
+                    sortedData[i].DriftTimeAligned = point.DriftTimeAligned;
+                }
+
                 i++;
             }
 
@@ -381,18 +395,19 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var maxAligneeNet = _lcmsWarp.MaxNet;
 
             // Get the mass calibration function with time
-            var numXKnots = _options.MassCalibNumXSlices;
-            var aligneeMzMassFunc = new List<double>();
-            var aligneeNetMassFunc = new List<double>();
-            var aligneePpmShiftMassFunc = new List<double>();
+            var numXSlices = _options.MassCalibNumXSlices;
 
             if (_options.CalibrationType == LcmsWarpCalibrationType.NetRegression ||
                 _options.CalibrationType == LcmsWarpCalibrationType.Both)
             {
-                // get the PPM for each knot
-                for (var knotNum = 0; knotNum < numXKnots; knotNum++)
+                // get the PPM for each X slice
+
+                var aligneeNetMassFunc = new List<double>();
+                var aligneePpmShiftMassFunc = new List<double>();
+
+                for (var sliceIndex = 0; sliceIndex < numXSlices; sliceIndex++)
                 {
-                    var net = minAligneeNet + ((maxAligneeNet - minAligneeNet) * knotNum) / numXKnots;
+                    var net = minAligneeNet + ((maxAligneeNet - minAligneeNet) * sliceIndex) / numXSlices;
                     aligneeNetMassFunc.Add(net);
                     aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromNet(net));
                 }
@@ -402,10 +417,14 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             if (_options.CalibrationType == LcmsWarpCalibrationType.MzRegression ||
                 _options.CalibrationType == LcmsWarpCalibrationType.Both)
             {
-                // Get the ppm for each knot
-                for (var knotNum = 0; knotNum < numXKnots; knotNum++)
+                // Get the ppm for each X slice
+
+                var aligneeMzMassFunc = new List<double>();
+                var aligneePpmShiftMassFunc = new List<double>();
+
+                for (var sliceIndex = 0; sliceIndex < numXSlices; sliceIndex++)
                 {
-                    var net = knotNum * 1.0 / numXKnots;
+                    var net = sliceIndex * 1.0 / numXSlices;
                     var mz = _minAligneeDatasetMz + (int) ((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
                     aligneeMzMassFunc.Add(mz);
                     aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromMz(mz));
@@ -578,6 +597,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public double[,] GetAlignmentHeatMap(bool standardize = true)
         {
             return _lcmsWarp.GetSubsectionMatchScore(standardize);
+        }
+
+        /// <summary>
+        /// Determines the transformed NETs for a range of scans
+        /// </summary>
+        public Dictionary<int, double> GetScanToNETMapping()
+        {
+            if (_lcmsWarp == null)
+                return new Dictionary<int, double>();
+
+            return _lcmsWarp.GetScanToNETMapping(_minAligneeDatasetScan, _maxAligneeDatasetScan);
         }
 
         /// <summary>
