@@ -17,20 +17,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// NET values before and after alignment
-        /// Keys are input NET, values are aligned NET
+        /// Keys are input NET (often scan number), values are aligned NET
         /// </summary>
         /// <remarks>Sorted ascending on input NET</remarks>
         private readonly List<KeyValuePair<double, double>> _netAlignmentFunction = new List<KeyValuePair<double, double>>();
 
         /// <summary>
         /// This list is used to find the closest matching data point in _netAlignmentFunction based on an input NET value
+        /// Keys are input NET (often scan number), values are an index in _netAlignmentFunction
         /// </summary>
-        private readonly List<double> _netLookupKeys = new List<double>();
-
-        /// <summary>
-        /// This list is parallel to _netLookupInputNETs
-        /// </summary>
-        private readonly List<int> _netLookupKeyIndices = new List<int>();
+        private readonly SortedList<double, int> _netLookupKeys = new SortedList<double, int>();
 
         /// <summary>
         /// Scan number to time mapping as a list of KeyValuePairs
@@ -187,9 +183,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _netAlignmentFunction.Clear();
             _netAlignmentFunction.AddRange(query);
 
-            // Populate the parallel lists used by GetInterpolatedNet
+            // Populate _netLookupKeys, which is used by GetInterpolatedNet
             _netLookupKeys.Clear();
-            _netLookupKeyIndices.Clear();
 
             var lastValue = double.MinValue;
 
@@ -200,11 +195,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 if (Math.Abs(valueToAdd - lastValue) < float.Epsilon)
                     continue;
 
-                _netLookupKeys.Add(valueToAdd);
-                _netLookupKeyIndices.Add(i);
+                _netLookupKeys.Add(valueToAdd, i);
 
                 lastValue = valueToAdd;
             }
+
         }
 
         /// <summary>
@@ -274,33 +269,35 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // Find the closest data point in _netAlignmentFunction
 
             double alignedNET;
-            var matchIndex = _netLookupKeys.BinarySearch(aligneeNet);
+            var keys = new List<double>(_netLookupKeys.Keys);
+
+            var matchIndex = keys.BinarySearch(aligneeNet);
 
             if (matchIndex >= 0)
             {
                 // Exact match was found
-                var resultIndex = _netLookupKeyIndices[matchIndex];
+                var resultIndex = _netLookupKeys[keys[matchIndex]];
                 alignedNET = _netAlignmentFunction[resultIndex].Value;
             }
             else
             {
-                if (_netLookupKeyIndices.Count < 1)
+                if (_netLookupKeys.Count < 1)
                 {
-                    throw new Exception("Cannot interpolate the X value since _netLookupKeyIndices does not contain multiple entries");
+                    throw new Exception("Cannot interpolate the X value since _netLookupKeys does not contain multiple entries");
                 }
 
                 var closestMatch = ~matchIndex - 1;
                 if (closestMatch < 0)
                     closestMatch = 0;
 
-                if (closestMatch == _netLookupKeyIndices.Count - 1)
+                if (closestMatch == _netLookupKeys.Count - 1)
                 {
                     // Matched the last entry in _netLookupKeyIndices
                     // Decrement by one so that we can interpolate
                     closestMatch--;
                 }
-                var resultIndex1 = _netLookupKeyIndices[closestMatch];
-                var resultIndex2 = _netLookupKeyIndices[closestMatch + 1];
+                var resultIndex1 = _netLookupKeys[keys[closestMatch]];
+                var resultIndex2 = _netLookupKeys[keys[closestMatch + 1]];
 
                 var x1 = _netAlignmentFunction[resultIndex1].Key;
                 var x2 = _netAlignmentFunction[resultIndex2].Key;
