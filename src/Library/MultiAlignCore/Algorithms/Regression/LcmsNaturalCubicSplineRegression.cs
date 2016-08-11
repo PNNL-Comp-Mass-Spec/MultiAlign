@@ -140,7 +140,8 @@ namespace MultiAlignCore.Algorithms.Regression
             }
 
             var aTrans = (DenseMatrix)a.Transpose();
-            var aTransA = (DenseMatrix)a.Multiply(aTrans);
+
+            var aTransA = (DenseMatrix)aTrans.Multiply(a);
 
             // Can't invert a matrix with a determinant of 0.
             if (Math.Abs(aTransA.Determinant()) < double.Epsilon)
@@ -148,7 +149,8 @@ namespace MultiAlignCore.Algorithms.Regression
                 return false;
             }
 
-            var invATransA = (DenseMatrix)aTrans.Inverse();
+            var invATransA = (DenseMatrix)aTransA.Inverse();
+
             var invATransAaTrans = (DenseMatrix)invATransA.Multiply(aTrans);
 
             var c = (DenseMatrix)invATransAaTrans.Multiply(b);

@@ -25,6 +25,8 @@ namespace MultiAlignCore.Data
         public double X { get; set; }
         public double Y { get; set; }
         public double NetError { get; set; }
+
+        // Mass error in ppm
         public double MassError { get; set; }
 
         public int CompareTo(Object obj)
