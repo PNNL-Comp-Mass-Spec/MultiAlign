@@ -50,8 +50,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Flag for whether to even use promiscuous points or not
         /// </summary>
-        /// <remarks>This should be true when aligning to AMT tag databases
-        /// It should be false when aligning MS data to MS data</remarks>
+        /// <remarks>
+        /// This should be true when aligning to AMT tag databases
+        /// It should be false when aligning MS data to MS data
+        /// Auto-set to True if AlignToMassTagDatabase is set to true
+        /// </remarks>
         public bool UsePromiscuousPoints { get; set; }
 
         /// <summary>
@@ -113,11 +116,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// The type of calibration which will be performed; Either MZ, Scan or hybrid
         /// </summary>
         public LcmsWarpCalibrationType CalibrationType { get; set; }
-
-        /// <summary>
-        /// Flag for if the warper is aligning to a database of mass tags
-        /// </summary>
-        public bool AlignToMassTagDatabase { get; set; }
 
         /// <summary>
         /// When using AMT tags from a database, minimum NET filter
@@ -189,6 +187,27 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public bool StandardizeHeatScores { get; set; }
 
         #endregion
+
+        private bool _AlignToMassTagDatabase;
+
+        /// <summary>
+        /// Flag for if the warper is aligning to a database of mass tags
+        /// </summary>
+        public bool AlignToMassTagDatabase
+        {
+            get
+            {
+                return _AlignToMassTagDatabase;
+            }
+            set
+            {
+                _AlignToMassTagDatabase = value;
+                if (_AlignToMassTagDatabase)
+                {
+                    UsePromiscuousPoints = true;
+                }
+            }
+        }
 
         /// <summary>
         /// The LCMSWarp regression type to use; based on MassCalibUseLsq
