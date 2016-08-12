@@ -166,8 +166,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
             IProgress<ProgressData> progress = null)
         {
-
+            var progData = new ProgressData(progress);
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
+
+            alignmentProcessor.Progress += AlignmentProcessor_Progress;
+            alignmentProcessor.Progress += (o, e) =>
+            {
+                progData.Status = e.Message;
+                progData.Report(e.PercentComplete);
+            };
             var baselineMassTags = baseline as List<MassTagLight> ?? baseline.ToList();
             var aligneeFeatures = features as List<UMCLight> ?? features.ToList();
 
@@ -184,7 +191,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var data = AlignFeatures(alignmentProcessor, aligneeFeatures, _options);
 
             return data;
-        }
+        }      
 
         /// <summary>
         ///     Aligns the dataset to the data stored in the alignment processor.

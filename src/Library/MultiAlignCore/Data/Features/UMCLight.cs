@@ -139,6 +139,10 @@ namespace MultiAlignCore.Data.Features
         /// </summary>
         public double AbundanceSum { get; set; }
 
+        /// <summary>
+        /// For UMCs, tracks the number of scans the UMC spans
+        /// For AMT Tags from database, tracks the ObservationCount (used by LCMSWarp's scorer)
+        /// </summary>
         public int SpectralCount { get; set; }
 
         /// <summary>
