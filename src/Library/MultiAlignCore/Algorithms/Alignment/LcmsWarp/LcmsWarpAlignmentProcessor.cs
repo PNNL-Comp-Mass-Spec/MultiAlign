@@ -317,7 +317,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         Mz = item.MassMonoisotopic / item.ChargeState + (1.00782 * (item.ChargeState - 1)),
                         Net = item.Net,
                         DriftTime = item.DriftTime,
-                        Id = item.Id
+                        Id = item.Id,
+                        // Note: SpectralCount is used by LCMSWarp's scorer
+                        SpectralCount = item.ObservationCount
                     }));
 
                 if (mtFeatures.Count > 0)
@@ -470,7 +472,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             if (_lcmsWarp.NumCandidateMatches < 10)
             {
-                throw new ApplicationException("Insufficient number of candidate matches by mass alone");
+                throw new ApplicationException("Insufficient number of candidate matches by mass alone (NumMatches < 10)");
             }
 
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
