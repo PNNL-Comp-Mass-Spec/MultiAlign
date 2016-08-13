@@ -27,7 +27,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         //Interpolation m_interpolation;
         private double[,,] _alignmentScore = null;
-        private Index3D[, ,] _bestPreviousIndex = null;
+        private Index3D[,,] _bestPreviousIndex = null;
 
         private const double MIN_MASS_NET_LIKELIHOOD = 1e-4;
         private const int REQUIRED_MATCHES = 6;
@@ -366,6 +366,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Does this within the Net Tolerance of the LCMSWarper
         /// </summary>
         /// <param name="numUniqueFeatures"></param>
+        /// <param name="printScores">When true, show matchScore at the console for debugging</param>
         /// <returns></returns>
         private double CurrentlyStoredSectionMatchScore(int numUniqueFeatures, bool printScores)
         {
@@ -641,9 +642,22 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             foreach (var feature in _features)
             {
-                feature.NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
-                feature.NetStart = GetTransformedNet(feature.NetStart, dicSectionToIndex);
-                feature.NetEnd = GetTransformedNet(feature.NetEnd, dicSectionToIndex);
+                if (Math.Abs(feature.Net) < float.Epsilon && feature.Scan > 0)
+                    feature.NetAligned = GetTransformedNet(feature.Scan, dicSectionToIndex);
+                else
+                    feature.NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
+
+                if (Math.Abs(feature.ScanStart) < float.Epsilon && Math.Abs(feature.ScanEnd) > float.Epsilon)
+                {
+                    // ScanStart and ScanEnd are both zero; cannot use them for computing NetStart and NetEnd
+                    feature.NetStart = feature.NetAligned;
+                    feature.NetEnd = feature.NetAligned;
+                }
+                else
+                {
+                    feature.NetStart = GetTransformedNet(feature.ScanStart, dicSectionToIndex);
+                    feature.NetEnd = GetTransformedNet(feature.ScanEnd, dicSectionToIndex);
+                }
             }
         }
 
@@ -713,8 +727,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             FeatureMatches.Clear();
 
             var minMatchScore = -0.5 * (MassTolerance * MassTolerance) / (_massStd * _massStd);
-            minMatchScore -= 0.5 * (NetTolerance * NetTolerance) /
-                (_netStd * _netStd);
+            minMatchScore -= 0.5 * (NetTolerance * NetTolerance) / (_netStd * _netStd);
 
             for (var featureIndex = 0; featureIndex < _features.Count; featureIndex++)
             {
@@ -930,7 +943,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             // most MaxPromiscuousUmcMatches (or none if KeepPromiscuousMatches is false)
             // keeping only the first MaxPromiscuousUmcMatches by scan
 
-            var matchesToUse = new List<LcmsWarpFeatureMatch> {Capacity = FeatureMatches.Count};
+            var matchesToUse = new List<LcmsWarpFeatureMatch> { Capacity = FeatureMatches.Count };
             var netMatchesToIndex = new Dictionary<double, List<int>>();
 
             foreach (var matchIterator in massTagToMatches)
@@ -1062,7 +1075,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 calibrations.Add(new RegressionPoint(feature.Mz, ppm, netDiff, ppm));
             }
-            MzRecalibration.CalculateRegressionFunction(calibrations);
+            MzRecalibration.CalculateRegressionFunction(calibrations, "MzMassError");
 
             for (var featureNum = 0; featureNum < _features.Count; featureNum++)
             {
@@ -1093,7 +1106,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 calibrations.Add(new RegressionPoint(feature.Net, ppm, netDiff, ppm));
             }
 
-            NetRecalibration.CalculateRegressionFunction(calibrations);
+            NetRecalibration.CalculateRegressionFunction(calibrations, "ScanMassError");
 
             for (var featureNum = 0; featureNum < _features.Count; featureNum++)
             {
@@ -1181,7 +1194,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var net = _baselineFeatures[i].Net;
                 var msmsSectionNum =
-                    (int) (((net - MinBaselineNet) * NumBaselineSections) / (MaxBaselineNet - MinBaselineNet));
+                    (int)(((net - MinBaselineNet) * NumBaselineSections) / (MaxBaselineNet - MinBaselineNet));
                 if (msmsSectionNum == NumBaselineSections)
                 {
                     msmsSectionNum--;
@@ -1215,6 +1228,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var startMatchIndex = 0;
                 sectionFeatures.Clear();
+
+                // Note: in C++ MinNet, MaxNet, sectionStartNet, and sectionEndNet are ints
+                // This can lead to some small differences in the transformNet calculation in ComputeSectionMatch
                 var sectionStartNet = MinNet + (section * (MaxNet - MinNet)) / NumSections;
                 var sectionEndNet = MinNet + ((section + 1) * (MaxNet - MinNet)) / NumSections;
 
@@ -1237,7 +1253,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 ComputeSectionMatch(section, sectionFeatures, sectionStartNet, sectionEndNet);
 
-                var percentComplete = section / (double) NumSections * 100;
+                var percentComplete = section / (double)NumSections * 100;
                 OnProgress("Getting match probabilities", percentComplete);
             }
         }
