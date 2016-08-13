@@ -16,11 +16,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Gets or sets the alignee section NET start.
+        /// This is typically scan number
         /// </summary>
         public double AligneeNetStart { get; set; }
 
         /// <summary>
         /// Gets or sets the alignee section NET end.
+        /// This is typically scan number
         /// </summary>
         public double AligneeNetEnd { get; set; }
 

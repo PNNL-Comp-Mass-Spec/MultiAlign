@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.Regression
         private const double MinVar = 0.0001;
 
         /// <summary>
-        /// Public method to get the standard dev; square root of the variance
+        /// Public method to get the standard deviation; square root of the variance
         /// </summary>
         public double StandDev
         {
@@ -114,12 +114,12 @@ namespace MultiAlignCore.Algorithms.Regression
                     var val = listVals[pointNum];
                     var diff = val - m_mean;
                     var normProb = Math.Exp(-(0.5 * diff * diff) / m_var) / (Math.Sqrt(2 * Math.PI) * Math.Sqrt(m_var));
-                    var postNormProb = (normProb * m_normFraction) / (normProb * m_normFraction + (1 - m_normFraction) * u);
-                    m_unifProb.Add(postNormProb);
+                    var posteriorNormProb = (normProb * m_normFraction) / (normProb * m_normFraction + (1 - m_normFraction) * u);
+                    m_unifProb.Add(posteriorNormProb);
 
-                    normFractionNext += postNormProb;
-                    meanNext += postNormProb * val;
-                    varNext += postNormProb * (val - m_mean) * (val - m_mean);
+                    normFractionNext += posteriorNormProb;
+                    meanNext += posteriorNormProb * val;
+                    varNext += posteriorNormProb * (val - m_mean) * (val - m_mean);
                 }
                 m_normFraction = normFractionNext / numPts;
                 m_mean = meanNext / normFractionNext;

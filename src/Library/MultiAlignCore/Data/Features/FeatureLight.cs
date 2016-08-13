@@ -48,7 +48,6 @@ namespace MultiAlignCore.Data.Features
             MassMonoisotopicAligned = 0;
             Net = 0;
             NetAligned = 0;
-            Net = 0;
 
             Abundance = feature.Abundance;
             ChargeState = feature.ChargeState;
@@ -104,6 +103,7 @@ namespace MultiAlignCore.Data.Features
 
         /// <summary>
         /// Gets or sets the retention time of a feature.
+        /// Typically tracks scan number
         /// </summary>
         public double Net { get; set; }
 
@@ -116,7 +116,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Gets or sets the normalized retention time for this feature.
         /// </summary>
-        [Obsolete]
+        [Obsolete("Use NetAligned")]
         public double Netx { get; set; }
 
         /// <summary>

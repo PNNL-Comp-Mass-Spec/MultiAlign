@@ -42,7 +42,7 @@ namespace MultiAlignCore.Data
             for (var i = 0; i < data.Count; i++)
             {
                 var intensity = data[i].Y;
-                var bin = Math.Min(total - 1, System.Convert.ToInt32((data[i].X - lowMass) / binSize));
+                var bin = Math.Min(total - 1, Convert.ToInt32((data[i].X - lowMass) / binSize));
                 try
                 {
                     newData[bin].Y += intensity;

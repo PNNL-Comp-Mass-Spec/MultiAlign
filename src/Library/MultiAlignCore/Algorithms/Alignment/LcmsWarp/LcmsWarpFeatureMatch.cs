@@ -49,6 +49,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Normalized elution time of the feature
+        /// Typically tracks scan number
         /// </summary>
         public double Net { get; set; }
 
@@ -56,6 +57,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Normalized elution time of the baseline feature that this feature matches to.
         /// The baseline feature is either an AMT tag or a feature in a baseline dataset
         /// </summary>
+        /// <remarks>
+        /// If an AMT tag, this is a true NET value (typically 0 to 1)
+        /// If a feature in a baseline dataset, this is ... TBD</remarks>
         public double BaselineNet { get; set; }
 
         //TODO: probably just point to the reference of the feature
