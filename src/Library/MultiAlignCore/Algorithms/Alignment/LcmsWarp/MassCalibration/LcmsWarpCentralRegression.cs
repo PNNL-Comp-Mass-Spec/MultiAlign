@@ -141,7 +141,7 @@
         }
 
         /// <summary>
-        /// Computers the Sections standard deviation and number in each match
+        /// Computes the Section's standard deviation and number in each match
         /// </summary>
         /// <param name="intervalNum"></param>
         private void CalculateSectionStdAndCount(int intervalNum)
@@ -154,7 +154,7 @@
             for (var ptNum = 0; ptNum < numPoints; ptNum++)
             {
                 var pt = this._pts[ptNum];
-                var sectionNum = Convert.ToInt32((pt.X - this._minX) / xInterval);
+                var sectionNum = (int)Math.Floor((pt.X - this._minX) / xInterval);
                 if (sectionNum == this._numXBins)
                 {
                     sectionNum = this._numXBins - 1;
@@ -265,7 +265,7 @@
                 for (var pointNum = 0; pointNum < numPts; pointNum++)
                 {
                     var point = this._pts[pointNum];
-                    var xSection = Convert.ToInt32((point.X - this._minX) / xIntervalSize);
+                    var xSection = (int)Math.Floor((point.X - this._minX) / xIntervalSize);
                     if (xSection == this._numXBins)
                     {
                         xSection = this._numXBins - 1;
@@ -279,7 +279,7 @@
 
                     var yTolerance = this._sectionTolerance[xSection];
 
-                    var yInterval = Convert.ToInt32((0.0001 + (point.MassError - this._minY) / yIntervalSize));
+                    var yInterval = (int)Math.Floor((0.0001 + (point.MassError - this._minY) / yIntervalSize));
 
                     if (yInterval == this._numYBins)
                     {
@@ -287,8 +287,8 @@
                     }
 
                     // Matches to the section that the point would contribute to.
-                    var minYStart = Convert.ToInt32(yInterval - yTolerance / yIntervalSize);
-                    var maxYStart = Convert.ToInt32(yInterval + yTolerance / yIntervalSize);
+                    var minYStart = (int)Math.Floor(yInterval - yTolerance / yIntervalSize);
+                    var maxYStart = (int)Math.Floor(yInterval + yTolerance / yIntervalSize);
 
                     var sectionMismatchScore = this._sectionMisMatchScore[xSection];
 
@@ -416,7 +416,8 @@
         private void CalculateRegressionFunction()
         {
             this._alignmentFunction.Clear();
-            //Start at the last section best score and trace backwards
+
+            // Start at the last section best score and trace backwards
             var bestScore = double.MaxValue;
             var bestPreviousIndex = 0;
             var bestYShift = this._numYBins / 2;
@@ -498,7 +499,7 @@
             for (var pointNum = 0; pointNum < numPts; pointNum++)
             {
                 var point = this._pts[pointNum];
-                var intervalNum = Convert.ToInt32((point.X - this._minX) / xIntervalSize);
+                var intervalNum = (int)Math.Floor((point.X - this._minX) / xIntervalSize);
                 if (intervalNum == this._numXBins)
                 {
                     intervalNum = this._numXBins - 1;
@@ -530,7 +531,7 @@
             var yIntervalSize = (this._maxY - this._minY) / this._numYBins;
             var xIntervalSize = (this._maxX - this._minX) / this._numXBins;
 
-            var xSection = Convert.ToInt32((x - this._minX) / xIntervalSize);
+            var xSection = (int)Math.Floor((x - this._minX) / xIntervalSize);
             int ySectionFrom;
             if (xSection >= this._numXBins)
             {
@@ -539,17 +540,20 @@
             if (xSection < 0)
             {
                 xSection = 0;
-                ySectionFrom = this._alignmentFunction.ElementAt(xSection).Value;
+                ySectionFrom = (from item in _alignmentFunction orderby item.Key select item.Value).First();
                 return this._minY + ySectionFrom * yIntervalSize;
             }
 
             var xFraction = (x - this._minX) / xIntervalSize - xSection;
-            ySectionFrom = this._alignmentFunction.ElementAt(xSection).Value;
+
+            var alignmentFunctionSorted = (from item in _alignmentFunction orderby item.Key select item).ToList();
+            
+            ySectionFrom = alignmentFunctionSorted[xSection].Value;
             var ySectionTo = ySectionFrom;
 
             if (xSection < this._numXBins - 1)
             {
-                ySectionTo = this._alignmentFunction.ElementAt(xSection + 1).Value;
+                ySectionTo = alignmentFunctionSorted[xSection + 1].Value;
             }
 
             var yPred = xFraction * yIntervalSize * (ySectionTo - ySectionFrom)

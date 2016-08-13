@@ -88,7 +88,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
                 if (m_numKnots > 0 && m_order > 0)
                 {
-                    var xInterval = Convert.ToInt32(((m_numKnots + 1) * (calib.X - m_minX)) / (m_maxX - m_minX));
+                    var xInterval = (int)Math.Floor(((m_numKnots + 1) * (calib.X - m_minX)) / (m_maxX - m_minX));
                     if (xInterval >= m_numKnots + 1)
                     {
                         xInterval = m_numKnots;
@@ -147,7 +147,7 @@ namespace MultiAlignCore.Algorithms.Regression
 
             if (m_numKnots > 0 && m_order > 0)
             {
-                var xInterval = Convert.ToInt32(((m_numKnots + 1) * (x - m_minX)) / (m_maxX - m_minX));
+                var xInterval = (int)Math.Floor(((m_numKnots + 1) * (x - m_minX)) / (m_maxX - m_minX));
                 if (xInterval >= m_numKnots + 1)
                 {
                     xInterval = m_numKnots;

@@ -127,7 +127,7 @@
         /// <returns>The section number.</returns>
         private int GetSectionNumber(double net, double minNet, double maxNet)
         {
-            var sectionNum = Convert.ToInt32(((net - minNet) * this.NumSections) / (maxNet - minNet));
+            var sectionNum = (int)Math.Floor(((net - minNet) * this.NumSections) / (maxNet - minNet));
 
             if (sectionNum >= this.NumSections)
             {

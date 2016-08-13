@@ -306,8 +306,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 NetIntercept = 0;
                 return;
             }
-            var startSection = Convert.ToInt32(((startNets[numPoints / 4] - MinNet) * NumSections) / (MaxNet - MinNet));
-            var endSection = Convert.ToInt32(((startNets[(3 * numPoints) / 4] - MinNet) * NumSections) / (MaxNet - MinNet));
+            var startSection = (int)Math.Floor(((startNets[numPoints / 4] - MinNet) * NumSections) / (MaxNet - MinNet));
+            var endSection = (int)Math.Floor(((startNets[(3 * numPoints) / 4] - MinNet) * NumSections) / (MaxNet - MinNet));
 
             if (startSection >= NumSections)
             {
@@ -666,7 +666,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
             else
             {
-                var msSection1 = Convert.ToInt32(((aligneeNet - MinNet) * NumSections) / (MaxNet - MinNet));
+                var msSection1 = (int)Math.Floor(((aligneeNet - MinNet) * NumSections) / (MaxNet - MinNet));
                 if (msSection1 >= NumSections)
                 {
                     msSection1 = NumSections - 1;
@@ -674,7 +674,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 msSectionIndex = dicSectionToIndex[msSection1];
 
-                // Typically msSectionIndex will point to the section in _alignmentFunc just after the one we actually want
+                // msSectionIndex sometimes points to the section in _alignmentFunc just after the one we actually want
                 // Check for this
                 while (msSectionIndex > 0 && _alignmentFunc[msSectionIndex].AligneeNetStart > aligneeNet)
                 {
@@ -822,7 +822,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 NetAligned = x.NetAligned,
                 NetStart = x.NetStart,
                 NetEnd = x.NetEnd,
-                ScanAligned = minScan + (int) (x.NetAligned * (maxScan - minScan)),
+                ScanAligned = minScan + (int)(x.NetAligned * (maxScan - minScan)),
                 DriftTime = x.DriftTime,
                 DriftTimeAligned = minTime + (x.NetAligned * (maxTime - minTime)),
             });
