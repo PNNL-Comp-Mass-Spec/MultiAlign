@@ -63,7 +63,8 @@
         /// Sets the regression points to the appropriate values for the regression function
         /// </summary>
         /// <param name="matches"></param>
-        public void CalculateRegressionFunction(List<RegressionPoint> matches)
+        /// <param name="currentTask"></param>
+        public void CalculateRegressionFunction(List<RegressionPoint> matches, string currentTask)
         {
             switch (this.RegressionType)
             {
@@ -73,7 +74,7 @@
                 default:
                     this._central.CalculateRegressionFunction(matches);
                     this._central.RemoveRegressionOutliers();
-                    this._lsqFailed = !this._cubicSpline.CalculateLsqRegressionCoefficients(this._central.Points);
+                    this._lsqFailed = !this._cubicSpline.CalculateLsqRegressionCoefficients(this._central.Points, currentTask);
                     break;
             }
         }

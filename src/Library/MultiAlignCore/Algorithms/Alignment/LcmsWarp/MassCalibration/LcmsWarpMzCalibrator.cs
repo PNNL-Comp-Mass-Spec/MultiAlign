@@ -44,7 +44,7 @@
                 calibrations.Add(new RegressionPoint(feature.Mz, 0, netDiff, ppm));
             }
 
-            mzRecalibration.CalculateRegressionFunction(calibrations);
+            mzRecalibration.CalculateRegressionFunction(calibrations, "MzMassError");
 
             return new LcmsWarpMassAlignmentFunction
             {

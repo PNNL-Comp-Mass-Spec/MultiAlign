@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MultiAlignCore.Data;
 
@@ -78,7 +79,7 @@ namespace MultiAlignCore.Algorithms.Regression
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public bool CalculateLsqRegressionCoefficients(List<RegressionPoint> points)
+        public bool CalculateLsqRegressionCoefficients(List<RegressionPoint> points, string currentTask)
         {
             Clear();
             if (m_numKnots < 2)
@@ -139,6 +140,11 @@ namespace MultiAlignCore.Algorithms.Regression
                 b[pointNum, 0] = point.MassError;
             }
 
+            var saveDebugFiles = true;
+
+            if (saveDebugFiles)
+                WriteMatrix(a, currentTask + "_CS_NaturalCubicSplineRegression_Matrix_A.tsv");
+
             var aTrans = (DenseMatrix)a.Transpose();
 
             var aTransA = (DenseMatrix)aTrans.Multiply(a);
@@ -161,6 +167,23 @@ namespace MultiAlignCore.Algorithms.Regression
             }
 
             return true;
+        }
+
+        private void WriteMatrix(Matrix data, string outputFile)
+        {
+            using (var writer = new StreamWriter(new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
+            {
+                for (var i = 0; i < data.RowCount; i++)
+                {
+                    for (var j = 0; j < data.ColumnCount; j++)
+                    {
+                        if (j > 0)
+                            writer.Write('\t');
+                        writer.Write(data[i, j]);
+                    }
+                    writer.WriteLine();
+                }
+            }
         }
 
         /// <summary>

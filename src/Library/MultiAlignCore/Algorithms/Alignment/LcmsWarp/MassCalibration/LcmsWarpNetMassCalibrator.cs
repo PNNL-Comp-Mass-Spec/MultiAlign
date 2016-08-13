@@ -43,7 +43,7 @@
                 calibrations.Add(new RegressionPoint(feature.Net, 0, netDiff, ppm));
             }
 
-            netMassRecalibration.CalculateRegressionFunction(calibrations);
+            netMassRecalibration.CalculateRegressionFunction(calibrations, "ScanMassError");
 
             return new LcmsWarpMassAlignmentFunction
             {
