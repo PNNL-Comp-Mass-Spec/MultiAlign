@@ -393,19 +393,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 var deltaNet = _tempFeatureBestDelta[msFeatureIndex];
 
-                if (printScores && i == 112)
-                    Console.WriteLine("Check this one at 112");
-
-                if (_useMass)
+                if (Math.Abs(deltaNet) > NetTolerance)
                 {
-                    var massDelta = (featureMonoMass - baselineFeatureMonoMass) * 1000000 /
-                                   baselineFeatureMonoMass;
-
-                    var matchScoreAlternate = matchScore;
-
-                    if (Math.Abs(deltaNet) > NetTolerance)
+                    var calcVal = NetTolerance;
+                    if (_useMass)
                     {
-                        var calcVal = NetTolerance;
+                        var massDelta = (featureMonoMass - baselineFeatureMonoMass) * 1000000 / baselineFeatureMonoMass;
 
                         matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
                         // mass is much less accurate in terms of ppm units with error distributions. so missed 
@@ -414,9 +407,29 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         //	match_score -= 0.5 * (mass_delta * mass_delta) / (mdbl_mass_std * mdbl_mass_std) ; 
                         matchScore -= 0.5 * log2PiStdNetSqrd;
                         matchScore -= 0.5 * log2PiStdMassSqrd;
+
+                        /*
+                         * Alternative scoring model; origin unknown
+                         *                    
+                         */
+                        var matchScoreAlternate = matchScore;
+
+                        var likelihood = GetMatchLikelihood(massDelta, deltaNet);
+                        matchScoreAlternate += Math.Log(likelihood);
+
                     }
                     else
                     {
+                        matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
+                        matchScore -= 0.5 * log2PiStdNetSqrd;
+                    }
+                }
+                else
+                {
+                    if (_useMass)
+                    {
+                        var massDelta = (featureMonoMass - baselineFeatureMonoMass) * 1000000 / baselineFeatureMonoMass;
+
                         var num_observations = _baselineFeatures[baselineIndex].SpectralCount;
                         if (num_observations == 0)
                             num_observations = 1;
@@ -430,29 +443,18 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         matchScore -= 0.5 * log2PiStdMassSqrd;
                         matchScore += Math.Log(1.0 * num_observations);
 
-                    }
+                        /*
+                         * Alternative scoring model; origin unknown
+                         *                    
+                         */
+                        var matchScoreAlternate = matchScore;
 
-                    /*
-                     * Experimental scoring model from ??? whom ???
-                     *                    
-                     */
-                    var likelihood = GetMatchLikelihood(massDelta, deltaNet);
-                    matchScoreAlternate += Math.Log(likelihood);
-                    
+                        var likelihood = GetMatchLikelihood(massDelta, deltaNet);
+                        matchScoreAlternate += Math.Log(likelihood);
 
-                }
-                else
-                {
-                    if (Math.Abs(deltaNet) > NetTolerance)
-                    {
-                        var calcVal = NetTolerance;
-
-                        matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
-                        matchScore -= 0.5 * log2PiStdNetSqrd;
                     }
                     else
                     {
-                        
                         var num_observations = _baselineFeatures[baselineIndex].SpectralCount;
 
                         if (num_observations == 0)
@@ -461,9 +463,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         matchScore -= 0.5 * (deltaNet / _netStd) * (deltaNet / _netStd);
                         matchScore -= 0.5 * log2PiStdNetSqrd;
                         matchScore += Math.Log(1.0 * num_observations);
-                       
                     }
-
                 }
 
                 if (printScores)
