@@ -1359,58 +1359,33 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 unmatchedScore *= 2;
             }
 
-            // TODO: This only sets all values in the first section to 0; should other sections be set to 0?
-
-            var numUnmatchedMsFeatures = 0;
+            // Update scores in section 0 to be 0
+            // This is (supposedly) done because we are assuming that everything that was missed was past 3 standard deviations in NET
+            var numUnmatchedBaselineFeatures = 0;
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
-               
-                //Assume everything that was matched was past 3 standard devs in net.
+
+                // Assume that everything that was missed was past 3 standard deviations in net.
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
                 {
-                    //no need to multiply with msSection because its 0
-                    _alignmentScore[0, baselineSection, sectionWidth] = 0;
+                    _alignmentScore[0, baselineSection, sectionWidth] = _subsectionMatchScores[0, baselineSection, sectionWidth];
                 }
-            
 
-                // lets assume that everything that was missed was past 3 standard deviations in net.
-
-                // var match_score = -1.0 * numUnmatchedMsFeatures * 0.5 * 9.0;
-                // match_score -= numUnmatchedMsFeatures * 0.5 * log2PiStdNetStdNet;
-
-                /*
-                 * From c++; likely moved to later in this function
-                for (var section_width = 0; section_width < NumMatchesPerBaseline; section_width++)
-                {
-                    // no need multiplying with ms_section because its 0
-                    var alignment_index = baselineSection * NumMatchesPerBaseline + section_width;
-                    for (var j = 0; j < NumBaselineSections; j++)
-                    {
-                        for (var k = 0; k < NumMatchesPerBaseline; k++)
-                        {
-                            _alignmentScore[alignment_index, j, k] = _subsectionMatchScores[alignment_index, j, k];
-                        }
-                    }
-                }
-                */
-
-                /*
-                 * Not needed
-                 * 
                 var ms_section = (baselineSection * NumSections) / NumBaselineSections;
                 if (ms_section == NumSections)
                     ms_section = NumSections - 1;
 
-                numUnmatchedMsFeatures = 0;
+                numUnmatchedBaselineFeatures = 0;
                 for (; ms_section >= 0; ms_section--)
                 {
-                    numUnmatchedMsFeatures += mvect_num_features_in_ms_sections[ms_section];
+                    numUnmatchedBaselineFeatures += _numFeaturesInSections[ms_section];
                 }
-                */
+
             }
 
-            // TODO: This only sets the values for the first baseline section for each section. Should others be affected? (appears they are filled in by the following code)
-            numUnmatchedMsFeatures = 0;
+            // Update scores in baselineSection 0 to be 0
+            // This is (again) done because we are assuming that everything that was missed was past 3 standard deviations in NET
+            var numUnmatchedMsFeatures = 0;
             for (var section = 0; section < NumSections; section++)
             {
                 for (var sectionWidth = 0; sectionWidth < NumMatchesPerBaseline; sectionWidth++)
@@ -1421,6 +1396,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 numUnmatchedMsFeatures += _numFeaturesInSections[section];
             }
 
+            // Since we have already scored the ms_sections with index = 0 above, start at 1
             for (var section = 1; section < NumSections; section++)
             {
                 for (var baselineSection = 1; baselineSection < NumBaselineSections; baselineSection++)
@@ -1520,11 +1496,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     var numUniqueFeatures = numUniqueFeaturesStart;
 
                     var sectionIndex = GetCppAlignmentIndex(msSection, baselineSectionStart, (baselineSectionEnd - baselineSectionStart));
-
                     var printScores = false;
-
-                    if (sectionIndex == 2709)
-                        printScores = true;
 
                     var baselineEndNet = MinBaselineNet + (baselineSectionEnd + 1) * baselineSectionWidth;
 
@@ -1545,6 +1517,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                         var featureNet = match.Net;
 
+                        // Note: in C++ MinNet, MaxNet, baselineStartNet, and baselineEndNet are ints
+                        // This can lead to some small differences in the value of transformNet
                         var transformNet = (featureNet - minNet) * (baselineEndNet - baselineStartNet);
                         transformNet = transformNet / (maxNet - minNet) + baselineStartNet;
 
@@ -1556,7 +1530,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         _tempFeatureBestIndex[msFeatureIndex] = match.BaselineFeatureIndex;
                     }
 
-                    var subsectionScore = CurrentlyStoredSectionMatchScore(numUniqueFeatures, printScores);                   
+                    var subsectionScore = CurrentlyStoredSectionMatchScore(numUniqueFeatures, printScores);
 
                     _subsectionMatchScores[msSection, baselineSectionStart, baselineSectionEnd - baselineSectionStart] = subsectionScore;
                 }
