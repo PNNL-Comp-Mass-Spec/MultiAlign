@@ -154,11 +154,12 @@
                     if (baselineFeature.MassMonoisotopic >
                         aligneeFeature.MassMonoisotopic - massTolerance)
                     {
-                        // Calculate the mass and net errors.
-                        var netDiff = baselineFeature.Net - aligneeFeature.NetAligned;
-                        var driftDiff = baselineFeature.DriftTime - aligneeFeature.DriftTime;
-                        var massDiff = (baselineFeature.MassMonoisotopic -
-                                        aligneeFeature.MassMonoisotopic) * 1000000.0 / aligneeFeature.MassMonoisotopic;
+                        // Calculate the mass and net errors
+                        // Compute as observedValue - expectedValue
+                        var netDiff = aligneeFeature.NetAligned - baselineFeature.Net;
+                        var driftDiff = aligneeFeature.DriftTime - baselineFeature.DriftTime;
+                        var massDiff = (aligneeFeature.MassMonoisotopic -
+                                        baselineFeature.MassMonoisotopic) * 1000000.0 / aligneeFeature.MassMonoisotopic;
 
                         // Calculate the match score.
                         var matchScore = -0.5 * (netDiff * netDiff) / (netStdDev * netStdDev);

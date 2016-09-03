@@ -752,10 +752,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     if (baselineFeature.MassMonoisotopic >
                         feature.MassMonoisotopic - massTolerance)
                     {
-                        //Calculate the mass and net errors
-                        var netDiff = baselineFeature.Net - feature.NetAligned;
-                        var driftDiff = baselineFeature.DriftTime - feature.DriftTime;
-                        var massDiff = baselineFeature.MassMonoisotopic - feature.MassMonoisotopic;
+                        // Calculate the mass and net errors
+                        // Compute as observedValue - expectedValue
+                        var netDiff = feature.NetAligned - baselineFeature.Net;
+                        var driftDiff = feature.DriftTime - baselineFeature.DriftTime;
+                        var massDiff = feature.MassMonoisotopic - baselineFeature.MassMonoisotopic;
                         var massDiffPpm = massDiff * 1000000.0 / feature.MassMonoisotopic;
 
                         //Calculate the match score
