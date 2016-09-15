@@ -41,15 +41,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private const double MinScore = -10000;
 
-        // Mass window around which the mass tolerance is applied
-        private double _massStd = 20;
+        // Mass and NET window around which the mass tolerance is applied
+        // These tolerances are auto-updated in CalculateStandardDeviations
 
+        private double _massStd = 20;
         private double _netStd = 0.007;
 
+        // Results from 2D expectation maximization
         private double _normalProb = 0.3;
         private double _u = 0;
         private double _muMass = 0;
         private double _muNet = 0;
+        private double _massStdEM = 20;
+        private double _netStdEM = 0.007;
+
         private readonly List<LcmsWarpAlignmentMatch> _alignmentFunc = new List<LcmsWarpAlignmentMatch>();
 
         /// <summary>
@@ -475,9 +480,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private double GetMatchLikelihood(double massDelta, double netDelta)
         {
-            var massZ = massDelta / _massStd;
-            var netZ = netDelta / _netStd;
-            var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ))) / (2 * Math.PI * _netStd * _massStd);
+            var massZ = massDelta / _massStdEM;
+            var netZ = netDelta / _netStdEM;
+            var normProb = Math.Exp(-0.5 * ((massZ * massZ) + (netZ * netZ))) / (2 * Math.PI * _netStdEM * _massStdEM);
             var likelihood = (normProb * _normalProb + ((1 - _normalProb) * _u));
             if (likelihood < MIN_MASS_NET_LIKELIHOOD)
             {
@@ -643,13 +648,22 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             foreach (var feature in _features)
             {
                 if (Math.Abs(feature.Net) < float.Epsilon && feature.Scan > 0)
-                    feature.NetAligned = GetTransformedNet(feature.Scan, dicSectionToIndex);
-                else
-                    feature.NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
-
-                if (Math.Abs(feature.ScanStart) < float.Epsilon && Math.Abs(feature.ScanEnd) > float.Epsilon)
                 {
-                    // ScanStart and ScanEnd are both zero; cannot use them for computing NetStart and NetEnd
+                    // Use  feature.Scan to compute the aligned NET value
+                    feature.NetAligned = GetTransformedNet(feature.Scan, dicSectionToIndex);
+                }
+                else
+                {
+                    // Often feature.Net tracks the original scan number (while feature.Scan is -1)
+                    // Use feature.Net to compute the aligned NET value
+                    feature.NetAligned = GetTransformedNet(feature.Net, dicSectionToIndex);
+                }
+
+                if (Math.Abs(feature.ScanStart) < float.Epsilon && Math.Abs(feature.ScanEnd) < float.Epsilon ||
+                    feature.ScanStart < 0 && feature.ScanEnd < 0)
+                {
+                    // ScanStart and ScanEnd are both zero or are both negative
+                    // Cannot use them for computing NetStart and NetEnd
                     feature.NetStart = feature.NetAligned;
                     feature.NetEnd = feature.NetAligned;
                 }
@@ -770,6 +784,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             bestMatchFeature = new LcmsWarpFeatureMatch
                             {
                                 FeatureIndex = featureIndex,
+                                BaselineFeature = feature,
                                 BaselineFeatureIndex = baselineFeatureIndex,
                                 Net = feature.Net,
                                 NetError = netDiff,
@@ -918,6 +933,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             BaselineNet = baselineFeature.Net
                         };
 
+                        if (matchToAdd.FeatureIndex == 1267 || matchToAdd.FeatureIndex == 1325)
+                        {
+                            // Check this code
+                            Console.WriteLine("Check this");
+                        }
+
                         FeatureMatches.Add(matchToAdd);
                     }
                     baselineFeatureIndex++;
@@ -1044,8 +1065,45 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                        feature.MassMonoisotopic);
                 netDeltas.Add(baselineFeature.Net - feature.NetAligned);
             }
+
+            // Run two dimensional expectation maximization (EM)
             MathUtilities.TwoDem(massDeltas, netDeltas, out _normalProb, out _u,
-                out _muMass, out _muNet, out _massStd, out _netStd);
+                out _muMass, out _muNet, out _massStdEM, out _netStdEM);
+
+            // Sort the mass and NET deltas
+            massDeltas.Sort();
+            netDeltas.Sort();
+
+            // Compute the mean and standard deviation of the central portion of the data in massDeltas and netDeltas
+            var start_index = numMatches / 4;
+            var end_index = (3 * numMatches) / 4;
+            double mean_mass_delta = 0;
+            double mean_net_delta = 0;
+            for (var index = start_index; index <= end_index; index++)
+            {
+                mean_mass_delta += massDeltas[index];
+                mean_net_delta += netDeltas[index];
+            }
+
+            mean_mass_delta = (mean_mass_delta * 2) / (end_index - start_index + 1);
+            mean_net_delta = (mean_net_delta * 2) / (end_index - start_index + 1);
+
+            _massStd = 0;
+            _netStd = 0;
+            for (var index = start_index; index <= end_index; index++)
+            {
+                _massStd += (massDeltas[index] - mean_mass_delta) * (massDeltas[index] - mean_mass_delta);
+                _netStd += (netDeltas[index] - mean_net_delta) * (netDeltas[index] - mean_net_delta);
+            }
+
+            _massStd /= (end_index - start_index);
+            _netStd /= (end_index - start_index);
+            _massStd = Math.Sqrt(_massStd);
+            _netStd = Math.Sqrt(_netStd);
+
+            Console.WriteLine("massStd is {0:F4} from EM and {1:F4} from trimmed stats", _massStdEM, _massStd);
+            Console.WriteLine(" netStd is {0:F4} from EM and {1:F4} from trimmed stats", _netStdEM, _netStd);
+
         }
 
         /// <summary>
@@ -1076,6 +1134,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 calibrations.Add(new RegressionPoint(feature.Mz, ppm, netDiff, ppm));
             }
+
+            Console.WriteLine("Bug: Different results for the calibration function via this call (should be fixed as of 9/13/2016)");
             MzRecalibration.CalculateRegressionFunction(calibrations, "MzMassError");
 
             for (var featureNum = 0; featureNum < _features.Count; featureNum++)
@@ -1084,6 +1144,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 var mass = feature.MassMonoisotopic;
                 var ppmShift = MzRecalibration.GetPredictedValue(feature.Mz);
                 var newMass = mass - (mass * ppmShift) / 1000000;
+
                 feature.MassMonoisotopicAligned = newMass;
                 feature.MassMonoisotopic = newMass;
             }
@@ -1095,6 +1156,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private void PerformScanMassErrorRegression()
         {
             var calibrations = new List<RegressionPoint>();
+
+            Console.WriteLine("Bug: contents of FeatureMatches in C# does not match contents of mvect_feature_matches in C++");
 
             for (var matchNum = 0; matchNum < FeatureMatches.Count; matchNum++)
             {
