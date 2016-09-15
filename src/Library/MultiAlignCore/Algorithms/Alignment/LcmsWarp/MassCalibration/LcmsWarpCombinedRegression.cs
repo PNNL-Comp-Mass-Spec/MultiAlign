@@ -69,10 +69,10 @@
             switch (this.RegressionType)
             {
                 case LcmsWarpRegressionType.Central:
-                    this._central.CalculateRegressionFunction(matches);
+                    this._central.CalculateRegressionFunction(matches, currentTask);
                     break;
                 default:
-                    this._central.CalculateRegressionFunction(matches);
+                    this._central.CalculateRegressionFunction(matches, currentTask);
                     this._central.RemoveRegressionOutliers();
                     this._lsqFailed = !this._cubicSpline.CalculateLsqRegressionCoefficients(this._central.Points, currentTask);
                     break;
