@@ -1,4 +1,8 @@
-﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration
+﻿using System.IO;
+using System.Text;
+using PNNLOmics.Utilities;
+
+namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration
 {
     using System;
     using System.Collections.Generic;
@@ -17,6 +21,7 @@
 
         // number of matches for each x section
         private int _numSectionMatches;
+
         // Minimum number of points to be present in a section
         // for it to be considered in computing function
         private readonly int _minSectionPts;
@@ -248,7 +253,7 @@
         {
             this._matchScores.Capacity = this._numXBins * this._numSectionMatches;
 
-            // Neww to calculate the score matrix for all possible score blocks.
+            // Need to calculate the score matrix for all possible score blocks.
             // For every x section, all y secments between y_interest - m_num_jumps
             // to y_interest + m_num_jumps are scored.
 
@@ -395,11 +400,19 @@
                         var previousAlignmentIndex = (xSection - 1) * this._numYBins + ySectionFrom;
                         var previousMatchIndex = (xSection - 1) * this._numSectionMatches +
                                                  ySectionFrom * (2 * this._numJumps + 1) + jump;
-                        if ((previousAlignmentIndex > this._alignmentScores.Count - 1) ||
-                            (previousMatchIndex > this._matchScores.Count - 1))
+
+                        if (previousMatchIndex < 0 || previousMatchIndex >= this._matchScores.Count)
                         {
-                            break;
+                            // match index out of range; skip this point
+                            continue;
                         }
+
+                        if (previousAlignmentIndex >= this._alignmentScores.Count)
+                        {
+                            // Alignment index is out of range; skip this point
+                            continue;
+                        }
+
                         var previousAlignmentScore = this._alignmentScores[previousAlignmentIndex];
                         var previousMatchScore = this._matchScores[previousMatchIndex];
                         if (previousAlignmentScore + previousMatchScore < bestAlignmentScore)
@@ -447,6 +460,7 @@
             {
                 this._alignmentFunction.Add(i, bestYShift);
             }
+
             while (xSection > 0)
             {
                 xSection--;
@@ -460,7 +474,7 @@
         /// Calculates Central regression for the matches found and passed in
         /// </summary>
         /// <param name="calibMatches"></param>
-        public void CalculateRegressionFunction(List<RegressionPoint> calibMatches)
+        public void CalculateRegressionFunction(List<RegressionPoint> calibMatches, string currentTask)
         {
             this.Clear();
             foreach (var point in calibMatches)
@@ -483,7 +497,11 @@
 
             this.CalculateSectionsStd();
             this.CalculateScoreMatrix();
+            // PrintScoreMatrix(currentTask + "_score_matrix.csv");
+
             this.CalculateAlignmentMatrix();
+            // PrintAlignmentScoreMatrix(currentTask + "_alignment_matrix.csv") ; 
+
             this.CalculateRegressionFunction();
         }
 
@@ -561,5 +579,88 @@
 
             return yPred;
         }
+
+        private void PrintScoreMatrix(string outputFileName)
+        {
+            try
+            {
+                var outputFile = new FileInfo(outputFileName);
+
+                var xIntervalSize = (this._maxX - this._minX) / this._numXBins;
+                var yIntervalSize = (this._maxY - this._minY) / this._numYBins;
+
+                using (var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
+                {
+                    // Result source
+                    writer.WriteLine("C#");
+
+                    // Header line
+                    writer.WriteLine("x_start," + "x_stop," + "y_start," + "y_stop," + "matchScore");
+
+                    var x_start = _minX;
+                    for (var x_section = 0; x_section < _numXBins; x_section++)
+                    {
+                        var x_stop = x_start + xIntervalSize;
+                        for (var y_section = 0; y_section < _numYBins; y_section++)
+                        {
+                            for (var jump = 0; jump < 2 * _numJumps + 1; jump++)
+                            {
+                                var index = x_section * _numSectionMatches + y_section * (2 * _numJumps + 1) + jump;
+                                writer.WriteLine("{0},{1},{2},{3},{4}",
+                                    StringUtilities.DblToString(x_start, 3),
+                                    StringUtilities.DblToString(x_stop, 3),
+                                    StringUtilities.DblToString(y_section * yIntervalSize + _minY, 4),
+                                    StringUtilities.DblToString((y_section + jump - _numJumps) * yIntervalSize + _minY, 4),
+                                    StringUtilities.DblToString(_matchScores[index], 2));
+                            }
+                        }
+                        x_start = x_stop;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error writing to {0}: {1}", outputFileName, ex.Message);
+            }
+
+        }
+
+        private void PrintAlignmentScoreMatrix(string outputFileName)
+        {
+            var outputFile = new FileInfo(outputFileName);
+
+            var xIntervalSize = (this._maxX - this._minX) / this._numXBins;
+            var yIntervalSize = (this._maxY - this._minY) / this._numYBins;
+
+            using (var writer = new StreamWriter(new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Write)))
+            {
+                // Result source
+                writer.WriteLine("C#");
+
+                // Header line
+                writer.WriteLine("x_start," + "x_stop," + "y," + "matchScore");
+
+                var x_start = _minX;
+                for (var x_section = 0; x_section < _numXBins + 1; x_section++)
+                {
+                    var x_stop = x_start + xIntervalSize;
+                    for (var y_section = 0; y_section < _numYBins; y_section++)
+                    {
+                        var index = x_section * _numYBins + y_section;
+
+                        writer.WriteLine("{0},{1},{2},{3}",
+                                StringUtilities.DblToString(x_start, 3),
+                                StringUtilities.DblToString(x_stop, 3),
+                                StringUtilities.DblToString(y_section * yIntervalSize + _minY, 4),
+                                StringUtilities.DblToString(_alignmentScores[index], 2));
+                    }
+                    x_start = x_stop;
+                }
+                
+            }
+
+        }
+
     }
 }
