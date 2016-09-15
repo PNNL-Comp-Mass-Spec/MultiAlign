@@ -140,7 +140,7 @@ namespace MultiAlignCore.Algorithms.Regression
                 b[pointNum, 0] = point.MassError;
             }
 
-            var saveDebugFiles = true;
+            var saveDebugFiles = false;
 
             if (saveDebugFiles)
                 WriteMatrix(a, currentTask + "_CS_NaturalCubicSplineRegression_Matrix_A.tsv");
@@ -161,6 +161,9 @@ namespace MultiAlignCore.Algorithms.Regression
 
             var c = (DenseMatrix)invATransAaTrans.Multiply(b);
 
+            if (saveDebugFiles)
+                WriteMatrix(c, currentTask + "_CS_NaturalCubicSplineRegression_Matrix_C.tsv");
+
             for (var colNum = 0; colNum < m_numKnots; colNum++)
             {
                 m_coeffs[colNum] = c[colNum, 0];
@@ -171,19 +174,27 @@ namespace MultiAlignCore.Algorithms.Regression
 
         private void WriteMatrix(Matrix data, string outputFile)
         {
-            using (var writer = new StreamWriter(new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
+            try
             {
-                for (var i = 0; i < data.RowCount; i++)
+                using (var writer = new StreamWriter(new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)))
                 {
-                    for (var j = 0; j < data.ColumnCount; j++)
+                    for (var i = 0; i < data.RowCount; i++)
                     {
-                        if (j > 0)
-                            writer.Write('\t');
-                        writer.Write(data[i, j]);
+                        for (var j = 0; j < data.ColumnCount; j++)
+                        {
+                            if (j > 0)
+                                writer.Write('\t');
+                            writer.Write(data[i, j]);
+                        }
+                        writer.WriteLine();
                     }
-                    writer.WriteLine();
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error writing to {0}: {1}", outputFile, ex.Message);
+            }
+
         }
 
         /// <summary>
@@ -233,6 +244,7 @@ namespace MultiAlignCore.Algorithms.Regression
                     {
                         kminus1 = kminus1 - Math.Pow(x - m_intervalStart[m_numKnots], 3);
                     }
+                    kminus1 /= intervalWidth;
                 }
                 val = val + (kminus1 - kMinus1) * m_coeffs[k + 1];
             }
