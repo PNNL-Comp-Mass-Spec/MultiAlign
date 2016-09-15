@@ -52,5 +52,10 @@ namespace MultiAlignCore.Data
             MassError = massError;
             NetError = netError;
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0,12:F4}, {1,9:F4}, MassError {2,8:F3}, NetError {3,8:F3}", X, Y, MassError, NetError);
+        }
     }
 }
