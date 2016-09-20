@@ -158,8 +158,8 @@
                         // Compute as observedValue - expectedValue
                         var netDiff = aligneeFeature.NetAligned - baselineFeature.Net;
                         var driftDiff = aligneeFeature.DriftTime - baselineFeature.DriftTime;
-                        var massDiff = (aligneeFeature.MassMonoisotopic -
-                                        baselineFeature.MassMonoisotopic) * 1000000.0 / aligneeFeature.MassMonoisotopic;
+                        var massDiff = aligneeFeature.MassMonoisotopic - baselineFeature.MassMonoisotopic;
+                        var massDiffPpm = massDiff * 1000000.0 / baselineFeature.MassMonoisotopic;
 
                         // Calculate the match score.
                         var matchScore = -0.5 * (netDiff * netDiff) / (netStdDev * netStdDev);

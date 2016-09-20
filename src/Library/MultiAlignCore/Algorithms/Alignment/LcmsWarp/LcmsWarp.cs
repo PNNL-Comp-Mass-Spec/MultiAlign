@@ -771,7 +771,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var netDiff = feature.NetAligned - baselineFeature.Net;
                         var driftDiff = feature.DriftTime - baselineFeature.DriftTime;
                         var massDiff = feature.MassMonoisotopic - baselineFeature.MassMonoisotopic;
-                        var massDiffPpm = massDiff * 1000000.0 / feature.MassMonoisotopic;
+                        var massDiffPpm = massDiff * 1000000.0 / baselineFeature.MassMonoisotopic;
 
                         //Calculate the match score
                         var matchScore = -0.5 * (netDiff * netDiff) / (_netStd * _netStd);
