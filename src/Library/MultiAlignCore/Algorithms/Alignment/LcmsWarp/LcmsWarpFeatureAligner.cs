@@ -159,8 +159,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// The MassTagLight Enumerable is used as the baseline to align the
         /// UMCLight enumerable.
         /// </summary>
-        /// <param name="baseline"></param>
-        /// <param name="features"></param>
+        /// <param name="baseline">Base dataset or AMT tags to align to</param>
+        /// <param name="features">LC-MS Features to align to the baseline</param>
         /// <param name="progress"></param>
         /// <returns></returns>
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
@@ -191,11 +191,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var data = AlignFeatures(alignmentProcessor, aligneeFeatures, _options);
 
             return data;
-        }      
+        }
 
         /// <summary>
-        ///     Aligns the dataset to the data stored in the alignment processor.
+        /// Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
+        /// <param name="alignmentProcessor">Aligner</param>
+        /// <param name="features">LC-MS Features to align to the baseline</param>
+        /// <param name="alignmentOptions">Options</param>
+        /// <returns></returns>
         private AlignmentData AlignFeatures(LcmsWarpAlignmentProcessor alignmentProcessor,
             IEnumerable<UMCLight> features,
             LcmsWarpAlignmentOptions alignmentOptions)

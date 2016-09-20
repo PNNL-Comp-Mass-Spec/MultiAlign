@@ -67,7 +67,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         #region Public properties
 
-        public List<LcmsWarpFeatureMatch> FeatureMatches {
+        public List<LcmsWarpFeatureMatch> FeatureMatches
+        {
             get { return _lcmsWarp.FeatureMatches; }
         }
 
@@ -302,8 +303,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Sets alignment features for a MSFeature dataset from a database
+        /// These are either the features in a baseline dataset or AMT tags to align to
         /// </summary>
         /// <param name="features"></param>
+        /// <remarks>
+        /// Only uses features that pass all of the filters:
+        ///  minimum observation count (at least _options.MinimumAMTTagObsCount)
+        ///  NET range (between _options.AMTTagFilterNETMin and _options.AMTTagFilterNETMax)
+        ///  Mass range (between _options.AMTTagFilterMassMin and _options.AMTTagFilterMassMax)
+        /// </remarks>
         public void SetReferenceDatasetFeatures(List<MassTagLight> features)
         {
             _aligningToMassTagDb = true;
@@ -339,7 +347,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 // Lower the minimum observation and try again
                 if (minimumObservationCount >= 4)
-                    minimumObservationCount = (int) Math.Floor(minimumObservationCount / 2.0);
+                    minimumObservationCount = (int)Math.Floor(minimumObservationCount / 2.0);
                 else
                     minimumObservationCount = 0;
             }
@@ -434,7 +442,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 for (var sliceIndex = 0; sliceIndex < numXSlices; sliceIndex++)
                 {
                     var net = sliceIndex * 1.0 / numXSlices;
-                    var mz = _minAligneeDatasetMz + (int) ((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
+                    var mz = _minAligneeDatasetMz + (int)((_maxAligneeDatasetMz - _minAligneeDatasetMz) * net);
                     aligneeMzMassFunc.Add(mz);
                     aligneePpmShiftMassFunc.Add(_lcmsWarp.GetPpmShiftFromMz(mz));
                 }
@@ -712,7 +720,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         public IScanSummaryProvider BaselineSpectraProvider { get; set; }
-        public IScanSummaryProvider AligneeSpectraProvider  { get; set; }
+        public IScanSummaryProvider AligneeSpectraProvider { get; set; }
 
         #region ProgressReporting
 

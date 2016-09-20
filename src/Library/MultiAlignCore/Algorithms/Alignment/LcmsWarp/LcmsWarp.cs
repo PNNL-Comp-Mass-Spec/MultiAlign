@@ -940,12 +940,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             BaselineNet = baselineFeature.Net
                         };
 
-                        if (matchToAdd.FeatureIndex == 1267 || matchToAdd.FeatureIndex == 1325)
-                        {
-                            // Check this code
-                            Console.WriteLine("Check this");
-                        }
-
                         FeatureMatches.Add(matchToAdd);
                     }
                     baselineFeatureIndex++;
@@ -1142,7 +1136,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 calibrations.Add(new RegressionPoint(feature.Mz, ppm, netDiff, ppm));
             }
 
-            Console.WriteLine("Bug: Different results for the calibration function via this call (should be fixed as of 9/13/2016)");
             MzRecalibration.CalculateRegressionFunction(calibrations, "MzMassError");
 
             for (var featureNum = 0; featureNum < _features.Count; featureNum++)
@@ -1163,8 +1156,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private void PerformScanMassErrorRegression()
         {
             var calibrations = new List<RegressionPoint>();
-
-            Console.WriteLine("Bug: contents of FeatureMatches in C# does not match contents of mvect_feature_matches in C++");
 
             for (var matchNum = 0; matchNum < FeatureMatches.Count; matchNum++)
             {

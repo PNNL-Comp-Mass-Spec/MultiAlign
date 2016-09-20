@@ -135,8 +135,8 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 // Here we compute the ppm mass difference between consecutive features (based on mass).
                 // This will determine if we cluster a block of data or not.
-                var   umcX = data[i];
-                var   umcY = data[i + 1];
+                var umcX = data[i];
+                var umcY = data[i + 1];
                 var ppm = Math.Abs(FeatureLight.ComputeMassPPMDifference(umcX.MassMonoisotopicAligned, umcY.MassMonoisotopicAligned));
 
                 // If the difference is greater than the tolerance then we cluster
@@ -147,8 +147,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     // could not find any other features near it within the mass tolerance specified.
                     if (startUMCIndex == i)
                     {
-                        var cluster               = new U();
-                        cluster.AmbiguityScore  = m_maxDistance;
+                        var cluster = new U {AmbiguityScore = m_maxDistance};
                         umcX.SetParentFeature(cluster);
                         cluster.AddChildFeature(umcX);
                         clusters.Add(cluster);
@@ -277,15 +276,20 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                     var clusterJ = clusters[j];
 
-                    var featureJ = new T();
-                    featureJ.MassMonoisotopicAligned = clusterJ.MassMonoisotopicAligned;
-                    featureJ.Net  = clusterJ.Net;
-                    featureJ.DriftTime      = clusterJ.DriftTime;
+                    var featureJ = new T
+                    {
+                        MassMonoisotopicAligned = clusterJ.MassMonoisotopicAligned,
+                        Net = clusterJ.Net,
+                        DriftTime = clusterJ.DriftTime
+                    };
 
-                    var featureI = new T();
-                    featureI.MassMonoisotopicAligned    = clusterI.MassMonoisotopicAligned;
-                    featureI.Net              = clusterI.Net;
-                    featureI.DriftTime                  = clusterI.DriftTime;
+                    var featureI = new T
+                    {
+                        MassMonoisotopicAligned = clusterI.MassMonoisotopicAligned,
+                        Net = clusterI.Net,
+                        DriftTime = clusterI.DriftTime
+                    };
+
                     var centroidDistance             = Parameters.DistanceFunction(featureJ, featureI);
                     minCentroidDistance                 = Math.Min(centroidDistance, minCentroidDistance);
 
@@ -310,16 +314,16 @@ namespace MultiAlignCore.Algorithms.Clustering
             var massTolerance                = Parameters.Tolerances.Mass;
             var netTolerance                 = Parameters.Tolerances.Net;
             var driftTolerance               = Parameters.Tolerances.DriftTime;
-            var onlyClusterSameChargeStates    = Parameters.OnlyClusterSameChargeStates;
+            var onlyClusterSameChargeStates  = Parameters.OnlyClusterSameChargeStates;
 
             var distances = new List<Data.PairwiseDistance<T>>();
             for (var i = start; i < stop; i++)
             {
-                var featureX          = data[i];
+                var featureX     = data[i];
                 var driftTimeX   = featureX.DriftTime;
                 var netAlignedX  = featureX.Net;
                 var massAlignedX = featureX.MassMonoisotopicAligned;
-                var chargeStateX    = featureX.ChargeState;
+                var chargeStateX = featureX.ChargeState;
 
                 for (var j = i + 1; j <= stop; j++)
                 {
@@ -405,8 +409,8 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             // Calculate differences
             var massDiff = Math.Abs(FeatureLight.ComputeMassPPMDifference(clusterX.MassMonoisotopicAligned, clusterY.MassMonoisotopicAligned));
-            var netDiff   = Math.Abs(clusterX.Net - clusterY.Net);
-            var driftDiff = Math.Abs(clusterX.DriftTime   - clusterY.DriftTime);
+            var netDiff = Math.Abs(clusterX.Net - clusterY.Net);
+            var driftDiff = Math.Abs(clusterX.DriftTime - clusterY.DriftTime);
 
             // Return true only if all differences are within tolerance
             if (massDiff <= massTolerance && netDiff <= netTolerance && driftDiff <= driftTolerance)
@@ -511,8 +515,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     // could not find any other features near it within the mass tolerance specified.
                     if (startUMCIndex == i)
                     {
-                        var cluster               = new U();
-                        cluster.AmbiguityScore  = m_maxDistance;
+                        var cluster = new U {AmbiguityScore = m_maxDistance};
 
                         umcX.SetParentFeature(cluster);
                         cluster.AddChildFeature(umcX);
