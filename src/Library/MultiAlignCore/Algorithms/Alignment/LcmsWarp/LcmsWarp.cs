@@ -1102,9 +1102,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _massStd = Math.Sqrt(_massStd);
             _netStd = Math.Sqrt(_netStd);
 
-            Console.WriteLine("massStd is {0:F4} from EM and {1:F4} from trimmed stats", _massStdEM, _massStd);
-            Console.WriteLine(" netStd is {0:F4} from EM and {1:F4} from trimmed stats", _netStdEM, _netStd);
-
         }
 
         /// <summary>
