@@ -296,7 +296,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Method which calculates the Net slope, intercept and r squared as if
+        /// Method that calculates the Net slope, intercept and R squared as if
         /// a linear regression was performed
         /// </summary>
         private void CalculateNetSlopeAndIntercept()
@@ -787,7 +787,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             bestMatchFeature = new LcmsWarpFeatureMatch
                             {
                                 FeatureIndex = featureIndex,
-                                BaselineFeature = feature,
+                                AligneeFeature = feature,
+                                BaselineFeature = baselineFeature,
                                 BaselineFeatureIndex = baselineFeatureIndex,
                                 Net = feature.Net,
                                 NetError = netDiff,
@@ -932,7 +933,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var matchToAdd = new LcmsWarpFeatureMatch
                         {
                             FeatureIndex = featureIndex,
+                            AligneeFeature = feature,
                             BaselineFeatureIndex = baselineFeatureIndex,
+                            BaselineFeature = baselineFeature,
                             Net = feature.Net,
                             BaselineNet = baselineFeature.Net
                         };

@@ -180,6 +180,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             {
                                 AligneeFeature = aligneeFeature,
                                 BaselineFeature = baselineFeature,
+                                BaselineFeatureIndex = baselineFeatureIndex,
                                 Net = aligneeFeature.Net,
                                 NetError = netDiff,
                                 MassError = massDiff,
