@@ -6,6 +6,7 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Data.Constants.Libraries;
 
 namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
@@ -328,8 +329,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         NetAligned = item.NetAligned,
                         MassMonoisotopic = item.MassMonoisotopic,
                         MassMonoisotopicAligned = item.MassMonoisotopicAligned,
-                        //Mz = item.Mz,
-                        Mz = item.MassMonoisotopic / item.ChargeState + (1.00782 * (item.ChargeState - 1)),
+                        MassMonoisotopicOriginal = item.MassMonoisotopicOriginal,
+                        // Mz = item.Mz,
+                        Mz = item.ChargeState != 0 ? item.MassMonoisotopic / item.ChargeState + (SubAtomicParticleLibrary.MASS_PROTON * (item.ChargeState - 1)) : 0,
                         Net = item.Net,
                         DriftTime = item.DriftTime,
                         Id = item.Id,
