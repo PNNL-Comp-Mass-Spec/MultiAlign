@@ -177,8 +177,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     continue;
                 }
 
-                sortedData[i].MassMonoisotopicAligned = this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP ? point.MassMonoisotopicAligned
-                                                                                                                 : sortedData[i].MassMonoisotopic;
+                if (this._options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP)
+                    sortedData[i].MassMonoisotopicAligned = point.MassMonoisotopicAligned;
+                else
+                    sortedData[i].MassMonoisotopicAligned = sortedData[i].MassMonoisotopic;
+
+                sortedData[i].MassMonoisotopicOriginal = point.MassMonoisotopicOriginal;
+
                 sortedData[i].NetAligned = point.NetAligned;
                 sortedData[i].NetStart = point.NetStart;
                 sortedData[i].NetEnd = point.NetEnd;
@@ -220,6 +225,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     MassMonoisotopic = feature.MassMonoisotopic,
                     MassMonoisotopicAligned = feature.MassMonoisotopicAligned,
+                    MassMonoisotopicOriginal = feature.MassMonoisotopicOriginal,
                     Net = Convert.ToDouble(feature.ScanStart),
                     Mz = feature.Mz,
                     Abundance = feature.Abundance,
@@ -276,6 +282,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     MassMonoisotopic = data.MassMonoisotopic,
                     MassMonoisotopicAligned = data.MassMonoisotopicAligned,
+                    MassMonoisotopicOriginal = data.MassMonoisotopicOriginal,
                     Net = data.Net,
                     Mz = data.Mz,
                     Abundance = data.Abundance,

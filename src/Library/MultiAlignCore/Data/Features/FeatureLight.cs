@@ -27,6 +27,7 @@ namespace MultiAlignCore.Data.Features
             Id = -1;
             MassMonoisotopic = 0;
             MassMonoisotopicAligned = 0;
+            MassMonoisotopicOriginal = 0;
             Net = 0;
             NetAligned = 0;
             Net = 0;
@@ -39,23 +40,15 @@ namespace MultiAlignCore.Data.Features
         /// <param name="feature">Feature to copy data from.</param>
         public FeatureLight(FeatureLight feature)
         {
-
-            Abundance = 0;
-            ChargeState = 0;
-            DriftTime = 0;
-            Id = -1;
-            MassMonoisotopic = 0;
-            MassMonoisotopicAligned = 0;
-            Net = 0;
-            NetAligned = 0;
-
             Abundance = feature.Abundance;
             ChargeState = feature.ChargeState;
             DriftTime = feature.DriftTime;
             Id = feature.Id;
             MassMonoisotopic = feature.MassMonoisotopic;
             MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
+            MassMonoisotopicOriginal = feature.MassMonoisotopicOriginal;
             Net = feature.Net;
+            NetAligned = 0;
             Score = feature.Score;
             Net = feature.Net;
             AmbiguityScore = double.MaxValue;
@@ -91,14 +84,34 @@ namespace MultiAlignCore.Data.Features
         /// </summary>
         public double Abundance { get; set; }
 
-        /// <summary>
-        /// Gets or sets the monoisotopic mass of the feature.
-        /// </summary>
-        public double MassMonoisotopic { get; set; }
+        private double _massMonoisotopic;
 
         /// <summary>
         /// Gets or sets the monoisotopic mass of the feature.
         /// </summary>
+        public double MassMonoisotopic
+        {
+            get
+            {
+                return _massMonoisotopic;
+            }
+            set
+            {
+                _massMonoisotopic = value;
+                if (Math.Abs(MassMonoisotopicOriginal) < float.Epsilon && Math.Abs(value) > 0)
+                    MassMonoisotopicOriginal = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the original monoisotopic mass of the feature (before any mass warping)
+        /// </summary>
+        public double MassMonoisotopicOriginal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the monoisotopic mass of the feature.
+        /// </summary>
+        /// <remarks>This is usually identical to MassMonoisotopic</remarks>
         public virtual double MassMonoisotopicAligned { get; set; }
 
         /// <summary>
@@ -177,7 +190,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Compares the aligned monoisotopic mass of two Features
         /// </summary>
-        public static Comparison<FeatureLight> MassComparison = delegate(FeatureLight x, FeatureLight y)
+        public static Comparison<FeatureLight> MassComparison = delegate (FeatureLight x, FeatureLight y)
         {
             return x.MassMonoisotopic.CompareTo(y.MassMonoisotopic);
         };
@@ -185,7 +198,7 @@ namespace MultiAlignCore.Data.Features
         /// <summary>
         /// Compares the aligned monoisotopic mass of two Features
         /// </summary>
-        public static Comparison<FeatureLight> MassAlignedComparison = delegate(FeatureLight x, FeatureLight y)
+        public static Comparison<FeatureLight> MassAlignedComparison = delegate (FeatureLight x, FeatureLight y)
         {
             return x.MassMonoisotopicAligned.CompareTo(y.MassMonoisotopicAligned);
         };

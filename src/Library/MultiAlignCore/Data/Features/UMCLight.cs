@@ -66,6 +66,7 @@ namespace MultiAlignCore.Data.Features
             Index                              = feature.Index;
             MassMonoisotopic                   = feature.MassMonoisotopic;
             MassMonoisotopicAligned            = feature.MassMonoisotopicAligned;
+            MassMonoisotopicOriginal           = feature.MassMonoisotopicOriginal;
             MeanChargeStateRsquared            = feature.MeanChargeStateRsquared;
             MeanIsotopicRsquared               = feature.MeanIsotopicRsquared;
             MinimumCentroidDistance            = feature.MinimumCentroidDistance;
