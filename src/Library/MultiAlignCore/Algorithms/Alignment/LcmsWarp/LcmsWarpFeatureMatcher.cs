@@ -1,4 +1,7 @@
-﻿namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
+﻿using System;
+using MultiAlignCore.Data;
+
+namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -117,6 +120,7 @@
         /// <param name="baselineFeatures"></param>
         /// <param name="netStdDev"></param>
         /// <param name="massStdDev"></param>
+        [Obsolete("This function is superseded by CalculateAlignmentMatches in MultiAlignCore.Algorithms.Alignment.LcmsWarp")]
         public List<LcmsWarpFeatureMatch> CalculateAlignmentMatches(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, double netStdDev, double massStdDev)
         {
             // Sort features by mass
@@ -161,9 +165,12 @@
                         var massDiff = aligneeFeature.MassMonoisotopic - baselineFeature.MassMonoisotopic;
                         var massDiffPpm = massDiff * 1000000.0 / baselineFeature.MassMonoisotopic;
 
+                        var massDiffOriginal = aligneeFeature.MassMonoisotopicOriginal - baselineFeature.MassMonoisotopic;
+                        var originalMassDiffPpm = massDiffOriginal * 1000000.0 / baselineFeature.MassMonoisotopic;
+
                         // Calculate the match score.
                         var matchScore = -0.5 * (netDiff * netDiff) / (netStdDev * netStdDev);
-                        matchScore -= 0.5 * (massDiff * massDiff) / (massStdDev * massStdDev);
+                        matchScore -= 0.5 * (massDiffPpm * massDiffPpm) / (massStdDev * massStdDev);
 
                         // If the match score is greater than the best match score, update the holding item.
                         if (matchScore > bestMatchScore)
@@ -175,7 +182,9 @@
                                 BaselineFeature = baselineFeature,
                                 Net = aligneeFeature.Net,
                                 NetError = netDiff,
-                                PpmMassError = massDiff,
+                                MassError = massDiff,
+                                PpmMassError = massDiffPpm,
+                                PpmMassErrorOriginal = originalMassDiffPpm,
                                 DriftError = driftDiff,
                                 BaselineNet = baselineFeatures[baselineFeatureIndex].Net
                             };

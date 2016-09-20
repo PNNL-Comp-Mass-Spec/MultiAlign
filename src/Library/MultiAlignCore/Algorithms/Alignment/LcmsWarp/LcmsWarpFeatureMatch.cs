@@ -27,13 +27,22 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Mass Error
         /// Equal to the difference between the feature Mass and the baseline Mass, in Da
         /// </summary>
+        /// <remarks>This is computed using the aligned mass</remarks>
         public double MassError { get; set; }
 
         /// <summary>
         /// PPM Mass Error
         /// Equal to the difference between the feature Mass and the baseline Mass, in ppm
         /// </summary>
+        /// <remarks>This is computed using the aligned mass</remarks>
         public double PpmMassError { get; set; }
+
+        /// <summary>
+        /// PPM Mass Error
+        /// Equal to the difference between the original feature Mass and the baseline Mass, in ppm
+        /// </summary>
+        /// <remarks>This is computed using the original mass, prior to correction</remarks>
+        public double PpmMassErrorOriginal { get; set; }
 
         /// <summary>
         /// Normalized Elution Time error

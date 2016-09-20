@@ -773,6 +773,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var massDiff = feature.MassMonoisotopic - baselineFeature.MassMonoisotopic;
                         var massDiffPpm = massDiff * 1000000.0 / baselineFeature.MassMonoisotopic;
 
+                        var massDiffOriginal = feature.MassMonoisotopicOriginal - baselineFeature.MassMonoisotopic;
+                        var originalMassDiffPpm = massDiffOriginal * 1000000.0 / baselineFeature.MassMonoisotopic;
+
                         //Calculate the match score
                         var matchScore = -0.5 * (netDiff * netDiff) / (_netStd * _netStd);
                         matchScore -= 0.5 * (massDiffPpm * massDiffPpm) / (_massStd * _massStd);
@@ -790,6 +793,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                 NetError = netDiff,
                                 MassError = massDiff,
                                 PpmMassError = massDiffPpm,
+                                PpmMassErrorOriginal = originalMassDiffPpm,
                                 DriftError = driftDiff,
                                 BaselineNet = _baselineFeatures[baselineFeatureIndex].Net
                             };
