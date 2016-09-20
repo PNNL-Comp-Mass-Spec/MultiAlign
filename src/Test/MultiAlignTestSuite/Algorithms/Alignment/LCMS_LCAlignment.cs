@@ -54,17 +54,22 @@ namespace MultiAlignTestSuite.Algorithms.Alignment
             double sum = 0;
             for (int i = 0; i < experimentalTimes.Count; i++)
             {
-                double referecneNet = referenceTimes[i];
+                double referenceNet = referenceTimes[i];
                 double experimentalNet = experimentalTimes[i];
-                double alighnedNet = experimentalTimesAsUmc[i].NetAligned / multiplier;//replace with calculated Net
+                double alignedNet = experimentalTimesAsUmc[i].NetAligned / multiplier;//replace with calculated Net
 
-                Console.WriteLine(i + "," + referecneNet + "," + experimentalNet + "," + alighnedNet);
+                Console.WriteLine(i + "," + referenceNet + "," + experimentalNet + "," + alignedNet);
 
-                sum += (alighnedNet - referecneNet)*(alighnedNet - referecneNet);
+                sum += (alignedNet - referenceNet)*(alignedNet - referenceNet);
             }
 
             Console.WriteLine(" The sum of the squares score is " + Math.Round(sum,2));
-            Assert.AreEqual(2.0126026729399675, sum);
+            
+            // Old value before September 2016
+            // Assert.AreEqual(2.0126026729399675, sum);
+            
+            // New value
+            Assert.AreEqual(0.15686173611926441, sum);
         }
 
         private static void ConvertToUMCLight(List<double> referenceTimes, List<double> experimentalTimes, out List<UMCLight> experimentalTimesAsUMC, out List<UMCLight> referenceTimesAsUMC, int multiplier)

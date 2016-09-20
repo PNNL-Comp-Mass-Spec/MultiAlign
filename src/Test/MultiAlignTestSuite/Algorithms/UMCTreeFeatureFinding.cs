@@ -24,8 +24,8 @@ namespace MultiAlignTestSuite.Algorithms
     public class UmcTreeFeatureFinding: TestBase
     {
         [Test]
-        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
-        public IEnumerable<UMCLight> TestUmcFeatures(string relativePath)
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv", 77034)]
+        public IEnumerable<UMCLight> TestUmcFeatures(string relativePath, int expectedFeatureCount)
         {
             // Get the absolute path
             var path = GetPath(relativePath);
@@ -43,11 +43,22 @@ namespace MultiAlignTestSuite.Algorithms
                 Mass = 8,
                 Net = .005
             };
+
             var options = new LcmsFeatureFindingOptions(tolerances);
-            var features = finder.FindFeatures(newMsFeatures.ToList(), options, null);
+
+            IScanSummaryProvider provider = null;
+            var rawFilePath = path.Replace("_isos.csv", ".raw");
+            UpdateStatus("Using raw data to create better features.");
+
+            var providerCache = new ScanSummaryProviderCache();
+            provider = providerCache.GetScanSummaryProvider(rawFilePath, 1);
+
+            var features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
 
             // Work on total feature count here.
             Assert.Greater(features.Count, 0);
+
+            Assert.AreEqual(expectedFeatureCount, features.Count);
 
             return features;
         }
@@ -300,27 +311,38 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"testResults\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_TestDatabaseInsertion.db3")]
-        public void TestDatabaseInsertion(string relativePath, string databasePathRelative)
+            @"testResults\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_TestDatabaseInsertion.db3", 77034)]
+        public void TestDatabaseInsertion(string relativePath, string databasePathRelative, int expectedFeatureCount)
         {
             // Get the absolute path
             var path = GetPath(relativePath);
             var databasePath = GetPath(databasePathRelative);
 
-            var features = TestUmcFeatures(path);
+            var features = TestUmcFeatures(path, expectedFeatureCount);
 
             if (File.Exists(databasePath))
                 File.Delete(databasePath);
 
-            NHibernateUtil.ConnectToDatabase(databasePath, true);
-            var cache = new MSFeatureDAOHibernate();
-            var msFeatures = new List<MSFeatureLight>();
-            foreach (var feature in features)
-                msFeatures.AddRange(feature.MsFeatures);
-            cache.AddAll(msFeatures);
+            try
+            {
+                NHibernateUtil.ConnectToDatabase(databasePath, true);
+                var cache = new MSFeatureDAOHibernate();
+                var msFeatures = new List<MSFeatureLight>();
+                foreach (var feature in features)
+                    msFeatures.AddRange(feature.MsFeatures);
+                cache.AddAll(msFeatures);
 
-            var umcCache = new UmcDAOHibernate();
-            umcCache.AddAll(features.ToList());
+                var umcCache = new UmcDAOHibernate();
+                umcCache.AddAll(features.ToList());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caching features: " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                throw;
+            }
+
         }
     }
 }

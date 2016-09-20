@@ -46,7 +46,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         {
             if (provider == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(provider));
             }
 
             var tolerances = new FeatureTolerances
