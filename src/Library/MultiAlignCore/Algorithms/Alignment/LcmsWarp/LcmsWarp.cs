@@ -1176,8 +1176,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 var feature = _features[featureNum];
                 var mass = feature.MassMonoisotopic;
-                var ppmShift = MzRecalibration.GetPredictedValue(feature.Net);
+                var ppmShift = NetRecalibration.GetPredictedValue(feature.Net);
                 var newMass = mass - (mass * ppmShift) / 1000000;
+
                 feature.MassMonoisotopicAligned = newMass;
                 feature.MassMonoisotopic = newMass;
             }
