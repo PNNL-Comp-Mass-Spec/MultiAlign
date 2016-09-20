@@ -1,56 +1,40 @@
-﻿<Window x:Class="MultiAlign.Windows.Controls.AdvancedOptionsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+﻿<Window xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="600"
         Icon="/MultiAlign;component/Resources/logo.png"
-        xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit"
-        Title="AdvancedOptionsWindow" Height="600" Width="1000">
+        Title="AdvancedOptionsWindow"
+        Width="1000"
+        x:Class="MultiAlign.Windows.Controls.AdvancedOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:xceed="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit">
     <Grid>
         <TabControl>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Instrument Tolerances">
+            <TabItem Header="Instrument Tolerances" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding InstrumentTolerances}" />
             </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Filtering Options">
+            <TabItem Header="Filtering Options" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <TabControl>
-                    <TabItem
-                        Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                        Header="Deisotoped Features">
+                    <TabItem Header="Deisotoped Features" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                         <xceed:PropertyGrid SelectedObject="{Binding MsFilteringOptions}" />
                     </TabItem>
-                    <TabItem
-                        Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                        Header="LC-MS Features">
+                    <TabItem Header="LC-MS Features" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                         <xceed:PropertyGrid SelectedObject="{Binding LcmsFilteringOptions}" />
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Feature Definition">
+            <TabItem Header="Feature Definition" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding LcmsFindingOptions}" />
             </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Alignment">
+            <TabItem Header="Alignment" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding AlignmentOptions}" />
             </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Secondary Clustering">
+            <TabItem Header="Secondary Clustering" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding LcmsClusteringOptions}" />
             </TabItem>
 
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Mass Tag Database">
+            <TabItem Header="Mass Tag Database" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding MassTagDatabaseOptions}" />
             </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Peak Matching">
+            <TabItem Header="Peak Matching" Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <xceed:PropertyGrid SelectedObject="{Binding StacOptions}" />
             </TabItem>
         </TabControl>
