@@ -150,6 +150,11 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
+        public void UpdateAllStateless(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public void UpdateAll(ICollection<UMCLight> tList)
         {
             throw new NotImplementedException();

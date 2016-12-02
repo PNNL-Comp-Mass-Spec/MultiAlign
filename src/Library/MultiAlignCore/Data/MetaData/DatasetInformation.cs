@@ -314,5 +314,10 @@ namespace MultiAlignCore.Data.MetaData
 
             public int GroupId { get; private set; }
         }
+
+        public override string ToString()
+        {
+            return this.DatasetName;
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace MultiAlignCore.IO
         void AddAllStateless(ICollection<T> tList, IProgress<ProgressData> progress = null);
         void Update(T t);
         void UpdateAll(ICollection<T> tList, IProgress<ProgressData> progress = null);
+        void UpdateAllStateless(ICollection<T> tList, IProgress<ProgressData> progress = null);
         void Delete(T t);
         void DeleteAll(ICollection<T> tList);
         void DeleteAllStateless(ICollection<T> tList);

@@ -40,6 +40,7 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
         /// </summary>
         /// <returns>A configured Hibernate ISession</returns>
+        /// <remarks>A regular session needs to be used whenever there are relationships that need to be updated - the stateless session does not cascade operations.</remarks>
         protected ISession GetSession()
         {
             if (m_session == null || !m_session.IsOpen)
@@ -53,6 +54,7 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
         /// </summary>
         /// <returns>A configured Hibernate ISession</returns>
+        /// <remarks>A regular session needs to be used whenever there are relationships that need to be updated - the stateless session does not cascade operations.</remarks>
         protected IStatelessSession GetStatelessSession()
         {
             return NHibernateUtil.OpenStatelessSession();
@@ -188,15 +190,50 @@ namespace MultiAlignCore.IO.Hibernate
 
         /// <summary>
         ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// Use this for objects with cascade relationships.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
         public void UpdateAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
-            using (var session = GetStatelessSession())
+            using (var session = GetSession())
             using (var transaction = session.BeginTransaction())
             {
                 var progressData = new ProgressData(progress) {IsPartialRange = true, MaxPercentage = 95};
+                int i = 0;
+                session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
+                foreach (var t in tCollection)
+                {
+                    session.Update(t);
+
+                    if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
+                    {
+                        progressData.Report(i, tCollection.Count);
+                    }
+
+                    i++;
+                }
+
+                session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF").ExecuteUpdate();
+                progressData.StepRange(100);
+                transaction.Commit();
+                progressData.Report(100);
+            }
+        }
+
+        /// <summary>
+        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// DO NOT use this for objects with cascade relationships.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be updated</param>
+        public void UpdateAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        {
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
+            using (var session = GetStatelessSession())
+            using (var transaction = session.BeginTransaction())
+            {
+                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                 int i = 0;
                 foreach (var t in tCollection)
                 {
