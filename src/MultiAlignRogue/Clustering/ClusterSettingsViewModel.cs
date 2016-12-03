@@ -257,10 +257,6 @@ namespace MultiAlignRogue.Clustering
                 promexClusterer.Readers = this.analysis.DataProviders.ScanSummaryProviderCache;
             }
 
-            // This just tells us whether we are using mammoth memory partitions or not.
-            var clusterCount = 0;
-            var providers = this.analysis.DataProviders;
-
             foreach (var dataset in this.Datasets)
             {
                 if (dataset.FeaturesFound)
@@ -273,18 +269,24 @@ namespace MultiAlignRogue.Clustering
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             this.ShouldShowProgress = true;
+            var progData = new ProgressData(internalProgress);
+            var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+
+            this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
+            DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
+            this.analysis.DataProviders.ClusterCache.ClearAllClusters();
+            this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
+
+            // The id for a cluster - keep track here to avoid duplicates when separating by charge.
+            var clusterCount = 0;
 
             // Here we see if we need to separate the charge...
             // IMS is said to require charge separation
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                var progData = new ProgressData(internalProgress);
-                IProgress<ProgressData> clusterProgress =
-                    new Progress<ProgressData>(pd => progData.Report(pd.Percent));
-
                 progData.StepRange(45);
                 var features = new List<UMCLight>();
-                int i = 0;
+                var i = 0;
                 var datasets = this.Datasets.Where(ds => ds.FeaturesFound).ToList();
                 foreach (var dataset in datasets)
                 {
@@ -294,164 +296,132 @@ namespace MultiAlignRogue.Clustering
                     progData.Report(++i, datasets.Count);
                 }
 
-                progData.StepRange(50);
-                var clusters = clusterer.Cluster(features, clusterProgress);
-                foreach (var cluster in clusters)
-                {
-                    cluster.Id = clusterCount++;
-                    cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
-
-                    // Updates the cluster with statistics
-                    foreach (var feature in cluster.UmcList)
-                    {
-                        cluster.MsMsCount += feature.MsMsCount;
-                        cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
-                    }
-                }
-
-
-                if (this.ShouldRefineWithMsMs)
-                {
-                    try
-                    {
-                        progData.StepRange(75);
-                        var clusterRefiner =
-                            ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
-                                this.analysis.Options.ClusterPostProcessingoptions,
-                                this.analysis.DataProviders);
-                        clusters = clusterRefiner.Cluster(clusters, clusterProgress);
-
-                    }
-                    catch (DatasetInformation.MissingRawDataException e)
-                    {
-                        MessageBox.Show(string.Format("{0}\nDataset: {1}", e.Message, e.GroupId));
-                    }
-                }
-
-                this.analysis.Clusters = clusters;
-                clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
-
-                foreach (var dataset in this.Datasets)
-                {
-                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Clustering)
-                    {
-                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters;
-                    }
-                }
-
-                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
-                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
-
-                this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
-                progData.StepRange(85);
-                providers.ClusterCache.ClearAllClusters();
-                providers.ClusterCache.AddAllStateless(clusters, clusterProgress);
-                this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
-
                 progData.StepRange(100);
-                providers.FeatureCache.UpdateAll(features, clusterProgress);
-
-                foreach (var dataset in this.Datasets)
-                {
-                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.PersistingClusters)
-                    {
-                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered;
-                    }
-                }
-
-                try
-                {
-                    // Write to file
-                    this.WriteClusterData(string.Format("{0}_crosstab.tsv", this.analysis.AnalysisName), clusters);
-                }
-                catch (Exception ex)
-                {
-                    var errMsg = "Error writing results to text file: " + ex.Message;
-                    Logger.PrintMessage(errMsg);
-
-                    // Todo: Add this: if (!GlobalSettings.AutomatedAnalysisMode)
-                    MessageBox.Show(errMsg);
-                }
-
-                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
-                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
+                ClusterGroupOfFeatures(clusterer, features, ref clusterCount, clusterProgress);
             }
             else
             {
                 var maxChargeState = this.featureCache.FindMaxCharge();
-                var progData = new ProgressData(internalProgress);
-                var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
-                DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
-
-                /*
-                 * Here we cluster all charge states separately.  Probably IMS Data.
-                 */
+                // Here we cluster all charge states separately.  Probably IMS Data.
                 for (var chargeState = 1; chargeState <= maxChargeState; chargeState++)
                 {
                     var maxPercent = ((100.0 * chargeState) / maxChargeState);
-                    var maxFirstStep = (maxPercent - progData.MaxPercentage) / 2;
-                    progData.StepRange(maxFirstStep);
+                    // TODO: Add restriction by selected dataset ids?
                     var features = this.featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
                     {
-                        break;
+                        continue;
                     }
-
-                    var clusters = clusterer.Cluster(features, clusterProgress);
-                    foreach (var cluster in clusters)
-                    {
-                        cluster.Id = clusterCount++;
-                        cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
-
-                        // Updates the cluster with statistics
-                        foreach (var feature in cluster.Features)
-                        {
-                            cluster.MsMsCount += feature.MsMsCount;
-                            cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
-                        }
-                    }
-
-                    this.analysis.Clusters = clusters;
-                    clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
-
-                    foreach (var dataset in this.Datasets)
-                    {
-                        if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Clustering)
-                        {
-                            dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters;
-                        }
-                    }
-
-                    progData.StepRange((maxPercent - maxFirstStep) / 3);
-                    this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
 
                     progData.StepRange(maxPercent);
-                    this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
-
-                    ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
-                    ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
-
+                    ClusterGroupOfFeatures(clusterer, features, ref clusterCount, clusterProgress);
                 }
-
-                DatabaseIndexer.IndexClusters(NHibernateUtil.Path);
 
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
-
-                foreach (var dataset in this.Datasets)
-                {
-                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.PersistingClusters)
-                    {
-                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered;
-                    }
-                }
-
-                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
-                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
+
+            this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
+            DatabaseIndexer.IndexClusters(NHibernateUtil.Path);
+            this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
+
+            foreach (var dataset in this.Datasets)
+            {
+                if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.PersistingClusters)
+                {
+                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered;
+                }
+            }
+
+            try
+            {
+                // Write to file
+                this.WriteClusterData(string.Format("{0}_crosstab.tsv", this.analysis.AnalysisName), this.analysis.Clusters);
+            }
+            catch (Exception ex)
+            {
+                var errMsg = "Error writing results to text file: " + ex.Message;
+                Logger.PrintMessage(errMsg);
+
+                // Todo: Add this: if (!GlobalSettings.AutomatedAnalysisMode)
+                MessageBox.Show(errMsg);
+            }
+
+            ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+            ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             taskBarProgress.ShowProgress(this, false);
             this.ShouldShowProgress = false;
+        }
+
+        internal void ClusterGroupOfFeatures(IClusterer<UMCLight, UMCClusterLight> clusterer, List<UMCLight> features, ref int clusterCount, IProgress<ProgressData> internalProgress = null)
+        {
+            var progData = new ProgressData(internalProgress);
+            var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+
+            var clusters = clusterer.Cluster(features, clusterProgress);
+
+            if (this.ShouldRefineWithMsMs)
+            {
+                progData.StepRange(35);
+            }
+            else
+            {
+                progData.StepRange(70);
+            }
+
+            foreach (var cluster in clusters)
+            {
+                cluster.Id = clusterCount++;
+                cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
+
+                // Updates the cluster with statistics
+                foreach (var feature in cluster.UmcList)
+                {
+                    cluster.MsMsCount += feature.MsMsCount;
+                    cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
+                }
+            }
+
+            if (this.ShouldRefineWithMsMs)
+            {
+                try
+                {
+                    progData.StepRange(70);
+                    var clusterRefiner =
+                        ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
+                            this.analysis.Options.ClusterPostProcessingoptions,
+                            this.analysis.DataProviders);
+                    clusters = clusterRefiner.Cluster(clusters, clusterProgress);
+
+                }
+                catch (DatasetInformation.MissingRawDataException e)
+                {
+                    MessageBox.Show(string.Format("{0}\nDataset: {1}", e.Message, e.GroupId));
+                }
+            }
+
+            this.analysis.Clusters = clusters;
+            clusters.ForEach(c => c.Abundance = c.UmcList.Sum(umc => umc.AbundanceSum));
+
+            foreach (var dataset in this.Datasets)
+            {
+                if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Clustering)
+                {
+                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters;
+                }
+            }
+
+            ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+            ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
+
+            this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
+            progData.StepRange(85);
+            this.analysis.DataProviders.ClusterCache.AddAllStateless(clusters, clusterProgress);
+
+            progData.StepRange(100);
+            this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
+            this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
         }
 
         public async Task DisplayFeatures()

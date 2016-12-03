@@ -17,7 +17,6 @@ namespace MultiAlignCore.IO
             {
                 connection.Open();
 
-
                 using (var command = connection.CreateCommand())
                 {
                     // UMC Clusters Index
@@ -40,7 +39,6 @@ namespace MultiAlignCore.IO
             using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path), true))
             {
                 connection.Open();
-
 
                 using (var command = connection.CreateCommand())
                 {
@@ -100,12 +98,10 @@ namespace MultiAlignCore.IO
                         "CREATE INDEX IF NOT EXISTS idx_msnFeature_id on T_MSnFeature_To_MSFeature_Map(MSn_Feature_ID ASC)";
                     command.ExecuteNonQuery();
 
-
                     // Create the peptide sequences index
                     command.CommandText =
                         "CREATE INDEX IF NOT EXISTS idx_databaseIndex_id on T_DatabaseSearch(Dataset_ID ASC, LCMS_Feature_ID)";
                     command.ExecuteNonQuery();
-
 
                     command.CommandText =
                         "CREATE INDEX IF NOT EXISTS idx_msnDatbaseIndex_id on T_DatabaseSearch_To_MsnFeature(Dataset_ID ASC, LCMS_Feature_ID )";
@@ -154,11 +150,9 @@ namespace MultiAlignCore.IO
                     command.CommandText = "DROP INDEX IF EXISTS idx_msnFeature_id";
                     command.ExecuteNonQuery();
 
-
                     // Create the peptide sequences index
                     command.CommandText = "DROP INDEX IF EXISTS idx_databaseIndex_id";
                     command.ExecuteNonQuery();
-
 
                     command.CommandText = "DROP INDEX IF EXISTS idx_msnDatbaseIndex_id";
                     command.ExecuteNonQuery();
