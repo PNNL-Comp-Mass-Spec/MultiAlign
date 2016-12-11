@@ -359,8 +359,6 @@ namespace MultiAlignRogue.Clustering
             var progData = new ProgressData(internalProgress);
             var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
-            var clusters = clusterer.Cluster(features, clusterProgress);
-
             if (this.ShouldRefineWithMsMs)
             {
                 progData.StepRange(35);
@@ -369,6 +367,8 @@ namespace MultiAlignRogue.Clustering
             {
                 progData.StepRange(70);
             }
+
+            var clusters = clusterer.Cluster(features, clusterProgress);
 
             foreach (var cluster in clusters)
             {
