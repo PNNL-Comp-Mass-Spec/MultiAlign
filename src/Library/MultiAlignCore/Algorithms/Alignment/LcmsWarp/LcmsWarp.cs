@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Statistics;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
@@ -407,16 +408,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         var massDelta = (featureMonoMass - baselineFeatureMonoMass) * 1000000 / baselineFeatureMonoMass;
 
                         matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
-                        // mass is much less accurate in terms of ppm units with error distributions. so missed 
+                        // mass is much less accurate in terms of ppm units with error distributions. so missed
                         // features will be assumed to be at the same distance in zscores for both mass and net.
                         matchScore -= 0.5 * (calcVal / _netStd) * (calcVal / _netStd);
-                        //	match_score -= 0.5 * (mass_delta * mass_delta) / (mdbl_mass_std * mdbl_mass_std) ; 
+                        // match_score -= 0.5 * (mass_delta * mass_delta) / (mdbl_mass_std * mdbl_mass_std) ;
                         matchScore -= 0.5 * log2PiStdNetSqrd;
                         matchScore -= 0.5 * log2PiStdMassSqrd;
 
                         /*
                          * Alternative scoring model; origin unknown
-                         *                    
                          */
                         var matchScoreAlternate = matchScore;
 
@@ -451,7 +451,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                         /*
                          * Alternative scoring model; origin unknown
-                         *                    
                          */
                         var matchScoreAlternate = matchScore;
 
@@ -637,13 +636,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Determines the transformed NETs for the LCMSWarp function
         /// </summary>
-        public void GetTransformedNets()
+        public void GetTransformedNets(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
             var dicSectionToIndex = new Dictionary<int, int>();
             for (var i = 0; i < _alignmentFunc.Count; i++)
             {
                 dicSectionToIndex.Add(_alignmentFunc[i].AligneeSectionStart, i);
             }
+
+            var count = 0;
+            var total = _features.Count;
 
             foreach (var feature in _features)
             {
@@ -672,6 +675,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     feature.NetStart = GetTransformedNet(feature.ScanStart, dicSectionToIndex);
                     feature.NetEnd = GetTransformedNet(feature.ScanEnd, dicSectionToIndex);
                 }
+                progData.Report(++count, total);
             }
         }
 
@@ -730,8 +734,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// then goes through and calculates the match score for each feature with relation to
         /// the baselines, holding onto the "best match" for each one
         /// </summary>
-        public void CalculateAlignmentMatches()
+        public void CalculateAlignmentMatches(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
             _features.Sort(ByMass);
             _baselineFeatures.Sort(ByMass);
 
@@ -742,6 +747,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             var minMatchScore = -0.5 * (MassTolerance * MassTolerance) / (_massStd * _massStd);
             minMatchScore -= 0.5 * (NetTolerance * NetTolerance) / (_netStd * _netStd);
+
+            var total = _features.Count;
 
             for (var featureIndex = 0; featureIndex < _features.Count; featureIndex++)
             {
@@ -808,6 +815,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 {
                     FeatureMatches.Add(bestMatchFeature);
                 }
+
+                progData.Report(featureIndex + 1, total);
             }
 
             CalculateNetSlopeAndIntercept();
@@ -879,8 +888,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// mass tolerance window
         /// Elution time will be considered later
         /// </summary>
-        public void GenerateCandidateMatches()
+        public void GenerateCandidateMatches(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
             if (_features.Count == 0)
             {
                 return;
@@ -908,6 +918,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 return;
             }
 
+            var total = _features.Count;
+            progData.StepRange(50);
             for (var featureIndex = 0; featureIndex < _features.Count; featureIndex++)
             {
                 var feature = _features[featureIndex];
@@ -944,12 +956,16 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     }
                     baselineFeatureIndex++;
                 }
+
+                progData.Report(featureIndex + 1, total);
             }
 
             // Now that matches have been created, go through all the matches and find a mapping
             // of how many times a baseline feature is matched to.
             // Store the matches in a map from a mass tag id to a list of indexes of feature matches
 
+            total = FeatureMatches.Count;
+            progData.StepRange(60);
             var massTagToMatches = new Dictionary<int, List<int>>();
             for (var matchIndex = 0; matchIndex < FeatureMatches.Count; matchIndex++)
             {
@@ -960,6 +976,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     massTagToMatches.Add(baselineIndex, new List<int>());
                 }
                 massTagToMatches[baselineIndex].Add(matchIndex);
+
+                progData.Report(matchIndex + 1, total);
             }
 
             // Now go through each of the baseline features matched and for each one keep at
@@ -969,6 +987,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var matchesToUse = new List<LcmsWarpFeatureMatch> { Capacity = FeatureMatches.Count };
             var netMatchesToIndex = new Dictionary<double, List<int>>();
 
+            total = massTagToMatches.Count;
+            var count = 0;
+            progData.StepRange(100);
             foreach (var matchIterator in massTagToMatches)
             {
                 var baselineIndex = matchIterator.Key;
@@ -1016,6 +1037,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                             break;
                     }
                 }
+
+                progData.Report(++count, total);
             }
 
             FeatureMatches = matchesToUse;
@@ -1183,8 +1206,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Goes through the matched features and determines the probability
         /// of each that the match is correct
         /// </summary>
-        public void GetMatchProbabilities()
+        public void GetMatchProbabilities(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
+            progData.StepRange(5);
             PercentComplete = 0;
             var numFeatures = _features.Count;
 
@@ -1209,6 +1234,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 _numFeaturesInBaselineSections.Add(0);
             }
+
+            progData.StepRange(10);
 
             MaxNet = double.MinValue;
             MinNet = double.MaxValue;
@@ -1262,6 +1289,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _numFeaturesInBaselineSections[msmsSectionNum]++;
             }
 
+            progData.StepRange(15);
+
             FeatureMatches = FeatureMatches.OrderBy(x => x.Net).ToList();
             var numMatches = FeatureMatches.Count;
 
@@ -1283,6 +1312,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             {
                 return;
             }
+
+            progData.StepRange(100);
 
             for (var section = 0; section < NumSections; section++)
             {
@@ -1315,6 +1346,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
                 var percentComplete = section / (double)NumSections * 100;
                 OnProgress("Getting match probabilities", percentComplete);
+                progData.Report(section + 1, NumSections, "Getting match probabilities");
             }
         }
 
@@ -1322,13 +1354,15 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Calculates the alignment function for each of the sections, based
         /// on the match scores for every feature in the subsection
         /// </summary>
-        public void CalculateAlignmentFunction()
+        public void CalculateAlignmentFunction(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
             var section = NumSections - 1;
 
             var bestScore = double.MinValue;
             var bestAlignmentIndex = new Index3D();
 
+            progData.StepRange(80);
             for (var baselineSection = 0; baselineSection < NumBaselineSections; baselineSection++)
             {
                 // Everything past this section would have remained unmatched.
@@ -1342,10 +1376,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     bestScore = alignmentScore;
                     bestAlignmentIndex.Set(section, baselineSection, sectionWidth);
                 }
+                progData.Report(baselineSection + 1, NumBaselineSections);
             }
 
             var msmsSectionWidth = (MaxBaselineNet - MinBaselineNet) / NumBaselineSections;
 
+            progData.StepRange(100);
             _alignmentFunc.Clear();
             for (var alignIndex = bestAlignmentIndex;
                 alignIndex.IsValid(_bestPreviousIndex);
@@ -1354,6 +1390,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 _alignmentFunc.Add(CreateMatch(alignIndex, msmsSectionWidth));
             }
             _alignmentFunc.Sort();
+            progData.Report(100);
         }
 
         public LcmsWarpAlignmentMatch CreateMatch(Index3D index, double msmsSectionWidth)
@@ -1385,11 +1422,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// onto each and every possible alignment score and then linking the feature
         /// to the best previous index of possible alignments
         /// </summary>
-        public void CalculateAlignmentMatrix()
+        public void CalculateAlignmentMatrix(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
             _alignmentScore = new double[NumSections, NumBaselineSections, NumMatchesPerBaseline];
             _bestPreviousIndex = new Index3D[NumSections, NumBaselineSections, NumMatchesPerBaseline];
 
+            progData.StepRange(5);
             // Initialize scores to - inf, best previous index to -1
             for (var i = 0; i < NumSections; i++)
             {
@@ -1419,6 +1458,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                 unmatchedScore *= 2;
             }
 
+            progData.StepRange(20);
+
             // Update scores in section 0 to be 0
             // This is (supposedly) done because we are assuming that everything that was missed was past 3 standard deviations in NET
             var numUnmatchedBaselineFeatures = 0;
@@ -1441,8 +1482,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     numUnmatchedBaselineFeatures += _numFeaturesInSections[ms_section];
                 }
 
+                progData.Report(baselineSection + 1, NumBaselineSections);
             }
 
+            progData.StepRange(40);
             // Update scores in baselineSection 0 to be 0
             // This is (again) done because we are assuming that everything that was missed was past 3 standard deviations in NET
             var numUnmatchedMsFeatures = 0;
@@ -1454,8 +1497,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                     _alignmentScore[section, 0, sectionWidth] = newScore;
                 }
                 numUnmatchedMsFeatures += _numFeaturesInSections[section];
+
+                progData.Report(section + 1, NumSections);
             }
 
+            progData.StepRange(100);
             // Since we have already scored the ms_sections with index = 0 above, start at 1
             for (var section = 1; section < NumSections; section++)
             {
@@ -1501,6 +1547,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                         }
                     }
                 }
+                progData.Report(section, NumSections);
             }
         }
 

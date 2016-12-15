@@ -108,7 +108,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// that are passed into the Processor
         /// </summary>
         /// <remarks>
-        /// Store data using SetReferenceDatasetFeatures and SetAligneeDatasets, 
+        /// Store data using SetReferenceDatasetFeatures and SetAligneeDatasets,
         /// then call PerformAlignmentToMsFeatures, which calls either PerformNetWarp or PerformNetMassWarp</remarks>
         public LcmsWarpAlignmentProcessor(LcmsWarpAlignmentOptions options)
         {
@@ -457,7 +457,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Method to determine which warping method to use.
         /// Throws exception if the options were not set.
         /// </summary>
-        public void PerformAlignmentToMsFeatures()
+        /// <param name="progress"></param>
+        public void PerformAlignmentToMsFeatures(IProgress<ProgressData> progress = null)
         {
             if (_options == null)
             {
@@ -466,11 +467,11 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
             if (_options.AlignType == LcmsWarpAlignmentType.NET_WARP)
             {
-                PerformNetWarp(0, 100);
+                PerformNetWarp(0, 100, progress);
             }
             else
             {
-                PerformNetMassWarp();
+                PerformNetMassWarp(progress);
             }
         }
 
@@ -479,13 +480,17 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// calculates the alignment matrix and alignment function, gets the transformed NETs
         /// and then calculates the alignment matches
         /// </summary>
-        private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd)
+        private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd, IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
+            var prog = new Progress<ProgressData>(p => progData.Report(p.Percent, p.Status));
             var percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.GenerateCandidateMatches);
             OnProgress("NET Warp, get candidate matches", percentCompleteOverall);
+            progData.StepRange(10, "NET Warp, get candidate matches");
+            progData.Report(0.0);
 
-            _lcmsWarp.GenerateCandidateMatches();
+            _lcmsWarp.GenerateCandidateMatches(prog);
 
             if (_lcmsWarp.NumCandidateMatches < 10)
             {
@@ -495,34 +500,40 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.GetMatchProbabilities);
             OnProgress("NET Warp, get match probabilities", percentCompleteOverall);
+            progData.StepRange(90, "NET Warp, get match probabilities");
 
-            _lcmsWarp.GetMatchProbabilities();
+            _lcmsWarp.GetMatchProbabilities(prog);
 
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.CalculateAlignmentMatrix);
             OnProgress("NET Warp, calculate alignment matrix", percentCompleteOverall);
+            progData.StepRange(93, "NET Warp, calculate alignment matrix");
 
-            _lcmsWarp.CalculateAlignmentMatrix();
+            _lcmsWarp.CalculateAlignmentMatrix(prog);
 
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.CalculateAlignmentFunction);
             OnProgress("NET Warp, calculate alignment function", percentCompleteOverall);
+            progData.StepRange(96, "NET Warp, calculate alignment function");
 
-            _lcmsWarp.CalculateAlignmentFunction();
+            _lcmsWarp.CalculateAlignmentFunction(prog);
 
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.GetTransformedNets);
             OnProgress("NET Warp, get transformed NETs", percentCompleteOverall);
+            progData.StepRange(98, "NET Warp, get transformed NETs");
 
-            _lcmsWarp.GetTransformedNets();
+            _lcmsWarp.GetTransformedNets(prog);
 
             percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.CalculateAlignmentMatches);
             OnProgress("NET Warp, calculate alignment matches", percentCompleteOverall);
+            progData.StepRange(100, "NET Warp, calculate alignment matches");
 
-            _lcmsWarp.CalculateAlignmentMatches();
+            _lcmsWarp.CalculateAlignmentMatches(prog);
 
             UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.Complete);
+            progData.Report(100.0, "NET Warp, complete");
         }
 
         /// <summary>
@@ -563,9 +574,13 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// performs NET warping, calibrates matches based on the NETWarp results, recalibrates the mass
         /// tolerance and then performs Warping again using the mass and Net scores
         /// </summary>
-        private void PerformNetMassWarp()
+        /// <param name="progress"></param>
+        private void PerformNetMassWarp(IProgress<ProgressData> progress = null)
         {
+            var progData = new ProgressData(progress);
+            var prog = new Progress<ProgressData>(p => progData.Report(p.Percent, p.Status));
             OnProgress("LCMSWarp phase one", 0);
+            progData.StepRange(50, "LCMSWarp phase one");
 
             // First, perform the net calibration using a mass tolerance of the same size as the mass window
             // and then perform the net calibration again using the appropriate mass tolerance
@@ -573,21 +588,24 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             _lcmsWarp.MassTolerance = _lcmsWarp.MassCalibrationWindow;
             _lcmsWarp.UseMassAndNetScore(false);
 
-            PerformNetWarp(0, 50);
+            PerformNetWarp(0, 50, prog);
 
             OnProgress("Calibrating mass", 50);
+            progData.StepRange(60, "Calibrating mass");
 
             _lcmsWarp.PerformMassCalibration();
             _lcmsWarp.CalculateStandardDeviations();
 
             OnProgress("LCMSWarp phase two", 60);
+            progData.StepRange(100, "LCMSWarp phase two");
 
             _lcmsWarp.MassTolerance = massTolerance;
             _lcmsWarp.UseMassAndNetScore(true);
 
-            PerformNetWarp(60, 100);
+            PerformNetWarp(60, 100, prog);
 
             OnProgress("Complete", 100);
+            progData.Report(100, "Complete");
         }
 
         /// <summary>
