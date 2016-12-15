@@ -292,8 +292,12 @@ namespace MultiAlignRogue.AMTMatching
         internal void PerformMatching(IEnumerable<DatasetInformationViewModel> datasets)
         {
             this.ShouldShowTotalProgress = true;
-            var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 95 };
-            IProgress<ProgressData> progress = new Progress<ProgressData>(pd => this.TotalProgress = progressData.UpdatePercent(pd.Percent).Percent);
+            var progressData = new ProgressData(new Progress<ProgressData>(pd =>
+            {
+                // This is the progress percent after stepping by progressData
+                this.TotalProgress = pd.Percent;
+            })) {IsPartialRange = true, MaxPercentage = 95};
+            var progress = new Progress<ProgressData>(pd => progressData.Report(pd.Percent));
 
             // Get all possible charge states in data.
             var chargeStates = this.analysis.DataProviders.FeatureCache.RetrieveChargeStates().ToList();
@@ -370,7 +374,7 @@ namespace MultiAlignRogue.AMTMatching
                                       Dictionary<int, UMCClusterLight> clusterIdMap,
                                       IProgress<ProgressData> progress)
         {
-            var progData = new ProgressData { ProgressObj = progress };
+            var progData = new ProgressData(progress);
             int i = 1;
 
             using (var writer = File.CreateText(path))

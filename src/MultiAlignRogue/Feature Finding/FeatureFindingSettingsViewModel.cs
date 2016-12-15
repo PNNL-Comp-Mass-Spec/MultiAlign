@@ -547,17 +547,17 @@
             {
                 // Set range based on file
                 totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
-                var progData = new ProgressData();
-
                 var fileInstance = file;
-                var progressRpt = new Progress<ProgressData>(
-                    pd =>
-                        {
-                            fileInstance.Progress = progData.UpdatePercent(pd.Percent).Percent;
 
-                            // Report file progress
-                            totalProgressData.Report(fileInstance.Progress);
-                        });
+                var progData = new ProgressData(new Progress<ProgressData>(pd =>
+                {
+                    fileInstance.Progress = pd.Percent;
+
+                    // Report file progress
+                    totalProgressData.Report(fileInstance.Progress);
+                }));
+
+                var progressRpt = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
                 progData.StepRange(30);
 

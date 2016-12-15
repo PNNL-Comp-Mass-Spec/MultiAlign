@@ -32,13 +32,12 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         /// <returns>The resulting clusters.</returns>
         public List<T> Cluster(List<T> data, IProgress<ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
-            var progressData = new ProgressData();
+            var progressData = new ProgressData(progress);
             var processedClusters = new List<T>();
             for (int i = 0; i < data.Count; i++)
             {
                 processedClusters.AddRange(this.ProcessCluster(data[i]));
-                progress.Report(progressData.UpdatePercent((100.0 * i++) / data.Count));
+                progressData.Report(i++, data.Count);
             }
 
             int id = 0;

@@ -983,13 +983,15 @@
                 taskBarProgress.TakeControl(this);
                 taskBarProgress.ShowProgress(this, true);
 
-                var progData = new ProgressData();
-                IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+                // Reporting to UI
+                var progData = new ProgressData(new Progress<ProgressData>(pd =>
                 {
-                    var prog = progData.UpdatePercent(pd.Percent).Percent;
+                    var prog = pd.Percent;
                     this.ProgressTracker = (int)prog;
                     taskBarProgress.SetProgress(this, prog);
-                });
+                }));
+                // Internal progress, fed through progData, which will trigger the reports to the UI
+                var totalProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
 
                 progData.StepRange(50);
 
