@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InformedProteomics.Backend.Data.Biology;
 using InformedProteomics.Backend.Data.Spectrometry;
-using InformedProteomics.Backend.MassFeature;
+using InformedProteomics.FeatureFinding.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.RawData;
 

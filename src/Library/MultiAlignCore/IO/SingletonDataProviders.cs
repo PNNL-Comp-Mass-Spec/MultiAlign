@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using InformedProteomics.Backend.MassFeature;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 

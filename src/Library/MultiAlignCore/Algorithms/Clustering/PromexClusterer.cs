@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InformedProteomics.Backend.Data.Spectrometry;
-using InformedProteomics.Backend.MassFeature;
-using InformedProteomics.Backend.MassSpecData;
-using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.RawData;
+using InformedProteomics.Backend.Utils;
+using InformedProteomics.FeatureFinding.Alignment;
+using InformedProteomics.FeatureFinding.Data;
+using InformedProteomics.Backend.Data.Spectrometry;
+using InformedProteomics.Backend.MassSpecData;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
