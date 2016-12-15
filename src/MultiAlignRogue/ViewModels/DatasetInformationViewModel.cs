@@ -320,6 +320,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.shouldShowProgress != value)
                 {
                     this.shouldShowProgress = value;
+                    this.Progress = 0; // Reset the progress to zero
                     this.RaisePropertyChanged();
                 }
             }

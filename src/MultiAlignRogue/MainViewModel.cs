@@ -800,6 +800,7 @@
 
         private async Task LoadRawData(IEnumerable<DatasetInformationViewModel> datasets)
         {
+            await Task.Delay(20).ConfigureAwait(false); // to attempt to drop the current context before the hefty stuff
             foreach (var dataset in datasets)
             {
                 if (dataset.Dataset.RawFile != null && File.Exists(dataset.Dataset.RawFile.Path))
@@ -812,7 +813,7 @@
                     var provider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
                         dataset.Dataset.RawFile.Path,
                         dataset.DatasetId);
-                    await provider.InitializeAsync(progress);
+                    await provider.InitializeAsync(progress).ConfigureAwait(false);
                     dataset.DatasetState = finalDatasetState;
                 }
             }
@@ -961,7 +962,6 @@
             // ToDo: use .RestoreDefaults
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
             //this.ClusterSettingsViewModel.RestoreDefaults();
-
         }
 
         private async void AsyncWorkflow()
