@@ -7,13 +7,7 @@ namespace MultiAlignCore.Extensions
     {
         public static UMCLight GetParentUmc(this MSSpectra spectrum)
         {
-            if (spectrum == null) return null;
-
-            if (spectrum.ParentFeature != null)
-            {
-                return spectrum.ParentFeature.GetParentUmc();
-            }
-            return null;
+            return spectrum?.ParentFeature?.GetParentUmc();
         }
     }
 }

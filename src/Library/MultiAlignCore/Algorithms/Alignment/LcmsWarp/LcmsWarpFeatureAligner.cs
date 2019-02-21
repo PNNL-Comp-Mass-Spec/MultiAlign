@@ -31,18 +31,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         private void OnStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         private void OnStatus(ProgressNotifierArgs e)
         {
-            if (Progress != null)
-            {
-                Progress(this, e);
-            }
+            Progress?.Invoke(this, e);
         }
 
         private void AlignmentProcessor_Progress(object sender, ProgressNotifierArgs e)

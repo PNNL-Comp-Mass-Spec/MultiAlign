@@ -25,10 +25,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <param name="message"></param>
         private void UpdateStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         #region Properties

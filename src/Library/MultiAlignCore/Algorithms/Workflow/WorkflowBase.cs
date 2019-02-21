@@ -16,10 +16,7 @@ namespace MultiAlignCore.Algorithms.Workflow
         /// <param name="message"></param>
         protected virtual void UpdateStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message, 0));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message, 0));
         }
 
         protected void RegisterProgressNotifier(IProgressNotifer notifier)

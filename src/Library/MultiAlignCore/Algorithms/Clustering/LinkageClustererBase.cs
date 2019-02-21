@@ -373,10 +373,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         protected void OnNotify(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         #endregion

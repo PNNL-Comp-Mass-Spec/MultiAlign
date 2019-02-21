@@ -95,10 +95,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         private void UpdateStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
         /// <summary>
         /// Clusters spectra together based on similarity.

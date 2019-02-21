@@ -31,10 +31,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         private void OnStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         public AlignmentData Align(MassTagDatabase database,

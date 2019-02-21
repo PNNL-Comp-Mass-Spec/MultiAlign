@@ -388,11 +388,8 @@ namespace MultiAlignCore.Algorithms
                     this.m_identificationsProvider);
 
                 cache.CacheFeatures(baselineFeatures);
-                if (BaselineFeaturesLoaded != null)
-                {
-                    BaselineFeaturesLoaded(this,
-                        new BaselineFeaturesLoadedEventArgs(baselineInfo, baselineFeatures.ToList()));
-                }
+                BaselineFeaturesLoaded?.Invoke(this,
+                                               new BaselineFeaturesLoadedEventArgs(baselineInfo, baselineFeatures.ToList()));
 
                 DeRegisterProgressNotifier(cache);
             }
@@ -472,8 +469,7 @@ namespace MultiAlignCore.Algorithms
                     featureCache.UpdateAllStateless(features);
 
                     // This dataset is done!
-                    if (FeaturesLoaded != null)
-                        FeaturesLoaded(this, new FeaturesLoadedEventArgs(datasetInfo, features));
+                    FeaturesLoaded?.Invoke(this, new FeaturesLoadedEventArgs(datasetInfo, features));
                 }
                 else
                 {
@@ -531,8 +527,7 @@ namespace MultiAlignCore.Algorithms
                 features,
                 alignmentData);
 
-            if (FeaturesAligned != null)
-                FeaturesAligned(this, args);
+            FeaturesAligned?.Invoke(this, args);
 
             UpdateStatus("Updating cache with aligned features.");
             return features;
@@ -589,10 +584,7 @@ namespace MultiAlignCore.Algorithms
 
                 UpdateStatus(string.Format("Found {0} clusters.", clusters.Count));
 
-                if (FeaturesClustered != null)
-                {
-                    FeaturesClustered(this, new FeaturesClusteredEventArgs(clusters));
-                }
+                FeaturesClustered?.Invoke(this, new FeaturesClusteredEventArgs(clusters));
             }
             else
             {
@@ -633,10 +625,7 @@ namespace MultiAlignCore.Algorithms
                     config.Analysis.DataProviders.FeatureCache.UpdateAllStateless(features);
                     UpdateStatus(string.Format("Found {0} clusters.", clusters.Count));
 
-                    if (FeaturesClustered != null)
-                    {
-                        FeaturesClustered(this, new FeaturesClusteredEventArgs(clusters, chargeState));
-                    }
+                    FeaturesClustered?.Invoke(this, new FeaturesClusteredEventArgs(clusters, chargeState));
                 }
 
                 config.Analysis.Clusters = config.Analysis.DataProviders.ClusterCache.FindAll();
@@ -683,10 +672,7 @@ namespace MultiAlignCore.Algorithms
                 }
                 m_config.Analysis.MatchResults = matchResults;
 
-                if (FeaturesPeakMatched != null)
-                {
-                    FeaturesPeakMatched(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
-                }
+                FeaturesPeakMatched?.Invoke(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
 
                 UpdateStatus("Updating database with peak matched results.");
                 var writer = new PeakMatchResultsWriter();
@@ -756,10 +742,7 @@ namespace MultiAlignCore.Algorithms
             var database = provider.LoadDatabase();
             config.Analysis.MassTagDatabase = database;
 
-            if (MassTagsLoaded != null)
-            {
-                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
-            }
+            MassTagsLoaded?.Invoke(this, new MassTagsLoadedEventArgs(database.MassTags, database));
             DeRegisterProgressNotifier(provider);
         }
 
@@ -826,8 +809,7 @@ namespace MultiAlignCore.Algorithms
             var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
             tempCache.AddAll(map);
 
-            if (MassTagsLoaded != null)
-                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
+            MassTagsLoaded?.Invoke(this, new MassTagsLoadedEventArgs(database.MassTags, database));
         }
 
         /// <summary>
@@ -840,8 +822,7 @@ namespace MultiAlignCore.Algorithms
                 BuildAnalysisGraph(m_config);
                 var graph = m_config.AnalysisGraph;
 
-                if (AnalysisStarted != null)
-                    AnalysisStarted(this, new AnalysisGraphEventArgs(graph));
+                AnalysisStarted?.Invoke(this, new AnalysisGraphEventArgs(graph));
 
                 foreach (var node in graph.Nodes)
                 {
@@ -853,22 +834,19 @@ namespace MultiAlignCore.Algorithms
             catch (OutOfMemoryException ex)
             {
                 UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
-                if (AnalysisError != null)
-                    AnalysisError(this, new AnalysisErrorEventArgs("Out of memory.", ex));
+                AnalysisError?.Invoke(this, new AnalysisErrorEventArgs("Out of memory.", ex));
 
                 return;
             }
             catch (Exception ex)
             {
                 UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
-                if (AnalysisError != null)
-                    AnalysisError(this, new AnalysisErrorEventArgs("Handled Error. ", ex));
+                AnalysisError?.Invoke(this, new AnalysisErrorEventArgs("Handled Error. ", ex));
 
                 return;
             }
 
-            if (AnalysisComplete != null)
-                AnalysisComplete(this, new AnalysisCompleteEventArgs(m_config.Analysis));
+            AnalysisComplete?.Invoke(this, new AnalysisCompleteEventArgs(m_config.Analysis));
         }
 
         #endregion

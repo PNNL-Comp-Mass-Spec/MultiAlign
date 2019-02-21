@@ -141,10 +141,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <param name="e"></param>
         private void StatusHandler(object sender, ProgressNotifierArgs e)
         {
-            if (Progress != null)
-            {
-                Progress(this, e);
-            }
+            Progress?.Invoke(this, e);
         }
     }
 }

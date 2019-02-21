@@ -225,10 +225,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         private void OnProgress(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         public event EventHandler<ProgressNotifierArgs> Progress;

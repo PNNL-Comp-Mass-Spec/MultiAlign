@@ -830,20 +830,17 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher.Data
 
         private void OnIterate(ProgressNotifierArgs e)
         {
-            if (IterationEvent != null)
-                IterationEvent(this, e);
+            IterationEvent?.Invoke(this, e);
         }
 
         private void OnMessage(ProgressNotifierArgs e)
         {
-            if (MessageEvent != null)
-                MessageEvent(this, e);
+            MessageEvent?.Invoke(this, e);
         }
 
         private void OnDebugEvent(ProgressNotifierArgs e)
         {
-            if (DebugEvent != null)
-                DebugEvent(this, e);
+            DebugEvent?.Invoke(this, e);
         }
 
         #endregion

@@ -199,9 +199,6 @@ namespace MultiAlignCore.Data
         /// <returns>True if values are the same, false if not.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
             var other = obj as MSSpectra;
             if (other == null)
                 return false;

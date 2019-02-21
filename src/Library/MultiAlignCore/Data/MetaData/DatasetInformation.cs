@@ -145,12 +145,7 @@ namespace MultiAlignCore.Data.MetaData
             get
             {
                 var rawFile = this.RawFile;
-                if (rawFile != null)
-                {
-                    return rawFile.Path;
-                }
-
-                return null;
+                return rawFile?.Path;
             }
         }
 
@@ -198,12 +193,7 @@ namespace MultiAlignCore.Data.MetaData
             get
             {
                 var featureFile = this.Features;
-                if (featureFile != null)
-                {
-                    return featureFile.Path;
-                }
-
-                return null;
+                return featureFile?.Path;
             }
         }
 
@@ -302,7 +292,7 @@ namespace MultiAlignCore.Data.MetaData
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public class MissingRawDataException : Exception

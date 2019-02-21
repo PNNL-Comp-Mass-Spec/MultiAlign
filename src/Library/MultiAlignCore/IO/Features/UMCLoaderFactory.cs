@@ -34,10 +34,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="message"></param>
         private static void UpdateStatus(string message)
         {
-            if (Status != null)
-            {
-                Status(null, new UmcLoadingEventArgs(message));
-            }
+            Status?.Invoke(null, new UmcLoadingEventArgs(message));
         }
 
         /// <summary>

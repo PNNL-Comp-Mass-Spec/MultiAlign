@@ -61,15 +61,12 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                 foreach (var peptide in peptides[sequence])
                 {
                     var parent = peptide.GetParentUmc();
-                    if (parent != null)
+                    if (parent?.UmcCluster != null)
                     {
-                        if (parent.UmcCluster != null)
+                        var id = parent.UmcCluster.Id;
+                        if (!map.ContainsKey(id))
                         {
-                            var id = parent.UmcCluster.Id;
-                            if (!map.ContainsKey(id))
-                            {
-                                map.Add(id, parent.UmcCluster);
-                            }
+                            map.Add(id, parent.UmcCluster);
                         }
                     }
                 }

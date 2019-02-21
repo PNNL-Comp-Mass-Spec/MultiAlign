@@ -299,9 +299,6 @@ namespace MultiAlignCore.Data.Features
         /// <returns>True if values are the same, false if not.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
             var other = obj as FeatureLight;
             if (other == null)
                 return false;

@@ -767,10 +767,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             _lastProgressMessage = message;
 
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message, percentComplete));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message, percentComplete));
         }
 
         #endregion region

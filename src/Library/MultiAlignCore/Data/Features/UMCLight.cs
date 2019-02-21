@@ -193,9 +193,6 @@ namespace MultiAlignCore.Data.Features
         /// <returns>True if similar, False if not.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
             var umc = obj as UMCLight;
             if (umc == null)
                 return false;

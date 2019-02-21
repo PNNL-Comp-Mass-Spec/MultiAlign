@@ -23,10 +23,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="message"></param>
         private void UpdateStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         /// <summary>

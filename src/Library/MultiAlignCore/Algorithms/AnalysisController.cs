@@ -530,10 +530,7 @@ namespace MultiAlignCore.Algorithms
 
         private void processor_AnalysisStarted(object sender, AnalysisGraphEventArgs e)
         {
-            if (AnalysisStarted != null)
-            {
-                AnalysisStarted(sender, e);
-            }
+            AnalysisStarted?.Invoke(sender, e);
         }
 
         private void processor_Progress(object sender, ProgressNotifierArgs e)
@@ -1099,8 +1096,7 @@ namespace MultiAlignCore.Algorithms
                 m_worker = null;
             }
 
-            if (AnalysisCancelled != null)
-                AnalysisCancelled(this, null);
+            AnalysisCancelled?.Invoke(this, null);
         }
 
         private WorkerObject m_workerManager;
@@ -1174,10 +1170,7 @@ namespace MultiAlignCore.Algorithms
                     config.errorEvent.Dispose();
                     processor.Dispose();
 
-                    if (AnalysisError != null)
-                    {
-                        AnalysisError(this, null);
-                    }
+                    AnalysisError?.Invoke(this, null);
                     return;
                 }
                 if (handleId == 2)
@@ -1192,10 +1185,7 @@ namespace MultiAlignCore.Algorithms
                     config.errorEvent.Dispose();
                     processor.Dispose();
 
-                    if (AnalysisCancelled != null)
-                    {
-                        AnalysisCancelled(this, null);
-                    }
+                    AnalysisCancelled?.Invoke(this, null);
                     return;
                 }
             }
@@ -1234,10 +1224,7 @@ namespace MultiAlignCore.Algorithms
 
             Logger.PrintMessage("Analysis Complete");
 
-            if (AnalysisComplete != null)
-            {
-                AnalysisComplete(this, null);
-            }
+            AnalysisComplete?.Invoke(this, null);
         }
 
         /// <summary>

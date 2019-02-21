@@ -94,10 +94,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             PercentComplete = percentComplete;
 
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message, percentComplete));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message, percentComplete));
         }
 
         #endregion

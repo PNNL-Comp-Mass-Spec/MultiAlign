@@ -53,10 +53,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 
         private void OnProgress(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         /// <summary>

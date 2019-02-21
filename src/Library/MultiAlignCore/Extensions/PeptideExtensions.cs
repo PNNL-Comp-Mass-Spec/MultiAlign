@@ -43,11 +43,7 @@ namespace MultiAlignCore.Extensions
 
         public static UMCLight GetParentUmc(this Peptide peptide)
         {
-            if (peptide == null) return null;
-
-            if (peptide.Spectrum == null) return null;
-
-            return peptide.Spectrum.GetParentUmc();
+            return peptide?.Spectrum?.GetParentUmc();
         }
 
         public static Dictionary<int, List<Peptide>> CreateScanMaps(this IEnumerable<Peptide> peptides)

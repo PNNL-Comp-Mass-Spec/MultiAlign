@@ -22,10 +22,7 @@ namespace MultiAlignCore.IO
 
         private static void OnMessage(string message, long size, DateTime time)
         {
-            if (Status != null)
-            {
-                Status(null, new StatusEventArgs(message, size, time));
-            }
+            Status?.Invoke(null, new StatusEventArgs(message, size, time));
         }
 
         /// <summary>

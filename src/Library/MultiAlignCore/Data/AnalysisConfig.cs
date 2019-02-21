@@ -141,10 +141,7 @@ namespace MultiAlignCore.Data
 
         private void OnNotify(string name)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         private MultiAlignAnalysis m_analysis;

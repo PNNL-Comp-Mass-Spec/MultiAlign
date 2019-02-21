@@ -60,8 +60,7 @@ namespace MultiAlignCore.Algorithms
             set
             {
                 m_isCurrent = value;
-                if (StatusChanged != null)
-                    StatusChanged(this, null);
+                StatusChanged?.Invoke(this, null);
             }
         }
     }

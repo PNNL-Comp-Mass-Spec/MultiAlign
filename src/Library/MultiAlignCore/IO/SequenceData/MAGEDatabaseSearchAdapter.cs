@@ -15,10 +15,7 @@ namespace MultiAlignCore.IO.SequenceData
     {
         private void UpdateStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         public void LoadSequenceData(string path,

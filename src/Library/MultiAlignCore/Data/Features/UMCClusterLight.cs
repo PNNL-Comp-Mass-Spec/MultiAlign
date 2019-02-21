@@ -279,9 +279,6 @@ namespace MultiAlignCore.Data.Features
         /// <returns>True if similar, False if not.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
             var cluster = obj as UMCClusterLight;
             if (cluster == null)
                 return false;

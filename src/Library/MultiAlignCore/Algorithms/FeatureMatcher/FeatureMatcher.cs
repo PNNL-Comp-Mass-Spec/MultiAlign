@@ -518,14 +518,12 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
         private void OnMessage(ProgressNotifierArgs e)
         {
-            if (MessageEvent != null)
-                MessageEvent(this, e);
+            MessageEvent?.Invoke(this, e);
         }
 
         private void OnProcessingComplete(ProgressNotifierArgs e)
         {
-            if (ProcessingCompleteEvent != null)
-                ProcessingCompleteEvent(this, e);
+            ProcessingCompleteEvent?.Invoke(this, e);
         }
 
         #endregion

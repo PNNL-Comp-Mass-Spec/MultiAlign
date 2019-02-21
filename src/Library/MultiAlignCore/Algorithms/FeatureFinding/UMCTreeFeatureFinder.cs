@@ -28,10 +28,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
         private void OnStatus(string message)
         {
-            if (Progress != null)
-            {
-                Progress(this, new ProgressNotifierArgs(message));
-            }
+            Progress?.Invoke(this, new ProgressNotifierArgs(message));
         }
 
         public LcmsFeatureFilteringOptions FilteringOptions { get; set; }
