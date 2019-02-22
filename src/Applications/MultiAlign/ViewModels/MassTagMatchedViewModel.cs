@@ -6,7 +6,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlign.ViewModels
 {
     /// <summary>
-    ///     View model for a mass tag that was matched to a cluster
+    /// View model for a mass tag that was matched to a cluster
     /// </summary>
     public class MassTagMatchedViewModel : ViewModelBase
     {
@@ -23,7 +23,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the matched proteins.
+        /// Gets or sets the matched proteins.
         /// </summary>
         public ObservableCollection<ProteinViewModel> MatchedProteins { get; set; }
 

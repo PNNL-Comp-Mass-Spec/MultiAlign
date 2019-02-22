@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    ///     Encapsulates the list of workflow items to execute.
+    /// Encapsulates the list of workflow items to execute.
     /// </summary>
     public class AnalysisGraph
     {
@@ -19,7 +19,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Gets the list of nodes to execute.
+        /// Gets the list of nodes to execute.
         /// </summary>
         public List<AnalysisGraphNode> Nodes
         {
@@ -27,7 +27,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Add a new node to the list of those to execute.
+        /// Add a new node to the list of those to execute.
         /// </summary>
         /// <param name="node"></param>
         public void AddNode(AnalysisGraphNode node)

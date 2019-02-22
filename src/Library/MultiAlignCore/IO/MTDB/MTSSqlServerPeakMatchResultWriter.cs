@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.MTDB
     public class MTSSqlServerPeakMatchResultWriter : MTSPeakMatchResultsWriter
     {
         /// <summary>
-        ///     Creates a new database connection.
+        /// Creates a new database connection.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

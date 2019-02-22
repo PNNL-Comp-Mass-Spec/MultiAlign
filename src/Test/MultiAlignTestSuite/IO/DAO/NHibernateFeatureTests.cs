@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace MultiAlignTestSuite.IO.DAO
 {
     /// <summary>
-    ///     Testing for loading a MSn database using hibernate.
+    /// Testing for loading a MSn database using hibernate.
     /// </summary>
     [TestFixture]
     public class NHibernateFeatureTests

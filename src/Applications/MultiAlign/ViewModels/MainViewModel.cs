@@ -15,7 +15,7 @@ using PNNLOmics.Annotations;
 namespace MultiAlign.ViewModels
 {
     /// <summary>
-    ///     Does nothing right now...needs to replace the code behind from the main window
+    /// Does nothing right now...needs to replace the code behind from the main window
     /// </summary>
     public sealed class MainViewModel : ViewModelBase
     {
@@ -78,13 +78,13 @@ namespace MultiAlign.ViewModels
         #region Commands
 
         /// <summary>
-        ///     Gets the showing of an analysis
+        /// Gets the showing of an analysis
         /// </summary>
         [UsedImplicitly]
         public ICommand ShowAnalysisCommand { get; private set; }
 
         /// <summary>
-        ///     Gets the showing of a new analysis
+        /// Gets the showing of a new analysis
         /// </summary>
         [UsedImplicitly]
         public ICommand ShowStartCommand { get; private set; }
@@ -94,7 +94,7 @@ namespace MultiAlign.ViewModels
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the current analysis.
+        /// Gets or sets the current analysis.
         /// </summary>
         [UsedImplicitly]
         public AnalysisViewModel CurrentAnalysis
@@ -111,7 +111,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the title of the window
+        /// Gets or sets the title of the window
         /// </summary>
         [UsedImplicitly]
         public string Title
@@ -128,7 +128,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the status
+        /// Gets or sets the status
         /// </summary>
         [UsedImplicitly]
         public string Status
@@ -149,13 +149,13 @@ namespace MultiAlign.ViewModels
         #region View Models
 
         /// <summary>
-        ///     Gets or sets the view model for displaying the home screen.
+        /// Gets or sets the view model for displaying the home screen.
         /// </summary>
         [UsedImplicitly]
         public GettingStartedViewModel GettingStartedViewModel { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the view model for creating a new analysis.
+        /// Gets or sets the view model for creating a new analysis.
         /// </summary>
         [UsedImplicitly]
         public AnalysisSetupViewModel AnalysisSetupViewModel
@@ -172,7 +172,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the analysis running view model
+        /// Gets or sets the analysis running view model
         /// </summary>
         [UsedImplicitly]
         public AnalysisRunningViewModel AnalysisRunningViewModel
@@ -189,13 +189,13 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the state moderator.
+        /// Gets or sets the state moderator.
         /// </summary>
         [UsedImplicitly]
         public StateModeratorViewModel StateModerator { get; set; }
 
         /// <summary>
-        ///     Gets or set the view model for loading an analysis.
+        /// Gets or set the view model for loading an analysis.
         /// </summary>
         [UsedImplicitly]
         public AnalysisLoadingViewModel LoadingAnalysisViewModel { get; set; }
@@ -205,7 +205,7 @@ namespace MultiAlign.ViewModels
         #region Loading
 
         /// <summary>
-        ///     Loads a recent analysis
+        /// Loads a recent analysis
         /// </summary>
         /// <param name="recentAnalysis"></param>
         private void LoadAnalysis(RecentAnalysis recentAnalysis)
@@ -231,7 +231,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Handles when an analysis has been loaded.
+        /// Handles when an analysis has been loaded.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -259,7 +259,7 @@ namespace MultiAlign.ViewModels
         #region Display
 
         /// <summary>
-        ///     Shows the new analysis setup
+        /// Shows the new analysis setup
         /// </summary>
         private void ShowNewAnalysisSetup()
         {
@@ -292,7 +292,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Displays the loaded analysis
+        /// Displays the loaded analysis
         /// </summary>
         private void ShowLoadedAnalysis()
         {
@@ -311,7 +311,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Shows the home screen.
+        /// Shows the home screen.
         /// </summary>
         private void ShowHomeScreen()
         {
@@ -319,7 +319,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Cancels the analysis setup
+        /// Cancels the analysis setup
         /// </summary>
         private void CancelAnalysisSetup()
         {
@@ -351,7 +351,7 @@ namespace MultiAlign.ViewModels
         #region Application State
 
         /// <summary>
-        ///     Constructs the transitions for the user interface
+        /// Constructs the transitions for the user interface
         /// </summary>
         private void BuildStateModerator()
         {
@@ -369,7 +369,7 @@ namespace MultiAlign.ViewModels
         #region Getting Started View Model Event Handlers
 
         /// <summary>
-        ///     Loads an existing analysis file.
+        /// Loads an existing analysis file.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -379,7 +379,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Starts a new analysis
+        /// Starts a new analysis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -393,7 +393,7 @@ namespace MultiAlign.ViewModels
         #region Analysis Running View Model Events
 
         /// <summary>
-        ///     Adds the finished analysis back into the UI
+        /// Adds the finished analysis back into the UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -420,7 +420,7 @@ namespace MultiAlign.ViewModels
         #region Aanlysis Setup View Model Events
 
         /// <summary>
-        ///     Starts the analysis
+        /// Starts the analysis
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -432,7 +432,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Cancels the analysis.
+        /// Cancels the analysis.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

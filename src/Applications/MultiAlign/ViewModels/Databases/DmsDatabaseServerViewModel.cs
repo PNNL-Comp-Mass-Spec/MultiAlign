@@ -12,7 +12,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets the selected database server
+        /// Gets the selected database server
         /// </summary>
         public InputDatabase Database
         {
@@ -20,7 +20,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets or sets the database server
+        /// Gets or sets the database server
         /// </summary>
         public string DatabaseServer
         {
@@ -36,7 +36,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string DatabaseName
         {
@@ -52,7 +52,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string Description
         {
@@ -68,7 +68,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string Organism
         {

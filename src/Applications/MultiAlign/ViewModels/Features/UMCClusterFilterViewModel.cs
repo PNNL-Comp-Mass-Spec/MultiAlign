@@ -9,12 +9,12 @@ namespace MultiAlign.ViewModels.Features
         private readonly List<UMCClusterLightMatched> m_clusters;
 
         /// <summary>
-        ///     Filter string for clusters
+        /// Filter string for clusters
         /// </summary>
         private string m_clusterIdFilter;
 
         /// <summary>
-        ///     Flag if the filter should be used
+        /// Flag if the filter should be used
         /// </summary>
         private bool m_shouldUseClusterFilter;
 
@@ -55,7 +55,7 @@ namespace MultiAlign.ViewModels.Features
         }
 
         /// <summary>
-        ///     Filter for clusters.
+        /// Filter for clusters.
         /// </summary>
         public string ClusterIdFilter
         {

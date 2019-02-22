@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
-    ///     Interaction logic for RangeView.xaml
+    /// Interaction logic for RangeView.xaml
     /// </summary>
     public partial class RangeView : UserControl
     {

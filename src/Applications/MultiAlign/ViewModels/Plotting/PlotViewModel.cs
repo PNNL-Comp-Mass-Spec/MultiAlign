@@ -4,7 +4,7 @@ using MultiAlign.Commands.Plotting;
 namespace MultiAlign.ViewModels.Plotting
 {
     /// <summary>
-    ///     Displays a plot information
+    /// Displays a plot information
     /// </summary>
     public class PlotViewModel : ViewModelBase
     {

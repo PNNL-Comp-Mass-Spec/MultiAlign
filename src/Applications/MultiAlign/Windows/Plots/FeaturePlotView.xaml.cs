@@ -8,7 +8,7 @@ using MultiAlignCore.Drawing;
 namespace MultiAlign.Windows.Plots
 {
     /// <summary>
-    ///     Interaction logic for FeaturePlotView.xaml
+    /// Interaction logic for FeaturePlotView.xaml
     /// </summary>
     public partial class FeaturePlotView : UserControl
     {

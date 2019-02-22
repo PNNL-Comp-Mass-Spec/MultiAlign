@@ -9,7 +9,7 @@ using MultiAlignCore.Algorithms;
 namespace MultiAlignCore.IO.SequenceData
 {
     /// <summary>
-    ///     Adapter to the MAGE file library.
+    /// Adapter to the MAGE file library.
     /// </summary>
     public class MAGEDatabaseSearchAdapter : IProgressNotifer
     {

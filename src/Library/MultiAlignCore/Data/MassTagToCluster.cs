@@ -9,7 +9,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Holds a link from the mass tag to the clusters that it matched to.
+    /// Holds a link from the mass tag to the clusters that it matched to.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MassTagToCluster : IFeatureMap
@@ -27,7 +27,7 @@ namespace MultiAlignCore.Data
         public List<ProteinToMassTags> MatchingProteins { get; set; }
 
         /// <summary>
-        ///     Gets the ID of the underlying feature.
+        /// Gets the ID of the underlying feature.
         /// </summary>
         public object Id
         {

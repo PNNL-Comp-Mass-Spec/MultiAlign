@@ -13,7 +13,7 @@ namespace MultiAlignCore.Drawing
     public static class HistogramFactory
     {
         /// <summary>
-        ///     Creates a charge state histogram from the features provided.
+        /// Creates a charge state histogram from the features provided.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -37,8 +37,8 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a histogram plot from the data provided.  Assumes the bin is stored in the first column, count stored in
-        ///     the second (0,1) respectively.
+        /// Creates a histogram plot from the data provided.  Assumes the bin is stored in the first column, count stored in
+        /// the second (0,1) respectively.
         /// </summary>
         /// <param name="histogram"></param>
         /// <param name="label"></param>
@@ -55,7 +55,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a histogram plot from the data provided.
+        /// Creates a histogram plot from the data provided.
         /// </summary>
         /// <param name="histogram"></param>
         /// <param name="label"></param>
@@ -69,7 +69,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a histogram plot from the data provided.
+        /// Creates a histogram plot from the data provided.
         /// </summary>
         /// <param name="histogram"></param>
         /// <param name="label"></param>

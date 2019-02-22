@@ -5,7 +5,7 @@ using MultiAlign.Windows.Viewers.Datasets;
 namespace MultiAlign.Commands.Datasets
 {
     /// <summary>
-    ///     Handles showing the details of a particular dataset.
+    /// Handles showing the details of a particular dataset.
     /// </summary>
     public sealed class ShowDatasetDetailCommand : BaseCommand
     {
@@ -15,7 +15,7 @@ namespace MultiAlign.Commands.Datasets
         }
 
         /// <summary>
-        ///     Displays a window for modifying information about a dataset.
+        /// Displays a window for modifying information about a dataset.
         /// </summary>
         /// <param name="parameter"></param>
         public override void Execute(object parameter)

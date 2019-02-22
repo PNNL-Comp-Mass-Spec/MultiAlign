@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
-    ///     Interaction logic for DatasetSelection.xaml
+    /// Interaction logic for DatasetSelection.xaml
     /// </summary>
     public partial class DatasetSelection : UserControl
     {

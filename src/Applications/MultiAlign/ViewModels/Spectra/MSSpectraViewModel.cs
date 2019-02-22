@@ -93,7 +93,7 @@ namespace MultiAlign.ViewModels.Spectra
         }
 
         /// <summary>
-        ///     Updates the view models with a maximum value for m/z and intensity.
+        /// Updates the view models with a maximum value for m/z and intensity.
         /// </summary>
         /// <param name="maxMz"></param>
         /// <param name="maxIntensity"></param>

@@ -23,7 +23,7 @@ namespace MultiAlignCore.IO
     using MultiAlignCore.IO.SequenceData;
 
     /// <summary>
-    ///     This class is in charge of caching the appropriate LCMS Feature data to the underlying database.
+    /// This class is in charge of caching the appropriate LCMS Feature data to the underlying database.
     /// </summary>
     public class FeatureLoader : WorkflowBase
     {
@@ -155,7 +155,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Creates LCMS Features
+        /// Creates LCMS Features
         /// </summary>
         public List<UMCLight> CreateLcmsFeatures(
             DatasetInformation information,
@@ -216,7 +216,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Load a single dataset from the provider.
+        /// Load a single dataset from the provider.
         /// </summary>
         /// <returns></returns>
         public IList<UMCLight> LoadDataset(DatasetInformation dataset,
@@ -359,7 +359,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Filters the list of MS Features that may be from MS/MS deisotoped data.
+        /// Filters the list of MS Features that may be from MS/MS deisotoped data.
         /// </summary>
         public List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, IScanSummaryProvider provider, ref DatasetInformation dataset)
         {

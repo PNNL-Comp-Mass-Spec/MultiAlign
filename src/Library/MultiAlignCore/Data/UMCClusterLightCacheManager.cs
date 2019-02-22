@@ -8,17 +8,17 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Maintains a list of all clusters in memory.
+    /// Maintains a list of all clusters in memory.
     /// </summary>
     public static class UMCClusterLightCacheManager
     {
         /// <summary>
-        ///     Maintains a list of references to clusters based on id.
+        /// Maintains a list of references to clusters based on id.
         /// </summary>
         private static Dictionary<int, UMCClusterLightMatched> m_clusterMap;
 
         /// <summary>
-        ///     Sets the list of clusters to be used later on.
+        /// Sets the list of clusters to be used later on.
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>
@@ -34,7 +34,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Finds the cluster based on it's id.
+        /// Finds the cluster based on it's id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

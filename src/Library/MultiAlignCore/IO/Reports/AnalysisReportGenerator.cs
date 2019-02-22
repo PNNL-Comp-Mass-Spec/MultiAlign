@@ -19,7 +19,7 @@ namespace MultiAlignCore.IO.Reports
         private const int WIDTH     = 400;
 
         /// <summary>
-        ///     Default path for plots.
+        /// Default path for plots.
         /// </summary>
         private const string THUMBNAIL_PATH = "Plots";
 
@@ -90,7 +90,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Creates the final analysis plots.
+        /// Creates the final analysis plots.
         /// </summary>
         public void CreateChargePlots(Dictionary<int, int> chargeMap)
         {
@@ -108,7 +108,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Creates the HTML output file.
+        /// Creates the HTML output file.
         /// </summary>
         public void CreatePlotReport()
         {
@@ -140,7 +140,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Creates images for the HTML output for baseline data
+        /// Creates images for the HTML output for baseline data
         /// </summary>
         /// <param name="e"></param>
         public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
@@ -162,7 +162,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Creates alignment plots for the HTML output.
+        /// Creates alignment plots for the HTML output.
         /// </summary>
         public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {

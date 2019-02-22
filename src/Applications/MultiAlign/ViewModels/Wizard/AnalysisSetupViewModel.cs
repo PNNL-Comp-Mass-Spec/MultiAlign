@@ -70,7 +70,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region Commands
 
         /// <summary>
-        ///     Gets the command for cancelling an analysis setup.
+        /// Gets the command for cancelling an analysis setup.
         /// </summary>
         public ICommand CancelCommand
         {
@@ -86,7 +86,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the command used to move the analysis setup back one step
+        /// Gets the command used to move the analysis setup back one step
         /// </summary>
         public ICommand BackCommand
         {
@@ -102,7 +102,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the command for progressing the analysis setup one step
+        /// Gets the command for progressing the analysis setup one step
         /// </summary>
         public ICommand NextCommand
         {
@@ -217,7 +217,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region ViewModels for Sub Controls
 
         /// <summary>
-        ///     Gets the dataset selection view model
+        /// Gets the dataset selection view model
         /// </summary>
         public AnalysisDatasetSelectionViewModel DatasetSelectionViewModel
         {
@@ -233,7 +233,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the baseline view model
+        /// Gets the baseline view model
         /// </summary>
         public AnalysisBaselineSelectionViewModel BaselineSelectionViewModel
         {
@@ -249,12 +249,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the analysis options view model
+        /// Gets the analysis options view model
         /// </summary>
         public AnalysisOptionsViewModel AnalysisOptionsViewModel { get; private set; }
 
         /// <summary>
-        ///     Gets the view model for naming the analysis
+        /// Gets the view model for naming the analysis
         /// </summary>
         public AnalysisNamingViewModel AnalysisNamingViewModel
         {

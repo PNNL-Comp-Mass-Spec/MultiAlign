@@ -18,7 +18,7 @@ namespace MultiAlignCore.Data.MetaData
     using InformedProteomics.Backend.MassSpecData;
 
     /// <summary>
-    ///     Contains information about a dataset used for analysis.r
+    /// Contains information about a dataset used for analysis.r
     /// </summary>
     public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged, IDataset
     {
@@ -26,7 +26,7 @@ namespace MultiAlignCore.Data.MetaData
         private bool isAligned;
 
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public DatasetInformation()
         {
@@ -48,52 +48,52 @@ namespace MultiAlignCore.Data.MetaData
         public string Name { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether this dataset is a baseline or not.
+        /// Gets or sets whether this dataset is a baseline or not.
         /// </summary>
         public bool IsBaseline { get; set; }
 
         /// <summary>
-        ///     Gets or sets a mapping of scans to retention times
+        /// Gets or sets a mapping of scans to retention times
         /// </summary>
         public Dictionary<int, double> ScanTimes { get; set; }
 
         /// <summary>
-        ///     Gets or sets
+        /// Gets or sets
         /// </summary>
         public Dictionary<string, string> MetaData { get; set; }
 
         /// <summary>
-        ///     Gets or sets
+        /// Gets or sets
         /// </summary>
         public Dictionary<FactorInformation, string> FactorInformation { get; set; }
 
         /// <summary>
-        ///     Gets or sets
+        /// Gets or sets
         /// </summary>
         public List<Factor> Factors { get; set; }
 
         /// <summary>
-        ///     Gets or sets the Alignment data
+        /// Gets or sets the Alignment data
         /// </summary>
         public AlignmentData AlignmentData { get; set; }
 
         /// <summary>
-        ///     Gets or sets the key used for access to the db.
+        /// Gets or sets the key used for access to the db.
         /// </summary>
         public int DMSDatasetID { get; set; }
 
         /// <summary>
-        ///     Gets or sets the ID of the dataset
+        /// Gets or sets the ID of the dataset
         /// </summary>
         public int DatasetId { get; set; }
 
         /// <summary>
-        ///     Job tracking ID of the dataset.
+        /// Job tracking ID of the dataset.
         /// </summary>
         public int JobID { get; set; }
 
         /// <summary>
-        ///     Gets or sets the path to the features file.
+        /// Gets or sets the path to the features file.
         /// </summary>
         public string Path { get; set; }
 
@@ -126,7 +126,7 @@ namespace MultiAlignCore.Data.MetaData
         public DatasetLoader.SupportedDatasetTypes DatasetType { get; set; }
 
         /// <summary>
-        ///     Gets the raw file info.
+        /// Gets the raw file info.
         /// </summary>
         public InputFile RawFile
         {
@@ -138,7 +138,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets the path to the raw file.
+        /// Gets the path to the raw file.
         /// </summary>
         public string RawPath
         {
@@ -150,7 +150,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets the path to the sequence path.
+        /// Gets the path to the sequence path.
         /// </summary>
         public InputFile SequenceFile
         {
@@ -158,14 +158,14 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the parameter file
+        /// Gets or sets the parameter file
         /// </summary>
         public string ParameterFile { get; set; }
 
         private string m_datasetName;
 
         /// <summary>
-        ///     Gets or sets the name of the dataset
+        /// Gets or sets the name of the dataset
         /// </summary>
         public string DatasetName
         {
@@ -178,7 +178,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets the archive path.
+        /// Gets the archive path.
         /// </summary>
         public InputFile Features
         {
@@ -186,7 +186,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets the path to the raw file.
+        /// Gets the path to the raw file.
         /// </summary>
         public string FeaturePath
         {
@@ -198,7 +198,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Path to the scans file.
+        /// Path to the scans file.
         /// </summary>
         public InputFile Scans
         {
@@ -233,7 +233,7 @@ namespace MultiAlignCore.Data.MetaData
 
 
         /// <summary>
-        ///     Path to the Raw data file.
+        /// Path to the Raw data file.
         /// </summary>
         public InputFile Sequence { get; set; }
 

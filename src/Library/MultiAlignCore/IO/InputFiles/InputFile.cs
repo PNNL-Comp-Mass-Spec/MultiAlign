@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    ///     Holds information about input files.
+    /// Holds information about input files.
     /// </summary>
     public class InputFile : INotifyPropertyChanged
     {
@@ -19,7 +19,7 @@ namespace MultiAlignCore.IO.InputFiles
         public int Id { get; private set; }
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public InputFile()
         {
@@ -33,7 +33,7 @@ namespace MultiAlignCore.IO.InputFiles
         }
 
         /// <summary>
-        ///     Gets or sets the path to the input file.
+        /// Gets or sets the path to the input file.
         /// </summary>
         public string Path
         {
@@ -54,7 +54,7 @@ namespace MultiAlignCore.IO.InputFiles
         public string RelativePath { get; set; }
 
         /// <summary>
-        ///     Gets or sets the input file type.
+        /// Gets or sets the input file type.
         /// </summary>
         public InputFileType FileType { get; set; }
 

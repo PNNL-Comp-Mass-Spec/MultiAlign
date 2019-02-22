@@ -9,8 +9,8 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Algorithms.Features
 {
     /// <summary>
-    ///     Consolidates similar features from the same dataset into one representative LCMS Feature
-    ///     based on max abundance.
+    /// Consolidates similar features from the same dataset into one representative LCMS Feature
+    /// based on max abundance.
     /// </summary>
     public class UMCAbundanceSumConsolidator : LCMSFeatureConsolidator
     {
@@ -20,7 +20,7 @@ namespace MultiAlignCore.Algorithms.Features
         }
 
         /// <summary>
-        ///     Organizes a list of UMC's into a dataset represented group.
+        /// Organizes a list of UMC's into a dataset represented group.
         /// </summary>
         /// <param name="features"></param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace MultiAlignCore.Algorithms.Features
         }
 
         /// <summary>
-        ///     Gets or sets the way the UMC is selected.
+        /// Gets or sets the way the UMC is selected.
         /// </summary>
         public AbundanceReportingType AbundanceType { get; set; }
     }

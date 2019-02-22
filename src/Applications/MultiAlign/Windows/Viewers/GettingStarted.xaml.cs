@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
-    ///     Interaction logic for GettingStarted.xaml
+    /// Interaction logic for GettingStarted.xaml
     /// </summary>
     public partial class GettingStarted : UserControl
     {

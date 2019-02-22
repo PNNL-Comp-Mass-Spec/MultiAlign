@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Datasets
 {
     /// <summary>
-    ///     Interaction logic for DatasetPlotView.xaml
+    /// Interaction logic for DatasetPlotView.xaml
     /// </summary>
     public partial class DatasetPlotView : UserControl
     {

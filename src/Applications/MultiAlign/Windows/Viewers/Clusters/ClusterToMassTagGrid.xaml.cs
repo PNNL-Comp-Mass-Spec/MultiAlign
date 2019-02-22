@@ -6,7 +6,7 @@ using MultiAlignCore.Data;
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    ///     Interaction logic for
+    /// Interaction logic for
     /// </summary>
     public partial class ClusterToMassTagGrid : UserControl
     {
@@ -16,7 +16,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
         private List<ClusterToMassTagMap> m_massTags;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public ClusterToMassTagGrid()
         {
@@ -25,7 +25,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
         }
 
         /// <summary>
-        ///     Gets or sets the clusters used in the analysis.
+        /// Gets or sets the clusters used in the analysis.
         /// </summary>
         public List<ClusterToMassTagMap> MassTags
         {

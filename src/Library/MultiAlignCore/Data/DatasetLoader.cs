@@ -167,7 +167,7 @@
         public string ErrorMessage { get; private set; }
 
         /// <summary>
-        ///     Cleans dataset names of extensions in case the data as not loaded from DMS, but manually.
+        /// Cleans dataset names of extensions in case the data as not loaded from DMS, but manually.
         /// </summary>
         /// <returns></returns>
         public static string ExtractDatasetName(string path)
@@ -393,7 +393,7 @@
         }
 
         /// <summary>
-        ///     Determines the file type based on the supported file types within MultiAlign.
+        /// Determines the file type based on the supported file types within MultiAlign.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -410,7 +410,7 @@
         }
 
         /// <summary>
-        ///     Determines the file type based on the supported file types within MultiAlign.
+        /// Determines the file type based on the supported file types within MultiAlign.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -430,7 +430,7 @@
         }
 
         /// <summary>
-        ///     Adds a new dataset to the list.
+        /// Adds a new dataset to the list.
         /// </summary>
         /// <returns>A list of added datasets</returns>
         private List<DatasetInformation> ConvertInputFilesIntoDatasets(List<InputFile> inputFiles)

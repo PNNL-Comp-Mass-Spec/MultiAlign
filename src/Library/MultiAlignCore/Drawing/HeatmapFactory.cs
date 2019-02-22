@@ -9,7 +9,7 @@ namespace MultiAlignCore.Drawing
     public static class HeatmapFactory
     {
         /// <summary>
-        ///     Creates an LCMSWarp alignment heatmap.
+        /// Creates an LCMSWarp alignment heatmap.
         /// </summary>
         /// <param name="scores"></param>
         /// <returns></returns>
@@ -31,7 +31,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates an LCMSWarp alignment heatmap.
+        /// Creates an LCMSWarp alignment heatmap.
         /// </summary>
         /// <param name="scores"></param>
         /// <param name="baselineIsAmtDB">True if the baseline data is from an AMT tag database</param>

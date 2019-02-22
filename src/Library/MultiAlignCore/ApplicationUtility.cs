@@ -12,7 +12,7 @@ namespace MultiAlignCore
     public static class ApplicationUtility
     {
         /// <summary>
-        ///     Calculates the current usage of current processes memory.
+        /// Calculates the current usage of current processes memory.
         /// </summary>
         /// <returns>Memory usage of current process.</returns>
         public static long GetMemory()
@@ -26,7 +26,7 @@ namespace MultiAlignCore
         }
 
         /// <summary>
-        ///     Retrieves the assembly information.
+        /// Retrieves the assembly information.
         /// </summary>
         /// <returns></returns>
         public static string GetAssemblyData()
@@ -51,7 +51,7 @@ namespace MultiAlignCore
         }
 
         /// <summary>
-        ///     Retrieves the assembly information.
+        /// Retrieves the assembly information.
         /// </summary>
         /// <returns></returns>
         public static string GetEntryAssemblyData()
@@ -76,7 +76,7 @@ namespace MultiAlignCore
         }
 
         /// <summary>
-        ///     Retrieves the system data.
+        /// Retrieves the system data.
         /// </summary>
         /// <returns></returns>
         public static string GetSystemData()
@@ -101,7 +101,7 @@ namespace MultiAlignCore
         }
 
         /// <summary>
-        ///     Gets the application data folder for the application.
+        /// Gets the application data folder for the application.
         /// </summary>
         /// <returns>Path to application data, null if path not applicable.</returns>
         public static string GetApplicationDataFolderPath(string applicationName)

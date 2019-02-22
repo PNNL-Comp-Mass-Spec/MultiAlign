@@ -44,7 +44,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Creates SIC's mapped by charge state for the MS Features in the feature.
+        /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>
         /// <param name="provider">Object that can read data from a raw file or data source.</param>
@@ -121,7 +121,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Creates SIC's mapped by charge state for the MS Features in the feature.
+        /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>
@@ -141,7 +141,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Creates SIC's mapped by charge state for the MS Features in the feature.
+        /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>
@@ -161,7 +161,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Reconstructions a UMC
+        /// Reconstructions a UMC
         /// </summary>
         /// <param name="feature"></param>
         /// <param name="providers"></param>
@@ -183,7 +183,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Reconstructs a MS Feature by loading the MS/MS data
+        /// Reconstructs a MS Feature by loading the MS/MS data
         /// </summary>
         /// <param name="feature"></param>
         /// <param name="providers"></param>
@@ -353,7 +353,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Finds the ranges of a given feature for all of its dimensions.
+        /// Finds the ranges of a given feature for all of its dimensions.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>

@@ -11,7 +11,7 @@ using MultiAlignCore.IO.Parameters;
 namespace MultiAlignCore.Algorithms.Clustering
 {
     /// <summary>
-    ///     Options for clustering LC-MS Features.
+    /// Options for clustering LC-MS Features.
     /// </summary>
     public class LCMSFeatureClusteringOptions
     {
@@ -34,7 +34,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public LcmsFeatureClusteringAlgorithmType LcmsFeatureClusteringAlgorithm { get; set; }
 
         /// <summary>
-        ///     Gets or sets the enumeration for selecting a distance function to use for clustering.
+        /// Gets or sets the enumeration for selecting a distance function to use for clustering.
         /// </summary>
         [ParameterFile("DistanceFunction", "LCMSFeatureClustering")]
         [Category("Distance Function")]

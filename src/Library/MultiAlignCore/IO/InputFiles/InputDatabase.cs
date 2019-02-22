@@ -10,12 +10,12 @@ using MultiAlignCore.IO.MTDB;
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    ///     Encapsulates the type of database to load.
+    /// Encapsulates the type of database to load.
     /// </summary>
     public class InputDatabase
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public InputDatabase()
         {
@@ -42,22 +42,22 @@ namespace MultiAlignCore.IO.InputFiles
         public string Description { get; set; }
 
         /// <summary>
-        ///     Gets or sets the database.
+        /// Gets or sets the database.
         /// </summary>
         public string DatabaseName { get; set; }
 
         /// <summary>
-        ///     Gets or sets the server.
+        /// Gets or sets the server.
         /// </summary>
         public string DatabaseServer { get; set; }
 
         /// <summary>
-        ///     Gets or sets the mass tag database path.
+        /// Gets or sets the mass tag database path.
         /// </summary>
         public string LocalPath { get; set; }
 
         /// <summary>
-        ///     Gets or sets the database format.
+        /// Gets or sets the database format.
         /// </summary>
         public MassTagDatabaseFormat DatabaseFormat { get; set; }
 
@@ -72,7 +72,7 @@ namespace MultiAlignCore.IO.InputFiles
         #region Methods
 
         /// <summary>
-        ///     Determines if the right combination of input settings are correct for specifying a MTDB.
+        /// Determines if the right combination of input settings are correct for specifying a MTDB.
         /// </summary>
         /// <returns>True if a database is to be used, false if not.</returns>
         public bool ValidateDatabaseType()
@@ -118,7 +118,7 @@ namespace MultiAlignCore.IO.InputFiles
         public static readonly string MassTagFileFilterString = @"Supported Files|*.tsv;*.csv;*.mtdb;*.dims;*.db3";
 
         /// <summary>
-        ///     Determines the type of local database
+        /// Determines the type of local database
         /// </summary>
         /// <param name="path"></param>
         /// <returns>The mass tag format of the file.</returns>

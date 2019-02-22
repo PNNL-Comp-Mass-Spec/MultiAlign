@@ -12,7 +12,7 @@ using NHibernate.Mapping.ByCode.Impl;
 namespace MultiAlignCore.IO.Hibernate
 {
     /// <summary>
-    ///     A Generic class that contains methods that will be used to manipulate Objects in the Database using Hibernate.
+    /// A Generic class that contains methods that will be used to manipulate Objects in the Database using Hibernate.
     /// </summary>
     /// <typeparam name="T">The Object Type. e.g. Umc, MassTag, etc.</typeparam>
     public class GenericDAOHibernate<T> : IGenericDAO<T>
@@ -23,8 +23,8 @@ namespace MultiAlignCore.IO.Hibernate
         #region Constructor
 
         /// <summary>
-        ///     Constructor class that will store the Object Type to allow the use of Generics.
-        ///     e.g. Umc if UmcDAOHibernate
+        /// Constructor class that will store the Object Type to allow the use of Generics.
+        /// e.g. Umc if UmcDAOHibernate
         /// </summary>
         public GenericDAOHibernate()
         {
@@ -37,7 +37,7 @@ namespace MultiAlignCore.IO.Hibernate
         #region Member Methods
 
         /// <summary>
-        ///     Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
+        /// Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
         /// </summary>
         /// <returns>A configured Hibernate ISession</returns>
         /// <remarks>A regular session needs to be used whenever there are relationships that need to be updated - the stateless session does not cascade operations.</remarks>
@@ -51,7 +51,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
+        /// Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
         /// </summary>
         /// <returns>A configured Hibernate ISession</returns>
         /// <remarks>A regular session needs to be used whenever there are relationships that need to be updated - the stateless session does not cascade operations.</remarks>
@@ -61,7 +61,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     A simple getter method to grab the Object Type.
+        /// A simple getter method to grab the Object Type.
         /// </summary>
         /// <returns>The Type of the Object. e.g. Umc if UmcDAOHibernate</returns>
         public Type GetPersistentType()
@@ -77,7 +77,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// They are generic methods so that T can be replaced with the class type (Umc, MassTag, etc.)
         /// e.g. If a Umc object is given to "Add(T t)", a Umc object will be stored in the Database
         /// <summary>
-        ///     Adds an Object to the Database.
+        /// Adds an Object to the Database.
         /// </summary>
         /// <param name="t">Object to be added</param>
         public void Add(T t)
@@ -94,7 +94,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// They are generic methods so that T can be replaced with the class type (Umc, MassTag, etc.)
         /// e.g. If a Umc object is given to "Add(T t)", a Umc object will be stored in the Database
         /// <summary>
-        ///     Adds an Object to the Database, or updates it if it has been previously added.
+        /// Adds an Object to the Database, or updates it if it has been previously added.
         /// </summary>
         /// <param name="t">Object to be added or updated</param>
         public void AddOrUpdate(T t)
@@ -110,8 +110,8 @@ namespace MultiAlignCore.IO.Hibernate
         public int SessionBatchSize { get; set; }
 
         /// <summary>
-        ///     Adds a Collection of Objects to the Database.
-        ///     Not good for very large bulk inserts.
+        /// Adds a Collection of Objects to the Database.
+        /// Not good for very large bulk inserts.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         /// <param name="progress"></param>
@@ -144,7 +144,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Adds a Collection of Objects to the Database.
+        /// Adds a Collection of Objects to the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         /// <param name="progress"></param>
@@ -177,7 +177,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// Update method will not save a new Object; it will only update the Object if it already exists in the Database.
         /// </summary>
         /// <param name="t">Object to be updated</param>
         public void Update(T t)
@@ -191,7 +191,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// Update method will not save a new Object; it will only update the Object if it already exists in the Database.
         /// Use this for objects with cascade relationships.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
@@ -225,7 +225,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// Update method will not save a new Object; it will only update the Object if it already exists in the Database.
         /// DO NOT use this for objects with cascade relationships.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
@@ -256,7 +256,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Deletes an Object from the Database.
+        /// Deletes an Object from the Database.
         /// </summary>
         /// <param name="t">Object to be deleted</param>
         public void Delete(T t)
@@ -270,7 +270,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Deletes a Collection of Objects from the Database.
+        /// Deletes a Collection of Objects from the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be deleted</param>
         /// <remarks>Use for deletes that need to cascade. Data must be loaded into the session for a cascading delete.</remarks>
@@ -288,7 +288,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Deletes a Collection of Objects from the Database.
+        /// Deletes a Collection of Objects from the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be deleted</param>
         /// <remarks>Do not use to perform deletes that should cascade (will fail with an exception). Fails due to use of IStatelessSession.</remarks>
@@ -306,7 +306,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds an Object in the Database that matches the given ID value.
+        /// Finds an Object in the Database that matches the given ID value.
         /// </summary>
         /// <param name="id">The ID value to be searched for</param>
         /// <returns>The Object found</returns>
@@ -316,7 +316,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Returns all Objects in the Database that are of Type t.
+        /// Returns all Objects in the Database that are of Type t.
         /// </summary>
         /// <returns>A set of Objects found</returns>
         public List<T> FindAll()
@@ -325,14 +325,14 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     This method take in a List of Hibernate Criterion and executes all of them at once to return
-        ///     a list of Objects. This is a generic method, so the Object type returned will depend on which
-        ///     DAOHibernate class was used to call this method.
-        ///     Criterion will limit what Objects will be returned from the Database. An example of a Criterion:
-        ///     ICriterion criterion = Expression.Eq("Mass", mass);
-        ///     This Criterion will limit the Objects returned to Objects that equal the given mass.
-        ///     To return a List of Objects that will contain every single Object of that type in the Database,
-        ///     simply pass in an empty list of Criterion.
+        /// This method take in a List of Hibernate Criterion and executes all of them at once to return
+        /// a list of Objects. This is a generic method, so the Object type returned will depend on which
+        /// DAOHibernate class was used to call this method.
+        /// Criterion will limit what Objects will be returned from the Database. An example of a Criterion:
+        /// ICriterion criterion = Expression.Eq("Mass", mass);
+        /// This Criterion will limit the Objects returned to Objects that equal the given mass.
+        /// To return a List of Objects that will contain every single Object of that type in the Database,
+        /// simply pass in an empty list of Criterion.
         /// </summary>
         /// <param name="criterionList">A list of Hibernate ICriterion - refer to Hibernate docs</param>
         /// <returns>A List of T Objects</returns>

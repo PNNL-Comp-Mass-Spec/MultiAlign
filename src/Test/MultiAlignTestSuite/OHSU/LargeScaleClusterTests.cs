@@ -19,7 +19,7 @@ namespace MultiAlignTestSuite.OHSU
         public DistanceFunction<UMCLight> DistanceFunction { get; set; }
 
         /// <summary>
-        ///     Compares the masses of two light features.
+        /// Compares the masses of two light features.
         /// </summary>
         protected Comparison<UMCLight> m_massComparer;
 

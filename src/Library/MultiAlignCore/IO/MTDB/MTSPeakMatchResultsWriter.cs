@@ -10,19 +10,19 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Class that writes the Peak Matching results back to the Mass Tag System (MTS).
+    /// Class that writes the Peak Matching results back to the Mass Tag System (MTS).
     /// </summary>
     public abstract class MTSPeakMatchResultsWriter
     {
         /// <summary>
-        ///     Creates a database connection.
+        /// Creates a database connection.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         protected abstract IDbConnection CreateConnection(string path);
 
         /// <summary>
-        ///     Creates a data parameter.
+        /// Creates a data parameter.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
@@ -30,7 +30,7 @@ namespace MultiAlignCore.IO.MTDB
         protected abstract IDbDataParameter CreateParameter(string name, object value);
 
         /// <summary>
-        ///     Creates an output data parameter.
+        /// Creates an output data parameter.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
@@ -42,7 +42,7 @@ namespace MultiAlignCore.IO.MTDB
             byte scale);
 
         /// <summary>
-        ///     Writes a list of mamoth clusters back to the mass tag system at the server and database provided.
+        /// Writes a list of mamoth clusters back to the mass tag system at the server and database provided.
         /// </summary>
         /// <param name="server">Server the database exists on.</param>
         /// <param name="database">Database to write results to.</param>

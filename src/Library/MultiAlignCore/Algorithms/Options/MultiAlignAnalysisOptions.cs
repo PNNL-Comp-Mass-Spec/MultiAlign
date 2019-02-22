@@ -13,12 +13,12 @@ namespace MultiAlignCore.Algorithms.Options
     using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
 
     /// <summary>
-    ///     Analysis Options for MultiAlign
+    /// Analysis Options for MultiAlign
     /// </summary>
     public class MultiAlignAnalysisOptions
     {
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         public MultiAlignAnalysisOptions()
         {
@@ -44,65 +44,65 @@ namespace MultiAlignCore.Algorithms.Options
         }
 
         /// <summary>
-        ///     Gets or sets data loading options
+        /// Gets or sets data loading options
         /// </summary>
         public DataLoadingOptions DataLoadOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets instrument tolerances
+        /// Gets or sets instrument tolerances
         /// </summary>
         public FeatureTolerances InstrumentTolerances { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for loading data from a mass tag database.
+        /// Gets or sets the options for loading data from a mass tag database.
         /// </summary>
         public MassTagDatabaseOptions MassTagDatabaseOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for MS filtering.
+        /// Gets or sets the options for MS filtering.
         /// </summary>
         public MsFeatureFilteringOptions MsFilteringOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the feature finding options.
+        /// Gets or sets the feature finding options.
         /// </summary>
         public LcmsFeatureFindingOptions LcmsFindingOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for LC-MS filtering.
+        /// Gets or sets the options for LC-MS filtering.
         /// </summary>
         public LcmsFeatureFilteringOptions LcmsFilteringOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for LC-MS alignment
+        /// Gets or sets the options for LC-MS alignment
         /// </summary>
         [ParameterFileGroup("LC-MS Feature Alignment", "Alignment options for LCMSWarp of LC-MS Features")]
         public AlignmentOptions AlignmentOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for clustering LC-MS data
+        /// Gets or sets the options for clustering LC-MS data
         /// </summary>
         public LcmsClusteringOptions LcmsClusteringOptions { get; set; }
 
         public ClusterPostProcessingOptions ClusterPostProcessingoptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the options for STAC identification
+        /// Gets or sets the options for STAC identification
         /// </summary>
         public StacOptions StacOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether there was Fragmentation
+        /// Gets or sets whether there was Fragmentation
         /// </summary>
         public bool HasMsMs { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether the analysis used Ion Mobility
+        /// Gets or sets whether the analysis used Ion Mobility
         /// </summary>
         public bool UsedIonMobility { get; set; }
 
         /// <summary>
-        ///     Gets or sets the alignment spectral options
+        /// Gets or sets the alignment spectral options
         /// </summary>
         public SpectralOptions SpectralOptions { get; set; }
     }

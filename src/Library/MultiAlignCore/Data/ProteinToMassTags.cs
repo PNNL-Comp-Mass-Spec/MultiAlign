@@ -8,12 +8,12 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Maps a protein entry in a database to the mass tag data in the AMT.
+    /// Maps a protein entry in a database to the mass tag data in the AMT.
     /// </summary>
     public class ProteinToMassTags
     {
         /// <summary>
-        ///     Protein To Mass Tag Constructor.
+        /// Protein To Mass Tag Constructor.
         /// </summary>
         public ProteinToMassTags()
         {
@@ -22,17 +22,17 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Protein to map.
+        /// Protein to map.
         /// </summary>
         public Protein Protein { get; set; }
 
         /// <summary>
-        ///     Gets or sets the list of mass tags that map to this protein.
+        /// Gets or sets the list of mass tags that map to this protein.
         /// </summary>
         public List<MassTagToCluster> MassTags { get; set; }
 
         /// <summary>
-        ///     Gets or sets the related protein list
+        /// Gets or sets the related protein list
         /// </summary>
         public List<Protein> RelatedProteins { get; set; }
     }

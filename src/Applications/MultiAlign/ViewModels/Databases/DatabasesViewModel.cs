@@ -24,14 +24,14 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets the database collection
+        /// Gets the database collection
         /// </summary>
         public ObservableCollection<DmsDatabaseServerViewModel> Databases { get; private set; }
 
         public ObservableCollection<DmsDatabaseServerViewModel> FilteredDatabases { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the database name filter
+        /// Gets or sets the database name filter
         /// </summary>
         public string DatabaseFilter
         {
@@ -56,7 +56,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Gets or sets the selected database.
+        /// Gets or sets the selected database.
         /// </summary>
         public DmsDatabaseServerViewModel SelectedDatabase
         {
@@ -124,7 +124,7 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        ///     Adds a database to the collection
+        /// Adds a database to the collection
         /// </summary>
         /// <param name="server"></param>
         public void AddDatabase(InputDatabase server)

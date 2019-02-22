@@ -7,13 +7,13 @@ using System;
 namespace MultiAlignCore.IO.Parameters
 {
     /// <summary>
-    ///     Attribute to tag an options class for parameter file persistence.
+    /// Attribute to tag an options class for parameter file persistence.
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class ParameterFileGroupAttribute : Attribute
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="name">Name of the group.</param>
         /// <param name="fullDescription">Description of the group.</param>
@@ -24,12 +24,12 @@ namespace MultiAlignCore.IO.Parameters
         }
 
         /// <summary>
-        ///     Gets the description of the group.
+        /// Gets the description of the group.
         /// </summary>
         public string FullDecription { get; private set; }
 
         /// <summary>
-        ///     Gets the name of the group.
+        /// Gets the name of the group.
         /// </summary>
         public string Name { get; private set; }
     }

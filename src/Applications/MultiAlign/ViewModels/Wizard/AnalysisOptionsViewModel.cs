@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels.Wizard
     public class AnalysisOptionsViewModel : ViewModelBase
     {
         /// <summary>
-        ///     Open file dialog for opening an existing parameter file.
+        /// Open file dialog for opening an existing parameter file.
         /// </summary>
         private readonly OpenFileDialog m_dialog;
 

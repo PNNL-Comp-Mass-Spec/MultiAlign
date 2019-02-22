@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data
     public sealed class MassTagsLoadedEventArgs : EventArgs
     {
         /// <summary>
-        ///     Arguments that hold dataset information when features are loaded.
+        /// Arguments that hold dataset information when features are loaded.
         /// </summary>
         public MassTagsLoadedEventArgs(List<MassTagLight> tags, MassTagDatabase database)
         {
@@ -20,7 +20,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets the dataset information.
+        /// Gets the dataset information.
         /// </summary>
         public List<MassTagLight> MassTags { get; private set; }
 

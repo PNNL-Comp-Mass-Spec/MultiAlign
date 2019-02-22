@@ -13,7 +13,7 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        ///     Gets the selected database server
+        /// Gets the selected database server
         /// </summary>
         public InputDatabase Database
         {
@@ -21,7 +21,7 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        ///     Gets or sets the database server
+        /// Gets or sets the database server
         /// </summary>
         public string DatabaseServer
         {
@@ -37,7 +37,7 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string DatabaseName
         {
@@ -53,7 +53,7 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string Description
         {
@@ -69,7 +69,7 @@ namespace MultiAlignRogue.AMTMatching
         }
 
         /// <summary>
-        ///     Gets or sets the database name
+        /// Gets or sets the database name
         /// </summary>
         public string Organism
         {

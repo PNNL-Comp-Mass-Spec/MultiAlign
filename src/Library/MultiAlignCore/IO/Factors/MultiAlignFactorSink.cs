@@ -15,8 +15,8 @@ using MultiAlignCore.IO.Features;
 namespace MultiAlignCore.IO.Factors
 {
     /// <summary>
-    ///     You can make your own object that can be included
-    ///     as the last module in a Mage pipeline and receive the data stream directly.
+    /// You can make your own object that can be included
+    /// as the last module in a Mage pipeline and receive the data stream directly.
     /// </summary>
     internal class MultiAlignFactorSink : ISinkModule
     {
@@ -31,12 +31,12 @@ namespace MultiAlignCore.IO.Factors
         private readonly IDatasetToFactorMapDAO m_datasetFactorMapProvider;
 
         /// <summary>
-        ///     Maps a column
+        /// Maps a column
         /// </summary>
         private readonly Dictionary<string, int> m_columnMapping;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="datasets">Datasets to store data about.</param>
         public MultiAlignFactorSink(ObservableCollection<DatasetInformation> datasets,
@@ -59,7 +59,7 @@ namespace MultiAlignCore.IO.Factors
         }
 
         /// <summary>
-        ///     Handles the column definitions for a factor module.
+        /// Handles the column definitions for a factor module.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -76,7 +76,7 @@ namespace MultiAlignCore.IO.Factors
         }
 
         /// <summary>
-        ///     Gets the datasets used.
+        /// Gets the datasets used.
         /// </summary>
         public Dictionary<string, DatasetInformation> Datasets
         {
@@ -84,7 +84,7 @@ namespace MultiAlignCore.IO.Factors
         }
 
         /// <summary>
-        ///     Handles converting the rows to factor objects.
+        /// Handles converting the rows to factor objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -197,7 +197,7 @@ namespace MultiAlignCore.IO.Factors
         }
 
         /// <summary>
-        ///     Commits the factor data to the repository.
+        /// Commits the factor data to the repository.
         /// </summary>
         public void CommitChanges()
         {

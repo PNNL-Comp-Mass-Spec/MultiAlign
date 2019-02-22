@@ -10,17 +10,17 @@ using MultiAlignCore.IO.Features;
 namespace MultiAlignCore.IO.Factors
 {
     /// <summary>
-    ///     Adapter to the MAGE file library.
+    /// Adapter to the MAGE file library.
     /// </summary>
     public class MAGEFactorAdapter
     {
         /// <summary>
-        ///     Query string for SQL
+        /// Query string for SQL
         /// </summary>
         private readonly string m_sqlQuery;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public MAGEFactorAdapter()
         {
@@ -31,12 +31,12 @@ namespace MultiAlignCore.IO.Factors
         }
 
         /// <summary>
-        ///     Gets or sets the server name
+        /// Gets or sets the server name
         /// </summary>
         public string Server { get; set; }
 
         /// <summary>
-        ///     Gets or sets the database name.
+        /// Gets or sets the database name.
         /// </summary>
         public string Database { get; set; }
 

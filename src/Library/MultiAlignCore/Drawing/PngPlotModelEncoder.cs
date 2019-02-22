@@ -23,7 +23,7 @@ namespace MultiAlignCore.Drawing
         [UsedImplicitly] private const int HEIGHT = 600;
 
         /// <summary>
-        ///     Converts the plot model into an SVG string.
+        /// Converts the plot model into an SVG string.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="size"></param>
@@ -40,7 +40,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates the image.
+        /// Creates the image.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
@@ -59,7 +59,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Saves an image of the given size for the model provided at the path suggested.
+        /// Saves an image of the given size for the model provided at the path suggested.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="path"></param>
@@ -78,7 +78,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Saves an image of the given size and resolution for the model provided at the path suggested.
+        /// Saves an image of the given size and resolution for the model provided at the path suggested.
         /// </summary>
         /// <remarks>Image will not be saved at the specified size, but instead will be saved at a size that will permit resampling to the specified resolution</remarks>
         /// <param name="model"></param>
@@ -104,7 +104,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Converts the plot model into a BitmapSource with the given size and resolution.
+        /// Converts the plot model into a BitmapSource with the given size and resolution.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="size"></param>

@@ -9,14 +9,14 @@ using MultiAlignCore.IO;
 namespace MultiAlign.ViewModels.TreeView
 {
     /// <summary>
-    ///     Cluster Tree View Model
+    /// Cluster Tree View Model
     /// </summary>
     public class UMCClusterTreeViewModel : TreeItemViewModel
     {
         private readonly GenericCollectionTreeViewModel m_allIdentifications;
 
         /// <summary>
-        ///     The cluster in question
+        /// The cluster in question
         /// </summary>
         private readonly UMCClusterLightMatched m_cluster;
 
@@ -104,7 +104,7 @@ namespace MultiAlign.ViewModels.TreeView
 
 
         /// <summary>
-        ///     Gets the ID of the cluster.
+        /// Gets the ID of the cluster.
         /// </summary>
         public string ClusterId
         {

@@ -10,7 +10,7 @@ using MultiAlignCore.Data.MetaData;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Class for baselined loaded features.
+    /// Class for baselined loaded features.
     /// </summary>
     public sealed class BaselineFeaturesLoadedEventArgs : FeaturesLoadedEventArgs
     {

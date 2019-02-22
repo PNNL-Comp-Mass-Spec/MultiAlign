@@ -12,12 +12,12 @@ namespace MultiAlignCore.IO.MTDB
     internal class MAGEMetaSampleDatabaseSink : ISinkModule
     {
         /// <summary>
-        ///     Maps a column
+        /// Maps a column
         /// </summary>
         private readonly Dictionary<string, int> m_columnMapping;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public MAGEMetaSampleDatabaseSink()
         {
@@ -26,7 +26,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Handles the column definitions for a factor module.
+        /// Handles the column definitions for a factor module.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Handles converting the rows to factor objects.
+        /// Handles converting the rows to factor objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -135,7 +135,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Gets a list of the mass tags
+        /// Gets a list of the mass tags
         /// </summary>
         public List<MassTagLight> MassTags { get; private set; }
     }

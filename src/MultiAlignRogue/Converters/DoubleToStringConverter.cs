@@ -6,7 +6,7 @@ using System.Windows.Data;
 namespace MultiAlignRogue.Converters
 {
     /// <summary>
-    ///     Converts an integer value to a visibility item.
+    /// Converts an integer value to a visibility item.
     /// </summary>
     public class DoubleToStringConverter : DependencyObject, IValueConverter
     {

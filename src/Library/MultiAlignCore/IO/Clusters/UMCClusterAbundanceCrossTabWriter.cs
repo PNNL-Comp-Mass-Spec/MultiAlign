@@ -13,12 +13,12 @@ using MultiAlignCore.Data.MetaData;
 namespace MultiAlignCore.IO.Clusters
 {
     /// <summary>
-    ///     Writes a list of clusters to a cross tab.
+    /// Writes a list of clusters to a cross tab.
     /// </summary>
     public sealed class UmcClusterAbundanceCrossTabWriter : BaseUmcClusterWriter
     {
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public UmcClusterAbundanceCrossTabWriter()
             : base(false)

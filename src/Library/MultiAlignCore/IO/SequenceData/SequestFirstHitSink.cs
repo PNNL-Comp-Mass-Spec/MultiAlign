@@ -10,8 +10,8 @@ using MultiAlignCore.Data.SequenceData;
 namespace MultiAlignCore.IO.SequenceData
 {
     /// <summary>
-    ///     You can make your own object that can be included
-    ///     as the last module in a Mage pipeline and receive the data stream directly.
+    /// You can make your own object that can be included
+    /// as the last module in a Mage pipeline and receive the data stream directly.
     /// </summary>
     public class SequestFirstHitSink : ISinkModule, IMageSink
     {
@@ -20,12 +20,12 @@ namespace MultiAlignCore.IO.SequenceData
         private readonly IDatabaseSearchSequenceDAO m_database;
 
         /// <summary>
-        ///     Maps a column
+        /// Maps a column
         /// </summary>
         private readonly Dictionary<string, int> m_columnMapping;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="datasets">Datasets to store data about.</param>
         public SequestFirstHitSink(IDatabaseSearchSequenceDAO databaseInterface)
@@ -36,7 +36,7 @@ namespace MultiAlignCore.IO.SequenceData
         }
 
         /// <summary>
-        ///     Handles the column definitions for a factor module.
+        /// Handles the column definitions for a factor module.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -54,7 +54,7 @@ namespace MultiAlignCore.IO.SequenceData
         }
 
         /// <summary>
-        ///     Handles converting the rows to factor objects.
+        /// Handles converting the rows to factor objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -115,12 +115,12 @@ namespace MultiAlignCore.IO.SequenceData
         }
 
         /// <summary>
-        ///     Gets or sets the current Group ID to use.
+        /// Gets or sets the current Group ID to use.
         /// </summary>
         public int DatasetID { get; set; }
 
         /// <summary>
-        ///     Commits the factor data to the repository.
+        /// Commits the factor data to the repository.
         /// </summary>
         public void CommitChanges()
         {

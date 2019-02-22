@@ -28,7 +28,7 @@ namespace MultiAlign.ViewModels.Proteins
         }
 
         /// <summary>
-        ///     Gets or sets the matched proteins.
+        /// Gets or sets the matched proteins.
         /// </summary>
         public ObservableCollection<ProteinViewModel> MatchedProteins { get; set; }
 

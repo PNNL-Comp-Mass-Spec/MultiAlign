@@ -76,7 +76,7 @@ namespace MultiAlign.ViewModels.Datasets
         public ICommand ReconcilePathsCommand { get; private set; }
 
         /// <summary>
-        ///     Reconciles the paths to the
+        /// Reconciles the paths to the
         /// </summary>
         /// <param name="path"></param>
         private void ReconcilePaths(string path)

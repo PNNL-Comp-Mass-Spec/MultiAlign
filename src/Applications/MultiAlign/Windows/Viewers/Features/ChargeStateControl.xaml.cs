@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Features
 {
     /// <summary>
-    ///     Interaction logic for ChargeStateControl.xaml
+    /// Interaction logic for ChargeStateControl.xaml
     /// </summary>
     public partial class ChargeStateControl : UserControl
     {

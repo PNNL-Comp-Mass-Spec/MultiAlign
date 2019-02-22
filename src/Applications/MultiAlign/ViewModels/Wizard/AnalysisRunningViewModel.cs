@@ -15,7 +15,7 @@ using MultiAlignCore.IO.Reports;
 namespace MultiAlign.ViewModels.Wizard
 {
     /// <summary>
-    ///     View model for running an analysis.
+    /// View model for running an analysis.
     /// </summary>
     public class AnalysisRunningViewModel : ViewModelBase, IAnalysisReportGenerator
     {
@@ -41,12 +41,12 @@ namespace MultiAlign.ViewModels.Wizard
         public ObservableCollection<AnalysisGraphNodeViewModel> AnalysisNodes { get; set; }
 
         /// <summary>
-        ///     Gets the images associated with a dataset.
+        /// Gets the images associated with a dataset.
         /// </summary>
         public ObservableCollection<UserControl> GalleryImages { get; private set; }
 
         /// <summary>
-        ///     Gets or sets whether an analysis is running.
+        /// Gets or sets whether an analysis is running.
         /// </summary>
         public bool IsAnalysisRunning
         {
@@ -174,7 +174,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region Building Plots
 
         /// <summary>
-        ///     Builds the alignment plot views.
+        /// Builds the alignment plot views.
         /// </summary>
         /// <param name="e"></param>
         private void BuildAlignmentPlotView(FeaturesAlignedEventArgs e)
@@ -199,7 +199,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Builds the alignment plot views.
+        /// Builds the alignment plot views.
         /// </summary>
         /// <param name="e"></param>
         private void BuildBaselineView(BaselineFeaturesLoadedEventArgs e)
@@ -217,7 +217,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Builds the alignment plot views.
+        /// Builds the alignment plot views.
         /// </summary>
         private void BuildClusterPlots(List<UMCClusterLight> clusters)
         {
@@ -311,7 +311,7 @@ namespace MultiAlign.ViewModels.Wizard
         #endregion
 
         /// <summary>
-        ///     The analysis is completed.
+        /// The analysis is completed.
         /// </summary>
         public event EventHandler<AnalysisStatusArgs> AnalysisComplete;
 
@@ -344,7 +344,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region Logging Handlers
 
         /// <summary>
-        ///     Starts the routing of the logger messages for the UI.
+        /// Starts the routing of the logger messages for the UI.
         /// </summary>
         private void RouteMessages()
         {
@@ -352,7 +352,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Updates the current messages windows.
+        /// Updates the current messages windows.
         /// </summary>
         private void Logger_Status(object sender, StatusEventArgs e)
         {

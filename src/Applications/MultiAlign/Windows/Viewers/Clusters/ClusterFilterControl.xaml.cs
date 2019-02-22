@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    ///     Interaction logic for ClusterFilterControl.xaml
+    /// Interaction logic for ClusterFilterControl.xaml
     /// </summary>
     public partial class ClusterFilterControl : UserControl
     {

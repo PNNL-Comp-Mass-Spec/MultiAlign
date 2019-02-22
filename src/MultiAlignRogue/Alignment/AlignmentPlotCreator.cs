@@ -33,7 +33,7 @@ namespace MultiAlignRogue.Alignment
         }
 
         /// <summary>
-        ///     Save the plots to the specified path, with a specified width, height, and dpi
+        /// Save the plots to the specified path, with a specified width, height, and dpi
         /// </summary>
         /// <remarks>If the DPI is not 96, the width and height will be scaled so that the image
         /// provides the needed pixel size for the specified size and DPI</remarks>

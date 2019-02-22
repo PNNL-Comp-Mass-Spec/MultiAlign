@@ -16,7 +16,7 @@ using MultiAlignCore.IO;
 namespace MultiAlign.ViewModels.TreeView
 {
     /// <summary>
-    ///     Root tree object.
+    /// Root tree object.
     /// </summary>
     public class UmcClusterCollectionTreeViewModel : TreeItemViewModel
     {
@@ -123,8 +123,8 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Makes sure that we have event handlers to know when a feature was selected below us....
-        ///     probably a better way through bubble-based command routing...
+        /// Makes sure that we have event handlers to know when a feature was selected below us....
+        /// probably a better way through bubble-based command routing...
         /// </summary>
         private void RegisterEvents()
         {
@@ -187,7 +187,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Filters the clusters based on the given mass and NET range
+        /// Filters the clusters based on the given mass and NET range
         /// </summary>
         public void Filter(FilterRange monoisotopicMass, FilterRange net)
         {

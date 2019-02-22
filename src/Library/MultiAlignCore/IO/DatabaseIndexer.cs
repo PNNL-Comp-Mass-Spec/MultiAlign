@@ -7,7 +7,7 @@ using System.Data.SQLite;
 namespace MultiAlignCore.IO
 {
     /// <summary>
-    ///     Indexes a database for faster retrieval times.
+    /// Indexes a database for faster retrieval times.
     /// </summary>
     public class DatabaseIndexer
     {

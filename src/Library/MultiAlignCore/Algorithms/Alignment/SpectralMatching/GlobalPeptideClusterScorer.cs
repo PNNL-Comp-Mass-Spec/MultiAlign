@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
     {
 
         /// <summary>
-        ///     Extracts the peptides from the given features
+        /// Extracts the peptides from the given features
         /// </summary>
         /// <param name="features"></param>
         /// <returns></returns>

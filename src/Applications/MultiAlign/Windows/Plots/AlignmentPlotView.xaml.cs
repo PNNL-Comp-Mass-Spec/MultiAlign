@@ -9,7 +9,7 @@ using MultiAlignCore.Drawing;
 namespace MultiAlign.Windows.Plots
 {
     /// <summary>
-    ///     Interaction logic for AlignmentPlotView.xaml
+    /// Interaction logic for AlignmentPlotView.xaml
     /// </summary>
     public partial class AlignmentPlotView : UserControl
     {

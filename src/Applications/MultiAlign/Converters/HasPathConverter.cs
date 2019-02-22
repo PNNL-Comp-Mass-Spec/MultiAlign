@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace MultiAlign.Converters
 {
     /// <summary>
-    ///     Converts whether the path is null or not to yes or no string.
+    /// Converts whether the path is null or not to yes or no string.
     /// </summary>
     public class HasPathConverter : IValueConverter
     {

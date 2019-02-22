@@ -9,7 +9,7 @@ namespace MultiAlignCore.Data
     public class AnalysisCompleteEventArgs : EventArgs
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="analysis"></param>
         public AnalysisCompleteEventArgs(MultiAlignAnalysis analysis)
@@ -18,7 +18,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets or sets the analysis.
+        /// Gets or sets the analysis.
         /// </summary>
         public MultiAlignAnalysis Analysis { get; private set; }
     }

@@ -9,7 +9,7 @@ using System.IO;
 namespace MultiAlignCore.IO.Reports
 {
     /// <summary>
-    ///     Class that holds HTML tags and generates an analysis report in HTML format.
+    /// Class that holds HTML tags and generates an analysis report in HTML format.
     /// </summary>
     public class AnalysisHTMLReport
     {
@@ -60,7 +60,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Starts a table.
+        /// Starts a table.
         /// </summary>
         public void PushStartTable()
         {
@@ -68,7 +68,7 @@ namespace MultiAlignCore.IO.Reports
         }
 
         /// <summary>
-        ///     Starts a table with/without border.
+        /// Starts a table with/without border.
         /// </summary>
         /// <param name="border">True for a border.  False for not.</param>
         public void PushStartTable(bool border)
@@ -140,7 +140,7 @@ namespace MultiAlignCore.IO.Reports
         #endregion
 
         /// <summary>
-        ///     Creates the HTML output file.
+        /// Creates the HTML output file.
         /// </summary>
         public void CreateReport(string path)
         {
@@ -179,22 +179,22 @@ namespace MultiAlignCore.IO.Reports
         #region Properties
 
         /// <summary>
-        ///     Gets the HTML page strings.
+        /// Gets the HTML page strings.
         /// </summary>
         public List<string> ContentTags { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the Image Width
+        /// Gets or sets the Image Width
         /// </summary>
         public int ImageWidth { get; set; }
 
         /// <summary>
-        ///     Gets or sets the Image Height
+        /// Gets or sets the Image Height
         /// </summary>
         public int ImageHeight { get; set; }
 
         /// <summary>
-        ///     Gets or sets the name of the analysis to write.
+        /// Gets or sets the name of the analysis to write.
         /// </summary>
         public string AnalysisName { get; set; }
 

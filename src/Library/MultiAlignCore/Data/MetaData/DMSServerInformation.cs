@@ -23,49 +23,49 @@ using System.ComponentModel;
 namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
-    ///     Class that tests a connection to DMS on the PNNL domain.
+    /// Class that tests a connection to DMS on the PNNL domain.
     /// </summary>
     public class DMSServerInformation
     {
         /// <summary>
-        ///     Flag indicating if a connection to DMS has been made.
+        /// Flag indicating if a connection to DMS has been made.
         /// </summary>
         private bool mbool_hasConnectionToDMS;
 
         /// <summary>
-        ///     String that contains the name of the DMS server.
+        /// String that contains the name of the DMS server.
         /// </summary>
         private string mstring_dmsServerName;
 
         /// <summary>
-        ///     String that contains the name of the user to authenticate to DMS with.
+        /// String that contains the name of the user to authenticate to DMS with.
         /// </summary>
         private string mstring_username;
 
         /// <summary>
-        ///     String that contains the password to authenticate to DMS with.
+        /// String that contains the password to authenticate to DMS with.
         /// </summary>
         private string mstring_password;
 
         /// <summary>
-        ///     Name of the database.
+        /// Name of the database.
         /// </summary>
         private string mstring_databaseName;
 
         /// <summary>
-        ///     The timeoutvalue for connecting to the data server.
+        /// The timeoutvalue for connecting to the data server.
         /// </summary>
         private int mint_connectionTimeout;
 
         /// <summary>
-        ///     Default constructor for DMS server information
+        /// Default constructor for DMS server information
         /// </summary>
         public DMSServerInformation()
         {
         }
 
         /// <summary>
-        ///     Copy constructor for DMS server information.
+        /// Copy constructor for DMS server information.
         /// </summary>
         /// <param name="copy"></param>
         public DMSServerInformation(DMSServerInformation copy)
@@ -81,7 +81,7 @@ namespace MultiAlignCore.Data.MetaData
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the name of the DMS server.
+        /// Gets or sets the name of the DMS server.
         /// </summary>
         public string ServerName
         {
@@ -90,7 +90,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the username to connect to DMS with.
+        /// Gets or sets the username to connect to DMS with.
         /// </summary>
         [Browsable(false)]
         public string Username
@@ -100,7 +100,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the password to connect to DMS with.
+        /// Gets or sets the password to connect to DMS with.
         /// </summary>
         [Browsable(false)]
         public string Password
@@ -110,7 +110,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the timeout value for connecting to the database.
+        /// Gets or sets the timeout value for connecting to the database.
         /// </summary>
         public int ConnectionTimeout
         {
@@ -119,7 +119,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the database name.
+        /// Gets or sets the database name.
         /// </summary>
         public string DatabaseName
         {
@@ -128,7 +128,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets a flag indicating whether a connection at some point has been made and the settings are valid.
+        /// Gets or sets a flag indicating whether a connection at some point has been made and the settings are valid.
         /// </summary>
         public bool ConnectionExists
         {

@@ -3,7 +3,7 @@
 namespace MultiAlignRogue.AMTMatching
 {
     /// <summary>
-    ///     Interaction logic for MassTagOptionsView.xaml
+    /// Interaction logic for MassTagOptionsView.xaml
     /// </summary>
     public partial class MassTagOptionsView : UserControl
     {

@@ -10,7 +10,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Holds match information for others to use.
+    /// Holds match information for others to use.
     /// </summary>
     public class FeaturesPeakMatchedEventArgs : EventArgs
     {
@@ -24,7 +24,7 @@ namespace MultiAlignCore.Data
         public List<UMCClusterLight> Clusters { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the list of matches.
+        /// Gets or sets the list of matches.
         /// </summary>
         public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { private set; get; }
     }

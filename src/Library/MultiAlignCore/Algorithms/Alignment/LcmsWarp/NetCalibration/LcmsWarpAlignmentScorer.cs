@@ -342,9 +342,9 @@
         /// </summary>
         /// <param name="index">
         /// The index of the match in the alignment matrix.
-        ///     X = alignee section.
-        ///     Y = start of base line section that the alignee matches to.
-        ///     Z = width of baseline section that the alignee matches to.
+        /// X = alignee section.
+        /// Y = start of base line section that the alignee matches to.
+        /// Z = width of baseline section that the alignee matches to.
         /// </param>
         /// <param name="alignmentScore">The alignment score of the match.</param>
         /// <param name="matchScore">The match score for the alignee to baseline section match.</param>

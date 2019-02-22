@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Controls
 {
     /// <summary>
-    ///     Interaction logic for AdvancedOptionsWindow.xaml
+    /// Interaction logic for AdvancedOptionsWindow.xaml
     /// </summary>
     public partial class AdvancedOptionsWindow : Window
     {

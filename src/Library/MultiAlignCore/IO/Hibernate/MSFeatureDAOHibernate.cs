@@ -12,7 +12,7 @@ namespace MultiAlignCore.IO.Hibernate
     public class MSFeatureDAOHibernate : GenericDAOHibernate<MSFeatureLight>, IMSFeatureDAO
     {
         /// <summary>
-        ///     Searches for and returns a List of MS feature Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of MS feature Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<MSFeatureLight> FindByDatasetId(int datasetId)

@@ -8,7 +8,7 @@ using MultiAlignCore.Drawing;
 namespace MultiAlign.Windows.Plots
 {
     /// <summary>
-    ///     Interaction logic for ClustersView.xaml
+    /// Interaction logic for ClustersView.xaml
     /// </summary>
     public partial class ClustersPlotView
     {

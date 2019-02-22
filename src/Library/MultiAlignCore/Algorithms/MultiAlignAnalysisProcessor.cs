@@ -27,55 +27,55 @@ namespace MultiAlignCore.Algorithms
     using MultiAlignCore.IO.SequenceData;
 
     /// <summary>
-    ///     Transition class to remove the excess from the data storage object.
-    ///     Remove garbage code and mixed-mode BS.
+    /// Transition class to remove the excess from the data storage object.
+    /// Remove garbage code and mixed-mode BS.
     /// </summary>
     public class MultiAlignAnalysisProcessor : WorkflowBase, IDisposable
     {
         #region Events
 
         /// <summary>
-        ///     Fired when the baseline features
+        /// Fired when the baseline features
         /// </summary>
         public event EventHandler<BaselineFeaturesLoadedEventArgs> BaselineFeaturesLoaded;
 
         /// <summary>
-        ///     Fired when features are loaded.
+        /// Fired when features are loaded.
         /// </summary>
         public event EventHandler<FeaturesLoadedEventArgs> FeaturesLoaded;
 
         /// <summary>
-        ///     Fired when mass tags are loaded.
+        /// Fired when mass tags are loaded.
         /// </summary>
         public event EventHandler<MassTagsLoadedEventArgs> MassTagsLoaded;
 
         /// <summary>
-        ///     Fired when features are aligned.
+        /// Fired when features are aligned.
         /// </summary>
         public event EventHandler<FeaturesAlignedEventArgs> FeaturesAligned;
 
         /// <summary>
-        ///     Fired when features are clustered.
+        /// Fired when features are clustered.
         /// </summary>
         public event EventHandler<FeaturesClusteredEventArgs> FeaturesClustered;
 
         /// <summary>
-        ///     Fired when features are peak matched.
+        /// Fired when features are peak matched.
         /// </summary>
         public event EventHandler<FeaturesPeakMatchedEventArgs> FeaturesPeakMatched;
 
         /// <summary>
-        ///     Fired when a catastrophic error occurs.
+        /// Fired when a catastrophic error occurs.
         /// </summary>
         public event EventHandler<AnalysisErrorEventArgs> AnalysisError;
 
         /// <summary>
-        ///     Fired when the analysis is complete.
+        /// Fired when the analysis is complete.
         /// </summary>
         public event EventHandler<AnalysisCompleteEventArgs> AnalysisComplete;
 
         /// <summary>
-        ///     Fired when the analysis is ready to start.
+        /// Fired when the analysis is ready to start.
         /// </summary>
         public event EventHandler<AnalysisGraphEventArgs> AnalysisStarted;
 
@@ -84,17 +84,17 @@ namespace MultiAlignCore.Algorithms
         #region Members
 
         /// <summary>
-        ///     Algorithms used in processing.
+        /// Algorithms used in processing.
         /// </summary>
         private AlgorithmProvider m_algorithms;
 
         /// <summary>
-        ///     Holds all information about how to perform the analysis and how to store results.
+        /// Holds all information about how to perform the analysis and how to store results.
         /// </summary>
         private AnalysisConfig m_config;
 
         /// <summary>
-        ///     Thread in charge of performing the analysis.
+        /// Thread in charge of performing the analysis.
         /// </summary>
         private Thread m_analysisThread;
 
@@ -109,7 +109,7 @@ namespace MultiAlignCore.Algorithms
         #region Constructor
 
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public MultiAlignAnalysisProcessor()
         {
@@ -122,7 +122,7 @@ namespace MultiAlignCore.Algorithms
         #region Properties
 
         /// <summary>
-        ///     Gets or sets whether to load data.
+        /// Gets or sets whether to load data.
         /// </summary>
         public bool ShouldLoadData { get; set; }
 
@@ -131,7 +131,7 @@ namespace MultiAlignCore.Algorithms
         #region Algorithm Providers and Event Handlers
 
         /// <summary>
-        ///     Gets or sets the object that provides the algorithms for clustering, aligning, etc.
+        /// Gets or sets the object that provides the algorithms for clustering, aligning, etc.
         /// </summary>
         public AlgorithmProvider AlgorithmProviders
         {
@@ -147,7 +147,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Status Messages from the algorithms.
+        /// Status Messages from the algorithms.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -161,7 +161,7 @@ namespace MultiAlignCore.Algorithms
         #region Cleanup
 
         /// <summary>
-        ///     Dispose method that will kill the analysis thread.
+        /// Dispose method that will kill the analysis thread.
         /// </summary>
         public void Dispose()
         {
@@ -173,7 +173,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Aborts the analysis thread.
+        /// Aborts the analysis thread.
         /// </summary>
         private void AbortAnalysisThread(Thread threadToAbort)
         {
@@ -284,7 +284,7 @@ namespace MultiAlignCore.Algorithms
         #region Loading Data
 
         /// <summary>
-        ///     Load the data from the dataset information objects to the cache at the analysis Path
+        /// Load the data from the dataset information objects to the cache at the analysis Path
         /// </summary>
         private void PerformDataLoadAndAlignment(AnalysisConfig config)
         {
@@ -349,7 +349,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Loads baseline data for alignment.
+        /// Loads baseline data for alignment.
         /// </summary>
         private IList<UMCLight> LoadBaselineData(DatasetInformation baselineInfo,
             MsFeatureFilteringOptions msFilterOptions,
@@ -412,7 +412,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Updates listeners
+        /// Updates listeners
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -426,7 +426,7 @@ namespace MultiAlignCore.Algorithms
         #region Alignment
 
         /// <summary>
-        ///     Aligns all of the datasets.
+        /// Aligns all of the datasets.
         /// </summary>
         public void PerformAlignment(AnalysisConfig config)
         {
@@ -538,7 +538,7 @@ namespace MultiAlignCore.Algorithms
         #region Clustering
 
         /// <summary>
-        ///     Performs clustering of LCMS Features
+        /// Performs clustering of LCMS Features
         /// </summary>
         public void PerformLcmsFeatureClustering(AnalysisConfig config)
         {
@@ -639,7 +639,7 @@ namespace MultiAlignCore.Algorithms
         #region Identification
 
         /// <summary>
-        ///     Performs peak matching with loaded clusters.
+        /// Performs peak matching with loaded clusters.
         /// </summary>
         private void PerformPeakMatching(AnalysisConfig config)
         {
@@ -694,7 +694,7 @@ namespace MultiAlignCore.Algorithms
         #region Analysis Start/Stop
 
         /// <summary>
-        ///     Starts a multi-Align analysis job.
+        /// Starts a multi-Align analysis job.
         /// </summary>
         public void StartAnalysis(AnalysisConfig config)
         {
@@ -725,7 +725,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Aborts the analysis thread.
+        /// Aborts the analysis thread.
         /// </summary>
         public void StopAnalysis()
         {
@@ -747,7 +747,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Creates an entry in the DB if a new database should be created.
+        /// Creates an entry in the DB if a new database should be created.
         /// </summary>
         /// <param name="config"></param>
         private void CreateMtdb(AnalysisConfig config)
@@ -813,7 +813,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Starts the main analysis.
+        /// Starts the main analysis.
         /// </summary>
         private void PerformAnalysis()
         {

@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    ///     Input data for the console application.
+    /// Input data for the console application.
     /// </summary>
     public class InputAnalysisInfo
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public InputAnalysisInfo()
         {
@@ -25,22 +25,22 @@ namespace MultiAlignCore.IO.InputFiles
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the list of file paths.
+        /// Gets or sets the list of file paths.
         /// </summary>
         public List<InputFile> Files { get; set; }
 
         /// <summary>
-        ///     Gets or sets the baseline file..
+        /// Gets or sets the baseline file..
         /// </summary>
         public InputFile BaselineFile { get; set; }
 
         /// <summary>
-        ///     Get or sets the input database type.
+        /// Get or sets the input database type.
         /// </summary>
         public InputDatabase Database { get; set; }
 
         /// <summary>
-        ///     Gets or sets the file the factors are stored in.
+        /// Gets or sets the file the factors are stored in.
         /// </summary>
         public string FactorFile { get; set; }
 

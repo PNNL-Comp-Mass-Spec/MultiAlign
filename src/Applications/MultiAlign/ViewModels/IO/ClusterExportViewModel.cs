@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels.IO
         private readonly ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
 
         /// <summary>
-        ///     This allows us to dynamically build the filter string for an exporter....
+        /// This allows us to dynamically build the filter string for an exporter....
         /// </summary>
         private readonly Dictionary<string, IFeatureClusterWriter> m_writerExtensionMap;
 
@@ -92,7 +92,7 @@ namespace MultiAlign.ViewModels.IO
         }
 
         /// <summary>
-        ///     Gets or sets the status message
+        /// Gets or sets the status message
         /// </summary>
         public string Status
         {

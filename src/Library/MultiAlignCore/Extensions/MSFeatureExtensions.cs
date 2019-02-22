@@ -16,7 +16,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Maps all of the MS Features to an indexed scan map.
+        /// Maps all of the MS Features to an indexed scan map.
         /// </summary>
         /// <param name="msFeatures"></param>
         /// <returns></returns>
@@ -36,7 +36,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Maps all of the MS/MS spectra to an indexed scan map.
+        /// Maps all of the MS/MS spectra to an indexed scan map.
         /// </summary>
         /// <param name="msFeatures"></param>
         /// <returns></returns>

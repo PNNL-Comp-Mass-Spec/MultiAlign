@@ -8,7 +8,7 @@ namespace MultiAlignCore.IO.Hibernate
     public class ScanSummaryDAOHibernate : GenericDAOHibernate<ScanSummary>
     {
         /// <summary>
-        ///     Searches for and returns a List of MS feature Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of MS feature Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<ScanSummary> FindByDatasetId(int datasetId)

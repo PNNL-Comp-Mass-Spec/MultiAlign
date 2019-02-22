@@ -29,7 +29,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Loads the children
+        /// Loads the children
         /// </summary>
         public override void LoadChildren()
         {
@@ -53,7 +53,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Propagates the selected feature upwards.
+        /// Propagates the selected feature upwards.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

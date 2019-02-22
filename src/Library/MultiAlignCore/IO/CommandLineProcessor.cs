@@ -11,7 +11,7 @@ namespace MultiAlignCore.IO
     public class CommandLineProcessor
     {
         /// <summary>
-        ///     Processes the command line arguments.
+        /// Processes the command line arguments.
         /// </summary>
         /// <param name="args"></param>
         public static void ProcessCommandLineArguments(string[] args, AnalysisConfig config)

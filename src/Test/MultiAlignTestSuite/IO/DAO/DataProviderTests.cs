@@ -11,13 +11,13 @@ using NUnit.Framework;
 namespace MultiAlignTestSuite.IO.DAO
 {
     /// <summary>
-    ///     Main application.
+    /// Main application.
     /// </summary>
     public sealed class DataProviderTests
     {
 
         /// <summary>
-        ///     Sets up the NHibernate caches for storing and retrieving data.
+        /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
         /// <returns></returns>
         private static void SetupDataProviders(string path, bool createNew)
@@ -26,7 +26,7 @@ namespace MultiAlignTestSuite.IO.DAO
         }
 
         /// <summary>
-        ///     Creates data providers to the database of the analysis name and path provided.
+        /// Creates data providers to the database of the analysis name and path provided.
         /// </summary>
         /// <returns></returns>
         private static void SetupDataProviders(string path)

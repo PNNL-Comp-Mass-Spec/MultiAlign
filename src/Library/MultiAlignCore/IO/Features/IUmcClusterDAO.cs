@@ -12,7 +12,7 @@ namespace MultiAlignCore.IO.Features
         List<UMCClusterLight> FindByMass(double mass);
 
         /// <summary>
-        ///     Find nearby clusters skipping the one specified.
+        /// Find nearby clusters skipping the one specified.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -23,7 +23,7 @@ namespace MultiAlignCore.IO.Features
         List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax);
 
         /// <summary>
-        ///     Finds nearby mass tags based on mass, net, and drift time.
+        /// Finds nearby mass tags based on mass, net, and drift time.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>

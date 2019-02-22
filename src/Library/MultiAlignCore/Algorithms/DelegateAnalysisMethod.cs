@@ -7,7 +7,7 @@ using MultiAlignCore.Data;
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    ///     Next analysis method step to run.
+    /// Next analysis method step to run.
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>

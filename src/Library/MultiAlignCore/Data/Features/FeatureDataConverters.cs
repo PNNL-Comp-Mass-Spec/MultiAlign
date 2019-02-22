@@ -11,8 +11,8 @@ namespace MultiAlignCore.Data.Features
     public static class FeatureDataConverters
     {
         /// <summary>
-        ///     Maps a feature list to a dictionary where the key is the feature ID.  This is useful for converting
-        ///     between feature types for older algorithms.
+        /// Maps a feature list to a dictionary where the key is the feature ID.  This is useful for converting
+        /// between feature types for older algorithms.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -29,7 +29,7 @@ namespace MultiAlignCore.Data.Features
         }
 
         /// <summary>
-        ///     Converts mass tags to UMC's.
+        /// Converts mass tags to UMC's.
         /// </summary>
         /// <param name="massTags"></param>
         /// <returns></returns>

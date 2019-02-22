@@ -7,7 +7,7 @@ using System;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Analysis Error Event Arguments
+    /// Analysis Error Event Arguments
     /// </summary>
     public class AnalysisErrorEventArgs : EventArgs
     {

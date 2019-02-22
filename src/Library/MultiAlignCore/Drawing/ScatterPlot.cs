@@ -13,7 +13,7 @@ using PNNLOmics.Annotations;
 namespace MultiAlignCore.Drawing
 {
     /// <summary>
-    ///     Heatmap display.  Default color legend is "Hot"
+    /// Heatmap display.  Default color legend is "Hot"
     /// </summary>
     [UsedImplicitly]
     public class ScatterPlot : PlotBase
@@ -24,7 +24,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a new plot with linear axis.
+        /// Creates a new plot with linear axis.
         /// </summary>
         /// <param name="title"></param>
         /// <param name="xTitle"></param>
@@ -52,7 +52,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Adds a series of x,y points to the plot
+        /// Adds a series of x,y points to the plot
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

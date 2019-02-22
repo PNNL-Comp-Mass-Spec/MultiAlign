@@ -11,7 +11,7 @@ using OxyPlot.Series;
 namespace MultiAlignCore.Drawing
 {
     /// <summary>
-    ///     Creates a histogram from the dictionary provided
+    /// Creates a histogram from the dictionary provided
     /// </summary>
     public sealed class HistogramPlot : PlotBase
     {

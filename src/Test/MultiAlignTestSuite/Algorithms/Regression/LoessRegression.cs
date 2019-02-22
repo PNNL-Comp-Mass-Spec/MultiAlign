@@ -9,7 +9,7 @@ namespace MultiAlignTestSuite.Algorithms.Regression
     public class LoessRegression
     {
         /// <summary>
-        ///     This function tests the Loess interpolation code
+        /// This function tests the Loess interpolation code
         /// </summary>
         /// <param name="type"></param>
         /// <param name="generatingFunction"></param>

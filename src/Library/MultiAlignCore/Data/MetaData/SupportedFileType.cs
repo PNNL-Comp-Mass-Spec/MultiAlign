@@ -18,7 +18,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the extension of the dataset type.
+        /// Gets or sets the extension of the dataset type.
         /// </summary>
         public string Extension { get; private set; }
 

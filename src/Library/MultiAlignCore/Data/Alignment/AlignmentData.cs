@@ -104,13 +104,13 @@ namespace MultiAlignCore.Data.Alignment
         public double NETStandardDeviation { get; set; }
 
         /// <summary>
-        ///     Gets or sets the anchor points defined by spectral matching if that algorithm was used.
-        ///     This is a stop gap until I can port this all to better objects.
+        /// Gets or sets the anchor points defined by spectral matching if that algorithm was used.
+        /// This is a stop gap until I can port this all to better objects.
         /// </summary>
         public IEnumerable<SpectralAnchorPointMatch> Matches { get; set; }
 
         /// <summary>
-        ///     Gets or sets the residual alignment data.
+        /// Gets or sets the residual alignment data.
         /// </summary>
         public ResidualData ResidualData { get; set; }
 

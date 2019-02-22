@@ -14,17 +14,17 @@ namespace MultiAlignCore.Data.Factors
         //TODO: REFACTOR Bring up to coding standard
 
         /// <summary>
-        ///     Name of the factor.
+        /// Name of the factor.
         /// </summary>
         private string m_factorName;
 
         /// <summary>
-        ///     List of factor values.
+        /// List of factor values.
         /// </summary>
         private List<string> m_factorValues;
 
         /// <summary>
-        ///     Default construtor.
+        /// Default construtor.
         /// </summary>
         public FactorInformation()
         {
@@ -33,7 +33,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Gets if a factor is fully defined.
+        /// Gets if a factor is fully defined.
         /// </summary>
         public bool IsFullyDefined
         {
@@ -41,7 +41,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Gets or sets the name of the factor.
+        /// Gets or sets the name of the factor.
         /// </summary>
         public string FactorName
         {
@@ -50,7 +50,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Gets or sets the list of factor values associated with this factor.
+        /// Gets or sets the list of factor values associated with this factor.
         /// </summary>
         public List<string> FactorValues
         {

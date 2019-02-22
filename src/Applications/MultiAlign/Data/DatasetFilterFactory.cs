@@ -3,7 +3,7 @@
 namespace MultiAlign.Data
 {
     /// <summary>
-    ///     Creates a file browser filter based on the input file types.
+    /// Creates a file browser filter based on the input file types.
     /// </summary>
     public class DatasetFilterFactory
     {

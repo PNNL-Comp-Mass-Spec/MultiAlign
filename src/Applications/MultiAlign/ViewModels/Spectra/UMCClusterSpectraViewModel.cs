@@ -13,7 +13,7 @@ using MultiAlignCore.Extensions;
 namespace MultiAlign.ViewModels.Spectra
 {
     /// <summary>
-    ///     View Model for a cluster with spectra
+    /// View Model for a cluster with spectra
     /// </summary>
     public class UmcClusterSpectraViewModel : ViewModelBase
     {
@@ -21,14 +21,14 @@ namespace MultiAlign.ViewModels.Spectra
         private double m_maxMz;
 
         /// <summary>
-        ///     Selected cluster.
+        /// Selected cluster.
         /// </summary>
         private UMCClusterLightMatched m_selectedCluster;
 
         private SpectraSortOptions m_selectedSortOption;
 
         /// <summary>
-        ///     Selected spectra
+        /// Selected spectra
         /// </summary>
         private MsSpectraViewModel m_selectedSpectra;
 
@@ -65,7 +65,7 @@ namespace MultiAlign.ViewModels.Spectra
         public ICommand ExpandIdentifications { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the selected sort option
+        /// Gets or sets the selected sort option
         /// </summary>
         public SpectraSortOptions SelectedSort
         {

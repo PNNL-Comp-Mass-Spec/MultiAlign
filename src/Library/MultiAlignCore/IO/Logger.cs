@@ -9,14 +9,14 @@ using System.Text;
 namespace MultiAlignCore.IO
 {
     /// <summary>
-    ///     Class that handles logging messages to the console and log files.
+    /// Class that handles logging messages to the console and log files.
     /// </summary>
     public static class Logger
     {
         public static event EventHandler<StatusEventArgs> Status;
 
         /// <summary>
-        ///     File to log information to.
+        /// File to log information to.
         /// </summary>
         public static string LogPath { get; set; }
 
@@ -26,7 +26,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Prints a message to the console and log file.
+        /// Prints a message to the console and log file.
         /// </summary>
         public static void PrintSpacer()
         {
@@ -39,7 +39,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Prints a message to the console and log file.
+        /// Prints a message to the console and log file.
         /// </summary>
         public static void PrintMessage(string message)
         {
@@ -47,7 +47,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Prints a message to the console and log file.
+        /// Prints a message to the console and log file.
         /// </summary>
         public static void PrintMessage(string message, bool useMemory)
         {
@@ -101,7 +101,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Prints the version of MA to the log file.
+        /// Prints the version of MA to the log file.
         /// </summary>
         public static void PrintVersion()
         {

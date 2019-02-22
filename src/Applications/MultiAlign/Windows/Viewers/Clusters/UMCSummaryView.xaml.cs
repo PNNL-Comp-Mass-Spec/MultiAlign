@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    ///     Interaction logic for UMCSummaryView.xaml
+    /// Interaction logic for UMCSummaryView.xaml
     /// </summary>
     public partial class UMCSummaryView : UserControl
     {

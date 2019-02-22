@@ -9,12 +9,12 @@ using MultiAlignCore.Algorithms.Options;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Stub class.
+    /// Stub class.
     /// </summary>
     public class SQLiteMassTagDatabaseLoader : MassTagDatabaseLoader
     {
         /// <summary>
-        ///     Sqlite database loader constructor.
+        /// Sqlite database loader constructor.
         /// </summary>
         public SQLiteMassTagDatabaseLoader(string databasePath, MassTagDatabaseOptions options)
         {
@@ -23,14 +23,14 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Gets or sets the database path.
+        /// Gets or sets the database path.
         /// </summary>
         public string DatabasePath { get; set; }
 
         #region Abstract Method Implementations.
 
         /// <summary>
-        ///     Sets up the command for execution.
+        /// Sets up the command for execution.
         /// </summary>
         /// <param name="command"></param>
         protected override void SetupProteinMassTagCommand(IDbCommand command)
@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Sets up the mass tag command.
+        /// Sets up the mass tag command.
         /// </summary>
         /// <param name="command"></param>
         protected override void SetupMassTagCommand(IDbCommand command)
@@ -65,7 +65,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Creates a new connection string.
+        /// Creates a new connection string.
         /// </summary>
         /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
@@ -82,7 +82,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Creates a new Sqlite data paramter for use in queries.
+        /// Creates a new Sqlite data paramter for use in queries.
         /// </summary>
         /// <param name="name">Name of parameter.</param>
         /// <param name="value">Value of parameter.</param>

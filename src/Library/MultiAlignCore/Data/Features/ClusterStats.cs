@@ -10,7 +10,7 @@ namespace MultiAlignCore.Data.Features
     public static class ClusterStats
     {
         /// <summary>
-        ///     Creates a cluster size histogram for dataset members.
+        /// Creates a cluster size histogram for dataset members.
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>

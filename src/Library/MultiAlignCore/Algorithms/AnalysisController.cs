@@ -33,7 +33,7 @@ using MultiAlignCore.IO.Reports;
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    ///     Builds an analysis object and the required dependencies for processing.
+    /// Builds an analysis object and the required dependencies for processing.
     /// </summary>
     public class AnalysisController
     {
@@ -60,7 +60,7 @@ namespace MultiAlignCore.Algorithms
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the
+        /// Gets or sets the
         /// </summary>
         public AnalysisConfig Config
         {
@@ -73,7 +73,7 @@ namespace MultiAlignCore.Algorithms
         #region Data Provider Setup
 
         /// <summary>
-        ///     Sets up the NHibernate caches for storing and retrieving data.
+        /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
         private FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
         {
@@ -89,7 +89,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Creates data providers to the database of the analysis name and path provided.
+        /// Creates data providers to the database of the analysis name and path provided.
         /// </summary>
         private FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
         {
@@ -110,7 +110,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Cleans up the old database providers.
+        /// Cleans up the old database providers.
         /// </summary>
         private void CleanupDataProviders()
         {
@@ -122,7 +122,7 @@ namespace MultiAlignCore.Algorithms
         #region Processor Event Handlers
 
         /// <summary>
-        ///     Terminates the application when the analysis is complete.
+        /// Terminates the application when the analysis is complete.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -134,7 +134,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Logs when features are aligned.
+        /// Logs when features are aligned.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -157,7 +157,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Logs when features are clustered.
+        /// Logs when features are clustered.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -175,7 +175,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Logs when features are peak matched.
+        /// Logs when features are peak matched.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -189,7 +189,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Logs when features are loaded.
+        /// Logs when features are loaded.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -241,7 +241,7 @@ namespace MultiAlignCore.Algorithms
         #region Help
 
         /// <summary>
-        ///     Prints the help message.
+        /// Prints the help message.
         /// </summary>
         private void PrintHelp()
         {
@@ -358,7 +358,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Writes the parameters to the log file and database.
+        /// Writes the parameters to the log file and database.
         /// </summary>
         private void PrintParameters(MultiAlignAnalysis analysis, bool insertIntoDatabase)
         {
@@ -503,7 +503,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Creates the analysis processor and synchronizs the events.
+        /// Creates the analysis processor and synchronizs the events.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="providers"></param>
@@ -549,8 +549,8 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Sets up the analysis essentials including analysis path, log path, and prints the version and parameter information
-        ///     to the log.
+        /// Sets up the analysis essentials including analysis path, log path, and prints the version and parameter information
+        /// to the log.
         /// </summary>
         private void SetupAnalysisEssentials()
         {
@@ -706,7 +706,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Constructs the baseline databases.
+        /// Constructs the baseline databases.
         /// </summary>
         private bool ConstructBaselines(InputAnalysisInfo analysisSetupInformation, AnalysisMetaData analysisMetaData,
             bool useMtdb)
@@ -793,7 +793,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Loads factors from file or other.
+        /// Loads factors from file or other.
         /// </summary>
         private void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation,
             ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
@@ -813,7 +813,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Constructs dataset infromation from the input analysis information.
+        /// Constructs dataset infromation from the input analysis information.
         /// </summary>
         private void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis,
             bool insertIntoDatabase)
@@ -832,7 +832,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Determine what exporting features need to be had.
+        /// Determine what exporting features need to be had.
         /// </summary>
         private void ConstructExporting()
         {
@@ -863,7 +863,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Create the clustering algorithms.
+        /// Create the clustering algorithms.
         /// </summary>
         /// <param name="builder"></param>
         private void ConstructClustering(AlgorithmBuilder builder)
@@ -919,7 +919,7 @@ namespace MultiAlignCore.Algorithms
         private BackgroundWorker m_worker = new BackgroundWorker();
 
         /// <summary>
-        ///     This is horrible.  A common ground of feature / functionality should be made here.
+        /// This is horrible.  A common ground of feature / functionality should be made here.
         /// </summary>
         /// <param name="config"></param>
         /// <param name="reporter"></param>
@@ -937,7 +937,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Main bulk for processing setup for the GUI version
+        /// Main bulk for processing setup for the GUI version
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -991,7 +991,7 @@ namespace MultiAlignCore.Algorithms
 
 
         /// <summary>
-        ///     Processes the MA analysis data.
+        /// Processes the MA analysis data.
         /// </summary>
         public int StartMultiAlign(AnalysisConfig config, IAnalysisReportGenerator reporter)
         {
@@ -1051,7 +1051,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Determines if the database should be created or not.
+        /// Determines if the database should be created or not.
         /// </summary>
         /// <param name="validated"></param>
         /// <param name="databaseExists"></param>
@@ -1072,7 +1072,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Cancels the analysis.
+        /// Cancels the analysis.
         /// </summary>
         public void CancelAnalysis()
         {
@@ -1104,7 +1104,7 @@ namespace MultiAlignCore.Algorithms
         #region Processing
 
         /// <summary>
-        ///     Performs the analysis.
+        /// Performs the analysis.
         /// </summary>
         private void PerformAnalysisGui(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated,
             bool createDatabase, WorkerObject worker)
@@ -1228,7 +1228,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Performs the analysis.
+        /// Performs the analysis.
         /// </summary>
         private int PerformAnalysis(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated,
             bool createDatabase)
@@ -1423,11 +1423,11 @@ namespace MultiAlignCore.Algorithms
     }
 
     /// <summary>
-    ///     Class that combines the worker object with a manual reset event used for snychronization.  This
-    ///     happens because some processing elements take a long time to perform.  We want to let them finish but dont watn the
-    ///     user interface to freeze.
-    ///     So instead we create an object that allows us to let the objects go into the deep so that when the processing
-    ///     elements complete, they will manage themselves.
+    /// Class that combines the worker object with a manual reset event used for snychronization.  This
+    /// happens because some processing elements take a long time to perform.  We want to let them finish but dont watn the
+    /// user interface to freeze.
+    /// So instead we create an object that allows us to let the objects go into the deep so that when the processing
+    /// elements complete, they will manage themselves.
     /// </summary>
     public class WorkerObject
     {

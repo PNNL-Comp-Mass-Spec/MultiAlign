@@ -11,7 +11,7 @@ namespace MultiAlign.Data
     public class MultiAlignAnalysisValidator
     {
         /// <summary>
-        ///     Determines if all of the data is valid yet for the analysis.
+        /// Determines if all of the data is valid yet for the analysis.
         /// </summary>
         /// <returns></returns>
         public static bool IsStepValid(AnalysisConfig config, AnalysisSetupStep step, ref string errorMessage)

@@ -10,12 +10,12 @@ using MultiAlignCore.IO.InputFiles;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Class that loads Mass Tag databases from a given source.
+    /// Class that loads Mass Tag databases from a given source.
     /// </summary>
     public static class MtdbLoaderFactory
     {
         /// <summary>
-        ///     Loads a mass tag database.
+        /// Loads a mass tag database.
         /// </summary>
         /// <param name="databaseDefinition"></param>
         /// <param name="options">Loading options.</param>
@@ -33,7 +33,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Loads a mass tag database.
+        /// Loads a mass tag database.
         /// </summary>
         /// <param name="databaseDefinition"></param>
         /// <param name="options">Loading options.</param>

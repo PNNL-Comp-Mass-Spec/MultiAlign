@@ -7,7 +7,7 @@ namespace MultiAlign.Data
     public class DatasetPlotLoader
     {
         /// <summary>
-        ///     Loads dataset information from the path provided.
+        /// Loads dataset information from the path provided.
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>

@@ -12,14 +12,14 @@ using PNNLOmics.Annotations;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Event arguments when two datasets are aligned.
+    /// Event arguments when two datasets are aligned.
     /// </summary>
     public sealed class FeaturesAlignedEventArgs : EventArgs
     {
         private readonly DatasetInformation m_datasetInformation;
 
         /// <summary>
-        ///     Arguments that hold alignment information when a dataset is aligned.
+        /// Arguments that hold alignment information when a dataset is aligned.
         /// </summary>
         public FeaturesAlignedEventArgs(DatasetInformation datasetInfo,
             IEnumerable<UMCLight> baselineFeatures,
@@ -33,7 +33,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets the dataset information for the alignee dataset.
+        /// Gets the dataset information for the alignee dataset.
         /// </summary>
         public DatasetInformation AligneeDatasetInformation
         {
@@ -41,19 +41,19 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets the baseline features used in alignment.
+        /// Gets the baseline features used in alignment.
         /// </summary>
         [UsedImplicitly]
         public IEnumerable<UMCLight> BaselineFeatures { get; private set; }
 
         /// <summary>
-        ///     Gets the alignee features used in alignment.
+        /// Gets the alignee features used in alignment.
         /// </summary>
         [UsedImplicitly]
         public IEnumerable<UMCLight> AligneeFeatures { get; private set; }
 
         /// <summary>
-        ///     Gets the alignment data associated between baseline and alignee.
+        /// Gets the alignment data associated between baseline and alignee.
         /// </summary>
         public AlignmentData AlignmentData { get; private set; }
     }

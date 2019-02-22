@@ -8,14 +8,14 @@ using System.IO;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Class used for analysis naming and general path handling utilities.
+    /// Class used for analysis naming and general path handling utilities.
     /// </summary>
     public static class AnalysisPathUtils
     {
         private static string m_dateSuffix;
 
         /// <summary>
-        ///     Builds an analysis name from the path and name provided.
+        /// Builds an analysis name from the path and name provided.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
@@ -26,7 +26,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Builds the log path for the given analysis.
+        /// Builds the log path for the given analysis.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
@@ -41,7 +41,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Builds the log path for the given analysis.
+        /// Builds the log path for the given analysis.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
@@ -55,8 +55,8 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Builds the date suffix string for logs and path locations.  A single
-        ///     date suffix is built for the entire application lifecycle.
+        /// Builds the date suffix string for logs and path locations.  A single
+        /// date suffix is built for the entire application lifecycle.
         /// </summary>
         /// <returns></returns>
         public static string BuildDateSuffix()
@@ -76,7 +76,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Builds the plot path for the given analysis.
+        /// Builds the plot path for the given analysis.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -86,7 +86,7 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Builds the parameter path for the given analysis.
+        /// Builds the parameter path for the given analysis.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

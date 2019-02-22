@@ -10,7 +10,7 @@ using MultiAlignCore.IO.RawData;
 namespace MultiAlignCore.IO.MsMs
 {
     /// <summary>
-    ///     Finds the spectra for a given feature's scan
+    /// Finds the spectra for a given feature's scan
     /// </summary>
     public class ParentSpectraFinder
     {

@@ -3,7 +3,7 @@
 namespace MultiAlign.ViewModels
 {
     /// <summary>
-    ///     Validates whether the user interface can transition from one state to another.
+    /// Validates whether the user interface can transition from one state to another.
     /// </summary>
     public sealed class StateModeratorViewModel : ViewModelBase
     {

@@ -5,7 +5,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
-    ///     Interaction logic for MassTagDetail.xaml
+    /// Interaction logic for MassTagDetail.xaml
     /// </summary>
     public partial class ProteinDetail : UserControl
     {

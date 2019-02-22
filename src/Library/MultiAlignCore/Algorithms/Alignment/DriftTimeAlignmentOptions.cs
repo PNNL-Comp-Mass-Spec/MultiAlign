@@ -9,12 +9,12 @@ using MultiAlignCore.IO.Parameters;
 namespace MultiAlignCore.Algorithms.Alignment
 {
     /// <summary>
-    ///     Tolerances and options for drift time alignment algorithm.
+    /// Tolerances and options for drift time alignment algorithm.
     /// </summary>
     public class DriftTimeAlignmentOptions
     {
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public DriftTimeAlignmentOptions()
         {
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
 
         /// <summary>
-        ///     Gets or sets whether to perform the offset for drift time calculation.
+        /// Gets or sets whether to perform the offset for drift time calculation.
         /// </summary>
         [ParameterFile("ShouldPerformOffset", "DriftTime")]
         [DataSummary("Perform offset calculation")]
@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public bool ShouldPerformOffset { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether to use all observations for the drift time offset calculation.
+        /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
         [ParameterFile("UseAllObservationsForOffset", "DriftTime")]
         [DataSummary("Uses all observatiosn for the offset calculation")]
@@ -48,7 +48,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public bool ShouldUseAllObservationsForOffsetCalculation { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether to use all observations for the drift time offset calculation.
+        /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
         [ParameterFile("ShouldAlignDriftTimes", "DriftTime")]
         [DataSummary("Aligned Drift Times")]
@@ -58,7 +58,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public bool ShouldAlignDriftTimes { get; set; }
 
         /// <summary>
-        ///     Gets or sets the drift time tolerance to use.
+        /// Gets or sets the drift time tolerance to use.
         /// </summary>
         [ParameterFile("DriftTimeTolerance", "DriftTime")]
         [DataSummary("Drift Time Tolerance")]
@@ -67,7 +67,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public double DriftTimeTolerance { get; set; }
 
         /// <summary>
-        ///     Gets or sets the Mass PPM Tolerance (monoisotopic).
+        /// Gets or sets the Mass PPM Tolerance (monoisotopic).
         /// </summary>
         [ParameterFile("MassTolerance", "DriftTime")]
         [DataSummary("Mass Tolerance")]
@@ -76,7 +76,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public double MassPPMTolerance { get; set; }
 
         /// <summary>
-        ///     Gets or sets teh maximum charge state to allow.
+        /// Gets or sets teh maximum charge state to allow.
         /// </summary>
         [ParameterFile("MaxChargeState", "DriftTime")]
         [DataSummary("Maximum Charge State")]
@@ -85,7 +85,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public int MaxChargeState { get; set; }
 
         /// <summary>
-        ///     Gets or sets the minimum charge state to allow.
+        /// Gets or sets the minimum charge state to allow.
         /// </summary>
         [ParameterFile("MinChargeState", "DriftTime")]
         [DataSummary("Minimum Charge State")]
@@ -94,7 +94,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         public int MinChargeState { get; set; }
 
         /// <summary>
-        ///     Gets or sets the NET tolerance.
+        /// Gets or sets the NET tolerance.
         /// </summary>
         [ParameterFile("NETTolerance", "DriftTime")]
         [DataSummary("NET Tolerance")]

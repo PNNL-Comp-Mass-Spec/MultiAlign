@@ -186,7 +186,7 @@ namespace MultiAlignCore.Algorithms.Regression
         /// <param name="yval">the values for the interpolation points</param>
         /// <returns>values of the loess fit at corresponding original abscissae</returns>
         /// <exception>MathException if some of the following conditions are false:
-        ///     <cref>MathException</cref>
+        /// <cref>MathException</cref>
         /// </exception>
         /// <remarks>
         ///  Arguments and values are of the same size that is greater than zero

@@ -9,22 +9,22 @@ using MultiAlignCore.Algorithms.Options;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Access the mass tag system for downloading mass tag database information.
+    /// Access the mass tag system for downloading mass tag database information.
     /// </summary>
     public sealed class MtsMassTagDatabaseLoader : MassTagDatabaseLoader
     {
         /// <summary>
-        ///     Default password
+        /// Default password
         /// </summary>
         private const string DEFAULT_PASSWORD = "mt4fun";
 
         /// <summary>
-        ///     Default user name.
+        /// Default user name.
         /// </summary>
         private const string DEFAULT_USERNAME = "mtuser";
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="databaseName">Database name.</param>
         /// <param name="server">Server the database is hosted on.</param>
@@ -41,29 +41,29 @@ namespace MultiAlignCore.IO.MTDB
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the server name.
+        /// Gets or sets the server name.
         /// </summary>
         public string ServerName { get; set; }
 
         /// <summary>
-        ///     Gets or sets the database name.
+        /// Gets or sets the database name.
         /// </summary>
         public string DatabaseName { get; set; }
 
         /// <summary>
-        ///     Gets or sets the server password.
+        /// Gets or sets the server password.
         /// </summary>
         public string Password { get; set; }
 
         /// <summary>
-        ///     Gets or sets the user name.
+        /// Gets or sets the user name.
         /// </summary>
         public string UserName { get; set; }
 
         #endregion
 
         /// <summary>
-        ///     Creates an ADO connection to the Mass Tag system.
+        /// Creates an ADO connection to the Mass Tag system.
         /// </summary>
         /// <param name="connectionString">Connection to the database.</param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Creates a valid SQL connection string to the MTS system.
+        /// Creates a valid SQL connection string to the MTS system.
         /// </summary>
         /// <returns></returns>
         protected override string CreateConnectionString()
@@ -86,7 +86,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Creates a new sql data parameter for stored proc queries.
+        /// Creates a new sql data parameter for stored proc queries.
         /// </summary>
         /// <param name="name">Name of parameter.</param>
         /// <param name="value">Value of parameter to query with.</param>

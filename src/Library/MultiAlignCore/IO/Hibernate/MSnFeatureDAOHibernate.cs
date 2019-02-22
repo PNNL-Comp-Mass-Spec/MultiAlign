@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.Hibernate
     public class MSnFeatureDAOHibernate : GenericDAOHibernate<MSSpectra>, IMSnFeatureDAO
     {
         /// <summary>
-        ///     Searches for and returns a List of MS Spectra Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of MS Spectra Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<MSSpectra> FindByDatasetId(int datasetId)
@@ -35,7 +35,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Gets the number of MS/MS Spectra that were linked in the experiment.
+        /// Gets the number of MS/MS Spectra that were linked in the experiment.
         /// </summary>
         /// <returns></returns>
         public int GetMsMsCount()

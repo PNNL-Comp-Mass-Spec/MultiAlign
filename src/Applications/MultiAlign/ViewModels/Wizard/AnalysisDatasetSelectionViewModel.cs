@@ -79,7 +79,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region Event Handlers
 
         /// <summary>
-        ///     Selects no items
+        /// Selects no items
         /// </summary>
         private void SelectAllDelegate()
         {
@@ -88,7 +88,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Selects all items
+        /// Selects all items
         /// </summary>
         private void SelectNoneDelegate()
         {
@@ -97,7 +97,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Removes all selected items.
+        /// Removes all selected items.
         /// </summary>
         private void RemoveSelected()
         {
@@ -142,7 +142,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Adds the  folder containing dataset specific elements
+        /// Adds the  folder containing dataset specific elements
         /// </summary>
         public void AddFolderDelegate()
         {
@@ -172,7 +172,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Adds a MultiAlign file
+        /// Adds a MultiAlign file
         /// </summary>
         private void AddInputFileDelegate()
         {
@@ -198,7 +198,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Adds datasets from a single file
+        /// Adds datasets from a single file
         /// </summary>
         private void AddSingleFileDelegate()
         {
@@ -220,7 +220,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region View Model Properties
 
         /// <summary>
-        ///     Gets or sets the analysis information
+        /// Gets or sets the analysis information
         /// </summary>
         public InputAnalysisInfo AnalysisInputInformation
         {
@@ -236,7 +236,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets the input folder path
+        /// Gets or sets the input folder path
         /// </summary>
         public string DataFolderPath
         {
@@ -252,7 +252,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets the single file path
+        /// Gets or sets the single file path
         /// </summary>
         public string SingleFilePath
         {
@@ -268,7 +268,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets the single file path
+        /// Gets or sets the single file path
         /// </summary>
         public string InputFilePath
         {
@@ -284,7 +284,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets the analysis
+        /// Gets or sets the analysis
         /// </summary>
         public MultiAlignAnalysis Analysis
         {
@@ -300,7 +300,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets how the sub directories should be searched.
+        /// Gets or sets how the sub directories should be searched.
         /// </summary>
         public SearchOption ShouldSearchSubDirectories
         {
@@ -316,12 +316,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the set of datasets
+        /// Gets the set of datasets
         /// </summary>
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the selected database server.
+        /// Gets or sets the selected database server.
         /// </summary>
         public DmsDatabaseServerViewModel SelectedDatabaseServer
         {
@@ -359,7 +359,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Adds the list of input files into the analysis configuration.
+        /// Adds the list of input files into the analysis configuration.
         /// </summary>
         public List<DatasetInformation> AddDatasets(List<DatasetInformation> datasets)
         {

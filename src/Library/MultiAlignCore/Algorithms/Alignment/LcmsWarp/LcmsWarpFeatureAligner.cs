@@ -45,12 +45,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        ///     Gets or sets the baseline spectra provider
+        /// Gets or sets the baseline spectra provider
         /// </summary>
         public IScanSummaryProvider BaselineSpectraProvider { get; set; }
 
         /// <summary>
-        ///     Gets or sets the alignee spectra provider.
+        /// Gets or sets the alignee spectra provider.
         /// </summary>
         public IScanSummaryProvider AligneeSpectraProvider { get; set; }
 

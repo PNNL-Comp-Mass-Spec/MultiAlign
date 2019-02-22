@@ -11,12 +11,12 @@ using MultiAlignCore.IO.Parameters;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Holds all options for an analysis.
+    /// Holds all options for an analysis.
     /// </summary>
     public class AnalysisOptions
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public AnalysisOptions()
         {
@@ -28,14 +28,14 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets or sets the options for LCMS Warp
+        /// Gets or sets the options for LCMS Warp
         /// </summary>
         [DataSummary("Alignment Options")]
         [ParameterFileGroup("LC-MS Feature Alignment", "Alignment options for LCMSWarp of LC-MS Features")]
         public AlignmentOptions AlignmentOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the alignment options when using Ion Mobility data.
+        /// Gets or sets the alignment options when using Ion Mobility data.
         /// </summary>
         [DataSummary("Drift Time Options")]
         [ParameterFileGroup("Drift Time Alignment - IMS",
@@ -43,21 +43,21 @@ namespace MultiAlignCore.Data
         public DriftTimeAlignmentOptions DriftTimeAlignmentOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets the cluster options.
+        /// Gets or sets the cluster options.
         /// </summary>
         [ParameterFileGroup("LC-MS Feature Clustering",
             "Clustering options for LC-MS Feature Clustering across datasets.")]
         public LCMSFeatureClusteringOptions ClusterOptions { get; set; }
 
         /// <summary>
-        ///     Stac Options
+        /// Stac Options
         /// </summary>
         [ParameterFileGroup("Peptide Identification - STAC",
             "Peak Matching options for statistical testing of AMT related peak matching.")]
         public StacOptions STACOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets how the features are to be consolidated after clustering when exporting to cross tabs.
+        /// Gets or sets how the features are to be consolidated after clustering when exporting to cross tabs.
         /// </summary>
         [ParameterFileGroup("Feature Consolidator",
             "Options when reporting LC-MS Feature clusters.  Determines how to consolidate features if clustering links two nearby LC-MS Features.  Used for exporting cross tabs."

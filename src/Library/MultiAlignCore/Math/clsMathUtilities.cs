@@ -65,87 +65,87 @@ namespace Cephes
         // Physical Constants in cgs Units
 
         /// <summary>
-        ///     Boltzman Constant. Units erg/deg(K)
+        /// Boltzman Constant. Units erg/deg(K)
         /// </summary>
         public const double BOLTZMAN = 1.3807e-16;
 
         /// <summary>
-        ///     Elementary Charge. Units statcoulomb
+        /// Elementary Charge. Units statcoulomb
         /// </summary>
         public const double ECHARGE = 4.8032e-10;
 
         /// <summary>
-        ///     Electron Mass. Units g
+        /// Electron Mass. Units g
         /// </summary>
         public const double EMASS = 9.1095e-28;
 
         /// <summary>
-        ///     Proton Mass. Units g
+        /// Proton Mass. Units g
         /// </summary>
         public const double PMASS = 1.6726e-24;
 
         /// <summary>
-        ///     Gravitational Constant. Units dyne-cm^2/g^2
+        /// Gravitational Constant. Units dyne-cm^2/g^2
         /// </summary>
         public const double GRAV = 6.6720e-08;
 
         /// <summary>
-        ///     Planck constant. Units erg-sec
+        /// Planck constant. Units erg-sec
         /// </summary>
         public const double PLANCK = 6.6262e-27;
 
         /// <summary>
-        ///     Speed of Light in a Vacuum. Units cm/sec
+        /// Speed of Light in a Vacuum. Units cm/sec
         /// </summary>
         public const double LIGHTSPEED = 2.9979e10;
 
         /// <summary>
-        ///     Stefan-Boltzman Constant. Units erg/cm^2-sec-deg^4
+        /// Stefan-Boltzman Constant. Units erg/cm^2-sec-deg^4
         /// </summary>
         public const double STEFANBOLTZ = 5.6703e-5;
 
         /// <summary>
-        ///     Avogadro Number. Units  1/mol
+        /// Avogadro Number. Units  1/mol
         /// </summary>
         public const double AVOGADRO = 6.0220e23;
 
         /// <summary>
-        ///     Gas Constant. Units erg/deg-mol
+        /// Gas Constant. Units erg/deg-mol
         /// </summary>
         public const double GASCONSTANT = 8.3144e07;
 
         /// <summary>
-        ///     Gravitational Acceleration at the Earths surface. Units cm/sec^2
+        /// Gravitational Acceleration at the Earths surface. Units cm/sec^2
         /// </summary>
         public const double GRAVACC = 980.67;
 
         /// <summary>
-        ///     Solar Mass. Units g
+        /// Solar Mass. Units g
         /// </summary>
         public const double SOLARMASS = 1.99e33;
 
         /// <summary>
-        ///     Solar Radius. Units cm
+        /// Solar Radius. Units cm
         /// </summary>
         public const double SOLARRADIUS = 6.96e10;
 
         /// <summary>
-        ///     Solar Luminosity. Units erg/sec
+        /// Solar Luminosity. Units erg/sec
         /// </summary>
         public const double SOLARLUM = 3.90e33;
 
         /// <summary>
-        ///     Solar Flux. Units erg/cm^2-sec
+        /// Solar Flux. Units erg/cm^2-sec
         /// </summary>
         public const double SOLARFLUX = 6.41e10;
 
         /// <summary>
-        ///     Astronomical Unit (radius of the Earth's orbit). Units cm
+        /// Astronomical Unit (radius of the Earth's orbit). Units cm
         /// </summary>
         public const double AU = 1.50e13;
 
         /// <summary>
-        ///     approximation for 0 <= |y - 0.5| <= 3/8
+        /// approximation for 0 <= |y - 0.5| <= 3/8
         /// </summary>
         private static readonly double[] P0 =
         {
@@ -161,8 +161,8 @@ namespace Cephes
         };
 
         /// <summary>
-        ///     Approximation for interval z = sqrt(-2 log y ) between 2 and 8 i.e., y between exp(-2) = .135 and exp(-32) =
-        ///     1.27e-14.
+        /// Approximation for interval z = sqrt(-2 log y ) between 2 and 8 i.e., y between exp(-2) = .135 and exp(-32) =
+        /// 1.27e-14.
         /// </summary>
         private static readonly double[] P1 =
         {
@@ -179,8 +179,8 @@ namespace Cephes
         };
 
         /// <summary>
-        ///     Approximation for interval z = sqrt(-2 log y ) between 8 and 64 i.e., y between exp(-32) = 1.27e-14 and exp(-2048)
-        ///     = 3.67e-890.
+        /// Approximation for interval z = sqrt(-2 log y ) between 8 and 64 i.e., y between exp(-32) = 1.27e-14 and exp(-2048)
+        /// = 3.67e-890.
         /// </summary>
         private static readonly double[] P2 =
         {
@@ -198,14 +198,14 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Don't let anyone instantiate this class.
+        /// Don't let anyone instantiate this class.
         /// </summary>
         private clsMathUtilities()
         {
         }
 
         /// <Summary>
-        ///     Calculates standard deviation of numbers of doubles data type in an array
+        /// Calculates standard deviation of numbers of doubles data type in an array
         /// </Summary>
         public static double StandardDeviation(double[] num)
         {
@@ -221,7 +221,7 @@ namespace Cephes
         }
 
         /// <Summary>
-        ///     Calculates standard deviation of numbers of doubles data type in an array
+        /// Calculates standard deviation of numbers of doubles data type in an array
         /// </Summary>
         public static float StandardDeviation(float[] num)
         {
@@ -416,7 +416,7 @@ namespace Cephes
         // Function Methods
 
         /// <summary>
-        ///     Returns the base 10 logarithm of the specified number.
+        /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -428,7 +428,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic cosine of the specified number.
+        /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -443,7 +443,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic sine of the specified number.
+        /// Returns the hyperbolic sine of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -460,7 +460,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic tangent of the specified number.
+        /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -477,7 +477,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic arc cosine of the specified number.
+        /// Returns the hyperbolic arc cosine of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -489,7 +489,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic arc sine of the specified number.
+        /// Returns the hyperbolic arc sine of the specified number.
         /// </summary>
         /// <param name="xx"></param>
         /// <returns></returns>
@@ -513,7 +513,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the hyperbolic arc tangent of the specified number.
+        /// Returns the hyperbolic arc tangent of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -527,7 +527,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of order 0 of the specified number.
+        /// Returns the Bessel function of order 0 of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -564,7 +564,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of order 1 of the specified number.
+        /// Returns the Bessel function of order 1 of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -600,7 +600,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of order n of the specified number.
+        /// Returns the Bessel function of order n of the specified number.
         /// </summary>
         /// <param name="n"></param>
         /// <param name="x"></param>
@@ -664,7 +664,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of the second kind, of order 0 of the specified number.
+        /// Returns the Bessel function of the second kind, of order 0 of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -699,7 +699,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of the second kind, of order 1 of the specified number.
+        /// Returns the Bessel function of the second kind, of order 1 of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -733,7 +733,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the Bessel function of the second kind, of order n of the specified number.
+        /// Returns the Bessel function of the second kind, of order n of the specified number.
         /// </summary>
         /// <param name="n"></param>
         /// <param name="x"></param>
@@ -759,7 +759,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the factorial of the specified number.
+        /// Returns the factorial of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -772,7 +772,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the factorial of the specified number.
+        /// Returns the factorial of the specified number.
         /// </summary>
         /// <param name="j"></param>
         /// <returns></returns>
@@ -791,7 +791,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the gamma function of the specified number.
+        /// Returns the gamma function of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -891,7 +891,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Return the gamma function computed by Stirling's formula.
+        /// Return the gamma function computed by Stirling's formula.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -928,7 +928,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the complemented incomplete gamma function.
+        /// Returns the complemented incomplete gamma function.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="x"></param>
@@ -994,7 +994,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the incomplete gamma function.
+        /// Returns the incomplete gamma function.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="x"></param>
@@ -1036,7 +1036,7 @@ namespace Cephes
             **/
 
         /// <summary>
-        ///     Returns the chi-square function (left hand tail).
+        /// Returns the chi-square function (left hand tail).
         /// </summary>
         /// <param name="df">degrees of freedom</param>
         /// <param name="x">double value</param>
@@ -1056,7 +1056,7 @@ namespace Cephes
             **/
 
         /// <summary>
-        ///     Returns the chi-square function (right hand tail).
+        /// Returns the chi-square function (right hand tail).
         /// </summary>
         /// <param name="df">degrees of freedom</param>
         /// <param name="x">double value</param>
@@ -1070,7 +1070,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the sum of the first k terms of the Poisson distribution.
+        /// Returns the sum of the first k terms of the Poisson distribution.
         /// </summary>
         /// <param name="k">number of terms</param>
         /// <param name="x">double value</param>
@@ -1084,7 +1084,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the sum of the terms k+1 to infinity of the Poisson distribution.
+        /// Returns the sum of the terms k+1 to infinity of the Poisson distribution.
         /// </summary>
         /// <param name="k">start</param>
         /// <param name="x">double value</param>
@@ -1098,7 +1098,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the area under the Gaussian probability density function, integrated from minus infinity to a.
+        /// Returns the area under the Gaussian probability density function, integrated from minus infinity to a.
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
@@ -1120,15 +1120,15 @@ namespace Cephes
         }
 
         /// <summary>
-        ///     Inverse of a normal distribution. Returns the argument, x, for which the area under the
-        ///     Gaussian probability density function (integrated from minus infinity to x) is equal to y.
-        ///     For small arguments 0 < y
-        ///     < exp(-2), the program computes z= sqrt( -2.0 * Math.Log( y) ); then the approximation is
-        ///         x= z - Math.Log( z)/ z  - (1/ z) P(1/ z) / Q(1/ z).
-        ///         There are two rational functions P/ Q, one for 0 < y
-        ///     < exp(-32)
-        ///         and the other for y up to exp(-2). For larger arguments,
-        ///         w= y - 0.5, and x/ sqrt(2 pi)= w + w**3 R( w**2)/ S( w**2)).
+        /// Inverse of a normal distribution. Returns the argument, x, for which the area under the
+        /// Gaussian probability density function (integrated from minus infinity to x) is equal to y.
+        /// For small arguments 0 < y
+        /// < exp(-2), the program computes z= sqrt( -2.0 * Math.Log( y) ); then the approximation is
+        ///     x= z - Math.Log( z)/ z  - (1/ z) P(1/ z) / Q(1/ z).
+        ///     There are two rational functions P/ Q, one for 0 < y
+        /// < exp(-32)
+        ///     and the other for y up to exp(-2). For larger arguments,
+        ///     w= y - 0.5, and x/ sqrt(2 pi)= w + w**3 R( w**2)/ S( w**2)).
         /// </summary>
         /// <param name="y0"></param>
         /// <returns></returns>
@@ -1177,7 +1177,7 @@ namespace Cephes
         }
 
         /// <summary>
-        ///     Returns the complementary error function of the specified number.
+        /// Returns the complementary error function of the specified number.
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
@@ -1272,7 +1272,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the error function of the specified number.
+        /// Returns the error function of the specified number.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -1305,7 +1305,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Evaluates polynomial of degree N
+        /// Evaluates polynomial of degree N
         /// </summary>
         /// <param name="x"></param>
         /// <param name="coef"></param>
@@ -1327,7 +1327,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Evaluates polynomial of degree N with assumtion that coef[N] = 1.0
+        /// Evaluates polynomial of degree N with assumtion that coef[N] = 1.0
         /// </summary>
         /// <param name="x"></param>
         /// <param name="coef"></param>
@@ -1349,7 +1349,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the natural logarithm of gamma function.
+        /// Returns the natural logarithm of gamma function.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -1447,7 +1447,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the incomplete beta function evaluated from zero to xx.
+        /// Returns the incomplete beta function evaluated from zero to xx.
         /// </summary>
         /// <param name="aa"></param>
         /// <param name="bb"></param>
@@ -1548,7 +1548,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the continued fraction expansion #1 for incomplete beta integral.
+        /// Returns the continued fraction expansion #1 for incomplete beta integral.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -1639,7 +1639,7 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Returns the continued fraction expansion #2 for incomplete beta integral.
+        /// Returns the continued fraction expansion #2 for incomplete beta integral.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -1999,7 +1999,7 @@ namespace Cephes
         }
 
         /// <summary>
-        ///     Returns the power series for incomplete beta integral. Use when b*x is small and x not too close to 1.
+        /// Returns the power series for incomplete beta integral. Use when b*x is small and x not too close to 1.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -2045,20 +2045,20 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Student's t distribution: Computes the integral from minus infinity to t of the Student t
-        ///     distribution with integer k > 0 degrees of freedom.
-        ///     Relation to incomplete beta integral 1 - stdtr(k,t) = 0.5 * incbet( k/2, 1/2, z )
-        ///     where
-        ///     z = k/(k + t**2).
-        ///     For t
-        ///     < -2, this is the method of computation.
-        ///         For higher t, a direct method is derived from integration by parts. Since the function is symmetric about t=0,
-        ///         the area under the right tail of the density is found by calling the function with - t instead of t
-        ///         ACCURACY:
-        ///         Tested at random 1 <= k <= 25.  The "domain" refers to t.
-        ///     Relative error: arithmetic   domain     # trials      peak         rms
-        ///     IEEE     -100,-2      50000       5.9e-15     1.4e-15
-        ///     IEEE     -2,100      500000       2.7e-15     4.9e-17
+        /// Student's t distribution: Computes the integral from minus infinity to t of the Student t
+        /// distribution with integer k > 0 degrees of freedom.
+        /// Relation to incomplete beta integral 1 - stdtr(k,t) = 0.5 * incbet( k/2, 1/2, z )
+        /// where
+        /// z = k/(k + t**2).
+        /// For t
+        /// < -2, this is the method of computation.
+        ///     For higher t, a direct method is derived from integration by parts. Since the function is symmetric about t=0,
+        ///     the area under the right tail of the density is found by calling the function with - t instead of t
+        ///     ACCURACY:
+        ///     Tested at random 1 <= k <= 25.  The "domain" refers to t.
+        /// Relative error: arithmetic   domain     # trials      peak         rms
+        /// IEEE     -100,-2      50000       5.9e-15     1.4e-15
+        /// IEEE     -2,100      500000       2.7e-15     4.9e-17
         /// </summary>
         /// <param name="k"> number of degrees of freedom</param>
         /// <param name="t"> computed value of the t-statistic</param>
@@ -2147,13 +2147,13 @@ namespace Cephes
 
 
         /// <summary>
-        ///     Functional inverse of Student's t distribution: Given probability p, finds the argument t such that stdtr(k,t)
-        ///     is equal to p.
-        ///     ACCURACCY
-        ///     Tested at random 1 <= k <= 100.  The "domain" refers to p:
-        ///     Relative error: arithmetic   domain     # trials      peak         rms
-        ///     IEEE    .001,.999     25000       5.7e-15     8.0e-16
-        ///     IEEE    10^-6,.001    25000       2.0e-12     2.9e-14
+        /// Functional inverse of Student's t distribution: Given probability p, finds the argument t such that stdtr(k,t)
+        /// is equal to p.
+        /// ACCURACCY
+        /// Tested at random 1 <= k <= 100.  The "domain" refers to p:
+        /// Relative error: arithmetic   domain     # trials      peak         rms
+        /// IEEE    .001,.999     25000       5.7e-15     8.0e-16
+        /// IEEE    10^-6,.001    25000       2.0e-12     2.9e-14
         /// </summary>
         /// <param name="k"></param>
         /// <param name="p"></param>

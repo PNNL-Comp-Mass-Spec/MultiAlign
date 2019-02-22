@@ -20,7 +20,7 @@ namespace MultiAlignCore.Extensions
     public static class ClusterExtensions
     {
         /// <summary>
-        ///     Gets a cluster and it's subsequent data structures.
+        /// Gets a cluster and it's subsequent data structures.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Determines if MS/MS should also be discovered.
+        /// Determines if MS/MS should also be discovered.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -89,7 +89,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Retrieves a list of known peptides attributed to this cluster.
+        /// Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -112,7 +112,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Retrieves a list of known peptides attributed to this cluster.
+        /// Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -132,7 +132,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Retrieves a list of known peptides attributed to this cluster.
+        /// Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -144,7 +144,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Retrieves a list of known peptides attributed to this cluster.
+        /// Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -163,7 +163,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Reconstructs the mass tags and clusters joining tabled data.
+        /// Reconstructs the mass tags and clusters joining tabled data.
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="matches"></param>

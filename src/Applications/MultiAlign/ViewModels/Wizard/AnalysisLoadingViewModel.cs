@@ -13,7 +13,7 @@ namespace MultiAlign.ViewModels.Wizard
     public class AnalysisLoadingViewModel : ViewModelBase
     {
         /// <summary>
-        ///     Loads the analysis from disk.
+        /// Loads the analysis from disk.
         /// </summary>
         private Task m_loadingTask;
 
@@ -22,7 +22,7 @@ namespace MultiAlign.ViewModels.Wizard
         private string m_status;
 
         /// <summary>
-        ///     Updates the status.
+        /// Updates the status.
         /// </summary>
         public string Status
         {
@@ -38,12 +38,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Fired when an analysis has loaded.
+        /// Fired when an analysis has loaded.
         /// </summary>
         public event EventHandler<AnalysisStatusArgs> AnalysisLoaded;
 
         /// <summary>
-        ///     Loads the analysis.
+        /// Loads the analysis.
         /// </summary>
         /// <param name="recentAnalysis"></param>
         public void LoadAnalysis(RecentAnalysis recentAnalysis)

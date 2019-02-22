@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.Hibernate
     public class UmcDAOHibernate : GenericDAOHibernate<UMCLight>, IUmcDAO
     {
         /// <summary>
-        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Mass given.
+        /// Searches for and returns a List of Umc Objects in the Database that have the exact Mass given.
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
@@ -29,8 +29,8 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Searches for and returns a List of Umc Objects in the Database that have a Mass inside the given range.
-        ///     If the Lower Mass Value given is greater than the Upper Mass Value given, they are switched.
+        /// Searches for and returns a List of Umc Objects in the Database that have a Mass inside the given range.
+        /// If the Lower Mass Value given is greater than the Upper Mass Value given, they are switched.
         /// </summary>
         /// <param name="mass1">Lower mass value</param>
         /// <param name="mass2">Upper mass value</param>
@@ -55,7 +55,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a feature id.
+        /// Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -77,7 +77,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a charge state.
+        /// Finds a feature based on a charge state.
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindByCharge(int charge)
@@ -89,7 +89,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a charge state.
+        /// Finds a feature based on a charge state.
         /// </summary>
         /// <param name="charge">Charge state interested in</param>
         /// <param name="dataset">Dataset interested in</param>
@@ -103,7 +103,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a feature id.
+        /// Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -131,7 +131,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a cluster id.
+        /// Finds a feature based on a cluster id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -148,7 +148,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds a feature based on a List of cluster IDs.
+        /// Finds a feature based on a List of cluster IDs.
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindByClusterID(List<int> idList)
@@ -166,7 +166,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<UMCLight> FindByDatasetId(int datasetId)
@@ -178,11 +178,11 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds all features that are clustered.
+        /// Finds all features that are clustered.
         /// </summary>
         /// <returns></returns>
         /// <summary>
-        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<UMCLight> FindAllClustered()

@@ -9,7 +9,7 @@ namespace MultiAlignCore.Algorithms.Features
     public static class FeatureConsolidatorFactory
     {
         /// <summary>
-        ///     Create a LCMS Feature consolidator.
+        /// Create a LCMS Feature consolidator.
         /// </summary>
         /// <param name="report">Determines what type of UMC Consolidator to build.</param>
         /// <param name="umcBuilding">Determines how the UMC abundance was reported</param>

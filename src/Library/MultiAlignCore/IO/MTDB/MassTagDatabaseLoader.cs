@@ -12,24 +12,24 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Mass tag database loader class.
+    /// Mass tag database loader class.
     /// </summary>
     public abstract class MassTagDatabaseLoader : IMtdbLoader
     {
         #region Constants
 
         /// <summary>
-        ///     Stored Procedure for getting mass tags and pep prophet stats.
+        /// Stored Procedure for getting mass tags and pep prophet stats.
         /// </summary>
         private const string MASS_TAGS_PLUS_PEP = "GetMassTagsPlusConformers";
 
         /// <summary>
-        ///     Stored Procedure for getting mass tags and pep prophet stats.
+        /// Stored Procedure for getting mass tags and pep prophet stats.
         /// </summary>
         private const string PROTEINS = "GetMassTagToProteinNameMap";
 
         /// <summary>
-        ///     Default timeout for a command.
+        /// Default timeout for a command.
         /// </summary>
         private const int COMMAND_TIMEOUT = 180;
 
@@ -38,12 +38,12 @@ namespace MultiAlignCore.IO.MTDB
         #region  Members
 
         /// <summary>
-        ///     Stored procedure for getting mass tags
+        /// Stored procedure for getting mass tags
         /// </summary>
         protected string m_massTagsPlusPeptideProphetStats_sp;
 
         /// <summary>
-        ///     Name of the protein stored procedure for downloading data from the database.
+        /// Name of the protein stored procedure for downloading data from the database.
         /// </summary>
         protected string m_protein2MassTags_sp;
 
@@ -62,7 +62,7 @@ namespace MultiAlignCore.IO.MTDB
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the default mass tag database options.
+        /// Gets or sets the default mass tag database options.
         /// </summary>
         public MassTagDatabaseOptions Options { get; protected set; }
 
@@ -71,20 +71,20 @@ namespace MultiAlignCore.IO.MTDB
         #region Abstract Methods
 
         /// <summary>
-        ///     Creates a database connection.
+        /// Creates a database connection.
         /// </summary>
         /// <param name="connectionString"></param>
         /// <returns></returns>
         protected abstract IDbConnection CreateConnection(string connectionString);
 
         /// <summary>
-        ///     Creates the connection string for the mass tag database loader.
+        /// Creates the connection string for the mass tag database loader.
         /// </summary>
         /// <returns></returns>
         protected abstract string CreateConnectionString();
 
         /// <summary>
-        ///     Creates a new parameter for use in the stored procedure.
+        /// Creates a new parameter for use in the stored procedure.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.MTDB
         #region Loading Methods
 
         /// <summary>
-        ///     Sets up the mass tag command.
+        /// Sets up the mass tag command.
         /// </summary>
         /// <param name="command"></param>
         protected virtual void SetupMassTagCommand(IDbCommand command)
@@ -124,7 +124,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Sets up the protein mass tag command for execution.
+        /// Sets up the protein mass tag command for execution.
         /// </summary>
         protected virtual void SetupProteinMassTagCommand(IDbCommand command)
         {
@@ -139,7 +139,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Downloads the mass tags
+        /// Downloads the mass tags
         /// </summary>
         /// <returns></returns>
         protected virtual List<MassTagLight> LoadMassTags()
@@ -300,7 +300,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Loads the protein information.
+        /// Loads the protein information.
         /// </summary>
         protected virtual Dictionary<int, List<Protein>> LoadProteins()
         {
@@ -356,7 +356,7 @@ namespace MultiAlignCore.IO.MTDB
         #region IMtdbLoader Members
 
         /// <summary>
-        ///     Loads the mass tag database from the underlying database system.
+        /// Loads the mass tag database from the underlying database system.
         /// </summary>
         /// <returns></returns>
         public virtual MassTagDatabase LoadDatabase()

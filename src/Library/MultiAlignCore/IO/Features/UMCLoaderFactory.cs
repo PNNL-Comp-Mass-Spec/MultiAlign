@@ -19,17 +19,17 @@ namespace MultiAlignCore.IO.Features
     using MultiAlignCore.Data.MassTags;
 
     /// <summary>
-    ///     Loads UMC's from the given sources.
+    /// Loads UMC's from the given sources.
     /// </summary>
     public static class UmcLoaderFactory
     {
         /// <summary>
-        ///     Status event fired when umc's are loaded.
+        /// Status event fired when umc's are loaded.
         /// </summary>
         public static event EventHandler<UmcLoadingEventArgs> Status;
 
         /// <summary>
-        ///     Helper function to tell listeners about data.
+        /// Helper function to tell listeners about data.
         /// </summary>
         /// <param name="message"></param>
         private static void UpdateStatus(string message)
@@ -38,7 +38,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Loads feature data from the files provided.
+        /// Loads feature data from the files provided.
         /// </summary>
         /// <returns></returns>
         public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset, IUmcDAO featureCache, IScanSummaryProvider provider = null)
@@ -86,7 +86,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Determines if the features came from the database or a feature file.
+        /// Determines if the features came from the database or a feature file.
         /// </summary>
         /// <returns></returns>
         public static bool AreExistingFeatures(string path)
@@ -106,7 +106,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Loads MS Features from a CSV file or existing database.
+        /// Loads MS Features from a CSV file or existing database.
         /// </summary>
         /// <returns></returns>
         public static List<MSFeatureLight> LoadMsFeatureData(string path, DeconToolsIsosFilterOptions isosFilterOptions)

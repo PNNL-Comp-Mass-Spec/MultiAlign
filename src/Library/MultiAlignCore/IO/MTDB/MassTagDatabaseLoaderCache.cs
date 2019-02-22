@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.MTDB
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         /// <summary>
-        ///     Updates listeners with status messages.
+        /// Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
         private void UpdateStatus(string message)
@@ -31,7 +31,7 @@ namespace MultiAlignCore.IO.MTDB
         #region Properties
 
         /// <summary>
-        ///     Gets or sets the default mass tag database options.
+        /// Gets or sets the default mass tag database options.
         /// </summary>
         public MassTagDatabaseOptions Options { get; set; }
 

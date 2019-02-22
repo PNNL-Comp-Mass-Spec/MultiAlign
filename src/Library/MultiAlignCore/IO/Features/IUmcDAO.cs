@@ -26,28 +26,28 @@ namespace MultiAlignCore.IO.Features
         List<UMCLight> FindByMassRange(double mass1, double mass2);
 
         /// <summary>
-        ///     Finds a feature based on a feature id.
+        /// Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         UMCLight FindByFeatureID(int id);
 
         /// <summary>
-        ///     Finds a feature based on a List of cluster IDs.
+        /// Finds a feature based on a List of cluster IDs.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         List<UMCLight> FindByClusterID(List<int> idList);
 
         /// <summary>
-        ///     Find a set of features based on a cluster ID
+        /// Find a set of features based on a cluster ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         List<UMCLight> FindByClusterID(int id);
 
         /// <summary>
-        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <param name="mass">Dataset value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
@@ -56,7 +56,7 @@ namespace MultiAlignCore.IO.Features
         void DeleteByDataset(int datasetId);
 
         /// <summary>
-        ///     Finds the set of UMC's based on a specific charge state.
+        /// Finds the set of UMC's based on a specific charge state.
         /// </summary>
         /// <param name="charge"></param>
         /// <returns></returns>
@@ -65,7 +65,7 @@ namespace MultiAlignCore.IO.Features
         List<UMCLight> FindByChargeDataset(int charge, int dataset);
 
         /// <summary>
-        ///     Finds all features that are clustered.
+        /// Finds all features that are clustered.
         /// </summary>
         /// <returns></returns>
         List<UMCLight> FindAllClustered();
@@ -73,12 +73,12 @@ namespace MultiAlignCore.IO.Features
         int FindMaxCharge();
 
         /// <summary>
-        ///     Clears old alignment data from all of the features.
+        /// Clears old alignment data from all of the features.
         /// </summary>
         void ClearAlignmentData();
 
         /// <summary>
-        ///     Retrieves the charge states for all features in the database.
+        /// Retrieves the charge states for all features in the database.
         /// </summary>
         /// <returns></returns>
         IEnumerable<int> RetrieveChargeStates();

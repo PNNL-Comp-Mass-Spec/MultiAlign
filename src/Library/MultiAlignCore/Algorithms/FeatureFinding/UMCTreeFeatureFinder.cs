@@ -15,7 +15,7 @@ using NHibernate.Linq;
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     /// <summary>
-    ///     Finds UMC features based on m/z and uses a tree approach
+    /// Finds UMC features based on m/z and uses a tree approach
     /// </summary>
     public class UmcTreeFeatureFinder : IFeatureFinder
     {
@@ -34,7 +34,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         public LcmsFeatureFilteringOptions FilteringOptions { get; set; }
 
         /// <summary>
-        ///     Finds features
+        /// Finds features
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindFeatures(List<MSFeatureLight> msFeatures,
@@ -131,14 +131,14 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         }
 
         /// <summary>
-        ///     Gets or sets the maximum NET values any two XIC's (within the same monoisotopic mass window) can be before they are
-        ///     not considered to be from the same feature.
+        /// Gets or sets the maximum NET values any two XIC's (within the same monoisotopic mass window) can be before they are
+        /// not considered to be from the same feature.
         /// </summary>
         public double MaximumNet { get; set; }
 
         /// <summary>
-        ///     Gets or sets the maximum scan values any two deisotoped peaks can be before they are not considered to be from the
-        ///     same feature.
+        /// Gets or sets the maximum scan values any two deisotoped peaks can be before they are not considered to be from the
+        /// same feature.
         /// </summary>
         public int MaximumScan { get; set; }
     }

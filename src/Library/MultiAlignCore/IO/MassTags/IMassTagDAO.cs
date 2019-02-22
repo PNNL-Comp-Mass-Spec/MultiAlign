@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.MassTags
     public interface IMassTagDAO : IGenericDAO<MassTagLight>
     {
         /// <summary>
-        ///     Finds nearby tags based on mass and net.
+        /// Finds nearby tags based on mass and net.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.MassTags
         List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax);
 
         /// <summary>
-        ///     Finds nearby mass tags based on mass, net, and drift time.
+        /// Finds nearby mass tags based on mass, net, and drift time.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>

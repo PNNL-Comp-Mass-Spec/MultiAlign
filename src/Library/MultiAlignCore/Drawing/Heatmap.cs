@@ -10,7 +10,7 @@ using PNNLOmics.Annotations;
 namespace MultiAlignCore.Drawing
 {
     /// <summary>
-    ///     Heatmap display.  Default color legend is "Hot"
+    /// Heatmap display.  Default color legend is "Hot"
     /// </summary>
     [UsedImplicitly]
     public class Heatmap : PlotBase

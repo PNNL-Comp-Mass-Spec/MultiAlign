@@ -21,7 +21,7 @@ using PNNLOmics.Annotations;
 namespace MultiAlign.ViewModels.Viewers
 {
     /// <summary>
-    ///     View model for the main cluste control viewer
+    /// View model for the main cluste control viewer
     /// </summary>
     public class ClusterDetailViewModel : ViewModelBase
     {
@@ -89,7 +89,7 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Gets or sets the current cluster.
+        /// Gets or sets the current cluster.
         /// </summary>
         public UMCClusterLight Cluster { get; set; }
 
@@ -122,7 +122,7 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Dependency Property
+        /// Dependency Property
         /// </summary>
         public UMCClusterTreeViewModel SelectedCluster
         {
@@ -167,7 +167,7 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Updates the plots with data stored in the cache.
+        /// Updates the plots with data stored in the cache.
         /// </summary>
         private void UpdatePlotsWithClusterData(UMCClusterLightMatched matchedCluster)
         {
@@ -275,7 +275,7 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Gets or sets the number of isotopes to display.
+        /// Gets or sets the number of isotopes to display.
         /// </summary>
         public int NumberOfIsotopes
         {
@@ -295,12 +295,12 @@ namespace MultiAlign.ViewModels.Viewers
         #region Data auto-properties
 
         /// <summary>
-        ///     Cluster tolerances
+        /// Cluster tolerances
         /// </summary>
         public FeatureTolerances ClusterTolerances { get; set; }
 
         /// <summary>
-        ///     Feature finding tolerances
+        /// Feature finding tolerances
         /// </summary>
         public FeatureTolerances FeatureFindingTolerances { get; set; }
 
@@ -334,8 +334,8 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Grabs the data from the provider cache and shoves into UI where needed.  This is done
-        ///     here like this to prevent holding large amounts of data in memory.
+        /// Grabs the data from the provider cache and shoves into UI where needed.  This is done
+        /// here like this to prevent holding large amounts of data in memory.
         /// </summary>
         private void SetCluster(UMCClusterLightMatched cluster)
         {

@@ -3,12 +3,12 @@
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    ///     Interaction logic for ClusterControl.xaml
+    /// Interaction logic for ClusterControl.xaml
     /// </summary>
     public partial class ClusterControl : UserControl
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public ClusterControl()
         {

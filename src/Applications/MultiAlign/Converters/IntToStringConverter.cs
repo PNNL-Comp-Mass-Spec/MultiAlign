@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace MultiAlign.Converters
 {
     /// <summary>
-    ///     Converts an integer value to a visibility item.
+    /// Converts an integer value to a visibility item.
     /// </summary>
     public class IntToStringConverter : IValueConverter
     {

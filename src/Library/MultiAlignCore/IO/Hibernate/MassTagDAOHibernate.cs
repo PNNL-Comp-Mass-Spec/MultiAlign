@@ -10,12 +10,12 @@ using NHibernate.Criterion;
 namespace MultiAlignCore.IO.Hibernate
 {
     /// <summary>
-    ///     Accesses mass tags from the underlying database.
+    /// Accesses mass tags from the underlying database.
     /// </summary>
     public class MassTagDAOHibernate : GenericDAOHibernate<MassTagLight>, IMassTagDAO
     {
         /// <summary>
-        ///     Finds nearby mass tags.
+        /// Finds nearby mass tags.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -35,7 +35,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds nearby mass tags.
+        /// Finds nearby mass tags.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -63,7 +63,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds mass tags based on an ID list.
+        /// Finds mass tags based on an ID list.
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>

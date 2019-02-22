@@ -11,7 +11,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
     /// <summary>
-    ///     Adapts the STAC computation code from PNNL OMICS into the MultiAlign workflow.
+    /// Adapts the STAC computation code from PNNL OMICS into the MultiAlign workflow.
     /// </summary>
     public class STACAdapter<T> : IProgressNotifer, IPeakMatcher<T>
         where T : UMCClusterLight
@@ -25,18 +25,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         }
 
         /// <summary>
-        ///     Gets the peak matching object.
+        /// Gets the peak matching object.
         /// </summary>
         public FeatureMatcher<UMCClusterLight, MassTagLight> Matcher { get; private set; }
 
 
         /// <summary>
-        ///     Gets or sets the feature matching parameters.
+        /// Gets or sets the feature matching parameters.
         /// </summary>
         public FeatureMatcherParameters Options { get; set; }
 
         /// <summary>
-        ///     Performs STAC against the mass tag database.
+        /// Performs STAC against the mass tag database.
         /// </summary>
         public List<MultiAlignCore.Data.MassTags.FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
         {
@@ -135,7 +135,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         }
 
         /// <summary>
-        ///     Handles status messages from the attributes.
+        /// Handles status messages from the attributes.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

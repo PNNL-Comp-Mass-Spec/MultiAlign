@@ -6,7 +6,7 @@ using MultiAlignCore.Data;
 namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
-    ///     Interaction logic for
+    /// Interaction logic for
     /// </summary>
     public partial class ProteinGrid : UserControl
     {
@@ -16,7 +16,7 @@ namespace MultiAlign.Windows.Viewers.Proteins
         private List<ProteinToMassTags> m_proteins;
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public ProteinGrid()
         {
@@ -25,7 +25,7 @@ namespace MultiAlign.Windows.Viewers.Proteins
         }
 
         /// <summary>
-        ///     Gets or sets the clusters used in the analysis.
+        /// Gets or sets the clusters used in the analysis.
         /// </summary>
         public List<ProteinToMassTags> Proteins
         {

@@ -12,12 +12,12 @@ namespace MultiAlignCore.IO.RawData
     using MultiAlignCore.IO.Hibernate;
 
     /// <summary>
-    ///     Class in charge of creating RAW Data file readers.
+    /// Class in charge of creating RAW Data file readers.
     /// </summary>
     public class RawLoaderFactory
     {
         /// <summary>
-        ///     Constructs a raw data file reader for reading the instrument (or equivalent) mass spectra.
+        /// Constructs a raw data file reader for reading the instrument (or equivalent) mass spectra.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="groupId"></param>

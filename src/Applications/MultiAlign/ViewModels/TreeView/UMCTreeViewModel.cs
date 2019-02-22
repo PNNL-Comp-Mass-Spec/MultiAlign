@@ -6,7 +6,7 @@ using MultiAlignCore.IO;
 namespace MultiAlign.ViewModels.TreeView
 {
     /// <summary>
-    ///     Feature tree view model.
+    /// Feature tree view model.
     /// </summary>
     public class UMCTreeViewModel : GenericCollectionTreeViewModel
     {

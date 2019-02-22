@@ -15,17 +15,17 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    ///     Builds the set of algorithms using the builder design pattern.
+    /// Builds the set of algorithms using the builder design pattern.
     /// </summary>
     public class AlgorithmBuilder
     {
         /// <summary>
-        ///     Final provider.
+        /// Final provider.
         /// </summary>
         private readonly AlgorithmProvider m_provider;
 
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public AlgorithmBuilder()
         {
@@ -33,7 +33,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Builds the algorithm types.
+        /// Builds the algorithm types.
         /// </summary>
         /// <param name="clusterType"></param>
         /// <returns></returns>
@@ -43,7 +43,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Builds the feature aligner.
+        /// Builds the feature aligner.
         /// </summary>
         public void BuildAligner(LcmsWarpAlignmentOptions options, SpectralOptions spectralOptions)
         {
@@ -55,7 +55,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Builds a peak matcher object.
+        /// Builds a peak matcher object.
         /// </summary>
         public void BuildPeakMatcher(MultiAlignAnalysisOptions options)
         {
@@ -85,7 +85,7 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Returns the list of algorithms post build.
+        /// Returns the list of algorithms post build.
         /// </summary>
         /// <returns></returns>
         public AlgorithmProvider GetAlgorithmProvider(MultiAlignAnalysisOptions options)

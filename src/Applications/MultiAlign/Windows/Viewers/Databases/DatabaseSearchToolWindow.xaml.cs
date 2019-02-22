@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Databases
 {
     /// <summary>
-    ///     Interaction logic for DatabaseSearchToolWindow.xaml
+    /// Interaction logic for DatabaseSearchToolWindow.xaml
     /// </summary>
     public partial class DatabaseSearchToolWindow : Window
     {

@@ -18,7 +18,7 @@ namespace MultiAlignCore.IO.Clusters
     public class UMCClusterScanWriter : BaseUmcClusterWriter
     {
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public UMCClusterScanWriter()
             : base(false)

@@ -12,14 +12,14 @@ using MultiAlignCore.IO.TextFiles;
 namespace MultiAlignCore.IO.Clusters
 {
     /// <summary>
-    ///     Writes a list of clusters to a cross tab.
+    /// Writes a list of clusters to a cross tab.
     /// </summary>
     public class UMCClusterMsmsSpectraWriter : BaseUmcClusterWriter
     {
         private IMsMsSpectraWriter m_spectraWriter;
 
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         /// <param name="path"></param>
         public UMCClusterMsmsSpectraWriter(string name, IMsMsSpectraWriter spectraWriter, string extension)

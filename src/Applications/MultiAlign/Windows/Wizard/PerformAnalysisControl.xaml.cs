@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
-    ///     Interaction logic for PerformAnalysisWindow.xaml
+    /// Interaction logic for PerformAnalysisWindow.xaml
     /// </summary>
     public partial class PerformAnalysisControl : UserControl
     {

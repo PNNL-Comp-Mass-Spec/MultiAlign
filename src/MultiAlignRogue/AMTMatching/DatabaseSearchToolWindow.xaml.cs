@@ -3,7 +3,7 @@
 namespace MultiAlignRogue.AMTMatching
 {
     /// <summary>
-    ///     Interaction logic for DatabaseSearchToolWindow.xaml
+    /// Interaction logic for DatabaseSearchToolWindow.xaml
     /// </summary>
     public partial class DatabaseSearchToolWindow : Window
     {

@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
-    ///     Interaction logic for AllClustersControl.xaml
+    /// Interaction logic for AllClustersControl.xaml
     /// </summary>
     public partial class AnalysisView : UserControl
     {

@@ -119,12 +119,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets the list of datasets.
+        /// Gets the list of datasets.
         /// </summary>
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the selected dataset for baseline.
+        /// Gets or sets the selected dataset for baseline.
         /// </summary>
         public DatasetInformationViewModel SelectedDataset
         {
@@ -149,7 +149,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets whether a database is local
+        /// Gets or sets whether a database is local
         /// </summary>
         public bool IsDatabaseLocal
         {
@@ -173,7 +173,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets or sets whether a database is dms
+        /// Gets or sets whether a database is dms
         /// </summary>
         public bool IsDatabaseDms
         {
@@ -196,7 +196,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        ///     Gets whether a message declaring the database selection is visible or not.
+        /// Gets whether a message declaring the database selection is visible or not.
         /// </summary>
         public Visibility RequiresDatabaseSelection
         {

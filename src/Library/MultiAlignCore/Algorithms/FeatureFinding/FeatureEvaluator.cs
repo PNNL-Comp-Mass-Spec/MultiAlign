@@ -13,12 +13,12 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     /// <summary>
-    ///     Finds an XIC based on DeconTools profile data.
+    /// Finds an XIC based on DeconTools profile data.
     /// </summary>
     public class FeatureEvaluator
     {
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public FeatureEvaluator()
         {
@@ -27,17 +27,17 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         }
 
         /// <summary>
-        ///     Gets or sets the basis function to use when fitting XIC profiles.
+        /// Gets or sets the basis function to use when fitting XIC profiles.
         /// </summary>
         public BasisFunctionsEnum BasisFunction { get; set; }
 
         /// <summary>
-        ///     Gets or sets the type of integration to perform.
+        /// Gets or sets the type of integration to perform.
         /// </summary>
         public NumericalIntegrationEnum IntegrationType { get; set; }
 
         /// <summary>
-        ///     Scores a feature and adjusts its abundance accordingly.
+        /// Scores a feature and adjusts its abundance accordingly.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>

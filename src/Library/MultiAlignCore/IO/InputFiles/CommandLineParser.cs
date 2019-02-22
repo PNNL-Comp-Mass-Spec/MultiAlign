@@ -8,12 +8,12 @@ using System.Collections.Generic;
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    ///     Parses a list of strings for command line processing.
+    /// Parses a list of strings for command line processing.
     /// </summary>
     public class CommandLineParser
     {
         /// <summary>
-        ///     Processes the command line args into a dictionary.  Skips any non-option items at beggnining of args list.
+        /// Processes the command line args into a dictionary.  Skips any non-option items at beggnining of args list.
         /// </summary>
         /// <param name="args">Args to process</param>
         /// <param name="offset">Starting index of argument array.</param>

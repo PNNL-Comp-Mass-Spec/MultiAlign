@@ -9,12 +9,12 @@ using MultiAlignCore.IO.Parameters;
 namespace MultiAlignCore.Algorithms.Options
 {
     /// <summary>
-    ///     Options for running STAC.
+    /// Options for running STAC.
     /// </summary>
     public class StacOptions
     {
         /// <summary>
-        ///     Default constructor.
+        /// Default constructor.
         /// </summary>
         public StacOptions()
         {

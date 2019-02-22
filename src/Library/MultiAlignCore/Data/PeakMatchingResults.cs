@@ -10,7 +10,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    ///     Encapsulates peak matched result data.
+    /// Encapsulates peak matched result data.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
@@ -19,7 +19,7 @@ namespace MultiAlignCore.Data
         where U : MassTagLight
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public PeakMatchingResults()
         {
@@ -30,22 +30,22 @@ namespace MultiAlignCore.Data
         }
 
         /// <summary>
-        ///     Gets or sets the list of available matches.
+        /// Gets or sets the list of available matches.
         /// </summary>
         public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { get; set; }
 
         /// <summary>
-        ///     Gets or sets the list of available matches shifted by the dalton correction.
+        /// Gets or sets the list of available matches shifted by the dalton correction.
         /// </summary>
         public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> ShiftedMatches { get; set; }
 
         /// <summary>
-        ///     Gets or sets the FDR Table from STAC
+        /// Gets or sets the FDR Table from STAC
         /// </summary>
         public List<STACFDR> FdrTable { get; set; }
 
         /// <summary>
-        ///     Gets the flag whether the results were peaked matched against the Mass Tag Database.
+        /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>
         [DataSummary("Peaks Matched to MTDB")]
         public bool PeakMatchedToMassTagDB { get; private set; }

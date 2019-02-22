@@ -11,7 +11,7 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.IO.Proteins
 {
     /// <summary>
-    ///     Writes the features that have MS/MS spectra
+    /// Writes the features that have MS/MS spectra
     /// </summary>
     public class PeptideScanWriter
     {

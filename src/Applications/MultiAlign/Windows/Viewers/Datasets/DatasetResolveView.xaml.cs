@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Datasets
 {
     /// <summary>
-    ///     Interaction logic for DatasetResolveView.xaml
+    /// Interaction logic for DatasetResolveView.xaml
     /// </summary>
     public partial class DatasetResolveView : Window
     {

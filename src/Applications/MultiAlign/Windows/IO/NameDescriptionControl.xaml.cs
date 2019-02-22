@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.IO
 {
     /// <summary>
-    ///     Interaction logic for NameDescriptionControl.xaml
+    /// Interaction logic for NameDescriptionControl.xaml
     /// </summary>
     public partial class NameDescriptionControl : UserControl
     {

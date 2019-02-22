@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.Features
         #region Constructors
 
         /// <summary>
-        ///     Constructor for passing in a StreamReader object
+        /// Constructor for passing in a StreamReader object
         /// </summary>
         /// <param name="streamReader">StreamReader object for UMC csv file to be read</param>
         protected BaseLCMSFeatureReader(StreamReader streamReader)
@@ -25,7 +25,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Constructor for passing in a String containing the location of the UMC csv file
+        /// Constructor for passing in a String containing the location of the UMC csv file
         /// </summary>
         /// <param name="filePath">String containing the location of the UMC csv file</param>
         protected BaseLCMSFeatureReader(string filePath)
@@ -39,7 +39,7 @@ namespace MultiAlignCore.IO.Features
         #region Public Methods
 
         /// <summary>
-        ///     Returns the umcList contained in this class
+        /// Returns the umcList contained in this class
         /// </summary>
         public List<T> GetUmcList()
         {
@@ -51,8 +51,8 @@ namespace MultiAlignCore.IO.Features
         #region Private Methods
 
         /// <summary>
-        ///     Fills in the Column Map with the appropriate values.
-        ///     The Map will have a Column Property (e.g. Umc.Mass) mapped to a Column Number.
+        /// Fills in the Column Map with the appropriate values.
+        /// The Map will have a Column Property (e.g. Umc.Mass) mapped to a Column Number.
         /// </summary>
         /// <returns>The column map as a Dictionary object</returns>
         private Dictionary<string, int> CreateColumnMapping()
@@ -259,7 +259,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Saves the data from a UMC csv file to an array of clsUMC Objects.
+        /// Saves the data from a UMC csv file to an array of clsUMC Objects.
         /// </summary>
         protected abstract List<T> SaveDataToUmcList();
 

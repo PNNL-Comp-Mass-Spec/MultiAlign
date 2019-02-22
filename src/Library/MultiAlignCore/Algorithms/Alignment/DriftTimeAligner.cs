@@ -18,7 +18,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         #endregion
 
         /// <summary>
-        ///     Updates listeners with status messages.
+        /// Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
         private void UpdateStatus(string message)
@@ -27,7 +27,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
 
         /// <summary>
-        ///     Correct for the drift times.
+        /// Correct for the drift times.
         /// </summary>
         /// <param name="features"></param>
         /// <param name="baselineFeatures"></param>

@@ -1,7 +1,7 @@
 ﻿namespace MultiAlignCore.Data.SequenceData
 {
     /// <summary>
-    ///     Maps the Database Search Sequence to an MSn feature
+    /// Maps the Database Search Sequence to an MSn feature
     /// </summary>
     public class SequenceToMsnFeature
     {
@@ -28,7 +28,7 @@
         }
 
         /// <summary>
-        ///     Calculates a hash code for the seuqence
+        /// Calculates a hash code for the seuqence
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

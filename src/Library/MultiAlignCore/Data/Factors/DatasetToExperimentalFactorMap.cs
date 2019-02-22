@@ -7,7 +7,7 @@ using System;
 namespace MultiAlignCore.Data.Factors
 {
     /// <summary>
-    ///     Contains information about a dataset used for analysis.r
+    /// Contains information about a dataset used for analysis.r
     /// </summary>
     [Serializable]
     public class DatasetToExperimentalFactorMap

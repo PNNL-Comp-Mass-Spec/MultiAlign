@@ -11,7 +11,7 @@ namespace MultiAlignCore.Extensions
     public static class DatasetInformationExtensions
     {
         /// <summary>
-        ///     Creates a charge map for a given ms feature list.
+        /// Creates a charge map for a given ms feature list.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>
@@ -25,7 +25,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a charge map for a given ms feature list.
+        /// Creates a charge map for a given ms feature list.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a charge map for a given ms feature list.
+        /// Creates a charge map for a given ms feature list.
         /// </summary>
         /// <param name="feature"></param>
         /// <returns></returns>

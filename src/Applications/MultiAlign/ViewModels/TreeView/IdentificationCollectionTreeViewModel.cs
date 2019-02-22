@@ -39,7 +39,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Loads the children
+        /// Loads the children
         /// </summary>
         public override void LoadChildren()
         {

@@ -64,7 +64,7 @@ namespace MultiAlignCore.Algorithms.Options
         }
 
         /// <summary>
-        ///     Minimum number of observations to use for alignment.
+        /// Minimum number of observations to use for alignment.
         /// </summary>
         [ParameterFile("MassTagObservationCount", "Alignment")]
         [Category("Filtering")]

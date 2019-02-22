@@ -15,14 +15,14 @@ namespace MultiAlignCore.IO.RawData
     public class InformedProteomicsReader : ISpectraProvider
     {
         /// <summary>
-        ///     Readers for each dataset.
+        /// Readers for each dataset.
         /// </summary>
         private LcMsRun _lcmsRun;
 
         private readonly string _dataFilePath;
 
         /// <summary>
-        ///     Internal map of scan summaries, to avoid reading the scan summary data from the file each time.
+        /// Internal map of scan summaries, to avoid reading the scan summary data from the file each time.
         /// </summary>
         private readonly DatasetSummary _summary;
 
@@ -268,7 +268,7 @@ namespace MultiAlignCore.IO.RawData
         }
 
         /// <summary>
-        ///     Gets the raw data from the data file.
+        /// Gets the raw data from the data file.
         /// </summary>
         /// <param name="scan"></param>
         /// <param name="groupId">File Group ID</param>

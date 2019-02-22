@@ -6,7 +6,7 @@ using UserControl = System.Windows.Controls.UserControl;
 namespace MultiAlign.Windows
 {
     /// <summary>
-    ///     Interaction logic for FilePathFinder.xaml
+    /// Interaction logic for FilePathFinder.xaml
     /// </summary>
     public partial class FilePathFinder : UserControl
     {

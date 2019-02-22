@@ -138,7 +138,7 @@ namespace MultiAlign.ViewModels.Charting
         }
 
         /// <summary>
-        ///     Plots the UMC's
+        /// Plots the UMC's
         /// </summary>
         /// <param name="features"></param>
         private void PlotFeatures(IEnumerable<UMCLight> features)

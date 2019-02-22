@@ -12,12 +12,12 @@ using MultiAlignCore.IO.Hibernate;
 namespace MultiAlignCore.IO.Analysis
 {
     /// <summary>
-    ///     Writes peak match results to the local database.
+    /// Writes peak match results to the local database.
     /// </summary>
     public sealed class PeakMatchResultsWriter
     {
         /// <summary>
-        ///     Writes the peak matching results to the local peak matching database.
+        /// Writes the peak matching results to the local peak matching database.
         /// </summary>
         public void WritePeakMatchResults(PeakMatchingResults<UMCClusterLight, MassTagLight> results,
             MassTagDatabase database,

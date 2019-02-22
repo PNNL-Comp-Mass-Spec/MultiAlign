@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.Clusters
     public static class UmcClusterExporterFactory
     {
         /// <summary>
-        ///     Creates a UMC Cluster  exporter
+        /// Creates a UMC Cluster  exporter
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -54,7 +54,7 @@ namespace MultiAlignCore.IO.Clusters
         }
 
         /// <summary>
-        ///     Creates all UMC Cluster exporters
+        /// Creates all UMC Cluster exporters
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<IFeatureClusterWriter> Create()

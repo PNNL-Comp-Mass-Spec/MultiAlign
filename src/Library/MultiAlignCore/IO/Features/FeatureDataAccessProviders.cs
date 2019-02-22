@@ -18,7 +18,7 @@ namespace MultiAlignCore.IO.Features
     using MultiAlignCore.IO.RawData;
 
     /// <summary>
-    ///     Holds all feature access providers required by a MA analysis.
+    /// Holds all feature access providers required by a MA analysis.
     /// </summary>
     public sealed class FeatureDataAccessProviders
     {
@@ -35,13 +35,13 @@ namespace MultiAlignCore.IO.Features
         public ReaderWriterLockSlim DatabaseLock { get; private set; }
 
         /// <summary>
-        ///     Gets the object to synch on for concurrent access.
+        /// Gets the object to synch on for concurrent access.
         /// </summary>
         [Obsolete("Use DatabaseLock instead.")]
         public object Synch { get; private set; }
 
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         /// <param name="featureCache">LCMS Features</param>
         /// <param name="clusterCache">LCMS Feature clusters</param>
@@ -82,12 +82,12 @@ namespace MultiAlignCore.IO.Features
         public ISequenceToMsnFeatureDAO SequenceMsnMapCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data provider for storing MS/MS Clusters.
+        /// Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>
         public IDatabaseSearchSequenceDAO DatabaseSequenceCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data provider for storing MS/MS Clusters.
+        /// Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>
         public IMSMSClusterMapDAO MSMSClusterCache { get; set; }
 
@@ -95,42 +95,42 @@ namespace MultiAlignCore.IO.Features
         public IDatasetToFactorMapDAO FactorAssignmentCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the mass tags loaded.
+        /// Gets or sets the mass tags loaded.
         /// </summary>
         public IMassTagDAO MassTags { get; set; }
 
         /// <summary>
-        ///     Gets or sets the cluster to mass tag matches.
+        /// Gets or sets the cluster to mass tag matches.
         /// </summary>
         public IMassTagMatchDAO MassTagMatches { get; set; }
 
         /// <summary>
-        ///     Gets or sets the cache where the datasets information are stored.
+        /// Gets or sets the cache where the datasets information are stored.
         /// </summary>
         public IDatasetDAO DatasetCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the interface to teh MS Feature to LCMS Feature map.
+        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
         /// </summary>
         public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data acces object to LCMS features
+        /// Gets or sets the data acces object to LCMS features
         /// </summary>
         public IUmcDAO FeatureCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data access object to clusters.
+        /// Gets or sets the data access object to clusters.
         /// </summary>
         public IUmcClusterDAO ClusterCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data acces object to MS features.
+        /// Gets or sets the data acces object to MS features.
         /// </summary>
         public IMSFeatureDAO MSFeatureCache { get; set; }
 
         /// <summary>
-        ///     Gets or sets the data acces object to MS features.
+        /// Gets or sets the data acces object to MS features.
         /// </summary>
         public IMSnFeatureDAO MSnFeatureCache { get; set; }
 

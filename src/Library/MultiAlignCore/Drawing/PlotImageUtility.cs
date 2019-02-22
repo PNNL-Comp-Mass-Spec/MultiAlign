@@ -8,12 +8,12 @@ using System.Windows.Media.Imaging;
 namespace MultiAlignCore.Drawing
 {
     /// <summary>
-    ///     Adapter / Factory class for creating LC-MS/MS based plots and images.
+    /// Adapter / Factory class for creating LC-MS/MS based plots and images.
     /// </summary>
     public static class PlotImageUtility
     {
         /// <summary>
-        ///     Converts a plot model into a System.Drawing.Image.
+        /// Converts a plot model into a System.Drawing.Image.
         /// </summary>
         /// <param name="plot"></param>
         /// <returns></returns>
@@ -24,7 +24,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Saves the plot model to the path provided.
+        /// Saves the plot model to the path provided.
         /// </summary>
         /// <param name="plot"></param>
         /// <param name="path"></param>
@@ -40,7 +40,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Saves the plot model to the path provided.
+        /// Saves the plot model to the path provided.
         /// </summary>
         public static void SaveImage(BitmapSource image, string path)
         {

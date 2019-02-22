@@ -9,34 +9,34 @@ using System.Collections.Specialized;
 namespace MultiAlignCore.Data.Factors
 {
     /// <summary>
-    ///     Manages a group of tree nodes and sorting methods.
+    /// Manages a group of tree nodes and sorting methods.
     /// </summary>
     public class FactorTree : IComparer, ICloneable
     {
         private ArrayList m_factorList;
 
         /// <summary>
-        ///     Holds the data names as keys, and the factor values (text) for hashing.
+        /// Holds the data names as keys, and the factor values (text) for hashing.
         /// </summary>
         private ArrayList m_datasetList;
 
         /// <summary>
-        ///     Current value of the tree built from hashtables and factors supplied.
+        /// Current value of the tree built from hashtables and factors supplied.
         /// </summary>
         private TreeNode m_currentTree;
 
         /// <summary>
-        ///     Flag if the tree-hash has been modified and needs to be re-sorted.
+        /// Flag if the tree-hash has been modified and needs to be re-sorted.
         /// </summary>
         private bool m_treeDirty;
 
         /// <summary>
-        ///     Mapping when data sets are sorted and re-arranged to synchronize data.
+        /// Mapping when data sets are sorted and re-arranged to synchronize data.
         /// </summary>
         private long[] m_datasetMapping;
 
         /// <summary>
-        ///     Constructor for the tree.
+        /// Constructor for the tree.
         /// </summary>
         public FactorTree()
         {
@@ -47,7 +47,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Data array list that holds the data hash tables.
+        /// Data array list that holds the data hash tables.
         /// </summary>
         public ArrayList Data
         {
@@ -68,7 +68,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Adds a factor to the tree.
+        /// Adds a factor to the tree.
         /// </summary>
         /// <param name="factorName"></param>
         /// <param name="table"></param>
@@ -80,7 +80,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Clears the tree-hash structure
+        /// Clears the tree-hash structure
         /// </summary>
         public void ClearFactors()
         {
@@ -88,7 +88,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Adds a data set and its factor/factor assignments to the tree-hash structure.
+        /// Adds a data set and its factor/factor assignments to the tree-hash structure.
         /// </summary>
         /// <param name="dataName">Dataset name</param>
         /// <param name="factors">Hashtable of factors.  Factor name is key, factor value is value.</param>
@@ -101,7 +101,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Builds a tree from the hash-table for visualization or hierachy parsing.
+        /// Builds a tree from the hash-table for visualization or hierachy parsing.
         /// </summary>
         /// <returns></returns>
         public TreeNode BuildTree()
@@ -214,7 +214,7 @@ namespace MultiAlignCore.Data.Factors
         #region IComparer Members
 
         /// <summary>
-        ///     Compares two objects of clsFactorDataset type.
+        /// Compares two objects of clsFactorDataset type.
         /// </summary>
         /// <param name="x">dataset one.</param>
         /// <param name="y">dataset two</param>
@@ -298,27 +298,27 @@ namespace MultiAlignCore.Data.Factors
 
 
     /// <summary>
-    ///     Describes a factor or group entity.  Holds a collection of factor values with their sorted keys.
+    /// Describes a factor or group entity.  Holds a collection of factor values with their sorted keys.
     /// </summary>
     public class FactorData : ICloneable
     {
         /// <summary>
-        ///     Name of the factor.
+        /// Name of the factor.
         /// </summary>
         private string m_name;
 
         /// <summary>
-        ///     Index in the list.
+        /// Index in the list.
         /// </summary>
         private long m_index;
 
         /// <summary>
-        ///     Hashtable of factor values
+        /// Hashtable of factor values
         /// </summary>
         private Hashtable m_factorValues;
 
         /// <summary>
-        ///     Constructor for the factor.  Name is the key of the factor.
+        /// Constructor for the factor.  Name is the key of the factor.
         /// </summary>
         /// <param name="name">Key for use in the collection</param>
         public FactorData(string name)
@@ -328,8 +328,8 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Constructor for the factor.  Creates a factor and underlying hash-table from pre-sorted array list of factor
-        ///     values.
+        /// Constructor for the factor.  Creates a factor and underlying hash-table from pre-sorted array list of factor
+        /// values.
         /// </summary>
         /// <param name="name">Key for use in the collection.</param>
         /// <param name="factorValues">Collection of sorted-factor values.</param>
@@ -353,7 +353,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Name of the factor.
+        /// Name of the factor.
         /// </summary>
         public string Name
         {
@@ -362,7 +362,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Key-index of the factor in a collection.
+        /// Key-index of the factor in a collection.
         /// </summary>
         public long Index
         {
@@ -371,7 +371,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Hashtable of factor values.
+        /// Hashtable of factor values.
         /// </summary>
         public Hashtable Values
         {
@@ -398,7 +398,7 @@ namespace MultiAlignCore.Data.Factors
     }
 
     /// <summary>
-    ///     Describes a dataset with some factor information.
+    /// Describes a dataset with some factor information.
     /// </summary>
     public class FactorDataset : ICloneable
     {
@@ -407,7 +407,7 @@ namespace MultiAlignCore.Data.Factors
         private long m_index;
 
         /// <summary>
-        ///     constructor for a dataset.  Holds the name of the dataset and the factor values and keys.
+        /// constructor for a dataset.  Holds the name of the dataset and the factor values and keys.
         /// </summary>
         /// <param name="name">Name of the dataset</param>
         /// <param name="keys">Factor values of </param>
@@ -418,7 +418,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Gets/Sets index of the dataset in the array for ordering and sorting algorithms.
+        /// Gets/Sets index of the dataset in the array for ordering and sorting algorithms.
         /// </summary>
         public long Index
         {
@@ -427,7 +427,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Returns reference to underlying hashtable that holds the key-factors and value-factorvalue combinations.
+        /// Returns reference to underlying hashtable that holds the key-factors and value-factorvalue combinations.
         /// </summary>
         public Hashtable Values
         {
@@ -436,7 +436,7 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        ///     Returns the name of the dataset.
+        /// Returns the name of the dataset.
         /// </summary>
         public string Name
         {

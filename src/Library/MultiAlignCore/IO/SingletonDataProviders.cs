@@ -44,7 +44,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Retrieves a list of the datasets loaded.
+        /// Retrieves a list of the datasets loaded.
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<DatasetInformation> GetAllInformation()
@@ -53,7 +53,7 @@ namespace MultiAlignCore.IO
         }
 
         /// <summary>
-        ///     Finds the dataset information if a group id can be found.  Null otherwise.
+        /// Finds the dataset information if a group id can be found.  Null otherwise.
         /// </summary>
         /// <param name="groupID"></param>
         /// <returns></returns>

@@ -13,7 +13,7 @@ namespace MultiAlign.IO
     public class SpectraLoader
     {
         /// <summary>
-        ///     Loads the MS/MS spectrum from file.
+        /// Loads the MS/MS spectrum from file.
         /// </summary>
         /// <param name="spectrum"></param>
         public static List<XYData> LoadSpectrum(MSSpectra spectrum)

@@ -10,7 +10,7 @@ using MultiAlignCore.IO.InputFiles;
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    ///     Loads database information from the main server
+    /// Loads database information from the main server
     /// </summary>
     public class MageDmsDatabaseLoader : IDatabaseServerLoader, ISinkModule
     {
@@ -61,7 +61,7 @@ namespace MultiAlignCore.IO.MTDB
         #region ISinkModule Members
 
         /// <summary>
-        ///     Handles the definition of columns.
+        /// Handles the definition of columns.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.MTDB
 
 
         /// <summary>
-        ///     Handles the definitions of data rows.
+        /// Handles the definitions of data rows.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -162,7 +162,7 @@ namespace MultiAlignCore.IO.MTDB
         #region ISinkModule Members
 
         /// <summary>
-        ///     Handles the definition of columns.
+        /// Handles the definition of columns.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -184,7 +184,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        ///     Handles the definitions of data rows.
+        /// Handles the definitions of data rows.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>

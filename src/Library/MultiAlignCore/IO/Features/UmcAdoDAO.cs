@@ -11,7 +11,7 @@ using MultiAlignCore.Data.Features;
 namespace MultiAlignCore.IO.Features
 {
     /// <summary>
-    ///     Class that extracts features from a sqlite database using ADO
+    /// Class that extracts features from a sqlite database using ADO
     /// </summary>
     public class UmcAdoDAO : IUmcDAO
     {

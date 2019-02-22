@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
-    ///     Interaction logic for CondensedAnalysisOptionsView.xaml
+    /// Interaction logic for CondensedAnalysisOptionsView.xaml
     /// </summary>
     public partial class CondensedAnalysisOptionsView : UserControl
     {

@@ -13,7 +13,7 @@ namespace MultiAlign.ViewModels.Viewers
     public class GettingStartedViewModel : ViewModelBase
     {
         /// <summary>
-        ///     Path to the workspace
+        /// Path to the workspace
         /// </summary>
         private readonly string m_workspacePath;
 
@@ -80,7 +80,7 @@ namespace MultiAlign.ViewModels.Viewers
         }
 
         /// <summary>
-        ///     Loads a current workspace.
+        /// Loads a current workspace.
         /// </summary>
         private void LoadWorkspace(string path)
         {

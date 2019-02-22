@@ -15,7 +15,7 @@ namespace MultiAlignCore.Drawing
         #region Cluster Scatter Plots
 
         /// <summary>
-        ///     Creates a scatter plot for clusters showing NET and Mono Mass.
+        /// Creates a scatter plot for clusters showing NET and Mono Mass.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="clusters"></param>
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a scatter plot for clusters showing NET and Mono Mass.
+        /// Creates a scatter plot for clusters showing NET and Mono Mass.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="clusters"></param>
@@ -73,7 +73,7 @@ namespace MultiAlignCore.Drawing
         #region Feature Scatter Plots
 
         /// <summary>
-        ///     Creates a feature scatter plot using mono mass aligned as a function of NET aligned.
+        /// Creates a feature scatter plot using mono mass aligned as a function of NET aligned.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -88,7 +88,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a feature scatter plot using mono mass aligned as a function of NET aligned.
+        /// Creates a feature scatter plot using mono mass aligned as a function of NET aligned.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -103,7 +103,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a feature scatter plot using m/z as a function of NET aligned.
+        /// Creates a feature scatter plot using m/z as a function of NET aligned.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -118,7 +118,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a feature plot enumerating each charge state with a different color.
+        /// Creates a feature plot enumerating each charge state with a different color.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="features"></param>
@@ -226,7 +226,7 @@ namespace MultiAlignCore.Drawing
         }
 
         /// <summary>
-        ///     Creates a residual alignment plot from the features provided.
+        /// Creates a residual alignment plot from the features provided.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="x"></param>

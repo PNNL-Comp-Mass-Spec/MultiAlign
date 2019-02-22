@@ -8,7 +8,7 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.Data.SequenceData
 {
     /// <summary>
-    ///     Database Search Result
+    /// Database Search Result
     /// </summary>
     public class DatabaseSearchSequence
     {
@@ -37,7 +37,7 @@ namespace MultiAlignCore.Data.SequenceData
 
 
         /// <summary>
-        ///     Gets or sets the parent feature this is associated with.
+        /// Gets or sets the parent feature this is associated with.
         /// </summary>
         public int UmcFeatureId { get; set; }
 

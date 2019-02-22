@@ -156,7 +156,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Updates the global view of clusters.
+        /// Updates the global view of clusters.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -171,7 +171,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Handles loading data when a cluster is selected.
+        /// Handles loading data when a cluster is selected.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -187,7 +187,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Handles updating the cluster detail with the appropriate data.
+        /// Handles updating the cluster detail with the appropriate data.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -204,7 +204,7 @@ namespace MultiAlign.ViewModels
         #region Properties
 
         /// <summary>
-        ///     Gets a list of the mass tags loaded.
+        /// Gets a list of the mass tags loaded.
         /// </summary>
         public ObservableCollection<MassTagToCluster> MassTags
         {
@@ -220,12 +220,12 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets a list of the datasets loaded
+        /// Gets a list of the datasets loaded
         /// </summary>
         public DatasetCollectionViewModel Datasets { get; private set; }
 
         /// <summary>
-        ///     Gets or sets whether the analysis used drift time.
+        /// Gets or sets whether the analysis used drift time.
         /// </summary>
         public bool UsesDriftTime
         {
@@ -241,7 +241,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets whether the analysis has identifications
+        /// Gets or sets whether the analysis has identifications
         /// </summary>
         public bool HasIdentifications
         {
@@ -274,7 +274,7 @@ namespace MultiAlign.ViewModels
         #region ViewModels
 
         /// <summary>
-        ///     Gets the cluster detail view model
+        /// Gets the cluster detail view model
         /// </summary>
         public ClusterDetailViewModel ClusterViewModel
         {
@@ -283,7 +283,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets the identification tree view model
+        /// Gets the identification tree view model
         /// </summary>
         public IdentificationCollectionTreeViewModel IdentificationTree { get; set; }
 
@@ -301,7 +301,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets the cluster tree view model
+        /// Gets the cluster tree view model
         /// </summary>
         public UmcClusterCollectionTreeViewModel ClusterTree
         {
@@ -319,7 +319,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the view model for a selected cluster.
+        /// Gets or sets the view model for a selected cluster.
         /// </summary>
         public AnalysisOptionsViewModel AnalysisOptionsViewModel
         {
@@ -335,7 +335,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the view model for a selected cluster.
+        /// Gets or sets the view model for a selected cluster.
         /// </summary>
         public UmcClusterSpectraViewModel ClusterSpectraViewModel
         {
@@ -351,7 +351,7 @@ namespace MultiAlign.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the Cluster Identification View Model
+        /// Gets or sets the Cluster Identification View Model
         /// </summary>
         public UMCClusterIdentificationViewModel ClusterIdentificationViewModel
         {

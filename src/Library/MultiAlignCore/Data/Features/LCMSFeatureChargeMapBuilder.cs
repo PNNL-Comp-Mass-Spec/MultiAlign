@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>
-    ///     Given a UMC builds charge maps of it's features.
+    /// Given a UMC builds charge maps of it's features.
     /// </summary>
     public static class LCMSFeatureChargeMapBuilder
     {

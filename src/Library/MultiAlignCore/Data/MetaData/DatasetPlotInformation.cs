@@ -1,7 +1,7 @@
 ﻿namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
-    ///     Class for tracking the plot paths for a dataset
+    /// Class for tracking the plot paths for a dataset
     /// </summary>
     public class DatasetPlotInformation
     {

@@ -64,7 +64,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Gets the sequence.
+        /// Gets the sequence.
         /// </summary>
         public string Sequence
         {
@@ -72,7 +72,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Loads the children
+        /// Loads the children
         /// </summary>
         public override void LoadChildren()
         {

@@ -11,7 +11,7 @@ namespace MultiAlignCore.Algorithms.Workflow
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         /// <summary>
-        ///     Updates listeners with status messages.
+        /// Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
         protected virtual void UpdateStatus(string message)

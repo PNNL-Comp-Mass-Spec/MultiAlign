@@ -24,7 +24,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Searches for and returns a List of UmcCluster Objects in the Database that have the exact Mass given.
+        /// Searches for and returns a List of UmcCluster Objects in the Database that have the exact Mass given.
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of UmcCluster Objects</returns>
@@ -37,7 +37,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Adds a Collection of Objects to the Database.
+        /// Adds a Collection of Objects to the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         public new virtual void AddAllStateless(ICollection<UMCClusterLight> tCollection, IProgress<ProgressData> progress = null)
@@ -48,7 +48,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds nearby clusters.
+        /// Finds nearby clusters.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -68,7 +68,7 @@ namespace MultiAlignCore.IO.Hibernate
         }
 
         /// <summary>
-        ///     Finds nearby mass tags.
+        /// Finds nearby mass tags.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>

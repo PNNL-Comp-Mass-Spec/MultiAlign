@@ -23,7 +23,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
     public class SpectralComparisonTests: TestBase
     {
         /// <summary>
-        ///     Maps the path to a group ID for reading multiple files.
+        /// Maps the path to a group ID for reading multiple files.
         /// </summary>
         private Dictionary<string, int> m_pathMap = new Dictionary<string, int>();
 
@@ -50,7 +50,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         #region Display
 
         /// <summary>
-        ///     Creates a plot for the given peaks list
+        /// Creates a plot for the given peaks list
         /// </summary>
         /// <param name="peaksX"></param>
         /// <param name="peaksY"></param>
@@ -288,7 +288,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         #region Peptide file reading
 
         /// <summary>
-        ///     Gets a list of the peptide matches from the path provided.
+        /// Gets a list of the peptide matches from the path provided.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -322,7 +322,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         }
 
         /// <summary>
-        ///     Creates a dictionary for scan to peptide match
+        /// Creates a dictionary for scan to peptide match
         /// </summary>
         /// <param name="matches"></param>
         /// <param name="type"></param>
@@ -356,7 +356,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         }
 
         /// <summary>
-        ///     Reads a peptide file.
+        /// Reads a peptide file.
         /// </summary>
         /// <param name="peptidePathX"></param>
         /// <returns></returns>
@@ -424,7 +424,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         #region Peptide String Manipulation
 
         /// <summary>
-        ///     Cleans the peptide string
+        /// Cleans the peptide string
         /// </summary>
         /// <param name="peptide"></param>
         /// <returns></returns>
@@ -1039,7 +1039,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         public MSSpectra SpectrumY { get; set; }
 
         /// <summary>
-        ///     Gets the NET difference between two features.
+        /// Gets the NET difference between two features.
         /// </summary>
         public double NetDifference
         {

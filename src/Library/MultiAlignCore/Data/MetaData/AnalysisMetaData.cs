@@ -15,12 +15,12 @@ namespace MultiAlignCore.Data.MetaData
     using MultiAlignCore.Extensions;
 
     /// <summary>
-    ///     Class that holds meta-data information about the analysis.
+    /// Class that holds meta-data information about the analysis.
     /// </summary>
     public class AnalysisMetaData : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Constructor.
+        /// Constructor.
         /// </summary>
         public AnalysisMetaData()
         {
@@ -34,14 +34,14 @@ namespace MultiAlignCore.Data.MetaData
         public InputDatabase Database { get; set; }
 
         /// <summary>
-        ///     Gets or sets the list of dataset information.
+        /// Gets or sets the list of dataset information.
         /// </summary>
         public ObservableCollection<DatasetInformation> Datasets { get; set; }
 
         private DatasetInformation m_baseline;
 
         /// <summary>
-        ///     Gets or sets the name of the baseline dataset.
+        /// Gets or sets the name of the baseline dataset.
         /// </summary>
         [DataSummary("Baseline Dataset")]
         public DatasetInformation BaselineDataset
@@ -75,7 +75,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Notify the listener that our internal data has changed.
+        /// Notify the listener that our internal data has changed.
         /// </summary>
         /// <param name="name"></param>
         private void OnNotify(string name)
@@ -84,47 +84,47 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Gets or sets the input file used.
+        /// Gets or sets the input file used.
         /// </summary>
         [DataSummary("Input File Definition Name")]
         public string InputFileDefinition { get; set; }
 
         /// <summary>
-        ///     Gets or sets the parameter file used.
+        /// Gets or sets the parameter file used.
         /// </summary>
         [DataSummary("Parameter File")]
         public string ParameterFile { get; set; }
 
         /// <summary>
-        ///     Gets or sets the job id for this analysis.
+        /// Gets or sets the job id for this analysis.
         /// </summary>
         [DataSummary("Job ID")]
         public int JobID { get; set; }
 
         /// <summary>
-        ///     Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
+        /// Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
         /// </summary>
         public TreeNode FactorTreeNode { get; set; }
 
         /// <summary>
-        ///     Gets or sets the name of the analysis.
+        /// Gets or sets the name of the analysis.
         /// </summary>
         [DataSummary("Analysis Name")]
         public string AnalysisName { get; set; }
 
         /// <summary>
-        ///     Gets or sets the pathname associated with the analysis.
+        /// Gets or sets the pathname associated with the analysis.
         /// </summary>
         [DataSummary("Analysis Path")]
         public string AnalysisPath { get; set; }
 
         /// <summary>
-        ///     Gets or sets the initial analysis setup information.
+        /// Gets or sets the initial analysis setup information.
         /// </summary>
         public InputAnalysisInfo AnalysisSetupInfo { get; set; }
 
         /// <summary>
-        ///     Adds a new dataset to the list.
+        /// Adds a new dataset to the list.
         /// </summary>
         /// <param name="inputFiles"></param>
         /// <returns>A list of added datasets</returns>
@@ -146,7 +146,7 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         /// <summary>
-        ///     Finds the dataset information for the dataset ID provided.
+        /// Finds the dataset information for the dataset ID provided.
         /// </summary>
         /// <param name="datasetId"></param>
         /// <returns></returns>

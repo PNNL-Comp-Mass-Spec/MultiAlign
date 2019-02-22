@@ -9,52 +9,52 @@ using MultiAlignCore.Data.MassTags;
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    ///     Reads a multi-align input file.
+    /// Reads a multi-align input file.
     /// </summary>
     public class MultiAlignFileInputReader
     {
         #region Input file header constants
 
         /// <summary>
-        ///     Indicates the start of the file input specifications.
+        /// Indicates the start of the file input specifications.
         /// </summary>
         private const string FILE_HEADER = "[files]";
 
         /// <summary>
-        ///     Indicates the start of the database specification header.
+        /// Indicates the start of the database specification header.
         /// </summary>
         private const string DATABASE_HEADER = "[database]";
 
         /// <summary>
-        ///     Indicates the start of the scans files.
+        /// Indicates the start of the scans files.
         /// </summary>
         private const string SCANS_HEADER = "[scans]";
 
         /// <summary>
-        ///     Header for sequence related data.
+        /// Header for sequence related data.
         /// </summary>
         private const string SEQUENCE_HEADER = "[sequence]";
 
         /// <summary>
-        ///     Header for peaks files.
+        /// Header for peaks files.
         /// </summary>
         private const string PEAKS_HEADER = "[peaks]";
 
         /// <summary>
-        ///     Indicates the start of the raw files.
+        /// Indicates the start of the raw files.
         /// </summary>
         private const string RAW_HEADER = "[raw]";
 
         #endregion
 
         /// <summary>
-        ///     Indicates a baseline dataset.
+        /// Indicates a baseline dataset.
         /// </summary>
         private const char BASELINE_INDICATOR = '*';
 
 
         /// <summary>
-        ///     Reads the input paths file
+        /// Reads the input paths file
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

@@ -60,12 +60,12 @@ namespace MultiAlignCore.IO.Clusters
         }
 
         /// <summary>
-        ///     Gets or sets whether cluster data needs to be loaded.  In case it was loaded from a cache.
+        /// Gets or sets whether cluster data needs to be loaded.  In case it was loaded from a cache.
         /// </summary>
         public bool ShouldLoadClusterData { get; set; }
 
         /// <summary>
-        ///     Gets or sets whether cluster data needs to be loaded, including the MS/MS data.
+        /// Gets or sets whether cluster data needs to be loaded, including the MS/MS data.
         /// </summary>
         public bool ShouldLoadMsFeatureData { get; private set; }
 

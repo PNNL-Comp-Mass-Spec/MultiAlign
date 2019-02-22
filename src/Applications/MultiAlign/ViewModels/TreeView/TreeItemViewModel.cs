@@ -5,24 +5,24 @@ using PNNLOmics.Annotations;
 namespace MultiAlign.ViewModels.TreeView
 {
     /// <summary>
-    ///     Base class for tree view items.
+    /// Base class for tree view items.
     /// </summary>
     public abstract class TreeItemViewModel : ViewModelBase
     {
         /// <summary>
-        ///     Flag indicating the model was expanded.
+        /// Flag indicating the model was expanded.
         /// </summary>
         protected bool m_isExpanded;
 
         /// <summary>
-        ///     Flag indicating the model was selected.
+        /// Flag indicating the model was selected.
         /// </summary>
         protected bool m_isSelected;
 
         protected bool m_loaded;
 
         /// <summary>
-        ///     Parent Item
+        /// Parent Item
         /// </summary>
         protected TreeItemViewModel m_parent;
 
@@ -32,13 +32,13 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Gets or sets the name of the tree view item model
+        /// Gets or sets the name of the tree view item model
         /// </summary>
         public virtual string Name { get; set; }
 
         /// <summary>
-        ///     Gets/sets whether the TreeViewItem
-        ///     associated with this object is expanded.
+        /// Gets/sets whether the TreeViewItem
+        /// associated with this object is expanded.
         /// </summary>
         public virtual bool IsExpanded
         {
@@ -70,8 +70,8 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Gets/sets whether the TreeViewItem
-        ///     associated with this object is selected.
+        /// Gets/sets whether the TreeViewItem
+        /// associated with this object is selected.
         /// </summary>
         [UsedImplicitly]
         public virtual bool IsSelected
@@ -97,7 +97,7 @@ namespace MultiAlign.ViewModels.TreeView
         public event EventHandler<FeatureSelectedEventArgs> FeatureSelected;
 
         /// <summary>
-        ///     Fired if the item was selected
+        /// Fired if the item was selected
         /// </summary>
         public event EventHandler Selected;
 
@@ -113,7 +113,7 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        ///     Forces items to lazy load their children
+        /// Forces items to lazy load their children
         /// </summary>
         public abstract void LoadChildren();
     }
