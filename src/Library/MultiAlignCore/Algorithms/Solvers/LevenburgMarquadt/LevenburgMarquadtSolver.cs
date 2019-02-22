@@ -87,6 +87,9 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
                                 DifferentialStep,
                                 out state);
 
+            // Note: lsfitsetcond has a different method signature in alglib v3.14.0
+            //
+            // As shown here, this is compatible with v3.10.0
             alglib.lsfitsetcond(state,
                                 epsf,
                                 Epsilon,
