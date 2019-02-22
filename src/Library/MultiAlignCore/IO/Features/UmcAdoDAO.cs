@@ -130,12 +130,12 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
-        public void AddAll(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
+        public void AddAll(ICollection<UMCLight> tList, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public void AddAllStateless(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
+        public void AddAllStateless(ICollection<UMCLight> tList, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
@@ -145,12 +145,12 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
-        public void UpdateAll(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
+        public void UpdateAll(ICollection<UMCLight> tList, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateAllStateless(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
+        public void UpdateAllStateless(ICollection<UMCLight> tList, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

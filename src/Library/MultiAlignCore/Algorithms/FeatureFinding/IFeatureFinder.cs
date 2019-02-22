@@ -19,6 +19,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         List<UMCLight> FindFeatures(List<MSFeatureLight> features,
                                     LcmsFeatureFindingOptions options,
                                     IScanSummaryProvider provider,
-                                    IProgress<ProgressData> progress = null);
+                                    IProgress<PRISM.ProgressData> progress = null);
     }
 }

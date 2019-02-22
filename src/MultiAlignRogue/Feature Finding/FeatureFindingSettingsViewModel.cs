@@ -516,7 +516,7 @@
             await Task.Run(() => this.LoadFeatures());
         }
 
-        internal void LoadFeatures(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
+        internal void LoadFeatures(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<PRISM.ProgressData> workflowProgress = null)
         {
             var featureCache = new FeatureLoader { Providers = this.analysis.DataProviders };
             this.ShouldShowProgress = true;
@@ -530,14 +530,14 @@
 
             var taskBarProgress = TaskBarProgress.GetInstance();
             taskBarProgress.ShowProgress(this, true);
-            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
-            IProgress<ProgressData> totalProgressRpt = new Progress<ProgressData>(pd =>
+            workflowProgress = workflowProgress ?? new Progress<PRISM.ProgressData>();
+            IProgress<PRISM.ProgressData> totalProgressRpt = new Progress<PRISM.ProgressData>(pd =>
             {
                 this.TotalProgress = pd.Percent;
                 taskBarProgress.SetProgress(this, pd.Percent);
                 workflowProgress.Report(pd);
             });
-            var totalProgressData = new ProgressData(totalProgressRpt);
+            var totalProgressData = new PRISM.ProgressData(totalProgressRpt);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
@@ -549,7 +549,7 @@
                 totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
                 var fileInstance = file;
 
-                var progData = new ProgressData(new Progress<ProgressData>(pd =>
+                var progData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
                 {
                     fileInstance.Progress = pd.Percent;
 
@@ -557,7 +557,7 @@
                     totalProgressData.Report(fileInstance.Progress);
                 }));
 
-                var progressRpt = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+                var progressRpt = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
 
                 progData.StepRange(30);
 

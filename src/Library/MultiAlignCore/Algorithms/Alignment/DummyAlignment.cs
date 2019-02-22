@@ -35,13 +35,13 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
 
         public AlignmentData Align(MassTagDatabase database,
-            IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
+            IEnumerable<UMCLight> features, IProgress<PRISM.ProgressData> progress = null)
         {
             return null;
         }
 
         public AlignmentData Align(IEnumerable<UMCLight> baseline,
-            IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
+            IEnumerable<UMCLight> features, IProgress<PRISM.ProgressData> progress = null)
         {
             return null;
         }

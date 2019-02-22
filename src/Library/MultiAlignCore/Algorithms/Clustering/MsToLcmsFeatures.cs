@@ -88,7 +88,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="msFeatures">The seed <see cref="MSFeatureLight" />.</param>
         /// <param name="progress"></param>
         /// <returns>LCMS-Features as a list of <see cref="UMCLight" />.</returns>
-        public List<UMCLight> Convert(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress = null)
+        public List<UMCLight> Convert(List<MSFeatureLight> msFeatures, IProgress<PRISM.ProgressData> progress = null)
         {
             // This method converts MS-Features (MSFeatureLight) into LCMS-Features (UMCLight) in 3 steps:
             //      1. First pass clustering: Cluster MSFeatureLights (typically corresponding to
@@ -101,8 +101,8 @@ namespace MultiAlignCore.Algorithms.Clustering
             this.SetNets(msFeatures);
 
             // Set up progress reporter
-            var progressData = new ProgressData(progress);
-            var internalProgress = new Progress<ProgressData>(pd =>  progressData.Report(pd.Percent));
+            var progressData = new PRISM.ProgressData(progress);
+            var internalProgress = new Progress<PRISM.ProgressData>(pd =>  progressData.Report(pd.Percent));
 
             var features = new List<UMCLight>();
             using (var logger = new StreamWriter("msfeatureClusteringStats.txt", true))
@@ -164,7 +164,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="msFeatures"></param>
         /// <param name="progress">The progress reporter.</param>
         /// <returns>Clustered MSFeatures as <see cref="UMCLight" />.</returns>
-        private List<UMCLight> FirstPassClustering(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress)
+        private List<UMCLight> FirstPassClustering(List<MSFeatureLight> msFeatures, IProgress<PRISM.ProgressData> progress)
         {
             var featureList = new List<UMCLight>();
             var features =  firstPassClusterer.Cluster(msFeatures, progress);
@@ -190,7 +190,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="progress">The progress reporter.</param>
         /// <param name="umcLights"></param>
         /// <returns></returns>
-        private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<ProgressData> progress)
+        private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<PRISM.ProgressData> progress)
         {
             var xicCreator = new XicCreator { XicRefiner = new XicRefiner(this.options.XicRelativeIntensityThreshold) };
             return xicCreator.CreateXicNew(
@@ -207,7 +207,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="progress">The progress reporter.</param>
         /// <param name="umcLights"></param>
         /// <returns></returns>
-        private List<UMCLight> SecondPassClustering(List<UMCLight> umcLights, IProgress<ProgressData> progress)
+        private List<UMCLight> SecondPassClustering(List<UMCLight> umcLights, IProgress<PRISM.ProgressData> progress)
         {
             return secondPassClusterer.Cluster(umcLights, progress).ToList();
         }

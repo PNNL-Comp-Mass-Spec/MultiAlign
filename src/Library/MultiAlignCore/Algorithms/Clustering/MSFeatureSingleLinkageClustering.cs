@@ -23,12 +23,12 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
 
-        public List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
+        public List<U> Cluster(List<T> data, List<U> clusters, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null)
+        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
@@ -39,9 +39,9 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="rawMSFeatures"></param>
         /// <param name="progress"></param>
         /// <returns></returns>
-        public List<U> Cluster(List<T> rawMSFeatures, IProgress<ProgressData> progress = null)
+        public List<U> Cluster(List<T> rawMSFeatures, IProgress<PRISM.ProgressData> progress = null)
         {
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
             var centroidType  = ClusterCentroidRepresentation.Apex;
             List<U> features                            = null;
 

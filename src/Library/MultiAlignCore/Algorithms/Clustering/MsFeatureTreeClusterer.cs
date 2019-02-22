@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         [UsedImplicitly]
         public int ScanTolerance { get; set; }
 
-        public List<TParentFeature> Cluster(List<TChildFeature> data, List<TParentFeature> clusters, IProgress<ProgressData> progress = null)
+        public List<TParentFeature> Cluster(List<TChildFeature> data, List<TParentFeature> clusters, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
@@ -100,9 +100,9 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         /// <param name="features"></param>
         /// <returns></returns>
-        public List<TParentFeature> Cluster(List<TChildFeature> features, IProgress<ProgressData> progress = null)
+        public List<TParentFeature> Cluster(List<TChildFeature> features, IProgress<PRISM.ProgressData> progress = null)
         {
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
             var clusters            = new List<TParentFeature>();
             var currentIndex        = 0;
             int i = 0;
@@ -235,7 +235,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             throw new NotImplementedException();
         }
 
-        public void ClusterAndProcess(List<TChildFeature> data, IClusterWriter<TParentFeature> writer, IProgress<ProgressData> progress = null)
+        public void ClusterAndProcess(List<TChildFeature> data, IClusterWriter<TParentFeature> writer, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

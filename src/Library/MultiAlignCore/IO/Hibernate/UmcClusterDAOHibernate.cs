@@ -40,7 +40,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// Adds a Collection of Objects to the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
-        public new virtual void AddAllStateless(ICollection<UMCClusterLight> tCollection, IProgress<ProgressData> progress = null)
+        public new virtual void AddAllStateless(ICollection<UMCClusterLight> tCollection, IProgress<PRISM.ProgressData> progress = null)
         {
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             base.AddAllStateless(tCollection, progress);

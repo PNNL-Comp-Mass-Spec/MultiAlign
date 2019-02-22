@@ -458,7 +458,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Throws exception if the options were not set.
         /// </summary>
         /// <param name="progress"></param>
-        public void PerformAlignmentToMsFeatures(IProgress<ProgressData> progress = null)
+        public void PerformAlignmentToMsFeatures(IProgress<PRISM.ProgressData> progress = null)
         {
             if (_options == null)
             {
@@ -480,10 +480,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// calculates the alignment matrix and alignment function, gets the transformed NETs
         /// and then calculates the alignment matches
         /// </summary>
-        private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd, IProgress<ProgressData> progress = null)
+        private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd, IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
-            var prog = new Progress<ProgressData>(p => progData.Report(p.Percent, p.Status));
+            var progData = new PRISM.ProgressData(progress);
+            var prog = new Progress<PRISM.ProgressData>(p => progData.Report(p.Percent, p.Status));
             var percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd,
                 CurrentLcmsWarpTask.GenerateCandidateMatches);
             OnProgress("NET Warp, get candidate matches", percentCompleteOverall);
@@ -575,10 +575,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// tolerance and then performs Warping again using the mass and Net scores
         /// </summary>
         /// <param name="progress"></param>
-        private void PerformNetMassWarp(IProgress<ProgressData> progress = null)
+        private void PerformNetMassWarp(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
-            var prog = new Progress<ProgressData>(p => progData.Report(p.Percent, p.Status));
+            var progData = new PRISM.ProgressData(progress);
+            var prog = new Progress<PRISM.ProgressData>(p => progData.Report(p.Percent, p.Status));
             OnProgress("LCMSWarp phase one", 0);
             progData.StepRange(50, "LCMSWarp phase one");
 

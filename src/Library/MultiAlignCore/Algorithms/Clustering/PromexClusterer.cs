@@ -44,14 +44,14 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         public FeatureClusterParameters<UMCLight> Parameters { get; set; }
 
-        public List<UMCClusterLight> Cluster(List<UMCLight> data, List<UMCClusterLight> clusters, IProgress<ProgressData> progress = null)
+        public List<UMCClusterLight> Cluster(List<UMCLight> data, List<UMCClusterLight> clusters, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public List<UMCClusterLight> Cluster(List<UMCLight> data, IProgress<ProgressData> progress = null)
+        public List<UMCClusterLight> Cluster(List<UMCLight> data, IProgress<PRISM.ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
+            progress = progress ?? new Progress<PRISM.ProgressData>();
 
             if (data.Count == 0)
             {
@@ -134,7 +134,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             return clusters;
         }
 
-        public void ClusterAndProcess(List<UMCLight> data, IClusterWriter<UMCClusterLight> writer, IProgress<ProgressData> progress = null)
+        public void ClusterAndProcess(List<UMCLight> data, IClusterWriter<UMCClusterLight> writer, IProgress<PRISM.ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

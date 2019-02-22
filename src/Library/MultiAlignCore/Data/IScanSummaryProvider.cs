@@ -72,12 +72,12 @@ namespace MultiAlignCore.Data
         /// A method that forces the provider to initializes itself if it uses lazy loading.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        void Initialize(IProgress<ProgressData> progress = null);
+        void Initialize(IProgress<PRISM.ProgressData> progress = null);
 
         /// <summary>
         /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        Task InitializeAsync(IProgress<ProgressData> progress = null);
+        Task InitializeAsync(IProgress<PRISM.ProgressData> progress = null);
     }
 }

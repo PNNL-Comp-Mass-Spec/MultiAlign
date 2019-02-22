@@ -13,6 +13,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="baseline">Typically an IEnumerable of a datatype T (UMCLight) or an instance of a MassTagDatabase used as the alignment reference.</param>
         /// <param name="alignee">Typically an IEnumerable of a datatype T that are aligned to a reference.</param>
         /// <returns></returns>
-        TMatchData Align(TBaselineFeature baseline, TAligneeFeature alignee, IProgress<ProgressData> progress = null);
+        TMatchData Align(TBaselineFeature baseline, TAligneeFeature alignee, IProgress<PRISM.ProgressData> progress = null);
     }
 }

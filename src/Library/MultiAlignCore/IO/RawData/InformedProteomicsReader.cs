@@ -166,7 +166,7 @@ namespace MultiAlignCore.IO.RawData
         /// A method that forces the provider to initializes itself if it uses lazy loading.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        public void Initialize(IProgress<ProgressData> progress = null)
+        public void Initialize(IProgress<PRISM.ProgressData> progress = null)
         {
             this.LoadLcmsRun(progress);
         }
@@ -175,7 +175,7 @@ namespace MultiAlignCore.IO.RawData
         /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        public Task InitializeAsync(IProgress<ProgressData> progress = null)
+        public Task InitializeAsync(IProgress<PRISM.ProgressData> progress = null)
         {
             return Task.Run(() => this.LoadLcmsRun(progress));
         }
@@ -399,7 +399,7 @@ namespace MultiAlignCore.IO.RawData
             return summary;
         }
 
-        private void LoadLcmsRun(IProgress<ProgressData> progress = null)
+        private void LoadLcmsRun(IProgress<PRISM.ProgressData> progress = null)
         {
             this._lcmsRun = PbfLcMsRun.GetLcMsRun(this._dataFilePath, progress);
         }

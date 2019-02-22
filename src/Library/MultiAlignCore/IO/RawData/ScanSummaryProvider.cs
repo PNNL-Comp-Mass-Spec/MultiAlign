@@ -219,7 +219,7 @@
         /// A method that forces the provider to initializes itself if it uses lazy loading.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        public void Initialize(IProgress<ProgressData> progress = null)
+        public void Initialize(IProgress<PRISM.ProgressData> progress = null)
         {
             this.LoadScans();
         }
@@ -228,7 +228,7 @@
         /// A method that forces the provider to initializes itself if it uses lazy loading asynchronously.
         /// </summary>
         /// <param name="progress">The progress of the initialization process.</param>
-        public Task InitializeAsync(IProgress<ProgressData> progress = null)
+        public Task InitializeAsync(IProgress<PRISM.ProgressData> progress = null)
         {
             return Task.Run(() => this.Initialize(progress));
         }

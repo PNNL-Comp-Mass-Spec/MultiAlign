@@ -28,9 +28,9 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             double massError,
             InformedProteomicsReader provider,
             bool refine = true,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
             int id = 0, count = 0;
             int msmsFeatureId = 0;
             var resultFeatures = new List<UMCLight> { Capacity = features.Count };

@@ -234,12 +234,12 @@ namespace MultiAlignRogue.Clustering
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
-        internal void ClusterFeatures(IProgress<ProgressData> workflowProgress = null)
+        internal void ClusterFeatures(IProgress<PRISM.ProgressData> workflowProgress = null)
         {
             var taskBarProgress = TaskBarProgress.GetInstance();
             taskBarProgress.ShowProgress(this, true);
-            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
-            IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
+            workflowProgress = workflowProgress ?? new Progress<PRISM.ProgressData>();
+            IProgress<PRISM.ProgressData> internalProgress = new Progress<PRISM.ProgressData>(pd =>
             {
                 this.progress.Report((int)pd.Percent);
                 this.ProgressPercent = pd.Percent;
@@ -269,8 +269,8 @@ namespace MultiAlignRogue.Clustering
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             this.ShouldShowProgress = true;
-            var progData = new ProgressData(internalProgress);
-            var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+            var progData = new PRISM.ProgressData(internalProgress);
+            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
 
             this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
@@ -354,10 +354,10 @@ namespace MultiAlignRogue.Clustering
             this.ShouldShowProgress = false;
         }
 
-        internal void ClusterGroupOfFeatures(IClusterer<UMCLight, UMCClusterLight> clusterer, List<UMCLight> features, ref int clusterCount, IProgress<ProgressData> internalProgress = null)
+        internal void ClusterGroupOfFeatures(IClusterer<UMCLight, UMCClusterLight> clusterer, List<UMCLight> features, ref int clusterCount, IProgress<PRISM.ProgressData> internalProgress = null)
         {
-            var progData = new ProgressData(internalProgress);
-            var clusterProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+            var progData = new PRISM.ProgressData(internalProgress);
+            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
 
             if (this.ShouldRefineWithMsMs)
             {
@@ -483,7 +483,7 @@ namespace MultiAlignRogue.Clustering
         /// <param name="progress">Progress reporter.</param>
         private void WriteClusterData(string path, IEnumerable<UMCClusterLight> clusters)
         {
-            //var progData = new ProgressData { ProgressObj = progress };
+            //var progData = new PRISM.ProgressData { ProgressObj = progress };
 
             using (var writer = File.CreateText(path))
             {

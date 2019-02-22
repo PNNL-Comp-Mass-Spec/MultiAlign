@@ -30,9 +30,9 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         /// <param name="data">The clusters to break up.</param>
         /// <param name="progress">The progress reporter.</param>
         /// <returns>The resulting clusters.</returns>
-        public List<T> Cluster(List<T> data, IProgress<ProgressData> progress = null)
+        public List<T> Cluster(List<T> data, IProgress<PRISM.ProgressData> progress = null)
         {
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
             var processedClusters = new List<T>();
             for (int i = 0; i < data.Count; i++)
             {

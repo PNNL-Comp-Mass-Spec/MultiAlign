@@ -41,9 +41,9 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         /// <param name="xics">The XICs to refine.</param>
         /// <param name="progress">Progress reporter object.</param>
         /// <returns>List of refined XICs.</returns>
-        public List<Xic> RefineXics(IList<Xic> xics, IProgress<ProgressData> progress = null)
+        public List<Xic> RefineXics(IList<Xic> xics, IProgress<PRISM.ProgressData> progress = null)
         {
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
             var refinedXics = new List<Xic> { Capacity = xics.Count };
             for (int i = 0; i < xics.Count; i++)
             {

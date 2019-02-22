@@ -283,7 +283,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         private void AddMassTags()
         {
-            var loadProgress = new Progress<ProgressData>(pd => this.MassTagLoadProgress = pd.Percent);
+            var loadProgress = new Progress<PRISM.ProgressData>(pd => this.MassTagLoadProgress = pd.Percent);
             this.Analysis.MetaData.Database = this.SelectedDatabase;
             this.Analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(
                                         this.analysis.MetaData.Database,

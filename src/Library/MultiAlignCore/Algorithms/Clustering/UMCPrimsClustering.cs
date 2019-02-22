@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             return true;
         }
 
-        public override List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
+        public override List<U> Cluster(List<T> data, List<U> clusters, IProgress<PRISM.ProgressData> progress = null)
         {
 
             return base.Cluster(data, clusters);

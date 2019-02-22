@@ -29,7 +29,7 @@ namespace MultiAlignCore.IO
     {
         public FeatureDataAccessProviders Providers { get; set; }
 
-        public void CacheFeatures(IList<UMCLight> features, IProgress<ProgressData> progress = null)
+        public void CacheFeatures(IList<UMCLight> features, IProgress<PRISM.ProgressData> progress = null)
         {
             // SpectraTracker - Makes sure that we only record a MS spectra once, before we cache
             // this keeps us from trying to put duplicate entries into the MS/MS data
@@ -112,8 +112,8 @@ namespace MultiAlignCore.IO
             //TODO: Fix!!! make sure sequence maps are unique
             sequenceMaps.ForEach(x => x.Id = count++);
 
-            var progData = new ProgressData(progress);
-            var internalProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+            var progData = new PRISM.ProgressData(progress);
+            var internalProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
 
             ////if (msmsFeatures.Count > 0)
             ////{
@@ -163,7 +163,7 @@ namespace MultiAlignCore.IO
             LcmsFeatureFindingOptions options,
             LcmsFeatureFilteringOptions filterOptions,
             IScanSummaryProvider provider,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
             // Make features
             if (msFeatures.Count < 1)
@@ -226,9 +226,9 @@ namespace MultiAlignCore.IO
             DataLoadingOptions dataLoadOptions,
             ScanSummaryProviderCache providerCache,
             IdentificationProviderCache identificationProviders,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData();
             IScanSummaryProvider provider = null;
             if (!string.IsNullOrWhiteSpace(dataset.RawFile.Path))
             {
@@ -277,7 +277,7 @@ namespace MultiAlignCore.IO
                     lcmsFindingOptions,
                     lcmsFilteringOptions,
                     provider,
-                    new Progress<ProgressData>(pd => progData.Report(pd.Percent)));
+                    new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent)));
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));

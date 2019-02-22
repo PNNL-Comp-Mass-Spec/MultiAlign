@@ -63,7 +63,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// <param name="alignee"></param>
         /// <returns></returns>
         public IEnumerable<SpectralAnchorPointMatch> Align( MassTagDatabase baseline,
-                                                            IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+                                                            IEnumerable<UMCLight> alignee, IProgress<PRISM.ProgressData> progress = null)
         {
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();
@@ -95,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// <param name="alignee"></param>
         /// <returns></returns>
         public IEnumerable<SpectralAnchorPointMatch> Align( IEnumerable<UMCLight> baseline,
-                                                            IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+                                                            IEnumerable<UMCLight> alignee, IProgress<PRISM.ProgressData> progress = null)
         {
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();

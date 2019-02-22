@@ -809,7 +809,7 @@
                         DatasetInformationViewModel.DatasetStates.Loaded : dataset.DatasetState;
 
                     dataset.DatasetState = DatasetInformationViewModel.DatasetStates.LoadingRawData;
-                    var progress = new Progress<ProgressData>(pd => dataset.Progress = pd.Percent);
+                    var progress = new Progress<PRISM.ProgressData>(pd => dataset.Progress = pd.Percent);
                     var provider = this.analysis.DataProviders.ScanSummaryProviderCache.GetScanSummaryProvider(
                         dataset.Dataset.RawFile.Path,
                         dataset.DatasetId);
@@ -984,14 +984,14 @@
                 taskBarProgress.ShowProgress(this, true);
 
                 // Reporting to UI
-                var progData = new ProgressData(new Progress<ProgressData>(pd =>
+                var progData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
                 {
                     var prog = pd.Percent;
                     this.ProgressTracker = (int)prog;
                     taskBarProgress.SetProgress(this, prog);
                 }));
                 // Internal progress, fed through progData, which will trigger the reports to the UI
-                var totalProgress = new Progress<ProgressData>(pd => progData.Report(pd.Percent));
+                var totalProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
 
                 progData.StepRange(50);
 

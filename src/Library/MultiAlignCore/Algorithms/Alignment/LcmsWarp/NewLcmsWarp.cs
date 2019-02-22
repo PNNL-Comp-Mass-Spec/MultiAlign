@@ -36,7 +36,7 @@
         /// <summary>
         /// An event for updating the progress of LcmsWarp.
         /// </summary>
-        [Obsolete("Use IProgress<ProgressData> in the Align() methods instead of this.")]
+        [Obsolete("Use IProgress<PRISM.ProgressData> in the Align() methods instead of this.")]
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         /// <summary>
@@ -46,7 +46,7 @@
         /// <param name="alignee">The features to align.</param>
         /// <param name="progress">The progress reporter for the alignment process.</param>
         /// <returns>Information about the alignment.</returns>
-        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+        public AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee, IProgress<PRISM.ProgressData> progress = null)
         {
             // Enumerate features to lists.
             // Perform a deep copy of the LCMS features so that the original features are unaffected by the warp.
@@ -73,7 +73,7 @@
         /// <param name="alignee">The features to align.</param>
         /// <param name="progress">The progress reporter for the alignment process.</param>
         /// <returns>Information about the alignment.</returns>
-        public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
+        public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> alignee, IProgress<PRISM.ProgressData> progress = null)
         {
             // Convert baseline features to UMCLights.
             // A mass tag database is really just a list of features just like a baseline dataset.

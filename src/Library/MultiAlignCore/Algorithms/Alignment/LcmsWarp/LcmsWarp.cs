@@ -633,9 +633,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Determines the transformed NETs for the LCMSWarp function
         /// </summary>
-        public void GetTransformedNets(IProgress<ProgressData> progress = null)
+        public void GetTransformedNets(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             var dicSectionToIndex = new Dictionary<int, int>();
             for (var i = 0; i < _alignmentFunc.Count; i++)
             {
@@ -731,9 +731,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// then goes through and calculates the match score for each feature with relation to
         /// the baselines, holding onto the "best match" for each one
         /// </summary>
-        public void CalculateAlignmentMatches(IProgress<ProgressData> progress = null)
+        public void CalculateAlignmentMatches(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             _features.Sort(ByMass);
             _baselineFeatures.Sort(ByMass);
 
@@ -885,9 +885,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// mass tolerance window
         /// Elution time will be considered later
         /// </summary>
-        public void GenerateCandidateMatches(IProgress<ProgressData> progress = null)
+        public void GenerateCandidateMatches(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             if (_features.Count == 0)
             {
                 return;
@@ -1203,9 +1203,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Goes through the matched features and determines the probability
         /// of each that the match is correct
         /// </summary>
-        public void GetMatchProbabilities(IProgress<ProgressData> progress = null)
+        public void GetMatchProbabilities(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             progData.StepRange(5);
             PercentComplete = 0;
             var numFeatures = _features.Count;
@@ -1351,9 +1351,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Calculates the alignment function for each of the sections, based
         /// on the match scores for every feature in the subsection
         /// </summary>
-        public void CalculateAlignmentFunction(IProgress<ProgressData> progress = null)
+        public void CalculateAlignmentFunction(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             var section = NumSections - 1;
 
             var bestScore = double.MinValue;
@@ -1419,9 +1419,9 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// onto each and every possible alignment score and then linking the feature
         /// to the best previous index of possible alignments
         /// </summary>
-        public void CalculateAlignmentMatrix(IProgress<ProgressData> progress = null)
+        public void CalculateAlignmentMatrix(IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             _alignmentScore = new double[NumSections, NumBaselineSections, NumMatchesPerBaseline];
             _bestPreviousIndex = new Index3D[NumSections, NumBaselineSections, NumMatchesPerBaseline];
 

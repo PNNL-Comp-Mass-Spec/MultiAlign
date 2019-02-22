@@ -71,7 +71,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public AlignmentData Align(MassTagDatabase massTagDatabase,
             IEnumerable<UMCLight> features,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
@@ -106,7 +106,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <returns></returns>
         public AlignmentData Align(IEnumerable<UMCLight> baselineFeatures,
             IEnumerable<UMCLight> features,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
@@ -148,7 +148,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="progress"></param>
         /// <returns></returns>
         public AlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor(_options);
 
@@ -183,10 +183,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private AlignmentData AlignFeatures(LcmsWarpAlignmentProcessor alignmentProcessor,
             IEnumerable<UMCLight> features,
             LcmsWarpAlignmentOptions alignmentOptions,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new ProgressData(progress);
-            var localProgress = new Progress<ProgressData>(p => progData.Report(p.Percent, p.Status));
+            var progData = new PRISM.ProgressData(progress);
+            var localProgress = new Progress<PRISM.ProgressData>(p => progData.Report(p.Percent, p.Status));
             var alignmentData = new AlignmentData();
             OnStatus("Starting alignment of features.");
 

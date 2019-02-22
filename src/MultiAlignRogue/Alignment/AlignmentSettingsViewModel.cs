@@ -503,7 +503,7 @@
         /// </summary>
         /// <param name="workFlowDatasets">Datasets to run on when being called externally form this view model.</param>
         /// <param name="workflowProgress">The progress reporter for when this method is called externally from this view model.</param>
-        internal void AlignToBaseline(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<ProgressData> workflowProgress = null)
+        internal void AlignToBaseline(List<DatasetInformationViewModel> workFlowDatasets = null, IProgress<PRISM.ProgressData> workflowProgress = null)
         {
 
             // Use Promiscuous points when aligning to an AMT tag database
@@ -549,14 +549,14 @@
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
             }
 
-            workflowProgress = workflowProgress ?? new Progress<ProgressData>();
-            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd =>
+            workflowProgress = workflowProgress ?? new Progress<PRISM.ProgressData>();
+            IProgress<PRISM.ProgressData> totalProgress = new Progress<PRISM.ProgressData>(pd =>
             {
                 this.AlignmentProgress = pd.Percent;
                 workflowProgress.Report(pd);
                 taskBarProgress.SetProgress(this, pd.Percent);
             });
-            var totalProgressData = new ProgressData(totalProgress);
+            var totalProgressData = new PRISM.ProgressData(totalProgress);
 
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
             DatabaseIndexer.IndexFeaturesDrop(NHibernateUtil.Path);
@@ -582,7 +582,7 @@
 
                 var fileInstance = file;
                 var datasetProgress =
-                    new Progress<ProgressData>(
+                    new Progress<PRISM.ProgressData>(
                         pd =>
                         {
                             fileInstance.Progress = pd.Percent;

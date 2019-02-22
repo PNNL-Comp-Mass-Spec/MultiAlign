@@ -292,12 +292,12 @@ namespace MultiAlignRogue.AMTMatching
         internal void PerformMatching(IEnumerable<DatasetInformationViewModel> datasets)
         {
             this.ShouldShowTotalProgress = true;
-            var progressData = new ProgressData(new Progress<ProgressData>(pd =>
+            var progressData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
             {
                 // This is the progress percent after stepping by progressData
                 this.TotalProgress = pd.Percent;
             })) {IsPartialRange = true, MaxPercentage = 95};
-            var progress = new Progress<ProgressData>(pd => progressData.Report(pd.Percent));
+            var progress = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
             // Get all possible charge states in data.
             var chargeStates = this.analysis.DataProviders.FeatureCache.RetrieveChargeStates().ToList();
@@ -372,9 +372,9 @@ namespace MultiAlignRogue.AMTMatching
                                       string path,
                                       List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches,
                                       Dictionary<int, UMCClusterLight> clusterIdMap,
-                                      IProgress<ProgressData> progress)
+                                      IProgress<PRISM.ProgressData> progress)
         {
-            var progData = new ProgressData(progress);
+            var progData = new PRISM.ProgressData(progress);
             int i = 1;
 
             using (var writer = File.CreateText(path))

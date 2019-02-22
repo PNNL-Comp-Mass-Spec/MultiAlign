@@ -115,7 +115,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         /// <param name="progress"></param>
-        public virtual void AddAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        public virtual void AddAll(ICollection<T> tCollection, IProgress<PRISM.ProgressData> progress = null)
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetSession())
@@ -123,7 +123,7 @@ namespace MultiAlignCore.IO.Hibernate
             {
                 session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
                 session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
-                var progressData = new ProgressData(progress) { MaxPercentage = 95 };
+                var progressData = new PRISM.ProgressData(progress) { MaxPercentage = 95 };
                 int i = 0;
                 foreach (var t in tCollection)
                 {
@@ -148,13 +148,13 @@ namespace MultiAlignCore.IO.Hibernate
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         /// <param name="progress"></param>
-        public virtual void AddAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        public virtual void AddAllStateless(ICollection<T> tCollection, IProgress<PRISM.ProgressData> progress = null)
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             using (var transaction = session.BeginTransaction())
             {
-                var progressData = new ProgressData(progress) { MaxPercentage = 95 };
+                var progressData = new PRISM.ProgressData(progress) { MaxPercentage = 95 };
                 int i = 0;
                 session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
                 session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
@@ -195,13 +195,13 @@ namespace MultiAlignCore.IO.Hibernate
         /// Use this for objects with cascade relationships.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
-        public void UpdateAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        public void UpdateAll(ICollection<T> tCollection, IProgress<PRISM.ProgressData> progress = null)
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetSession())
             using (var transaction = session.BeginTransaction())
             {
-                var progressData = new ProgressData(progress) {IsPartialRange = true, MaxPercentage = 95};
+                var progressData = new PRISM.ProgressData(progress) {IsPartialRange = true, MaxPercentage = 95};
                 int i = 0;
                 session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON").ExecuteUpdate();
                 session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON").ExecuteUpdate();
@@ -229,13 +229,13 @@ namespace MultiAlignCore.IO.Hibernate
         /// DO NOT use this for objects with cascade relationships.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
-        public void UpdateAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
+        public void UpdateAllStateless(ICollection<T> tCollection, IProgress<PRISM.ProgressData> progress = null)
         {
             var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             using (var transaction = session.BeginTransaction())
             {
-                var progressData = new ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
+                var progressData = new PRISM.ProgressData(progress) { IsPartialRange = true, MaxPercentage = 95 };
                 int i = 0;
                 foreach (var t in tCollection)
                 {

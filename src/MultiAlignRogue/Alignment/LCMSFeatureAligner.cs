@@ -21,9 +21,9 @@ namespace MultiAlignRogue.Alignment
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
             IEnumerable<UMCLight> baselineFeatures,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
+            progress = progress ?? new Progress<PRISM.ProgressData>();
             // Align pairwise and cache results intermediately.
             var aligner = this.m_algorithms.DatasetAligner;
             aligner.Progress += aligner_Progress;
@@ -45,9 +45,9 @@ namespace MultiAlignRogue.Alignment
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
             MassTagDatabase mtdb,
-            IProgress<ProgressData> progress = null)
+            IProgress<PRISM.ProgressData> progress = null)
         {
-            progress = progress ?? new Progress<ProgressData>();
+            progress = progress ?? new Progress<PRISM.ProgressData>();
             var aligner = this.m_algorithms.DatabaseAligner;
             var alignmentData = aligner.Align(mtdb, features, progress);
             aligner.Progress += aligner_Progress;

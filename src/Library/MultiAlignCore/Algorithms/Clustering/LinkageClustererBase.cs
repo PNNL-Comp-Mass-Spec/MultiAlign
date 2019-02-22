@@ -60,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         /// <param name="data">Data to cluster.</param>
         /// <returns>List of UMC clusters.</returns>
-        public List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null)
+        public List<U> Cluster(List<T> data, IProgress<PRISM.ProgressData> progress = null)
         {
             return Cluster(data, new List<U>(), progress);
         }
@@ -81,7 +81,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="data"></param>
         /// <param name="clusters"></param>
         /// <returns></returns>
-        public virtual List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
+        public virtual List<U> Cluster(List<T> data, List<U> clusters, IProgress<PRISM.ProgressData> progress = null)
         {
             /*
              * This clustering algorithm first sorts the list of input UMC's by mass.  It then iterates
@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms.Clustering
              * it will process the data before the gap (a block) until the current index of the features in question.
              */
 
-            var progressData = new ProgressData(progress);
+            var progressData = new PRISM.ProgressData(progress);
 
             // Make sure we have data to cluster first.
             if (data == null)
@@ -446,7 +446,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         /// <param name="data"></param>
         /// <param name="writer"></param>
-        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null)
+        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<PRISM.ProgressData> progress = null)
         {
             /*
              * This clustering algorithm first sorts the list of input UMC's by mass.  It then iterates
