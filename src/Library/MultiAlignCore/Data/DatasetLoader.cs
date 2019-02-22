@@ -7,6 +7,7 @@
     using System.Runtime.CompilerServices;
     using System.Text;
 
+    using InformedProteomics.Backend.Data;
     using InformedProteomics.Backend.MassSpecData;
 
     using MultiAlignCore.Data.MetaData;
