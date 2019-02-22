@@ -91,6 +91,9 @@
     <Reference Include="InformedProteomics.Backend">
       <HintPath>..\..\..\lib\InformedProteomics\InformedProteomics.Backend.dll</HintPath>
     </Reference>
+    <Reference Include="InformedProteomics.Backend.MassSpecData">
+      <HintPath>..\..\..\lib\InformedProteomics\InformedProteomics.Backend.MassSpecData.dll</HintPath>
+    </Reference>
     <Reference Include="InformedProteomics.FeatureFinding">
       <HintPath>..\..\..\lib\InformedProteomics\InformedProteomics.FeatureFinding.dll</HintPath>
     </Reference>
@@ -105,10 +108,9 @@
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
+      <HintPath>..\..\..\lib\InformedProteomics\PNNLOmics.dll</HintPath>
     </Reference>
-    <Reference Include="PNNLOmicsIO, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="PNNLOmicsIO">
       <HintPath>..\..\..\lib\PNNLOmicsIO.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
