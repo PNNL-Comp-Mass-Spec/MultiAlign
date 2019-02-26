@@ -12,3 +12,5 @@ src/packages/*/
 src/packages
 src/MultiAlignRogue/bin/
 src/MultiAlignRogue/obj/
+
+**/.vs/

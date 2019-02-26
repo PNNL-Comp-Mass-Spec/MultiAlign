@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InformedProteomics.Backend">
-      <HintPath>..\..\..\lib\InformedProteomics.Backend\InformedProteomics.Backend.dll</HintPath>
+      <HintPath>..\..\..\lib\InformedProteomics\InformedProteomics.Backend.dll</HintPath>
     </Reference>
     <Reference Include="MultiAlignEngine">
       <SpecificVersion>False</SpecificVersion>
