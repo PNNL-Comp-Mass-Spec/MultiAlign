@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.Generic
                     MissingMemberHandling = MissingMemberHandling.Ignore,
                     NullValueHandling = NullValueHandling.Ignore,
                     PreserveReferencesHandling = PreserveReferencesHandling.All,
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Full,
+                    TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
                     TypeNameHandling = TypeNameHandling.All,
                 };
 

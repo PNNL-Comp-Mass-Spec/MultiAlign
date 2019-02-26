@@ -325,7 +325,10 @@ namespace MultiAlignRogue.AMTMatching
             };
 
             // Initialize datasets
-            datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Matching);
+            foreach (var dataset in datasets)
+            {
+                dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Matching;
+            }
 
             // Get clusters and database
             var clusters = this.analysis.DataProviders.ClusterCache.FindAll();
@@ -335,7 +338,10 @@ namespace MultiAlignRogue.AMTMatching
             // Run STAC
             var matches = stac.PerformPeakMatching(clusters, database);
 
-            datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingMatches);
+            foreach (var dataset in datasets)
+            {
+                dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingMatches;
+            }
 
             // Persist matches
             var clusterToMassTags = matches.Select(match => new ClusterToMassTagMap(match.Observed.Id, match.Target.Id)).ToList();
@@ -358,7 +364,10 @@ namespace MultiAlignRogue.AMTMatching
 
             this.ShouldShowTotalProgress = false;
 
-            datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Matched);
+            foreach (var dataset in datasets)
+            {
+                dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Matched;
+            }
         }
 
         /// <summary>

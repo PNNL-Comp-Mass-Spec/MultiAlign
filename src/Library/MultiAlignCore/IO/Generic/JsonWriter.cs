@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.Generic
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore,
                     PreserveReferencesHandling = PreserveReferencesHandling.All,
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Full,
+                    TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
                     TypeNameHandling = TypeNameHandling.All
                 };
                 serializer.Serialize(jWriter, data);

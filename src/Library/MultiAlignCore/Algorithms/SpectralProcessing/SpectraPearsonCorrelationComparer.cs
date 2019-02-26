@@ -46,7 +46,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
             {
                 var xpeak = spectraX[xIt];
 
-                var toleranceTh = this.tolerance.GetToleranceAsTh(xpeak.X);
+                var toleranceTh = this.tolerance.GetToleranceAsMz(xpeak.X);
 
                 var minMz = Math.Max(0.0, xpeak.X + toleranceTh);
                 var maxMz = xpeak.X + toleranceTh;

@@ -363,9 +363,9 @@ namespace MultiAlignRogue.Clustering
                 foreach (var series in this.XicPlotModel.Series)
                 {
                     var lineSeries = series as LineSeries;
-                    if (lineSeries != null && lineSeries.ItemsSource.Any())
+                    if (lineSeries != null && lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
                     {
-                        var msfeature = lineSeries.ItemsSource.First() as MSFeatureLight;
+                        var msfeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
                         if (msfeature != null && msfeature.ChargeState == chargeStateViewModel.ChargeState)
                         {
                             lineSeries.IsVisible = arg.NewValue;
@@ -389,9 +389,9 @@ namespace MultiAlignRogue.Clustering
                 foreach (var series in this.XicPlotModel.Series)
                 {
                     var lineSeries = series as LineSeries;
-                    if (lineSeries != null && lineSeries.ItemsSource.Any())
+                    if (lineSeries != null && lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
                     {
-                        var msfeature = lineSeries.ItemsSource.First() as MSFeatureLight;
+                        var msfeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
                         if (msfeature != null && msfeature.GroupId == umcLightViewModel.UMCLight.GroupId)
                         {
                             lineSeries.IsVisible = arg.NewValue;
