@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
@@ -15,8 +17,6 @@ using MultiAlignCore.IO.TextFiles;
 namespace MultiAlignCore.IO.Features
 {
     using InformedProteomics.Backend.MassSpecData;
-
-    using MultiAlignCore.Data.MassTags;
 
     /// <summary>
     /// Loads UMC's from the given sources.

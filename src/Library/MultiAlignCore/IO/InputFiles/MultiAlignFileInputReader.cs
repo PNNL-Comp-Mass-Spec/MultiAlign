@@ -2,7 +2,7 @@
 
 using System;
 using System.IO;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 
 #endregion
 

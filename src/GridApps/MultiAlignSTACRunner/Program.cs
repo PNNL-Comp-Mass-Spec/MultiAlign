@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using FeatureAlignment.Algorithms.Options;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.FeatureMatcher.Data;
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;

@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Text;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;

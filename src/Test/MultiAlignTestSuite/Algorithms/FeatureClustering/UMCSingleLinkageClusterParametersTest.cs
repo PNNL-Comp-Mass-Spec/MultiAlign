@@ -8,8 +8,8 @@
  * Revisions:
  ////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Data.Features;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.FeatureClustering

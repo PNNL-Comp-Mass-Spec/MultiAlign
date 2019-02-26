@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 

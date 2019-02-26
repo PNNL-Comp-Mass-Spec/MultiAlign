@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Regression;
 using MultiAlignCore.Data.Features;
 

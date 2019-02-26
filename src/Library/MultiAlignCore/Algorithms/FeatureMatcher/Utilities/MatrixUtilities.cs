@@ -1,4 +1,5 @@
 ﻿using System;
+using FeatureAlignment.Data.Features;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Utilities;

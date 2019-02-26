@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FeatureAlignment.Data.Features;
 using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.Windows.Plots;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Reports;
 

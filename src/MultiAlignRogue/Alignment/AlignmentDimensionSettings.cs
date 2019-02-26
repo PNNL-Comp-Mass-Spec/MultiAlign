@@ -1,8 +1,8 @@
-﻿namespace MultiAlignRogue.Alignment
-{
-    using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MetaData;
+﻿using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MetaData;
 
+namespace MultiAlignRogue.Alignment
+{
     /// <summary>
     /// This class contains settings for aligning/warping a single separation dimension.
     /// Each separation dimension can have its own tolerances, discretization, and reference dataset.
@@ -14,7 +14,7 @@
         /// </summary>
         public AlignmentDimensionSettings()
         {
-            this.SeparationType = FeatureLight.SeparationTypes.LC;
+            this.SeparationType = SeparationTypes.LC;
             this.Tolerance = 0.01;
             this.NumSections = 100;
             this.ContractionFactor = 3;
@@ -24,7 +24,7 @@
         /// <summary>
         /// Gets or sets the type of separation that this dimension represents.
         /// </summary>
-        public FeatureLight.SeparationTypes SeparationType { get; set; }
+        public SeparationTypes SeparationType { get; set; }
 
         /// <summary>
         /// Gets or sets the tolerance used when matching features in this dimension.
@@ -65,7 +65,7 @@
         /// </summary>
         public static AlignmentDimensionSettings DefaultImsSettings = new AlignmentDimensionSettings
         {
-            SeparationType = FeatureLight.SeparationTypes.DriftTime,
+            SeparationType = SeparationTypes.DriftTime,
             ContractionFactor = 0
         };
     }

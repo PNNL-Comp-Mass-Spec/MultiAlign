@@ -3,7 +3,7 @@
 
 #endregion
 
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {

@@ -2,12 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

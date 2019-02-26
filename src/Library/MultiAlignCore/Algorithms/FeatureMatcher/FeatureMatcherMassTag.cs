@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Annotations;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher

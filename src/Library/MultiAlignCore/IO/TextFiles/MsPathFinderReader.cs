@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.IO.TextFiles
 {
-    using MultiAlignCore.Data.MassTags;
-
     public class MsPathFinderReader : BaseTextFileReader<Peptide>, ISequenceFileReader
     {
         protected override Dictionary<string, int> CreateColumnMapping(System.IO.TextReader textReader)

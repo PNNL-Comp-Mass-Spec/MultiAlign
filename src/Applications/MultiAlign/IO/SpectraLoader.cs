@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.MetaData;
+using FeatureAlignment.Data;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MsMs;

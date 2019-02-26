@@ -37,7 +37,6 @@
         }
     }
 
-
     public enum SpectralComparison
     {
         DotProduct,

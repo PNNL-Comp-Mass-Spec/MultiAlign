@@ -3,12 +3,11 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using FeatureAlignment.Data.MassTags;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using InformedProteomics.Backend.Utils;
 using Microsoft.Win32;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 

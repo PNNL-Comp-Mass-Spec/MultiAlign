@@ -1,5 +1,5 @@
-﻿using FluentNHibernate.Mapping;
-using MultiAlignCore.Data.Alignment;
+﻿using FeatureAlignment.Data.Alignment;
+using FluentNHibernate.Mapping;
 
 namespace MultiAlignCore.IO.Hibernate.FluentMappings
 {

@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Solvers;
 using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt;
 using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;

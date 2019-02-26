@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 #endregion

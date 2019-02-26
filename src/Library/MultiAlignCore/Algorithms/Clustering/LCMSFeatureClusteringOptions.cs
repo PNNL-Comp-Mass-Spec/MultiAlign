@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.ComponentModel;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;

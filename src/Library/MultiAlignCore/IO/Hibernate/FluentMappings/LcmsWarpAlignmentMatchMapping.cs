@@ -1,5 +1,5 @@
-﻿using FluentNHibernate.Mapping;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+﻿using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FluentNHibernate.Mapping;
 
 namespace MultiAlignCore.IO.Hibernate.FluentMappings
 {

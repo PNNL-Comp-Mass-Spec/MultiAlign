@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
+using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignRogue.Utils;
 
@@ -21,9 +24,6 @@ namespace MultiAlignRogue.AMTMatching
 
     using MultiAlignCore.Algorithms.FeatureMatcher;
     using MultiAlignCore.Algorithms.FeatureMatcher.Data;
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MassTags;
     using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.ViewModels;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.IO.TextFiles
 {

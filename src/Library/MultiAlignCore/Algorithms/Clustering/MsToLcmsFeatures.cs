@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Chromatograms;
 using MultiAlignCore.Data;

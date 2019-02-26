@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlign.Commands;
 using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.IO;

@@ -1,5 +1,5 @@
-﻿using GalaSoft.MvvmLight;
-using MultiAlignCore.Algorithms.Options;
+﻿using FeatureAlignment.Algorithms.Options;
+using GalaSoft.MvvmLight;
 
 namespace MultiAlignRogue.AMTMatching
 {

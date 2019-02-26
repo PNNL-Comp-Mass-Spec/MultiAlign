@@ -4,13 +4,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
     public class UMCAverageLinkageClusterer<T, U> : LinkageClustererBase<T, U>
-        where T : FeatureLight, Data.Features.IChildFeature<U>, new()
-        where U : FeatureLight, Data.Features.IFeatureCluster<T>, new()
+        where T : FeatureLight, IChildFeature<U>, new()
+        where U : FeatureLight, IFeatureCluster<T>, new()
     {
 
         /// <summary>

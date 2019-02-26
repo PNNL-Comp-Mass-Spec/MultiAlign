@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignTestSuite.IO
 {
@@ -13,8 +15,6 @@ namespace MultiAlignTestSuite.IO
     using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.Algorithms.FeatureMatcher;
     using MultiAlignCore.Algorithms.FeatureMatcher.Data;
-    using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MassTags;
     using MultiAlignCore.IO.MTDB;
     using MultiAlignCore.IO.RawData;
     using MultiAlignCore.IO.TextFiles;

@@ -1,5 +1,4 @@
-﻿
-using MultiAlignCore.Data.Features;
+﻿using FeatureAlignment.Data.Features;
 using NUnit.Framework;
 
 //using PNNLOmics.Utilities.Importers;

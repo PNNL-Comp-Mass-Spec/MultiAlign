@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using FeatureAlignment.Data.MassTags;
 using MultiAlign.ViewModels.Proteins;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.ViewModels
 {

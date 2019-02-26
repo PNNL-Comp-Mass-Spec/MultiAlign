@@ -2,9 +2,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms.Options;
+using FeatureAlignment.Data.MassTags;
 using Mage;
 using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

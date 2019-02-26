@@ -1,8 +1,10 @@
 ﻿#region
 
 using System.ComponentModel;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp.MassCalibration;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.Parameters;
 
@@ -10,8 +12,6 @@ using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Options
 {
-    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
-
     public class AlignmentOptions
     {
         public AlignmentOptions()

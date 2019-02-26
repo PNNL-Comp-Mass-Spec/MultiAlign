@@ -1,4 +1,6 @@
 using System;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 

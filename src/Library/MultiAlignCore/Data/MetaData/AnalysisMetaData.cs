@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Data.Factors;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 
 #endregion

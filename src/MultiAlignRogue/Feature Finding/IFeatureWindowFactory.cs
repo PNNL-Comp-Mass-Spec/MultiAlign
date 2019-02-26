@@ -1,11 +1,9 @@
-﻿using MultiAlignCore.Data.Features;
+﻿using FeatureAlignment.Data.Features;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignRogue.Feature_Finding
 {
     using System.Collections.Generic;
-
-    using MultiAlignCore.Data.MetaData;
-
 
     public interface IFeatureWindowFactory
     {

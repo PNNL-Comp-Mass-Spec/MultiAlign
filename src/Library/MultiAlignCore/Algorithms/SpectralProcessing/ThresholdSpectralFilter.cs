@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Data;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.SpectralProcessing

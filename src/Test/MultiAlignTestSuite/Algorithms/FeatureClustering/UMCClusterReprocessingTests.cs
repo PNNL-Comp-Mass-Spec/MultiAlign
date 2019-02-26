@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
-using MultiAlignCore.Data.Features;
 using MultiAlignTestSuite.Algorithms.FeatureFinding;
 using NUnit.Framework;
 

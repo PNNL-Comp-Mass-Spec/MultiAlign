@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Proteins;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 
 namespace MultiAlign.ViewModels.Spectra

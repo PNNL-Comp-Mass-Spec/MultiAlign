@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 
 namespace MultiAlignCore.Data.Features
 {

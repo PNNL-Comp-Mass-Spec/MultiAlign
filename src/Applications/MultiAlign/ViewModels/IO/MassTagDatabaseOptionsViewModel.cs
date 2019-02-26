@@ -1,4 +1,4 @@
-﻿using MultiAlignCore.Algorithms.Options;
+﻿using FeatureAlignment.Algorithms.Options;
 
 namespace MultiAlign.ViewModels.IO
 {

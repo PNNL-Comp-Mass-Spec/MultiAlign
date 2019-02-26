@@ -1,13 +1,12 @@
-﻿namespace MultiAlignCore.IO.MTDB
+﻿using FeatureAlignment.Data.MassTags;
+
+namespace MultiAlignCore.IO.MTDB
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
-
-    using Data.MassTags;
-
     using PNNLOmics.Data.Constants;
 
     using Constants = InformedProteomics.Backend.Data.Biology.Constants;

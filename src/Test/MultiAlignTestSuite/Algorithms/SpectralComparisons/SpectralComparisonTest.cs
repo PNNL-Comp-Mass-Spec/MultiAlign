@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.IO.TextFiles;
 using NUnit.Framework;
 

@@ -1,6 +1,5 @@
-﻿using MultiAlign.IO;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
+﻿using FeatureAlignment.Data.MassTags;
+using MultiAlign.IO;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 

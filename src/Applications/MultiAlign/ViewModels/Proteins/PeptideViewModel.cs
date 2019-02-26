@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using FeatureAlignment.Data.MassTags;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 
 namespace MultiAlign.ViewModels.Proteins

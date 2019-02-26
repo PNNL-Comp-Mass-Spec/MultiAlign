@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;

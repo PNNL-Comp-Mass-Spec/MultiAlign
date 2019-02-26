@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Data;
 

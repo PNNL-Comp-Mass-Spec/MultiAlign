@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.MetaData;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
-using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignChargeStateProcessor
 {

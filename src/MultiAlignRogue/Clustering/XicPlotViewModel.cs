@@ -1,4 +1,6 @@
-﻿namespace MultiAlignRogue.Clustering
+﻿using FeatureAlignment.Data.Features;
+
+namespace MultiAlignRogue.Clustering
 {
     using System;
     using System.Collections.Generic;
@@ -8,8 +10,6 @@
     using GalaSoft.MvvmLight.Messaging;
 
     using InformedProteomics.Backend.Data.Biology;
-
-    using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO;
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
-using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {

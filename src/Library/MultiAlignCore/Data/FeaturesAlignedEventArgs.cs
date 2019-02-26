@@ -2,7 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using MultiAlignCore.Data.Alignment;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Annotations;

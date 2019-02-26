@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.IO.TextFiles
 {

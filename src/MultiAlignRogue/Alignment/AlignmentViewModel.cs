@@ -1,10 +1,9 @@
-﻿using MultiAlignRogue.Utils;
+﻿using FeatureAlignment.Data.Alignment;
+using MultiAlignRogue.Utils;
 
 namespace MultiAlignRogue.Alignment
 {
     using System.Windows.Media.Imaging;
-
-    using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Drawing;
 
     public class AlignmentViewModel

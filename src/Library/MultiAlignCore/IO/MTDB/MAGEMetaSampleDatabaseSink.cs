@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data.MassTags;
 using Mage;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

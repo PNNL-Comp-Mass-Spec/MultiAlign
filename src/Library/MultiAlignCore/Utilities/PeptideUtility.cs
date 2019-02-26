@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MultiAlignCore.Data.MassTags;
-using PNNLOmics.Annotations;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.Utilities
 {
@@ -42,7 +41,6 @@ namespace MultiAlignCore.Utilities
         /// <summary>
         /// Maps peptide sequences to a dictionary based on sequence
         /// </summary>
-        [UsedImplicitly]
         public static Dictionary<string, List<Peptide>> MapSequence(IEnumerable<Peptide> peptides)
         {
             var map = new Dictionary<string, List<Peptide>>();
@@ -62,7 +60,6 @@ namespace MultiAlignCore.Utilities
         /// <summary>
         /// Maps peptide sequences to a dictionary based on scan
         /// </summary>
-        [UsedImplicitly]
         public static Dictionary<int, List<Peptide>> MapScan(IEnumerable<Peptide> peptides)
         {
 
@@ -82,7 +79,6 @@ namespace MultiAlignCore.Utilities
         /// </summary>
         /// <param name="peptides"></param>
         /// <returns></returns>
-        [UsedImplicitly]
         public static Dictionary<int, Peptide> SortBestScan(Dictionary<int, List<Peptide>> peptides)
         {
 
@@ -103,7 +99,6 @@ namespace MultiAlignCore.Utilities
         /// </summary>
         /// <param name="peptides"></param>
         /// <returns></returns>
-        [UsedImplicitly]
         public static Dictionary<string, Peptide> SortBestSequence(Dictionary<string, List<Peptide>> peptides)
         {
 

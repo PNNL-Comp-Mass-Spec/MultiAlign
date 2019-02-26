@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
 {

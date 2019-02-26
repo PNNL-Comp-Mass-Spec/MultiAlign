@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -11,7 +12,7 @@ namespace MultiAlignCore.Algorithms.Clustering
     public class FeatureTree<T, U>:
         BinarySearchTree<T, FeatureTree<T, U>>
         where T: FeatureLight, new()
-        where U: FeatureLight, Data.Features.IFeatureCluster<T>, new ()
+        where U: FeatureLight, IFeatureCluster<T>, new ()
     {
         public static int id = 0;
 

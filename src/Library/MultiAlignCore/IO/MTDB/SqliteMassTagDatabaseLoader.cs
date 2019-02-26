@@ -2,6 +2,7 @@
 
 using System.Data;
 using System.Data.SQLite;
+using FeatureAlignment.Algorithms.Options;
 using MultiAlignCore.Algorithms.Options;
 
 #endregion

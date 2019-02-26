@@ -1,11 +1,11 @@
-﻿namespace MultiAlignRogue.Alignment
+﻿using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MetaData;
+
+namespace MultiAlignRogue.Alignment
 {
     using System;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-
-    using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MetaData;
 
     /// <summary>
     /// This class is a view model for configuring a <see cref="AlignmentDimensionSettings" />
@@ -82,7 +82,7 @@
         /// <summary>
         /// Gets the type of separation that this dimension represents.
         /// </summary>
-        public FeatureLight.SeparationTypes SeparationType { get { return this.dimensionSettings.SeparationType; } }
+        public SeparationTypes SeparationType { get { return this.dimensionSettings.SeparationType; } }
 
         /// <summary>
         /// Gets or sets the tolerance used when matching features in this dimension.

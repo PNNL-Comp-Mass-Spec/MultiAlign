@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.IO.SequenceData
 {
-    using MultiAlignCore.Data.MassTags;
     using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.TextFiles;
 

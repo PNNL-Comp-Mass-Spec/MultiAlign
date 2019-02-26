@@ -1,4 +1,9 @@
-﻿namespace MultiAlignRogue
+﻿using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Options;
+
+namespace MultiAlignRogue
 {
     using System.Windows;
 
@@ -16,15 +21,9 @@
     using Ookii.Dialogs.Wpf;
 
     using DMS;
-
-    using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Extensions;
-
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Features;
-    using MultiAlignCore.IO.Options;
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;
     using MultiAlignRogue.Alignment;

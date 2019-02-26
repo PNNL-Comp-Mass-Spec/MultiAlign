@@ -1,4 +1,5 @@
-﻿using MultiAlignCore.Algorithms.Distance;
+﻿using FeatureAlignment.Data.Features;
+using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering

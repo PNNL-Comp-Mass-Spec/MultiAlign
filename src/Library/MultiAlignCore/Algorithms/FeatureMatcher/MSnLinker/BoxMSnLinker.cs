@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data.Constants.Libraries;

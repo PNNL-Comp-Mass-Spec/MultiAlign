@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlign.IO;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 

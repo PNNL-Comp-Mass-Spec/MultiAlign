@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching

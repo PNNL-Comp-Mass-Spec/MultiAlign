@@ -1,6 +1,6 @@
 ﻿using System;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Distance;
-using MultiAlignCore.Data.Features;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Distance

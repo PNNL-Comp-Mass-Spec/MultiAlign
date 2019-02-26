@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
 
@@ -12,10 +14,6 @@ namespace MultiAlignRogue
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MetaData;
-
     using MessageBox = System.Windows.MessageBox;
 
     /// <summary>

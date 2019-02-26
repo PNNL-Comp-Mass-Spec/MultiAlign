@@ -2,11 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
-using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 using NHibernate.Cache.Entry;
 

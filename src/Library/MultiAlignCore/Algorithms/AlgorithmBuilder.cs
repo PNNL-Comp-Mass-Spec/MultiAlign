@@ -1,8 +1,9 @@
 #region
 
 using System;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;

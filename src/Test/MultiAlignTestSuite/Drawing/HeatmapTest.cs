@@ -3,9 +3,9 @@
 using System;
 using System.IO;
 using System.Xml;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore;
 using MultiAlignCore.Algorithms;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Drawing;

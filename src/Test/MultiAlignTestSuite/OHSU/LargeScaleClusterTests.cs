@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;

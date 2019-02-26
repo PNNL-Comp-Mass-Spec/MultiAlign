@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data;

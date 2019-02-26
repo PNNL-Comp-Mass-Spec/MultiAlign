@@ -75,36 +75,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\IAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarp.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentMatch.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentOptions.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentProcessor.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpAlignmentType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureAligner.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatch.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpFeatureMatcher.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpPlotDataCreator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpResults.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\LcmsWarpStatistics.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\IMassRegressionCalculator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCalibrationType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCentralRegression.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpCombinedRegression.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpMassAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpMzCalibrator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpNetMassCalibrator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpNetMzCalibrator.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\LcmsWarpRegressionType.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\MassCalibration\MassCalibrationFactory.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpAlignmentScorer.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetAlignmentFunction.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpNetWarper.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NetCalibration\LcmsWarpSectionInfo.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NewAlignmentData.cs" />
-    <Compile Include="Algorithms\Alignment\LcmsWarp\NewLcmsWarp.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointFinder.cs" />
     <Compile Include="Algorithms\Alignment\SequenceMatching\PeptideAnchorPointMatcher.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\AlignedFeatureData.cs" />
@@ -116,14 +86,11 @@
     <Compile Include="Algorithms\Alignment\SpectralMatching\ISpectralAnalysisWriter.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAligner.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnalysis.cs" />
-    <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnchorPoint.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnchorPointAligner.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnchorPointFinder.cs" />
-    <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnchorPointMatch.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralAnchorPointValidator.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralOptions.cs" />
     <Compile Include="Algorithms\Alignment\SpectralMatching\SpectralUtilities.cs" />
-    <Compile Include="Algorithms\Alignment\AnchorPointMatchType.cs" />
     <Compile Include="Algorithms\Alignment\AlignmentMeasurement.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignment.cs" />
@@ -131,7 +98,6 @@
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentResults.cs" />
     <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
-    <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\ISpectralAnchorPointMatchValidator.cs" />
     <Compile Include="Algorithms\Alignment\SpectralAlignerWrapper.cs" />
     <Compile Include="Algorithms\Chromatograms\IChromatogramProvider.cs" />
@@ -213,7 +179,6 @@
     <Compile Include="Algorithms\Features\UMCAbundanceSumConsolidator.cs" />
     <Compile Include="Algorithms\Interpolation\SplineInterpolation.cs" />
     <Compile Include="Algorithms\Options\AlignmentOptions.cs" />
-    <Compile Include="Algorithms\Options\MassTagDatabaseOptions.cs" />
     <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
     <Compile Include="Algorithms\Options\STACOptions.cs" />
     <Compile Include="Algorithms\Regression\AlglibRegression.cs" />
@@ -223,17 +188,7 @@
     <Compile Include="Algorithms\Regression\FitReport.cs" />
     <Compile Include="Algorithms\Regression\FitReportALGLIB.cs" />
     <Compile Include="Algorithms\Regression\IRegression.cs" />
-    <Compile Include="Algorithms\Regression\IRegressorAlgorithm.cs" />
-    <Compile Include="Algorithms\Regression\LcmsNaturalCubicSplineRegression.cs" />
-    <Compile Include="Algorithms\Regression\LeastSquaresSplineRegressionModel.cs" />
-    <Compile Include="Algorithms\Regression\LinearEmModel.cs" />
-    <Compile Include="Algorithms\Regression\LinearRegressionModel.cs" />
-    <Compile Include="Algorithms\Regression\LinearRegressionResult.cs" />
-    <Compile Include="Algorithms\Regression\LinearRegressorFactory.cs" />
     <Compile Include="Algorithms\Regression\LoessInterpolator.cs" />
-    <Compile Include="Algorithms\Regression\MixtureModelEm.cs" />
-    <Compile Include="Algorithms\Regression\NormalUniformEm.cs" />
-    <Compile Include="Algorithms\Regression\RegressionType.cs" />
     <Compile Include="Algorithms\Solvers\LevenburgMarquadt\BasisFunctions\AsymmetricGaussian.cs" />
     <Compile Include="Algorithms\Solvers\LevenburgMarquadt\BasisFunctions\BasisFunctionsEnum.cs" />
     <Compile Include="Algorithms\Solvers\LevenburgMarquadt\BasisFunctions\Chebyshev.cs" />
@@ -268,7 +223,6 @@
     <Compile Include="Algorithms\SpectralProcessing\SteinDotProduct.cs" />
     <Compile Include="Algorithms\SpectralProcessing\ThresholdSpectralFilter.cs" />
     <Compile Include="Algorithms\SpectralProcessing\TopPercentSpectralFilter.cs" />
-    <Compile Include="Algorithms\Statistics\Histogram.cs" />
     <Compile Include="Algorithms\Statistics\HypothesisTestingFactory.cs" />
     <Compile Include="Algorithms\Statistics\HypothesisTestingData.cs" />
     <Compile Include="Algorithms\Statistics\HypothesisTests.cs" />
@@ -298,14 +252,9 @@
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
     <Compile Include="Algorithms\FeatureTolerances.cs" />
     <Compile Include="Algorithms\FunctionalRedundancy.cs" />
-    <Compile Include="Algorithms\IProgressNotifer.cs" />
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
-    <Compile Include="Algorithms\ProgressNotifierArgs.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Data\DataLoadingOptions.cs" />
-    <Compile Include="Data\Index3D.cs" />
-    <Compile Include="Data\Alignment\AlignmentData.cs" />
-    <Compile Include="Data\Alignment\ResidualData.cs" />
     <Compile Include="Data\DatasetLoader.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
@@ -313,41 +262,21 @@
     <Compile Include="Data\Factors\FactorInformation.cs" />
     <Compile Include="Data\Factors\FactorTree.cs" />
     <Compile Include="Data\Factors\TreeNode.cs" />
-    <Compile Include="Data\Features\ClusterCentroidRepresentation.cs" />
     <Compile Include="Data\Features\ClusterStats.cs" />
     <Compile Include="Data\Features\FeatureAnnotation.cs" />
-    <Compile Include="Data\Features\FeatureDataConverters.cs" />
-    <Compile Include="Data\Features\FeatureLight.cs" />
-    <Compile Include="Data\Features\IChildFeature.cs" />
-    <Compile Include="Data\Features\IFeatureCluster.cs" />
     <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\Features\LcmsFeatureFilteringOptions.cs" />
     <Compile Include="Data\Features\LcmsFeatureFilters.cs" />
     <Compile Include="Data\Features\MsFeatureFilteringOptions.cs" />
-    <Compile Include="Data\Features\MSFeatureLight.cs" />
     <Compile Include="Data\Features\MSFeatureMsMs.cs" />
-    <Compile Include="Data\Features\UMCClusterLight.cs" />
     <Compile Include="Data\Features\UMCClusterLightMatched.cs" />
     <Compile Include="Data\Features\UMCExtended.cs" />
-    <Compile Include="Data\Features\UMCLight.cs" />
-    <Compile Include="Data\IScanSummaryProvider.cs" />
-    <Compile Include="Data\MassTags\CleavageState.cs" />
-    <Compile Include="Data\MassTags\FeatureMatchLight.cs" />
-    <Compile Include="Data\MassTags\MassTagDatabase.cs" />
-    <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
-    <Compile Include="Data\MassTags\MassTagLight.cs" />
-    <Compile Include="Data\MassTags\Peptide.cs" />
-    <Compile Include="Data\MassTags\Protein.cs" />
-    <Compile Include="Data\MassTags\TerminusState.cs" />
     <Compile Include="Data\MetaData\AnalysisMetaData.cs" />
     <Compile Include="Data\MetaData\DatasetInformation.cs" />
     <Compile Include="Data\MetaData\DatasetPlotInformation.cs" />
     <Compile Include="Data\MetaData\DMSServerInformation.cs" />
-    <Compile Include="Data\MetaData\IDataset.cs" />
     <Compile Include="Data\MetaData\SupportedFileCombination.cs" />
     <Compile Include="Data\MetaData\SupportedFileType.cs" />
-    <Compile Include="Data\Peaks\Peak.cs" />
-    <Compile Include="Data\Peaks\ProcessedPeak.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
     <Compile Include="Data\SequenceData\SequenceToMsnFeature.cs" />
     <Compile Include="Data\AnalysisCompleteEventArgs.cs" />
@@ -356,9 +285,7 @@
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisPathUtils.cs" />
     <Compile Include="Data\BaselineFeaturesLoadedEventArgs.cs" />
-    <Compile Include="Data\Chromatogram.cs" />
     <Compile Include="Data\ClusterToMassTagMap.cs" />
-    <Compile Include="Data\CollisionType.cs" />
     <Compile Include="Data\DatasetSummary.cs" />
     <Compile Include="Data\DataSummaryAttribute.cs" />
     <Compile Include="Data\FeatureCacheManager.cs" />
@@ -372,21 +299,15 @@
     <Compile Include="Data\MassTagsLoadedEventArgs.cs" />
     <Compile Include="Data\MassTagToCluster.cs" />
     <Compile Include="Data\MassTagToProteinMap.cs" />
-    <Compile Include="Data\Molecule.cs" />
     <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
     <Compile Include="Data\MSMSCluster.cs" />
     <Compile Include="Data\MSMSClusterMap.cs" />
-    <Compile Include="Data\MSSpectra.cs" />
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\PairwiseDistance.cs" />
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\PrecursorInfo.cs" />
     <Compile Include="Data\ProteinToMassTags.cs" />
-    <Compile Include="Data\RegressionPoint.cs" />
-    <Compile Include="Data\ScanSummary.cs" />
     <Compile Include="Data\UMCClusterLightCacheManager.cs" />
-    <Compile Include="Data\XYData.cs" />
-    <Compile Include="Data\XYZData.cs" />
     <Compile Include="Drawing\ChargeHistogramPlot.cs" />
     <Compile Include="Drawing\ColorTypeIterator.cs" />
     <Compile Include="Drawing\Heatmap.cs" />
@@ -520,7 +441,6 @@
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
     <Compile Include="IO\MTDB\SqliteMassTagDatabaseLoader.cs" />
-    <Compile Include="IO\Options\IgnoreOptionProperty.cs" />
     <Compile Include="IO\Options\OptionPair.cs" />
     <Compile Include="IO\Options\OptionsTransformer.cs" />
     <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
@@ -618,6 +538,12 @@
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.99.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FeatureAlignment\FeatureAlignment.csproj">
+      <Project>{2d6190d9-3001-4dd8-b8a5-3bb41d58be9e}</Project>
+      <Name>FeatureAlignment</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

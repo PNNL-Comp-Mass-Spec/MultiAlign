@@ -1,6 +1,6 @@
 #region
 
-using MultiAlignCore.Data.Alignment;
+using FeatureAlignment.Data.Alignment;
 
 #endregion
 

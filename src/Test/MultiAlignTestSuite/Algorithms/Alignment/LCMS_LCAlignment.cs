@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Data.Features;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Alignment

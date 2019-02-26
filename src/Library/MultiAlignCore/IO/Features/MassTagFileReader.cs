@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.IO.TextFiles;
 
 namespace MultiAlignCore.IO.Features

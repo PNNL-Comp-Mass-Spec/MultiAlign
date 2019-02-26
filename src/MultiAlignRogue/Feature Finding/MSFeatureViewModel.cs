@@ -1,5 +1,6 @@
-﻿using GalaSoft.MvvmLight.Command;
-using MultiAlignCore.Data.Features;
+﻿using FeatureAlignment.Data.Features;
+using GalaSoft.MvvmLight.Command;
+using MultiAlignCore.Data.MetaData;
 using OxyPlot.Annotations;
 
 namespace MultiAlignRogue.Feature_Finding
@@ -9,15 +10,11 @@ namespace MultiAlignRogue.Feature_Finding
     using System.Drawing;
     using System.Linq;
     using System.Windows;
-
-    using MultiAlignCore.Data.MetaData;
-
     using MultiAlignRogue.Utils;
 
     using OxyPlot;
     using OxyPlot.Axes;
     using OxyPlot.Series;
-
 
     using QuadTreeLib;
 

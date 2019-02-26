@@ -1,4 +1,6 @@
 ﻿
+using FeatureAlignment.Data.Features;
+
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>

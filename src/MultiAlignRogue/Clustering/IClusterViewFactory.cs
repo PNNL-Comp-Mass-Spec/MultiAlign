@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
+using FeatureAlignment.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.IO.RawData;
 
     using MultiAlignRogue.Utils;

@@ -2,11 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

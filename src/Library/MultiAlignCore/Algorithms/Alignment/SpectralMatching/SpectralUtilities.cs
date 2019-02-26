@@ -1,4 +1,5 @@
 ﻿using System;
+using FeatureAlignment.Data;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Data;
 

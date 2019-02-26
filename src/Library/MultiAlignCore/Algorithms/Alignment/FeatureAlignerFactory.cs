@@ -1,12 +1,14 @@
 ﻿#region
 
 using System.Collections.Generic;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

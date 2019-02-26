@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;

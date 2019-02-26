@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Annotations;

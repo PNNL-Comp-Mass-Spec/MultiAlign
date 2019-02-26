@@ -2,7 +2,7 @@
 
 using System.IO;
 using System.Linq;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.IO.MTDB;
 
 #endregion

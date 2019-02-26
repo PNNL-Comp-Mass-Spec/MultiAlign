@@ -1,6 +1,5 @@
-﻿using MultiAlign.IO;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
+﻿using FeatureAlignment.Data.Features;
+using MultiAlign.IO;
 using MultiAlignCore.IO;
 
 namespace MultiAlign.ViewModels.TreeView

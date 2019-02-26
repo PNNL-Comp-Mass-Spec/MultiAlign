@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using FeatureAlignment.Data;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO.RawData;

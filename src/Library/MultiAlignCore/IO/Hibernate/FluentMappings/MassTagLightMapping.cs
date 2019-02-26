@@ -1,5 +1,5 @@
-﻿using FluentNHibernate.Mapping;
-using MultiAlignCore.Data.MassTags;
+﻿using FeatureAlignment.Data.MassTags;
+using FluentNHibernate.Mapping;
 
 namespace MultiAlignCore.IO.Hibernate.FluentMappings
 {

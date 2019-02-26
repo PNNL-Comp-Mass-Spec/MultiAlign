@@ -2,14 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using FeatureAlignment.Data.MassTags;
 using MultiAlign.Commands;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 

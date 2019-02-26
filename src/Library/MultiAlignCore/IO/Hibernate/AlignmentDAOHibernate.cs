@@ -1,7 +1,7 @@
 #region
 
 using System.Data.SQLite;
-using MultiAlignCore.Data.Alignment;
+using FeatureAlignment.Data.Alignment;
 using MultiAlignCore.IO.Features;
 
 #endregion

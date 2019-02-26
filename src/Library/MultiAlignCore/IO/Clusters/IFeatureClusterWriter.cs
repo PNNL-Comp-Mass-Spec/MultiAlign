@@ -1,10 +1,11 @@
 ﻿#region
 
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 
 #endregion

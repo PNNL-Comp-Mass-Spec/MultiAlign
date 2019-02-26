@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 #endregion

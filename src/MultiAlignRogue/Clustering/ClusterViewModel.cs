@@ -1,4 +1,7 @@
-﻿namespace MultiAlignRogue.Clustering
+﻿using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
+
+namespace MultiAlignRogue.Clustering
 {
     using System;
     using System.Collections.Generic;
@@ -9,8 +12,6 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.Features;
     using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
     using MultiAlignRogue.Utils;

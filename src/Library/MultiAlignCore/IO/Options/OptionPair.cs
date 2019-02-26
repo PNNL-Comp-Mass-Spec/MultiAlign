@@ -1,5 +1,3 @@
-using System;
-
 namespace MultiAlignCore.IO.Options
 {
     public class OptionPair

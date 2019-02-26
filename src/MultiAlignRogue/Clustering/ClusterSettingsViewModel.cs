@@ -1,9 +1,13 @@
 ﻿using System.Collections.ObjectModel;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using GalaSoft.MvvmLight.Messaging;
 using InformedProteomics.Backend.Utils;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
-using MultiAlignCore.Data.Features;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Hibernate;
@@ -22,12 +26,7 @@ namespace MultiAlignRogue.Clustering
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-
-    using MultiAlignCore.Algorithms;
     using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
-    using MultiAlignCore.Algorithms.Options;
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MassTags;
     using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
 

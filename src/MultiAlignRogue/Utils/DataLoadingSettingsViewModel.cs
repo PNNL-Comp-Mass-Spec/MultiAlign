@@ -1,11 +1,10 @@
 ﻿using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data;
 
 namespace MultiAlignRogue.Utils
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-
-    using MultiAlignCore.Data;
 
     public class DataLoadingSettingsViewModel : ViewModelBase
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data.Features;
 using PNNLOmics.Annotations;
 
 namespace MultiAlign.ViewModels.TreeView

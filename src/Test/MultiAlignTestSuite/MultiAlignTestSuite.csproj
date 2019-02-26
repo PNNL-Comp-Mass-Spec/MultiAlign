@@ -137,6 +137,10 @@
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\FeatureAlignment\FeatureAlignment.csproj">
+      <Project>{2d6190d9-3001-4dd8-b8a5-3bb41d58be9e}</Project>
+      <Name>FeatureAlignment</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestCore\TestCore.csproj">
       <Project>{2b216610-b41c-4b55-9efa-6aac8cd91e32}</Project>
       <Name>TestCore</Name>

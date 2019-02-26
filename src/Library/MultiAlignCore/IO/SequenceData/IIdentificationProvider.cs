@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlignCore.IO.SequenceData
 {
     using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MassTags;
 
     public interface IIdentificationProvider
     {

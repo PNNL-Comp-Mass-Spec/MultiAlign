@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Features;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
@@ -11,8 +13,8 @@ namespace MultiAlignCore.Algorithms.Clustering
     /// <typeparam name="T">Features to cluster.</typeparam>
     /// <typeparam name="T">Clusters produced.</typeparam>
     public abstract class LinkageClustererBase<T, U> : IProgressNotifer, IClusterer<T, U>
-        where T : FeatureLight, Data.Features.IChildFeature<U>, new()
-        where U : FeatureLight, Data.Features.IFeatureCluster<T>, new()
+        where T : FeatureLight, IChildFeature<U>, new()
+        where U : FeatureLight, IFeatureCluster<T>, new()
     {
 
         /// <summary>

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using MultiAlignCore.Data.MetaData;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignChargeStateProcessor
 {

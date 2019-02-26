@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using FeatureAlignment.Algorithms;
 
 #endregion
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using FeatureAlignment.Data.Features;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 

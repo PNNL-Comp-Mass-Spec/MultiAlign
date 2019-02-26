@@ -1,7 +1,9 @@
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
+
 namespace MultiAlignCore.Data
 {
     using MultiAlignCore.Data.Features;
-    using MultiAlignCore.Data.MassTags;
 
     public class ClusterToMassTagMap
     {

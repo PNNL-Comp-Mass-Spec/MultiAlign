@@ -2,6 +2,7 @@
 
 using System.Data;
 using System.Data.SqlClient;
+using FeatureAlignment.Algorithms.Options;
 using MultiAlignCore.Algorithms.Options;
 
 #endregion

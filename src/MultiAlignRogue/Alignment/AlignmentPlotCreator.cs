@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
-using MultiAlignCore.Data.Alignment;
+using FeatureAlignment.Data.Alignment;
 using MultiAlignCore.Drawing;
 
 namespace MultiAlignRogue.Alignment

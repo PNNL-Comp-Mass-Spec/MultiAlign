@@ -1,7 +1,7 @@
 ﻿#region
 
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Algorithms.Options;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using NUnit.Framework;

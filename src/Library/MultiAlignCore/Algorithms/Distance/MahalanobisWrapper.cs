@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MultiAlignCore.Data.Features;
 

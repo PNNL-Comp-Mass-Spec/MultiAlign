@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using FeatureAlignment.Data.Features;
 using MultiAlign.Data;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.Drawing;
 
 namespace MultiAlign.Windows.Plots

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
+using FeatureAlignment.Data;
 using MultiAlignCore.Data;
 using NHibernate.Criterion;
 

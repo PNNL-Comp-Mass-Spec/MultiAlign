@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using FeatureAlignment.Data;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.TextFiles

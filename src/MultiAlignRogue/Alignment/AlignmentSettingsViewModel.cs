@@ -1,4 +1,12 @@
-﻿namespace MultiAlignRogue.Alignment
+﻿using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data;
+
+namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
@@ -12,14 +20,6 @@
     using GalaSoft.MvvmLight.Messaging;
 
     using InformedProteomics.Backend.Utils;
-
-    using MultiAlignCore.Algorithms;
-    using MultiAlignCore.Algorithms.Alignment;
-    using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
-    using MultiAlignCore.Algorithms.Options;
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.Alignment;
-    using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Hibernate;
     using MultiAlignRogue.AMTMatching;
@@ -182,7 +182,7 @@
             this.DimensionSettings = new ObservableCollection<AlignmentDimensionSettingsViewModel>
             {
                 new AlignmentDimensionSettingsViewModel(new AlignmentDimensionSettings()),
-                new AlignmentDimensionSettingsViewModel(new AlignmentDimensionSettings { SeparationType = FeatureLight.SeparationTypes.DriftTime })
+                new AlignmentDimensionSettingsViewModel(new AlignmentDimensionSettings { SeparationType = SeparationTypes.DriftTime })
             };
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Data.Features;
 

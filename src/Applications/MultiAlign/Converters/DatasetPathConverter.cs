@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Data;
 
 namespace MultiAlign.Converters
 {
-    using MultiAlignCore.Data;
-
     public class DatasetPathConverter : IValueConverter
     {
         #region IValueConverter Members

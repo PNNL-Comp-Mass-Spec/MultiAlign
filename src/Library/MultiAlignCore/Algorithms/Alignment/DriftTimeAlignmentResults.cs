@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Algorithms.Regression;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Algorithms.Regression;
 using MultiAlignCore.Data.Features;

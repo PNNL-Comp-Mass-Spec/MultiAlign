@@ -1,7 +1,7 @@
 ﻿using System;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlign.ViewModels.TreeView
 {

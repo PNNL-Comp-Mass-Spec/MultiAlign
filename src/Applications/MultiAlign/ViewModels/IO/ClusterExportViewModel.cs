@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using FeatureAlignment.Data.Features;
 using MultiAlign.Commands;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.TreeView;

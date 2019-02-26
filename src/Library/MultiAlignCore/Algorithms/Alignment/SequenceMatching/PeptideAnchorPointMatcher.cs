@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Algorithms.Alignment;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Utilities;
 
 namespace MultiAlignCore.Algorithms.Alignment.SequenceMatching

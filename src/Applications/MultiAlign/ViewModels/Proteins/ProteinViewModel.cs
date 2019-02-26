@@ -1,5 +1,5 @@
 ﻿
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 
 namespace MultiAlign.ViewModels.Proteins
 {

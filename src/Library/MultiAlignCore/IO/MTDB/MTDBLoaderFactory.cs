@@ -1,8 +1,9 @@
 #region
 
 using System;
+using FeatureAlignment.Algorithms.Options;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 
 #endregion

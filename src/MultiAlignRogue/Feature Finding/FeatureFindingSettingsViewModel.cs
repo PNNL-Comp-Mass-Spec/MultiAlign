@@ -1,4 +1,9 @@
-﻿namespace MultiAlignRogue.Feature_Finding
+﻿using FeatureAlignment.Data.Features;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
+
+namespace MultiAlignRogue.Feature_Finding
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +15,6 @@
     using System.Windows;
     using InformedProteomics.Backend.Utils;
     using MultiAlignCore.Algorithms.Clustering;
-    using MultiAlignCore.Algorithms.Options;
-    using MultiAlignCore.Data.Features;
     using MultiAlignCore.IO.RawData;
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;
@@ -19,9 +22,6 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
-
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MetaData;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Features;
 

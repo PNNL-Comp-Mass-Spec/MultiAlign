@@ -2,6 +2,7 @@
 
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data;
 using InformedProteomics.Backend.MassSpecData;
 using MultiAlignCore.Data;
 

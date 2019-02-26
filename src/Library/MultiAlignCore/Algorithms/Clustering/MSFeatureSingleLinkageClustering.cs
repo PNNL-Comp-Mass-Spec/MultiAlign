@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Features;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data;
 using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt;
-using MultiAlignCore.Data;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Solvers

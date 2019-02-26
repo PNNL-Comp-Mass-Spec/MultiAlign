@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using FeatureAlignment.Data.MassTags;
 using MTDBFramework.IO;
-using MultiAlignCore.Data.MassTags;
 
 
 namespace MultiAlignCore.IO.MTDB

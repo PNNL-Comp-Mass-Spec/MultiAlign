@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms.Regression;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Regression;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Alignment

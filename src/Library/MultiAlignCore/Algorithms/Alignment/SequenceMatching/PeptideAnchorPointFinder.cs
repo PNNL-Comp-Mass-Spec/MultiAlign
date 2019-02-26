@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Algorithms.Alignment.SpectralMatching;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
-using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Utilities;
 using PeptideUtility = MultiAlignCore.Utilities.PeptideUtility;
 

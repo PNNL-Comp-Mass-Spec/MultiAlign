@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Annotations;
 

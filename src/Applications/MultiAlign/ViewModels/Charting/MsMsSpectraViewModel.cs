@@ -1,4 +1,4 @@
-﻿using MultiAlignCore.Data;
+﻿using FeatureAlignment.Data;
 using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Axes;

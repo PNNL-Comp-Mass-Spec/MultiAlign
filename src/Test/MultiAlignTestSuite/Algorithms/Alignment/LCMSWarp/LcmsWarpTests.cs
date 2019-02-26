@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp;
+using FeatureAlignment.Algorithms.Alignment.LcmsWarp.MassCalibration;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
+using MultiAlignCore;
 using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Drawing;
 using NUnit.Framework;
 
@@ -17,8 +18,6 @@ using NUnit.Framework;
 
 namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 {
-    using MultiAlignCore.Algorithms.Alignment.LcmsWarp.MassCalibration;
-
     [TestFixture]
     public sealed class LcmsWarpTests: TestBase
     {

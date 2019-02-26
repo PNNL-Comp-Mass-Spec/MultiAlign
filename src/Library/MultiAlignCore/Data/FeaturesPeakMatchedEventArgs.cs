@@ -2,8 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -15,7 +16,7 @@ namespace MultiAlignCore.Data
     public class FeaturesPeakMatchedEventArgs : EventArgs
     {
         public FeaturesPeakMatchedEventArgs(List<UMCClusterLight> clusters,
-            List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> matches)
+            List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches)
         {
             Matches = matches;
             Clusters = clusters;
@@ -26,6 +27,6 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the list of matches.
         /// </summary>
-        public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { private set; get; }
+        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { private set; get; }
     }
 }

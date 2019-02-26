@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Annotations;

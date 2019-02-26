@@ -1,7 +1,7 @@
 #region
 
 using System.Collections.Generic;
-using MultiAlignCore.Data.MassTags;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.IO.MassTags;
 using NHibernate.Criterion;
 

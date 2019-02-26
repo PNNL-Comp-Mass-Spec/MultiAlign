@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using FeatureAlignment.Data;
 using MultiAlignCore.Data;
 
 #endregion

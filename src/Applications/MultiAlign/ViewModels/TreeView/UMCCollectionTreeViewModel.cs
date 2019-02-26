@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MultiAlignCore.Data.Features;
+using FeatureAlignment.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {

@@ -11,6 +11,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -19,8 +20,8 @@ namespace MultiAlignCore.Algorithms.Clustering
     /// Clusters UMC's (LC-MS Features, LC-IMS-MS Features) into UMC Clusters.
     /// </summary>
     public class UMCSingleLinkageClusterer<T, U> : LinkageClustererBase<T, U>
-        where T : FeatureLight, Data.Features.IChildFeature<U>,   new()
-        where U : FeatureLight, Data.Features.IFeatureCluster<T>, new()
+        where T : FeatureLight, IChildFeature<U>,   new()
+        where U : FeatureLight, IFeatureCluster<T>, new()
     {
         /// <summary>
         /// Default Constructor.  This sets the parameters and tolerances to their default values.

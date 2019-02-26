@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data;

@@ -1,4 +1,5 @@
 ﻿using System;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering

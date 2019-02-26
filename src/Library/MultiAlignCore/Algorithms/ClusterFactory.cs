@@ -1,5 +1,6 @@
 #region
 
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 

@@ -1,15 +1,14 @@
-﻿using InformedProteomics.Backend.Utils;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
+﻿using FeatureAlignment.Algorithms;
+using FeatureAlignment.Data.Alignment;
+using FeatureAlignment.Data.Features;
+using FeatureAlignment.Data.MassTags;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
-
-    using MultiAlignCore.Algorithms;
-    using MultiAlignCore.Data.Alignment;
-    using MultiAlignCore.Data.MetaData;
 
 
     class LCMSFeatureAligner

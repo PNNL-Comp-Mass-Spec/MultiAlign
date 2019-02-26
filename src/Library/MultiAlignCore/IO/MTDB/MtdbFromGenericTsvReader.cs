@@ -1,4 +1,6 @@
-﻿namespace MultiAlignCore.IO.MTDB
+﻿using FeatureAlignment.Data.MassTags;
+
+namespace MultiAlignCore.IO.MTDB
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +9,6 @@
     using System.IO;
 
     using InformedProteomics.Backend.Data.Biology;
-
-    using MultiAlignCore.Data.MassTags;
 
     /// <summary>
     /// This class is is a reader for

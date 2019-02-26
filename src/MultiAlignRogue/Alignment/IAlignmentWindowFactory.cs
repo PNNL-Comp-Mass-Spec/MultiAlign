@@ -2,8 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using MultiAlignCore.Data.Alignment;
-
     public interface IAlignmentWindowFactory
     {
         void CreateNewWindow();

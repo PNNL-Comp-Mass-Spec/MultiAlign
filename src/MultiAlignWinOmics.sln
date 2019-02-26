@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignRogue", "MultiAli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignEngineComparisons", "Test\MultiAlignEngineComparisons\MultiAlignEngineComparisons.csproj", "{5B3F2CBD-BCFB-4613-AF64-6A2F415377BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureAlignment", "Library\FeatureAlignment\FeatureAlignment.csproj", "{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,18 @@ Global
 		{5B3F2CBD-BCFB-4613-AF64-6A2F415377BA}.Release|x64.Build.0 = Release|x64
 		{5B3F2CBD-BCFB-4613-AF64-6A2F415377BA}.Release|x86.ActiveCfg = Release|x86
 		{5B3F2CBD-BCFB-4613-AF64-6A2F415377BA}.Release|x86.Build.0 = Release|x86
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x64.Build.0 = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x86.Build.0 = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x64.ActiveCfg = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x64.Build.0 = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,5 +165,9 @@ Global
 		{2B216610-B41C-4B55-9EFA-6AAC8CD91E32} = {2C157EF4-2595-452C-B9A8-4910985257AB}
 		{DA869866-52CD-4053-BFC2-51CD3846ED3C} = {093E911F-F413-4FAE-BCD7-79E106A03366}
 		{5B3F2CBD-BCFB-4613-AF64-6A2F415377BA} = {2C157EF4-2595-452C-B9A8-4910985257AB}
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E} = {66F2B136-AC6E-49A8-9244-3C3D2D421987}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B0168F8F-35F8-4544-A917-3F693E6FE9D5}
 	EndGlobalSection
 EndGlobal

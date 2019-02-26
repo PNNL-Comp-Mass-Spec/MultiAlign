@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FeatureAlignment.IO.Options;
 using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.IO.Options

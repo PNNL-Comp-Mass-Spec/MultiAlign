@@ -1,4 +1,6 @@
-﻿namespace MultiAlignCore.IO.RawData
+﻿using FeatureAlignment.Data;
+
+namespace MultiAlignCore.IO.RawData
 {
     using System;
     using System.Collections.Generic;

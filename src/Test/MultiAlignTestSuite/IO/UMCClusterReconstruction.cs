@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using MultiAlignCore.Data;
+using FeatureAlignment.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;

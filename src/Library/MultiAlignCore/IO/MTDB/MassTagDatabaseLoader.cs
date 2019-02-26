@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using FeatureAlignment.Algorithms.Options;
+using FeatureAlignment.Data;
+using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 
 #endregion
 

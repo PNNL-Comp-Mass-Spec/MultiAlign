@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureAlignment.Data.Features;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -57,8 +58,8 @@ namespace MultiAlignCore.Algorithms.Clustering
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
     public class MedianSplitReprocessor<T, U>: IClusterReprocessor<T, U>
-        where T : FeatureLight, Data.Features.IChildFeature<U>, new()
-        where U : FeatureLight, Data.Features.IFeatureCluster<T>, new()
+        where T : FeatureLight, IChildFeature<U>, new()
+        where U : FeatureLight, IFeatureCluster<T>, new()
     {
 
         /// <summary>

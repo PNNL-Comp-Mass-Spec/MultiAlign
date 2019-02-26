@@ -1,5 +1,6 @@
 ﻿#region
 
+using FeatureAlignment.Algorithms.Options;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data;
