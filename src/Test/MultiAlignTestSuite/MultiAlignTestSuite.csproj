@@ -53,16 +53,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\Mage\Mage.dll</HintPath>
     </Reference>
-    <Reference Include="MTDBFramework, Version=1.0.5656.13514, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
+    <Reference Include="MTDBFrameworkBase">
+      <HintPath>..\..\..\lib\MTDBFrameworkBase\MTDBFrameworkBase.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\InformedProteomics\PNNLOmics.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmicsIO">
-      <HintPath>..\..\..\lib\PNNLOmicsIO.dll</HintPath>
+      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -126,11 +122,6 @@
     <Compile Include="OHSU\ClusterExtractor.cs" />
     <Compile Include="OHSU\LargeScaleClusterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">

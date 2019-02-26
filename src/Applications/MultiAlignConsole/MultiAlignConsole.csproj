@@ -33,17 +33,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MTDBFramework, Version=1.0.5656.13514, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MTDBFrameworkBase, Version=1.0.6995.40040, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
+      <HintPath>..\..\..\lib\MTDBFrameworkBase\MTDBFrameworkBase.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\InformedProteomics\PNNLOmics.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmicsIO, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\PNNLOmicsIO.dll</HintPath>
+      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

@@ -50,7 +50,7 @@
     </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\InformedProteomics\PNNLOmics.dll</HintPath>
+      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

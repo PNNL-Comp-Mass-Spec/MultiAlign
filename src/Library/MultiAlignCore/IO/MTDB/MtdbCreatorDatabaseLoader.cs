@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FeatureAlignment.Data.MassTags;
-using MTDBFramework.IO;
+using MTDBFrameworkBase.IO;
 
 
 namespace MultiAlignCore.IO.MTDB
@@ -44,7 +44,6 @@ namespace MultiAlignCore.IO.MTDB
                     PeptideSequence = target.Sequence,
                     NetStandardDeviation = target.StdevNet
                 };
-
 
                 // Here we create unique proteins for the mass tag copying information from the consensus target proteins.
                 var proteinsForMassTag = new List<Protein>();
