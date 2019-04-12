@@ -6458,7 +6458,7 @@
             <summary>
             Perform a set number of random mutations on a string
             </summary>
-            <param name="str"></param>
+            <param name="textToMutate"></param>
             <param name="numMutations"></param>
             <returns></returns>
         </member>
