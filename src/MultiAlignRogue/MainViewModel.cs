@@ -584,6 +584,9 @@ namespace MultiAlignRogue
                     this.ShowSplash = false;
                     this.analysisConfig.AnalysisName = newProjectViewModel.ProjectFilePath;
                     this.ProjectPath = newProjectViewModel.ProjectFilePath;
+                    if (!Path.HasExtension(this.ProjectPath))
+                        this.ProjectPath = Path.ChangeExtension(this.ProjectPath, ".db3");
+
                     this.projectDirectory = Path.GetDirectoryName(this.projectPath) + Path.DirectorySeparatorChar;
                     this.outputDirectory = newProjectViewModel.OutputDirectory;
                     await this.LoadRogueProject(true, newProjectViewModel.Datasets.Select(x => x.Dataset).ToList());
