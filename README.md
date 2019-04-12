@@ -24,6 +24,61 @@ followed by matching to an AMT tag DB. The processing performed by MultiAlign
 results in fewer "missing values" vs. the results obtained when analyzing 
 separate datasets with VIPER.
 
+## MultiAlign Rogue
+
+MultiAlign Rogue is the next iteration of MultiAlign. At the moment, required input files, for each dataset, are:
+* Thermo Raw File
+* DeconTools _isos.csv file
+* DeconTools _scans.csv file
+
+To use MultiAlign Rogue, click New Project, then define the Project file and Output Directory via the Browse Buttons.
+Next, select the .Raw files for your datasets using the "Add Dataset" button
+* Select the .raw files for your datasts
+* The DeconTools _isos.csv and _scans.csv files need to be in the same directory as the .raw files
+
+Once the inputs are defined, the Open button will become available; click it
+
+MultiAlign Rogue will make a .pbf file for each .raw file, showing the progress as "Loading Raw Data"
+* For 1 GB .raw files, this process can take 5 to 10 minutes per .raw file
+
+After the data loading is complete, select the Feature Finding tab (tab #2), then choose one or more datasets, and click "Load LCMS Features".
+* MultiAlign Rogue will show the Status as "FindingFeatures"
+  * This can take several minutes per dataset
+* Once features have been found, the Status will show "PersistingFeatures" and then "FeaturesFound"
+
+Visualize features by selecting a dataset with state "FeaturesFound" and clicking "Plot Features" at the bottom right.
+
+Once the features have been been found, they can be aligned across datasets using tab #3, Alignment.
+* Choose a baseline datasets (AMT Tag Database is not yet supported).
+* Select one or more datasets at the left, then click "Align Datasets"
+  * Status will appear as "Aligning".  Once alignment finishes, it will show "Aligned"
+  * The baseline datasets will show Baseline in the Status file
+* Future: Visualize the Alignment using "Display Alignment"
+* Future: Save alignment plots using "Save Alignment Plots"
+
+Once features have been aligned to the baseline, find LC-MS Features in common to all of the datasets using tab #4, Clustering
+* Choose The datasets to cluster together (typically all of them), then click "Cluster Features"
+  * Status will appear as Clustering, then PersistingCluters, and finally Clustered
+* View the clustered features with the "View Clusters" button at the bottom right
+* Columns in the Cluster List table are:
+  * Cluster ID
+  * Monoisotopic Mass
+  * Normalized Elution Time (NET)
+  * Abundance
+  * Number of datasets that are part of each cluster (#)
+* Select a cluster to update the plots and the Feature List table at the bottom right
+* Additional histograms are visible under the Tools menu
+* To zoom the plot, click and drag the Middle mouse button
+  * Alternatively, click and drag with Ctrl+Alt+Left Button
+* To zoom out fully, double middle mouse click (or double Ctrl+Alt+Left click)
+
+To export clustered feature details, you need to open the SQLite database specified originally as the Project file
+* Use DB Browser for SQLite, available at https://sqlitebrowser.org/dl/
+  * Choose the "Standard installer for 64-bit Windows"
+* After installing, start "DB Browser", then select the .db3 Project file
+* Choose the "Browse Data" tab, then in the Table Dropdown box, select T_Clusters to see the cluster info
+* Details on Clusters at the dataset level are in table T_LCMS_Featuers
+
 ## Contacts
 
 Written by Brian LaMarche, Bryson Gibbons, and Chris Wilkins for the Department of Energy (PNNL, Richland, WA) \
