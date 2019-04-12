@@ -52,13 +52,13 @@ Once the features have been been found, they can be aligned across datasets usin
 * Choose a baseline datasets (AMT Tag Database is not yet supported).
 * Select one or more datasets at the left, then click "Align Datasets"
   * Status will appear as "Aligning".  Once alignment finishes, it will show "Aligned"
-  * The baseline datasets will show Baseline in the Status file
+  * The baseline dataset will have Baseline in the Status file
 * Future: Visualize the Alignment using "Display Alignment"
 * Future: Save alignment plots using "Save Alignment Plots"
 
 Once features have been aligned to the baseline, find LC-MS Features in common to all of the datasets using tab #4, Clustering
-* Choose The datasets to cluster together (typically all of them), then click "Cluster Features"
-  * Status will appear as Clustering, then PersistingCluters, and finally Clustered
+* Choose the datasets to cluster together (typically all of them), then click "Cluster Features"
+  * Status will appear as Clustering, then PersistingClusters, and finally Clustered
 * View the clustered features with the "View Clusters" button at the bottom right
 * Columns in the Cluster List table are:
   * Cluster ID
@@ -77,7 +77,7 @@ To export clustered feature details, you need to open the SQLite database specif
   * Choose the "Standard installer for 64-bit Windows"
 * After installing, start "DB Browser", then select the .db3 Project file
 * Choose the "Browse Data" tab, then in the Table Dropdown box, select T_Clusters to see the cluster info
-* Details on Clusters at the dataset level are in table T_LCMS_Featuers
+* Details on Clusters at the dataset level are in table T_LCMS_Features
 
 ## Contacts
 
