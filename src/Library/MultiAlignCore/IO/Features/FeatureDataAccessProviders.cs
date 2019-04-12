@@ -125,12 +125,12 @@ namespace MultiAlignCore.IO.Features
         public IUmcClusterDAO ClusterCache { get; set; }
 
         /// <summary>
-        /// Gets or sets the data acces object to MS features.
+        /// Gets or sets the data access object to MS features.
         /// </summary>
         public IMSFeatureDAO MSFeatureCache { get; set; }
 
         /// <summary>
-        /// Gets or sets the data acces object to MS features.
+        /// Gets or sets the data access object to MS features.
         /// </summary>
         public IMSnFeatureDAO MSnFeatureCache { get; set; }
 
