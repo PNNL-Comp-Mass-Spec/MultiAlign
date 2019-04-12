@@ -121,6 +121,21 @@ namespace MultiAlignCore.IO.Options
                     var valueStr = value == null ? null : value.ToString();
                     list.Add(new OptionPair(name, valueStr));
                 }
+                else if (propType.IsClass && propType.FullName.StartsWith("FeatureAlignment"))
+                {
+                    // Typically, we require matching namespaces when an option class property is itself a class
+                    // (see the check below that compare the first 15 characters of the namespace)
+
+                    // However, the class backing property MassTagDatabaseOptions in MultiAlignAnalysisOptions
+                    // has as different namespace than MultiAlignAnalysisOptions:
+                    //   FeatureAlignment.Algorithms.Options vs.
+                    //   MultiAlignCore.Algorithms.Options
+
+                    if (property.GetValue(optionsClass) != null)
+                    {
+                        GetProperties(list, property.GetValue(optionsClass), scope + property.Name + ".");
+                    }
+                }
                 // if it's a class in the namespace of "MultiAlignCore.xyz", we want to do special handling
                 else if (propType.IsClass && propType.FullName.StartsWith(optType.FullName.Substring(0, 15)))
                 {
