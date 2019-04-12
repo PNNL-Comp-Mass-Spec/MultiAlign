@@ -65,6 +65,9 @@
     <Reference Include="InformedProteomics.Backend">
       <HintPath>..\..\lib\InformedProteomics\InformedProteomics.Backend.dll</HintPath>
     </Reference>
+    <Reference Include="InformedProteomics.Backend.MassSpecData">
+      <HintPath>..\..\lib\InformedProteomics\InformedProteomics.Backend.MassSpecData.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
