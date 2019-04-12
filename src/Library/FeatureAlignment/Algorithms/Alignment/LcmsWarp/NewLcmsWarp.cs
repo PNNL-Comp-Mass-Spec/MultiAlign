@@ -10,8 +10,9 @@ using FeatureAlignment.Data.MassTags;
 namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
 {
     /// <summary>
-    /// This class is the entry point for MultiAlign's implementation of the LcmsWarp alignment algorithm.
+    /// This class was intended to be the entry point for MultiAlign's implementation of the LcmsWarp alignment algorithm.
     /// </summary>
+    [Obsolete("Unused development code")]
     public class NewLcmsWarp :
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,       // Align features to baseline dataset
         IFeatureAligner<IEnumerable<MassTagLight>, IEnumerable<UMCLight>, AlignmentData>    // Align features to AMT tag database
@@ -51,9 +52,9 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
             var baselineFeatures = baseline.ToList();
 
             // Warp mass if NET_MASS_WARP, otherwise only warp NET.
-            var netMassWarp = this.options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP;
-            var alignmentData = netMassWarp ? this.WarpNetMass(aligneeFeatures, baselineFeatures)
-                                            : this.WarpNet(aligneeFeatures, baselineFeatures, true);
+            var netMassWarp = options.AlignType == LcmsWarpAlignmentType.NET_MASS_WARP;
+            var alignmentData = netMassWarp ? WarpNetMass(aligneeFeatures, baselineFeatures)
+                                            : WarpNet(aligneeFeatures, baselineFeatures, true);
 
             // TODO: Change this to return the new alignment data object.
             var aData = new AlignmentData
@@ -75,14 +76,14 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
             // Convert baseline features to UMCLights.
             // A mass tag database is really just a list of features just like a baseline dataset.
             // So, we may want to consider doing this conversion outside of LCMS warp because that would cut some bloat here.
-            var baselineUmcs = baseline.Select(
+            var baselineUMCs = baseline.Select(
                 baselineFeature => new UMCLight
                 {
                     MassMonoisotopic = baselineFeature.MassMonoisotopic,
                     Net = baselineFeature.NetAligned
                 });
 
-            return this.Align(baselineUmcs, alignee, progress);
+            return Align(baselineUMCs, alignee, progress);
         }
 
         /// <summary>
@@ -98,14 +99,14 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
         public NewAlignmentData WarpNet(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures, bool includeMassInMatchScore)
         {
             // Generate candidate matches: Match alignee features -> baseline features by mass only
-            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
+            var featureMatcher = new LcmsWarpFeatureMatcher(options);
             featureMatcher.GenerateCandidateMatches(aligneeFeatures, baselineFeatures);
 
             var warpedFeatures = new List<UMCLight>(aligneeFeatures);
             var results = new Dictionary<SeparationTypes, LcmsWarpResults>();
 
             // Perform warp on each separation dimension.
-            foreach (var separationType in this.options.SeparationTypes)
+            foreach (var separationType in options.SeparationTypes)
             {
                 // Get matches for given separation dimension
                 var matches = featureMatcher.GetMatchesAs(separationType);
@@ -114,25 +115,25 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
                 var statistics = LcmsWarpStatistics.CalculateAndGetStatistics(matches);
 
                 // Calculate alignee sections
-                var aligneeSections = new LcmsWarpSectionInfo(this.options.NumTimeSections);
+                var aligneeSections = new LcmsWarpSectionInfo(options.NumTimeSections);
                 aligneeSections.InitSections(aligneeFeatures);
 
                 // Calculate baseline sections
-                var baselineSections = new LcmsWarpSectionInfo(this.options.NumTimeSections * this.options.ContractionFactor);
+                var baselineSections = new LcmsWarpSectionInfo(options.NumTimeSections * options.ContractionFactor);
                 baselineSections.InitSections(baselineFeatures);
 
                 // Generate alignment function, only score sections based on NET.
-                var alignmentScorer = new LcmsWarpAlignmentScorer(this.options, includeMassInMatchScore, statistics);
+                var alignmentScorer = new LcmsWarpAlignmentScorer(options, includeMassInMatchScore, statistics);
                 var alignmentFunction = alignmentScorer.GetAlignment(aligneeSections, baselineSections, matches);
                 alignmentFunction.SeparationType = separationType;
 
-                // Create alignment score heatmap
+                // Create alignment score HeatMap
                 var alignmentScoreHeatMap = LcmsWarpPlotDataCreator.GetAlignmentHeatMap(
                         alignmentScorer.AlignmentScoreMatrix,
                         true,
-                        this.options.NumTimeSections,
-                        this.options.NumBaselineSections,
-                        this.options.MaxExpansionWidth);
+                        options.NumTimeSections,
+                        options.NumBaselineSections,
+                        options.MaxExpansionWidth);
 
                 // Warp the values in the features for this separation type
                 warpedFeatures = alignmentFunction.GetWarpedFeatures(warpedFeatures).ToList();
@@ -163,18 +164,18 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
         public NewAlignmentData WarpNetMass(List<UMCLight> aligneeFeatures, List<UMCLight> baselineFeatures)
         {
             // First pass NET warp: Perform warp by only scoring matches in NET
-            var netWarpedFirstPass = this.WarpNet(aligneeFeatures, baselineFeatures, false);
+            var netWarpedFirstPass = WarpNet(aligneeFeatures, baselineFeatures, false);
 
             // Generate matches from features by matching in both mass and NET
-            var featureMatcher = new LcmsWarpFeatureMatcher(this.options);
+            var featureMatcher = new LcmsWarpFeatureMatcher(options);
             featureMatcher.GenerateCandidateMatches(
                             netWarpedFirstPass.AlignedFeatures,
                             baselineFeatures,
-                            this.options.SeparationTypes);
+                            options.SeparationTypes);
             var matches = featureMatcher.Matches;
 
             // Calculate mass alignment
-            var massCalibrator = MassCalibrationFactory.GetCalibrator(this.options);
+            var massCalibrator = MassCalibrationFactory.GetCalibrator(options);
             var massCalibrations = massCalibrator.CalculateCalibration(matches);
 
             // Warp features.
@@ -191,7 +192,7 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
             };
 
             // Second pass NET warp: Perform warp that scores matches in mass AND NET
-            var netMassWarpedSecondPass = this.WarpNet(warpedFeatures, baselineFeatures, true);
+            var netMassWarpedSecondPass = WarpNet(warpedFeatures, baselineFeatures, true);
 
             // Add mass alignment results to existing alignment results from the NET alignment.
             netMassWarpedSecondPass.MassAlignment = massAlignmentResult;

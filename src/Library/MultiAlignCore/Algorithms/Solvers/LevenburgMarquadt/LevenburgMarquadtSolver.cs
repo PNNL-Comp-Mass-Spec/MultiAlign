@@ -19,6 +19,7 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         }
 
         #region Properties
+
         /// <summary>
         /// Gets or sets the amount to step when differentiating.
         /// </summary>
@@ -43,7 +44,9 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
             get;
             set;
         }
+
         #endregion
+
         /// <summary>
         /// Fits the X to Y for the given paired data.
         /// </summary>
@@ -66,12 +69,8 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         /// <returns>True if solved, False if error</returns>
         public SolverReport Solve(List<double> x, List<double> y, ref double[] coeffs)
         {
-            double epsf     = 0;
-            var maxits      = 400;
-            var info        = 0;
-
-            alglib.lsfitstate   state;
-            alglib.lsfitreport  report;
+            const double EPSF = 0;
+            const int MAX_ITERATIONS = 400;
 
             var         N   = x.Count;
             var   xMatrix   = new double[N, 1];
@@ -86,15 +85,15 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
                                 y.ToArray(),
                                 coeffs,
                                 DifferentialStep,
-                                out state);
+                                out var state);
 
             // Note: lsfitsetcond has a different method signature in alglib v3.14.0
             //
             // As shown here, this is compatible with v3.10.0
             alglib.lsfitsetcond(state,
-                                epsf,
+                                EPSF,
                                 Epsilon,
-                                maxits);
+                                MAX_ITERATIONS);
 
             alglib.lsfitfit(state,
                             BasisFunction,
@@ -104,9 +103,9 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
 
 
             alglib.lsfitresults(state,
-                                out info,
+                                out var info,
                                 out coeffs,
-                                out report);
+                                out var report);
 
             //Info    -   completion code:
             //        * -7    gradient verification failed.
@@ -156,7 +155,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double AverageError
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the number of iterations the software took to converge.
@@ -164,7 +162,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public int IterationCount
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the maximum error
@@ -172,7 +169,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double MaxError
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the RMS value
@@ -180,7 +176,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double RmsError
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the weighted RMS value
@@ -188,7 +183,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double WeightedRmsError
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the noise per point.
@@ -196,7 +190,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double[] PerPointNoise
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the flag indicating whether the algorithm converged.
@@ -204,7 +197,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public bool DidConverge
         {
             get;
-            private set;
         }
         /// <summary>
         /// Gets the R-squared value for the fit.
@@ -212,7 +204,6 @@ namespace MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt
         public double RSquared
         {
             get;
-            private set;
         }
 
         /*

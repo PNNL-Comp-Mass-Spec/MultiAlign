@@ -47,7 +47,7 @@ namespace MultiAlignCore.IO.Options
         /// <param name="list">where to store the processed properties</param>
         /// <param name="optionsClass">object from which to process properties</param>
         /// <param name="scope">name prefix, dot-separated, ending with a dot.</param>
-        private static void GetProperties(IList<OptionPair> list, object optionsClass, string scope = "")
+        private static void GetProperties(ICollection<OptionPair> list, object optionsClass, string scope = "")
         {
             var optType = optionsClass.GetType();
 
@@ -118,7 +118,7 @@ namespace MultiAlignCore.IO.Options
                 {
                     var name = scope + property.Name;
                     var value = property.GetValue(optionsClass);
-                    var valueStr = value == null ? null : value.ToString();
+                    var valueStr = value?.ToString();
                     list.Add(new OptionPair(name, valueStr));
                 }
                 else if (propType.IsClass && propType.FullName.StartsWith("FeatureAlignment"))
@@ -174,8 +174,8 @@ namespace MultiAlignCore.IO.Options
             foreach (var option in list)
             {
                 // break off the first prefix, if there is one
-                string basename = option.Name;
-                string subkey = string.Empty;
+                var basename = option.Name;
+                var subkey = string.Empty;
                 var dot = basename.IndexOf(".");
                 // prefixed: is part of an object that needs to be handled separately
                 if (dot > 0)
