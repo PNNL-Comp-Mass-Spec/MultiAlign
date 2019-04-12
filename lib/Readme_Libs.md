@@ -15,7 +15,7 @@ QuadTreeLib.dll
   * Modified to use WindowsBase objects (Point and Rect) instead of System.Drawing objects (PointF and RectangleF)
 * https://github.com/PNNL-Comp-Mass-Spec/LCMS-Spectator/tree/master/Library/QuadTreeLib
 
-== InformedProteomics DLLs
+## InformedProteomics DLLs
 
 | DLL                                         | Source                                                        | Comments         |
 |---------------------------------------------|---------------------------------------------------------------|------------------|
@@ -26,7 +26,7 @@ QuadTreeLib.dll
 | ThermoFisher.CommonCore.RawFileReader.dll   | Thermo                                                        | See license in RawFileReaderLicense.doc |
 | ThermoRawFileReader.dll                     | https://github.com/PNNL-Comp-Mass-Spec/Thermo-Raw-File-Reader | Wrapper to ThermoFisher.CommonCore      |
 
-== Mage DLLs
+## Mage DLLs
 
 | DLL                                         | Source                                                          | Comments                            |
 |---------------------------------------------|-----------------------------------------------------------------|-------------------------------------|
@@ -38,7 +38,7 @@ QuadTreeLib.dll
 | PRISM.dll                                   | https://www.nuget.org/packages/PRISM-Library/                   | NuGet package                       |
 | System.Data.SQLite.dll                      | https://www.nuget.org/packages/System.Data.SQLite.Core/         | NuGet package                       |
 
-== MTDBFrameworkBase DLLs
+## MTDBFrameworkBase DLLs
 
 | DLL                             | Source                                                       | Comments                                    |
 |---------------------------------|--------------------------------------------------------------|---------------------------------------------|
