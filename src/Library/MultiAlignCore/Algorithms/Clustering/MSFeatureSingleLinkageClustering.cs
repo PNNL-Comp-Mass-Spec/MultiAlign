@@ -42,8 +42,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public List<U> Cluster(List<T> rawMSFeatures, IProgress<PRISM.ProgressData> progress = null)
         {
             var progressData = new PRISM.ProgressData(progress);
-            var centroidType  = ClusterCentroidRepresentation.Apex;
-            List<U> features                            = null;
+            var centroidType = ClusterCentroidRepresentation.Apex;
 
             var featureIDToClusterID = new Dictionary<int, int>();
             foreach (var feature in rawMSFeatures)
@@ -52,7 +51,6 @@ namespace MultiAlignCore.Algorithms.Clustering
                 featureIDToClusterID.Add(feature.Id, -1);
             }
 
-            var maxDistance  = Parameters.MaxDistance;
             var currentIndex    = 0;
             var N               = rawMSFeatures.Count;
             var numUMCsSoFar    = 0;
@@ -60,14 +58,11 @@ namespace MultiAlignCore.Algorithms.Clustering
             var idFeatureMap = new Dictionary<int, List<T>>();
             var msFeatures                    = new List<T>();
             msFeatures.AddRange(rawMSFeatures);
-            msFeatures.Sort(delegate(T x, T y)
-            {
-                return x.MassMonoisotopicAligned.CompareTo(y.MassMonoisotopicAligned);
-            });
+            msFeatures.Sort((x, y) => x.MassMonoisotopicAligned.CompareTo(y.MassMonoisotopicAligned));
 
             while (currentIndex < N)
             {
-                var currentFeature                = msFeatures[currentIndex];
+                var currentFeature              = msFeatures[currentIndex];
                 var currentFeatureClusterID     = featureIDToClusterID[currentFeature.Id];
 
                 if (currentFeatureClusterID == -1)
@@ -133,7 +128,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 progressData.Report(currentIndex, N);
             }
 
-            features = new List<U>();
+            var features = new List<U>();
             foreach (var key in idFeatureMap.Keys)
             {
                 var tempFeatures = idFeatureMap[key];

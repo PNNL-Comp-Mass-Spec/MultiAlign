@@ -286,6 +286,8 @@ namespace MultiAlignRogue.AMTMatching
         /// <param name="datasets">The datasets to perform AMT matching on.</param>
         internal void PerformMatching(IEnumerable<DatasetInformationViewModel> datasets)
         {
+            var datasetsToUse = datasets.ToList();
+
             this.ShouldShowTotalProgress = true;
             var progressData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
             {
@@ -319,8 +321,8 @@ namespace MultiAlignRogue.AMTMatching
                 },
             };
 
-            // Initialize datasets
-            foreach (var dataset in datasets)
+            // Initialize the datasets
+            foreach (var dataset in datasetsToUse)
             {
                 dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Matching;
             }
@@ -333,7 +335,7 @@ namespace MultiAlignRogue.AMTMatching
             // Run STAC
             var matches = stac.PerformPeakMatching(clusters, database);
 
-            foreach (var dataset in datasets)
+            foreach (var dataset in datasetsToUse)
             {
                 dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingMatches;
             }
@@ -359,7 +361,7 @@ namespace MultiAlignRogue.AMTMatching
 
             this.ShouldShowTotalProgress = false;
 
-            foreach (var dataset in datasets)
+            foreach (var dataset in datasetsToUse)
             {
                 dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Matched;
             }
