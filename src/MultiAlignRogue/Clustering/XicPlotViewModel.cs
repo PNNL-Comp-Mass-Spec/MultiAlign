@@ -13,7 +13,6 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.IO;
     using MultiAlignRogue.Utils;
     using MultiAlignRogue.ViewModels;
-    using NHibernate.Util;
     using OxyPlot;
     using OxyPlot.Annotations;
     using OxyPlot.Axes;

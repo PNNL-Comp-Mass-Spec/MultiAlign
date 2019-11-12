@@ -15,7 +15,6 @@ namespace MultiAlignRogue
     using System.Threading.Tasks;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-    using InformedProteomics.Backend.Utils;
     using Microsoft.Win32;
 
     using Ookii.Dialogs.Wpf;

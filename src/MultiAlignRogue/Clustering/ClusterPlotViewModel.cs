@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using FeatureAlignment.Data.Features;
 using GalaSoft.MvvmLight.Command;
-using NHibernate.Util;
 using OxyPlot.Annotations;
 using OxyPlot.Series;
 

@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FeatureAlignment.Algorithms;
 using FeatureAlignment.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
 {
-    using InformedProteomics.Backend.Utils;
-    using MultiAlignCore.Algorithms.SpectralProcessing;
-    using MultiAlignCore.Data.Features;
-    using MultiAlignCore.IO.RawData;
 
     public class ClusterPostProcessor<T, U>
             where T : FeatureLight, IFeatureCluster<U>, new()

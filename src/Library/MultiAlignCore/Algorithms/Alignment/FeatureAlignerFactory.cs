@@ -7,8 +7,6 @@ using FeatureAlignment.Data.Alignment;
 using FeatureAlignment.Data.Features;
 using FeatureAlignment.Data.MassTags;
 using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.Features;
 
 #endregion
 

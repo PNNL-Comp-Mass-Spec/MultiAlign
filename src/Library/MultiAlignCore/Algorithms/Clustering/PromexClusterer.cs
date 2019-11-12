@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FeatureAlignment.Algorithms;
 using FeatureAlignment.Data.Features;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.RawData;
-using InformedProteomics.Backend.Utils;
 using InformedProteomics.FeatureFinding.Alignment;
 using InformedProteomics.FeatureFinding.Data;
 using InformedProteomics.Backend.Data.Spectrometry;

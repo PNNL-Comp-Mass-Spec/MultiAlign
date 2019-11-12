@@ -2,7 +2,6 @@
 using FeatureAlignment.Data.Features;
 using FeatureAlignment.Data.MassTags;
 using GalaSoft.MvvmLight.Messaging;
-using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
@@ -13,7 +12,6 @@ using MultiAlignCore.IO;
 using MultiAlignCore.IO.Hibernate;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
-using NHibernate.Util;
 
 namespace MultiAlignRogue.Clustering
 {
@@ -27,7 +25,6 @@ namespace MultiAlignRogue.Clustering
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing;
-    using MultiAlignCore.Extensions;
     using MultiAlignCore.IO.Features;
 
     public class ClusterSettingsViewModel : ViewModelBase

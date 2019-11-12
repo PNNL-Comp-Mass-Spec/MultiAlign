@@ -10,7 +10,6 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.RawData;
 using MultiAlignCore.IO.TextFiles;

@@ -13,7 +13,6 @@ namespace MultiAlignRogue.Feature_Finding
     using System.Diagnostics;
     using System.IO;
     using System.Windows;
-    using InformedProteomics.Backend.Utils;
     using MultiAlignCore.Algorithms.Clustering;
     using MultiAlignCore.IO.RawData;
     using MultiAlignRogue.Utils;

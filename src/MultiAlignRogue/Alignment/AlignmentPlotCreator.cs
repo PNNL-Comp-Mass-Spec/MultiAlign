@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media.Imaging;
 using FeatureAlignment.Data.Alignment;
 using MultiAlignCore.Drawing;
 

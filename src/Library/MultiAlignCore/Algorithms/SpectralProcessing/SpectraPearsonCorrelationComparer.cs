@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FeatureAlignment.Data;
 using InformedProteomics.Backend.MathAndStats;
 
 namespace MultiAlignCore.Algorithms.SpectralProcessing
 {
     using InformedProteomics.Backend.Data.Spectrometry;
-    using InformedProteomics.Backend.Utils;
-
-    using MultiAlignCore.Data;
 
     public class SpectraPearsonCorrelationComparer : ISpectralComparer
     {

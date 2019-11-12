@@ -4,10 +4,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Text;
 
-    using InformedProteomics.Backend.Data;
     using InformedProteomics.Backend.MassSpecData;
 
     using MultiAlignCore.Data.MetaData;

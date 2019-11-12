@@ -12,23 +12,17 @@ namespace MultiAlignRogue.AMTMatching
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using System.Windows.Media.Animation;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
-
-    using InformedProteomics.Backend.Utils;
 
     using MultiAlignCore.Algorithms.FeatureMatcher;
     using MultiAlignCore.Algorithms.FeatureMatcher.Data;
     using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.ViewModels;
-
-    using NHibernate.Util;
 
     /// <summary>
     /// View model for settings options for AMT tag matching with STAC.

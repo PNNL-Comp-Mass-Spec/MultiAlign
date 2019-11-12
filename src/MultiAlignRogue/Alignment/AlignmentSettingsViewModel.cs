@@ -19,7 +19,6 @@ namespace MultiAlignRogue.Alignment
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
 
-    using InformedProteomics.Backend.Utils;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Hibernate;
     using MultiAlignRogue.AMTMatching;

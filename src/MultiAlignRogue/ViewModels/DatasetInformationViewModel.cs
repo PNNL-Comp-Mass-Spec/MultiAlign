@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MultiAlignCore.Data.MetaData;
@@ -7,7 +6,6 @@ using MultiAlignRogue.Utils;
 
 namespace MultiAlignRogue.ViewModels
 {
-    using System.Windows.Input;
     using System.Windows.Media;
 
     public class DatasetInformationViewModel : ViewModelBase

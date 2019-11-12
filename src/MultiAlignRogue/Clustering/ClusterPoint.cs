@@ -1,5 +1,4 @@
 ﻿using FeatureAlignment.Data.Features;
-using OxyPlot;
 using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering

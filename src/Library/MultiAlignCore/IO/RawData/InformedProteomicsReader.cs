@@ -11,8 +11,6 @@ namespace MultiAlignCore.IO.RawData
     using System.IO;
     using System.Threading.Tasks;
 
-    using InformedProteomics.Backend.Utils;
-
     public class InformedProteomicsReader : ISpectraProvider
     {
         /// <summary>

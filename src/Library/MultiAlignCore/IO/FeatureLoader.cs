@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FeatureAlignment.Data;
 using FeatureAlignment.Data.Features;
-using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Workflow;
@@ -16,7 +15,6 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.IO.TextFiles;
 
 #endregion
 

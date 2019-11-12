@@ -1,6 +1,5 @@
 #region
 
-using MultiAlignCore.Data;
 using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Hibernate;
