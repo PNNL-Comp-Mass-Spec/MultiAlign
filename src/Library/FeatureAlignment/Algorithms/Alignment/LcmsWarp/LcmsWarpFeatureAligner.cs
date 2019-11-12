@@ -19,8 +19,6 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
     {
         private readonly LcmsWarpAlignmentOptions _options;
 
-        private Dictionary<int, double> _scanToNETMap;
-
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         public LcmsWarpFeatureAligner(LcmsWarpAlignmentOptions options)
@@ -56,10 +54,7 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Gets a map from scan number in the alignee features to aligned NET
         /// </summary>
-        public Dictionary<int, double> ScanToNETMap
-        {
-            get { return _scanToNETMap; }
-        }
+        public Dictionary<int, double> ScanToNETMap { get; private set; }
 
         /// <summary>
         /// Aligns a dataset to a mass tag database

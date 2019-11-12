@@ -5,8 +5,6 @@ using OxyPlot.Series;
 namespace MultiAlignRogue.Clustering
 {
     using System.Drawing;
-
-
     using QuadTreeLib;
 
     public class ClusterPoint : IHasRect, IScatterPointProvider
@@ -23,9 +21,9 @@ namespace MultiAlignRogue.Clustering
             };
         }
 
-        public UMCClusterLight UMCClusterLight { get; private set; }
+        public UMCClusterLight UMCClusterLight { get; }
 
-        public RectangleF Rectangle { get; private set; }
+        public RectangleF Rectangle { get; }
 
         public ScatterPoint GetScatterPoint()
         {

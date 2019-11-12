@@ -137,7 +137,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public AlgorithmProvider AlgorithmProviders
         {
-            get { return m_algorithms; }
+            get => m_algorithms;
             set
             {
                 m_algorithms = value;
@@ -340,12 +340,14 @@ namespace MultiAlignCore.Algorithms
                     analysisOptions.DataLoadOptions,
                     m_scanSummaryProviderCache,
                     m_identificationsProvider);
-                features = AlignDataset(features,
+
+                var alignedFeatures = AlignDataset(features,
                     baselineFeatures,
                     database,
                     dataset,
                     baselineDataset);
-                featureCache.CacheFeatures(features);
+
+                featureCache.CacheFeatures(alignedFeatures);
             }
             UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
         }
@@ -463,15 +465,16 @@ namespace MultiAlignCore.Algorithms
                 {
                     UpdateStatus("Retrieving data from " + datasetInfo.DatasetName + " for alignment.");
                     var features = featureCache.FindByDatasetId(datasetInfo.DatasetId) as IList<UMCLight>;
-                    features = AlignDataset(features,
+                    var alignedFeatures = AlignDataset(features,
                         baselineFeatures,
                         config.Analysis.MassTagDatabase,
                         datasetInfo,
                         baselineInfo);
-                    featureCache.UpdateAllStateless(features);
+
+                    featureCache.UpdateAllStateless(alignedFeatures);
 
                     // This dataset is done!
-                    FeaturesLoaded?.Invoke(this, new FeaturesLoadedEventArgs(datasetInfo, features));
+                    FeaturesLoaded?.Invoke(this, new FeaturesLoadedEventArgs(datasetInfo, alignedFeatures));
                 }
                 else
                 {

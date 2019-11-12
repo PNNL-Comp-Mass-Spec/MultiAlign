@@ -72,24 +72,24 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// Gets a commmand that triggers the <see cref="MoveUpRequested" /> event.
         /// </summary>
-        public RelayCommand MoveUpCommand { get; private set; }
+        public RelayCommand MoveUpCommand { get; }
 
         /// <summary>
         /// Gets a command that triggers the <see cref="MoveDownRequested" /> event.
         /// </summary>
-        public RelayCommand MoveDownCommand { get; private set; }
+        public RelayCommand MoveDownCommand { get; }
 
         /// <summary>
         /// Gets the type of separation that this dimension represents.
         /// </summary>
-        public SeparationTypes SeparationType { get { return this.dimensionSettings.SeparationType; } }
+        public SeparationTypes SeparationType => this.dimensionSettings.SeparationType;
 
         /// <summary>
         /// Gets or sets the tolerance used when matching features in this dimension.
         /// </summary>
         public double Tolerance
         {
-            get { return this.dimensionSettings.Tolerance; }
+            get => this.dimensionSettings.Tolerance;
             set
             {
                 if (!this.dimensionSettings.Tolerance.Equals(value))
@@ -105,7 +105,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public int NumSections
         {
-            get { return this.dimensionSettings.NumSections; }
+            get => this.dimensionSettings.NumSections;
             set
             {
                 if (this.dimensionSettings.NumSections != value)
@@ -125,7 +125,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public int ContractionFactor
         {
-            get { return this.dimensionSettings.ContractionFactor; }
+            get => this.dimensionSettings.ContractionFactor;
             set
             {
                 if (this.dimensionSettings.ContractionFactor != value)
@@ -141,7 +141,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public bool ShouldAlignDimension
         {
-            get { return this.dimensionSettings.ShouldAlignDimension; }
+            get => this.dimensionSettings.ShouldAlignDimension;
             set
             {
                 if (this.ShouldAlignDimension != value)
@@ -159,7 +159,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public IDataset SelectedBaselineDataset
         {
-            get {  return this.dimensionSettings.BaselineDataset; }
+            get => this.dimensionSettings.BaselineDataset;
             private set
             {
                 if (this.dimensionSettings.BaselineDataset != value)

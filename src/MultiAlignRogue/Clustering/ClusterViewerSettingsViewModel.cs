@@ -71,12 +71,12 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets a command that saves the settings.
         /// </summary>
-        public ICommand SaveCommand { get; private set; }
+        public ICommand SaveCommand { get; }
 
         /// <summary>
         /// Gets a command that cancels the settings editing.
         /// </summary>
-        public ICommand CancelCommand { get; private set; }
+        public ICommand CancelCommand { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the settings were saved or cancelled.
@@ -107,7 +107,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public bool ShouldReducePoints
         {
-            get { return this.shouldReducePoints; }
+            get => this.shouldReducePoints;
             set
             {
                 if (this.shouldReducePoints != value)
@@ -123,7 +123,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public int NetDivisions
         {
-            get { return this.netDivisions; }
+            get => this.netDivisions;
             set
             {
                 if (this.netDivisions != value)
@@ -139,7 +139,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public int MassDivisions
         {
-            get { return this.massDivisions; }
+            get => this.massDivisions;
             set
             {
                 if (this.massDivisions != value)
@@ -156,7 +156,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public int PointsPerDivision
         {
-            get { return this.pointsPerDivision; }
+            get => this.pointsPerDivision;
             set
             {
                 if (this.pointsPerDivision != value)
@@ -173,7 +173,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public bool ShowDivisionLines
         {
-            get { return this.showDivisionLines; }
+            get => this.showDivisionLines;
             set
             {
                 if (this.showDivisionLines != value)

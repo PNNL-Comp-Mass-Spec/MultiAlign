@@ -103,24 +103,24 @@ namespace MultiAlignRogue.AMTMatching
         /// <summary>
         /// Gets a command that performs matching operation on the selected datasets.
         /// </summary>
-        public RelayCommand PerformMatchingCommand { get; private set; }
+        public RelayCommand PerformMatchingCommand { get; }
 
         /// <summary>
         /// Gets the singleton instance for AMT tag database selection.
         /// </summary>
-        public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; private set; }
+        public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; }
 
         /// <summary>
         /// Gets a collection of all possible peak matching types.
         /// </summary>
-        public ObservableCollection<PeakMatchingType> PeakMatchingTypes { get; private set; }
+        public ObservableCollection<PeakMatchingType> PeakMatchingTypes { get; }
 
         /// <summary>
         /// Gets or sets the selected peak matching type.
         /// </summary>
         public PeakMatchingType SelectedPeakMatchingType
         {
-            get { return this.analysis.Options.StacOptions.IdentificationAlgorithm; }
+            get => this.analysis.Options.StacOptions.IdentificationAlgorithm;
             set
             {
                 if (this.analysis.Options.StacOptions.IdentificationAlgorithm != value)
@@ -136,7 +136,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public bool ShouldCalculateStac
         {
-            get { return this.analysis.Options.StacOptions.ShouldCalculateSTAC; }
+            get => this.analysis.Options.StacOptions.ShouldCalculateSTAC;
             set
             {
                 if (this.analysis.Options.StacOptions.ShouldCalculateSTAC != value)
@@ -152,7 +152,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public bool UsePriors
         {
-            get { return this.analysis.Options.StacOptions.UsePriors; }
+            get => this.analysis.Options.StacOptions.UsePriors;
             set
             {
                 if (this.analysis.Options.StacOptions.UsePriors)
@@ -166,9 +166,10 @@ namespace MultiAlignRogue.AMTMatching
         /// <summary>
         /// Gets or sets a value indicating whether the matcher should calculate the SLiC score.
         /// </summary>
+        // ReSharper disable once IdentifierTypo
         public bool ShouldCalculateSlic
         {
-            get { return this.analysis.Options.StacOptions.ShouldCalculateSLiC; }
+            get => this.analysis.Options.StacOptions.ShouldCalculateSLiC;
             set
             {
                 if (this.analysis.Options.StacOptions.ShouldCalculateSLiC != value)
@@ -184,7 +185,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public bool ShouldUseEllipsoid
         {
-            get { return this.analysis.Options.StacOptions.UseEllipsoid; }
+            get => this.analysis.Options.StacOptions.UseEllipsoid;
             set
             {
                 if (this.analysis.Options.StacOptions.UseEllipsoid != value)
@@ -200,10 +201,10 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public double HistogramBinWidth
         {
-            get { return this.analysis.Options.StacOptions.HistogramBinWidth; }
+            get => this.analysis.Options.StacOptions.HistogramBinWidth;
             set
             {
-                if (this.analysis.Options.StacOptions.HistogramBinWidth != value)
+                if (Math.Abs(this.analysis.Options.StacOptions.HistogramBinWidth - value) > float.Epsilon)
                 {
                     this.analysis.Options.StacOptions.HistogramBinWidth = value;
                     this.RaisePropertyChanged();
@@ -216,10 +217,10 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public double HistogramMultiplier
         {
-            get { return this.analysis.Options.StacOptions.HistogramMultiplier; }
+            get => this.analysis.Options.StacOptions.HistogramMultiplier;
             set
             {
-                if (this.analysis.Options.StacOptions.HistogramMultiplier != value)
+                if (Math.Abs(this.analysis.Options.StacOptions.HistogramMultiplier - value) > float.Epsilon)
                 {
                     this.analysis.Options.StacOptions.HistogramMultiplier = value;
                     this.RaisePropertyChanged();
@@ -232,7 +233,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public bool CalculateHistogramFdr
         {
-            get { return this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR; }
+            get => this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR;
             set
             {
                 if (this.analysis.Options.StacOptions.ShouldCalculateHistogramFDR != value)
@@ -248,7 +249,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public bool ShouldShowTotalProgress
         {
-            get { return this.shouldShowTotalProgress; }
+            get => this.shouldShowTotalProgress;
             set
             {
                 if (this.shouldShowTotalProgress != value)
@@ -264,7 +265,7 @@ namespace MultiAlignRogue.AMTMatching
         /// </summary>
         public double TotalProgress
         {
-            get { return this.totalProgress; }
+            get => this.totalProgress;
             set
             {
                 if (this.totalProgress != value)

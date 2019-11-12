@@ -122,65 +122,65 @@ namespace MultiAlignRogue
         /// <summary>
         /// Gets a command for selecting files for a new dataset (scans, isos, raw).
         /// </summary>
-        public RelayCommand SelectFilesCommand { get; private set; }
+        public RelayCommand SelectFilesCommand { get; }
 
         /// <summary>
         /// Gets a command for selecting files for a new dataset (scans, isos, raw).
         /// </summary>
-        public RelayCommand CloseWindowCommand { get; private set; }
+        public RelayCommand CloseWindowCommand { get; }
 
         /// <summary>
         /// Gets a command for adding a dataset from DMS.
         /// </summary>
-        public RelayCommand SearchDmsCommand { get; private set; }
+        public RelayCommand SearchDmsCommand { get; }
 
         /// <summary>
         /// Gets a command for selecting a directory path for a new dataset.
         /// </summary>
-        public RelayCommand SelectDirectoryCommand { get; private set; }
+        public RelayCommand SelectDirectoryCommand { get; }
 
         /// <summary>
         /// Gets a command for adding the dataset in the selected directory.
         /// </summary>
-        public RelayCommand AddFolderCommand { get; private set; }
+        public RelayCommand AddFolderCommand { get; }
 
         /// <summary>
         /// Gets a command for creating a new project />.
         /// </summary>
-        public RelayCommand CreateNewProjectCommand { get; private set; }
+        public RelayCommand CreateNewProjectCommand { get; }
 
         /// <summary>
         /// Gets a command for loading an existing project />.
         /// </summary>
-        public RelayCommand LoadProjectCommand { get; private set; }
+        public RelayCommand LoadProjectCommand { get; }
 
         /// <summary>
         /// Gets a command for saving the current project />.
         /// </summary>
-        public RelayCommand SaveProjectCommand { get; private set; }
+        public RelayCommand SaveProjectCommand { get; }
 
         /// <summary>
         /// Gets a command for saving the current project />
         /// in a new project file.
         /// </summary>
-        public RelayCommand SaveAsProjectCommand { get; private set; }
+        public RelayCommand SaveAsProjectCommand { get; }
 
         /// <summary>
         /// Gets a command that restores all settings to their defaults.
         /// </summary>
-        public RelayCommand RestoreDefaultSettingsCommand { get; private set; }
+        public RelayCommand RestoreDefaultSettingsCommand { get; }
 
         /// <summary>
         /// Gets a command for running feature finding, alignment, and clustering in succession.
         /// </summary>
-        public RelayCommand RunFullWorkflowCommand { get; private set; }
+        public RelayCommand RunFullWorkflowCommand { get; }
         #endregion
 
         #region Public Properties
 
         public bool ShowSplash
         {
-            get { return this.showSplash; }
+            get => this.showSplash;
             private set
             {
                 if (this.showSplash != value)
@@ -193,7 +193,7 @@ namespace MultiAlignRogue
 
         public MultiAlignAnalysis Analysis
         {
-            get { return this.analysis; }
+            get => this.analysis;
             private set
             {
                 if (this.analysis != value)
@@ -204,11 +204,11 @@ namespace MultiAlignRogue
             }
         }
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; }
 
         public bool ShouldShowProgress
         {
-            get { return this.shouldShowProgress; }
+            get => this.shouldShowProgress;
             set
             {
                 if (this.shouldShowProgress != value)
@@ -221,7 +221,7 @@ namespace MultiAlignRogue
 
         public int ProgressTracker
         {
-            get { return this.progressTracker; }
+            get => this.progressTracker;
             private set
             {
                 if (this.progressTracker != value)
@@ -234,7 +234,7 @@ namespace MultiAlignRogue
 
         public string ProjectPath
         {
-            get { return this.projectPath; }
+            get => this.projectPath;
             set
             {
                 if (this.projectPath != value)
@@ -253,7 +253,7 @@ namespace MultiAlignRogue
 
         public string WindowTitle
         {
-            get { return this.windowTitle; }
+            get => this.windowTitle;
             set
             {
                 if (this.WindowTitle != value)
@@ -268,14 +268,11 @@ namespace MultiAlignRogue
         /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
         /// or not the user is on the PNNL network or not.
         /// </summary>
-        public bool ShowOpenFromDms
-        {
-            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
-        }
+        public bool ShowOpenFromDms => System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov");
 
         public string InputFilePath
         {
-            get { return this.inputFilePath; }
+            get => this.inputFilePath;
             set
             {
                 if (this.inputFilePath != value)
@@ -292,7 +289,7 @@ namespace MultiAlignRogue
 
         public DataLoadingSettingsViewModel DataLoadingSettingsViewModel
         {
-            get { return this.dataLoadingSettingsViewModel; }
+            get => this.dataLoadingSettingsViewModel;
             private set
             {
                 this.dataLoadingSettingsViewModel = value;
@@ -302,7 +299,7 @@ namespace MultiAlignRogue
 
         public FeatureFindingSettingsViewModel FeatureFindingSettingsViewModel
         {
-            get { return this.featureFindingSettingsViewModel; }
+            get => this.featureFindingSettingsViewModel;
             private set
             {
                 this.featureFindingSettingsViewModel = value;
@@ -312,7 +309,7 @@ namespace MultiAlignRogue
 
         public AlignmentSettingsViewModel AlignmentSettingsViewModel
         {
-            get { return this.alignmentSettingsViewModel; }
+            get => this.alignmentSettingsViewModel;
             set
             {
                 this.alignmentSettingsViewModel = value;
@@ -322,7 +319,7 @@ namespace MultiAlignRogue
 
         public ClusterSettingsViewModel ClusterSettingsViewModel
         {
-            get { return this.clusterSettingsViewModel; }
+            get => this.clusterSettingsViewModel;
             set
             {
                 this.clusterSettingsViewModel = value;
@@ -332,7 +329,7 @@ namespace MultiAlignRogue
 
         public StacSettingsViewModel StacSettingsViewModel
         {
-            get { return this.stacSettingsViewModel; }
+            get => this.stacSettingsViewModel;
             set
             {
                 this.stacSettingsViewModel = value;

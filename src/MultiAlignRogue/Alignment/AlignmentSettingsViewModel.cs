@@ -189,44 +189,44 @@ namespace MultiAlignRogue.Alignment
         /// <summary>
         /// Gets the alignment settings for each separation dimension.
         /// </summary>
-        public ObservableCollection<AlignmentDimensionSettingsViewModel> DimensionSettings { get; private set; }
+        public ObservableCollection<AlignmentDimensionSettingsViewModel> DimensionSettings { get; }
 
         /// <summary>
         /// Gets a command that performs the alignment on the selected atasets.
         /// </summary>
-        public RelayCommand AlignCommand { get; private set; }
+        public RelayCommand AlignCommand { get; }
 
         /// <summary>
         /// Gets a command that displays the alignment information for the selected datasets.
         /// </summary>
-        public RelayCommand DisplayAlignmentCommand { get; private set; }
+        public RelayCommand DisplayAlignmentCommand { get; }
 
         /// <summary>
         /// Gets a command that saves the alignment plots for the selected datasets.
         /// </summary>
-        public RelayCommand SaveAlignmentPlotsCommand { get; private set; }
+        public RelayCommand SaveAlignmentPlotsCommand { get; }
 
-        public RelayCommand RestoreDefaultsCommand { get; private set; }
+        public RelayCommand RestoreDefaultsCommand { get; }
 
         /// <summary>
         /// Gets the list of possible alignment algorithms.
         /// </summary>
-        public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
+        public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; }
 
         /// <summary>
         /// Gets the list of possible alignment types.
         /// </summary>
-        public ObservableCollection<LcmsWarpAlignmentType> CalibrationOptions { get; private set; }
+        public ObservableCollection<LcmsWarpAlignmentType> CalibrationOptions { get; }
 
         /// <summary>
         /// Gets the list of datasets that alignment can be ru non.
         /// </summary>
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; }
 
         /// <summary>
         /// Gets the view model for selecting an AMT database.
         /// </summary>
-        public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; private set; }
+        public DatabaseSelectionViewModel DatabaseSelectionViewModel { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this alignment is to a baseline dataset.
@@ -234,7 +234,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public bool ShouldAlignToBaseline
         {
-            get { return !this.analysis.Options.AlignmentOptions.AlignToAMT; }
+            get => !this.analysis.Options.AlignmentOptions.AlignToAMT;
             set
             {
                 var alignToAmt = !value;
@@ -255,7 +255,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public bool ShouldAlignToAMT
         {
-            get { return this.analysis.Options.AlignmentOptions.AlignToAMT; }
+            get => this.analysis.Options.AlignmentOptions.AlignToAMT;
             set
             {
                 if (this.analysis.Options.AlignmentOptions.AlignToAMT == value)
@@ -275,7 +275,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public DatasetInformationViewModel SelectedBaseline
         {
-            get { return this.selectedBaseline; }
+            get => this.selectedBaseline;
             set
             {
                 if (this.selectedBaseline != value)
@@ -303,7 +303,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public FeatureAlignmentType SelectedAlignmentAlgorithm
         {
-            get { return this.analysis.Options.AlignmentOptions.AlignmentAlgorithm; }
+            get => this.analysis.Options.AlignmentOptions.AlignmentAlgorithm;
             set
             {
                 if (this.analysis.Options.AlignmentOptions.AlignmentAlgorithm != value)
@@ -319,7 +319,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public LcmsWarpAlignmentType SelectedCalibrationType
         {
-            get { return this.analysis.Options.AlignmentOptions.AlignmentType; }
+            get => this.analysis.Options.AlignmentOptions.AlignmentType;
             set
             {
                 if (this.analysis.Options.AlignmentOptions.AlignmentType != value)
@@ -335,7 +335,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public int AlignmentContractionFactor
         {
-            get { return this.analysis.Options.AlignmentOptions.ContractionFactor; }
+            get => this.analysis.Options.AlignmentOptions.ContractionFactor;
             set
             {
                 if (this.analysis.Options.AlignmentOptions.ContractionFactor != value)
@@ -351,7 +351,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public int AlignmentNumTimeSections
         {
-            get { return this.analysis.Options.AlignmentOptions.NumTimeSections; }
+            get => this.analysis.Options.AlignmentOptions.NumTimeSections;
             set
             {
                 if (this.analysis.Options.AlignmentOptions.NumTimeSections != value)
@@ -367,7 +367,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public double AlignmentProgress
         {
-            get { return this.alignmentProgress; }
+            get => this.alignmentProgress;
             private set
             {
                 if (Math.Abs(this.alignmentProgress - value) > float.Epsilon)
@@ -383,7 +383,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public bool ShowAlignmentProgress
         {
-            get { return this.showAlignmentProgress; }
+            get => this.showAlignmentProgress;
             private set
             {
                 if (this.showAlignmentProgress != value)
@@ -400,7 +400,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public int MinObservationCount
         {
-            get { return this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter; }
+            get => this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter;
             set
             {
                 if (this.analysis.Options.MassTagDatabaseOptions.MinimumObservationCountFilter != value)
@@ -416,7 +416,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public double ImageDpi
         {
-            get { return this.imageDpi; }
+            get => this.imageDpi;
             set
             {
                 if (!this.imageDpi.Equals(value))
@@ -432,7 +432,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public double ImageWidth
         {
-            get { return this.imageWidth; }
+            get => this.imageWidth;
             set
             {
                 if (!this.imageWidth.Equals(value))
@@ -448,7 +448,7 @@ namespace MultiAlignRogue.Alignment
         /// </summary>
         public double ImageHeight
         {
-            get { return this.imageHeight; }
+            get => this.imageHeight;
             set
             {
                 if (!this.imageHeight.Equals(value))

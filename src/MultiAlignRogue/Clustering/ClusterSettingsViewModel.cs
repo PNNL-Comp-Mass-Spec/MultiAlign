@@ -47,12 +47,12 @@ namespace MultiAlignRogue.Clustering
         private readonly AlgorithmBuilder builder;
         private AlgorithmProvider algorithms;
 
-        public RelayCommand ClusterFeaturesCommand { get; private set; }
-        public RelayCommand DisplayClustersCommand { get; private set; }
+        public RelayCommand ClusterFeaturesCommand { get; }
+        public RelayCommand DisplayClustersCommand { get; }
 
-        public ObservableCollection<DistanceMetric> DistanceMetrics { get; private set; }
-        public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }
-        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; private set; }
+        public ObservableCollection<DistanceMetric> DistanceMetrics { get; }
+        public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; }
+        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; }
 
         public ClusterSettingsViewModel(
                                         MultiAlignAnalysis analysis,
@@ -99,7 +99,7 @@ namespace MultiAlignRogue.Clustering
 
         public bool ShouldSeparateByCharge
         {
-            get { return this.options.LcmsClusteringOptions.ShouldSeparateCharge; }
+            get => this.options.LcmsClusteringOptions.ShouldSeparateCharge;
             set
             {
                 this.options.LcmsClusteringOptions.ShouldSeparateCharge = value;
@@ -109,7 +109,7 @@ namespace MultiAlignRogue.Clustering
 
         public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
         {
-            get { return this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
+            get => this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm;
             set
             {
                 if (this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
@@ -123,7 +123,7 @@ namespace MultiAlignRogue.Clustering
 
         public ClusterCentroidRepresentation SelectedCentroidMethod
         {
-            get { return this.options.LcmsClusteringOptions.ClusterCentroidRepresentation; }
+            get => this.options.LcmsClusteringOptions.ClusterCentroidRepresentation;
             set
             {
                 if (this.options.LcmsClusteringOptions.ClusterCentroidRepresentation != value)
@@ -136,7 +136,7 @@ namespace MultiAlignRogue.Clustering
 
         public DistanceMetric SelectedDistanceFunction
         {
-            get { return this.options.LcmsClusteringOptions.DistanceFunction; }
+            get => this.options.LcmsClusteringOptions.DistanceFunction;
             set
             {
                 if (this.options.LcmsClusteringOptions.DistanceFunction != value)
@@ -149,7 +149,7 @@ namespace MultiAlignRogue.Clustering
 
         public bool ShouldRefineWithMsMs
         {
-            get { return this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement; }
+            get => this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement;
             set
             {
                 if (this.options.ClusterPostProcessingoptions.ShouldPerformClusterRefinement != value)
@@ -160,11 +160,11 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
-        public ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType> PostProcessingComparisonType { get; private set; }
+        public ObservableCollection<ClusterPostProcessingOptions.ClusterComparisonType> PostProcessingComparisonType { get; }
 
         public ClusterPostProcessingOptions.ClusterComparisonType ClusterComparisonType
         {
-            get { return this.options.ClusterPostProcessingoptions.ComparisonType; }
+            get => this.options.ClusterPostProcessingoptions.ComparisonType;
             set
             {
                 if (this.options.ClusterPostProcessingoptions.ComparisonType != value)
@@ -177,7 +177,7 @@ namespace MultiAlignRogue.Clustering
 
         public double ClusterPostProcessingTolerance
         {
-            get { return this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance; }
+            get => this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance;
             set
             {
                 if (this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance != value)
@@ -192,7 +192,7 @@ namespace MultiAlignRogue.Clustering
 
         public bool ShouldShowProgress
         {
-            get { return this.shouldShowProgress; }
+            get => this.shouldShowProgress;
             set
             {
                 if (this.shouldShowProgress != value)
@@ -207,7 +207,7 @@ namespace MultiAlignRogue.Clustering
 
         public double ProgressPercent
         {
-            get { return this.progressPercent; }
+            get => this.progressPercent;
             set
             {
                 if (this.progressPercent != value)
@@ -218,20 +218,14 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
-        public bool ShouldEnableClustererSettings
-        {
-            get
-            {
-                return this.SelectedLcmsFeatureClusteringAlgorithm != LcmsFeatureClusteringAlgorithmType.Promex;
-            }
-        }
+        public bool ShouldEnableClustererSettings => this.SelectedLcmsFeatureClusteringAlgorithm != LcmsFeatureClusteringAlgorithmType.Promex;
 
         public async void AsyncClusterFeatures()
         {
             await Task.Run(() => this.ClusterFeatures());
         }
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; }
 
         internal void ClusterFeatures(IProgress<PRISM.ProgressData> workflowProgress = null)
         {

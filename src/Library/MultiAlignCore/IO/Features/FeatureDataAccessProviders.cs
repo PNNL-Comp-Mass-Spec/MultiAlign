@@ -32,13 +32,13 @@ namespace MultiAlignCore.IO.Features
             this.IdentificationProviderCache = new IdentificationProviderCache();
         }
 
-        public ReaderWriterLockSlim DatabaseLock { get; private set; }
+        public ReaderWriterLockSlim DatabaseLock { get; }
 
         /// <summary>
-        /// Gets the object to synch on for concurrent access.
+        /// Gets the object to sync on for concurrent access.
         /// </summary>
         [Obsolete("Use DatabaseLock instead.")]
-        public object Synch { get; private set; }
+        public object Synch { get; }
 
         /// <summary>
         /// Constructor.

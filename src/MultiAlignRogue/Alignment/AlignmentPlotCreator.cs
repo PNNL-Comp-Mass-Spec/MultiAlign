@@ -7,12 +7,12 @@ namespace MultiAlignRogue.Alignment
 {
     public class AlignmentPlotCreator
     {
-        public PlotBase Heatmap { get; private set; }
-        public PlotBase NetResidual { get; private set; }
-        public PlotBase MassHistogram { get; private set; }
-        public PlotBase NetHistogram { get; private set; }
-        public PlotBase MassMzResidual { get; private set; }
-        public PlotBase MassScanResidual { get; private set; }
+        public PlotBase Heatmap { get; }
+        public PlotBase NetResidual { get; }
+        public PlotBase MassHistogram { get; }
+        public PlotBase NetHistogram { get; }
+        public PlotBase MassMzResidual { get; }
+        public PlotBase MassScanResidual { get; }
 
         public AlignmentPlotCreator(AlignmentData alignment)
         {

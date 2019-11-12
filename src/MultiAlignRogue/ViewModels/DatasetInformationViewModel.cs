@@ -57,12 +57,12 @@ namespace MultiAlignRogue.ViewModels
 
         public event EventHandler StateChanged;
 
-        public RelayCommand RequestRemovalCommand { get; private set; }
+        public RelayCommand RequestRemovalCommand { get; }
 
         private DatasetStates datasetState;
         public DatasetStates DatasetState
         {
-            get { return this.datasetState; }
+            get => this.datasetState;
             set
             {
                 if (this.datasetState != value)
@@ -107,7 +107,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool IsBaseline
         {
-            get { return this.Dataset.IsBaseline; }
+            get => this.Dataset.IsBaseline;
             set
             {
                 if (this.Dataset.IsBaseline != value)
@@ -121,7 +121,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool FeaturesFound
         {
-            get { return this.Dataset.FeaturesFound; }
+            get => this.Dataset.FeaturesFound;
             private set
             {
                 if (this.Dataset.FeaturesFound != value)
@@ -134,7 +134,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool IsAligned
         {
-            get { return this.Dataset.IsAligned; }
+            get => this.Dataset.IsAligned;
             private set
             {
                 if (this.Dataset.IsAligned != value)
@@ -149,7 +149,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool IsClustering
         {
-            get { return this.isClustering; }
+            get => this.isClustering;
             private set
             {
                 if (this.isClustering != value)
@@ -164,7 +164,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool IsClustered
         {
-            get { return this.Dataset.IsClustered; }
+            get => this.Dataset.IsClustered;
             private set
             {
                 if (this.Dataset.IsClustered != value)
@@ -200,7 +200,7 @@ namespace MultiAlignRogue.ViewModels
         private bool isFindingFeatures;
         public bool IsFindingFeatures
         {
-            get { return this.isFindingFeatures; }
+            get => this.isFindingFeatures;
             private set
             {
                 if (this.isFindingFeatures != value)
@@ -239,7 +239,7 @@ namespace MultiAlignRogue.ViewModels
         private bool isAligning;
         public bool IsAligning
         {
-            get { return this.isAligning; }
+            get => this.isAligning;
             private set
             {
                 if (this.isAligning != value)
@@ -278,7 +278,7 @@ namespace MultiAlignRogue.ViewModels
         private bool isLoadingRawData;
         public bool IsLoadingRawData
         {
-            get { return this.isLoadingRawData; }
+            get => this.isLoadingRawData;
             private set
             {
                 if (this.isLoadingRawData != value)
@@ -300,7 +300,7 @@ namespace MultiAlignRogue.ViewModels
 
         public double Progress
         {
-            get { return this.progress; }
+            get => this.progress;
             set
             {
                 if (this.progress != value)
@@ -314,7 +314,7 @@ namespace MultiAlignRogue.ViewModels
         private bool shouldShowProgress;
         public bool ShouldShowProgress
         {
-            get { return this.shouldShowProgress; }
+            get => this.shouldShowProgress;
             set
             {
                 if (this.shouldShowProgress != value)
@@ -326,14 +326,11 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
-        public DatasetInformation Dataset
-        {
-            get { return m_information; }
-        }
+        public DatasetInformation Dataset { get; }
 
         public int DatasetId
         {
-            get { return m_information.DatasetId; }
+            get => Dataset.DatasetId;
             set
             {
                 if (m_information != null)
@@ -357,14 +354,12 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
-        public string DisplayName
-        {
-            get
-            {
-                ///stupid WPF content __ http://stackoverflow.com/questions/7861699/can-not-see-underscore-in-wpf-content
-                return Name.Replace("_", "__");
-            }
-        }
+        /// <summary>
+        /// Replace a single underscore with a double underscore since WPF treats a single underscore as a keyboard shortcut
+        /// http://stackoverflow.com/questions/7861699/can-not-see-underscore-in-wpf-content
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public string DisplayName => Name.Replace("_", "__");
 
         public int Id
         {
@@ -381,7 +376,7 @@ namespace MultiAlignRogue.ViewModels
 
         public bool ShouldExpand
         {
-            get { return m_expand; }
+            get => m_expand;
             set
             {
                 if (value != m_expand)
@@ -395,7 +390,7 @@ namespace MultiAlignRogue.ViewModels
         private bool isSelected;
         public bool IsSelected
         {
-            get { return this.isSelected; }
+            get => this.isSelected;
             set
             {
                 if (this.isSelected != value)

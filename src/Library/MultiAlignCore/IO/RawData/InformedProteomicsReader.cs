@@ -62,31 +62,22 @@ namespace MultiAlignCore.IO.RawData
         /// <summary>
         /// Gets the group ID for the dataset this scan summary provider is for.
         /// </summary>
-        public int GroupId { get; private set; }
+        public int GroupId { get; }
 
         /// <summary>
         /// Gets the total number of scans.
         /// </summary>
-        public int TotalScans
-        {
-            get { return (this.LcMsRun.MaxLcScan - this.LcMsRun.MinLcScan); }
-        }
+        public int TotalScans => (this.LcMsRun.MaxLcScan - this.LcMsRun.MinLcScan);
 
         /// <summary>
         /// Gets the lowest scan number.
         /// </summary>
-        public int MinScan
-        {
-            get { return this.LcMsRun.MinLcScan; }
-        }
+        public int MinScan => this.LcMsRun.MinLcScan;
 
         /// <summary>
         /// Gets the highest scan number.
         /// </summary>
-        public int MaxScan
-        {
-            get { return this.LcMsRun.MaxLcScan; }
-        }
+        public int MaxScan => this.LcMsRun.MaxLcScan;
 
         /// <summary>
         /// Retrieves the scan header from the underlying stream.
@@ -111,7 +102,7 @@ namespace MultiAlignCore.IO.RawData
         /// Get scan summaries for a particular ms level.
         /// </summary>
         /// <param name="msLevel">
-        /// The mslevel to get scan summaries for.
+        /// The MS level to get scan summaries for.
         /// 0 = MS1 and MS2
         /// </param>
         /// <returns>All scan summaries.</returns>
@@ -158,10 +149,7 @@ namespace MultiAlignCore.IO.RawData
         /// Whether the scan summary provider is populated from a file, or from something else (i.e., the database)
         /// Always true for InformedProteomicsReader
         /// </summary>
-        public bool IsBackedByFile
-        {
-            get { return true; }
-        }
+        public bool IsBackedByFile => true;
 
         /// <summary>
         /// A method that forces the provider to initializes itself if it uses lazy loading.
@@ -193,8 +181,7 @@ namespace MultiAlignCore.IO.RawData
             var spectra = new List<MSSpectra>();
             foreach (var scan in fragmentationScans)
             {
-                ScanSummary scanSummary;
-                spectra.Add(this.GetSpectrum(scan, 2, out scanSummary, loadPeaks));
+                spectra.Add(this.GetSpectrum(scan, 2, out _, loadPeaks));
             }
 
             return spectra;

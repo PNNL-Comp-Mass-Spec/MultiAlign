@@ -21,7 +21,7 @@ namespace MultiAlignRogue.Clustering
 
         private readonly LinearAxis clusterFeaturePlotYaxis;
 
-        public RelayCommand SavePlotCommand { get; private set; }
+        public RelayCommand SavePlotCommand { get; }
 
         /// <summary>
         /// The features to display.
@@ -67,14 +67,14 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the plot model for the selected cluster's feature plot.
         /// </summary>
-        public PlotModel ClusterFeaturePlotModel { get; private set; }
+        public PlotModel ClusterFeaturePlotModel { get; }
 
         /// <summary>
         /// Gets or sets the features to display chromatograms for.
         /// </summary>
         public IEnumerable<UMCLightViewModel> Features
         {
-            get { return this.features; }
+            get => this.features;
             set
             {
                 if (this.features != value)

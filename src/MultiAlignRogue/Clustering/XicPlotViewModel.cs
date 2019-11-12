@@ -71,7 +71,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private bool autoScaleYAxis;
 
-        public RelayCommand SavePlotCommand { get; private set; }
+        public RelayCommand SavePlotCommand { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
@@ -153,25 +153,25 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the model for the extracted ion chromatogram plot.
         /// </summary>
-        public PlotModel XicPlotModel { get; private set; }
+        public PlotModel XicPlotModel { get; }
 
         /// <summary>
         /// Gets all possible charge states that can be selected.
         /// </summary>
-        public ObservableCollection<ChargeStateViewModel> ChargeStates { get; private set; }
+        public ObservableCollection<ChargeStateViewModel> ChargeStates { get; }
 
         /// <summary>
         /// Gets or sets the features to display chromatograms for.
         /// </summary>
         public IEnumerable<UMCLightViewModel> Features
         {
-            get { return this.features; }
+            get => this.features;
             set
             {
                 if (this.features != value)
                 {
                     this.features = value;
-                    this.plotBuilderthrottler.Run(this.BuildPlot);
+                    this.plotBuilderThrottler.Run(this.BuildPlot);
                     this.RaisePropertyChanged();
                 }
             }
@@ -182,7 +182,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public MSFeatureLight SelectedMsFeature
         {
-            get { return this.selectedMsFeature; }
+            get => this.selectedMsFeature;
             set
             {
                 if (this.selectedMsFeature != value)
@@ -199,7 +199,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public bool AutoScaleYAxis
         {
-            get { return this.autoScaleYAxis; }
+            get => this.autoScaleYAxis;
             set
             {
                 if (this.autoScaleYAxis != value)
@@ -216,7 +216,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public bool IsLegendVisible
         {
-            get { return this.XicPlotModel.IsLegendVisible; }
+            get => this.XicPlotModel.IsLegendVisible;
             set
             {
                 if (this.XicPlotModel.IsLegendVisible != value)

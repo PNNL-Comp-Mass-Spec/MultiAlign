@@ -8,22 +8,17 @@ namespace MultiAlignRogue.Alignment
 
     public class AlignmentViewModel
     {
-        public BitmapImage HeatmapImage { get; private set; }
-        public BitmapImage NetScanImage { get; private set; }
-        public BitmapImage MassHistogram { get; private set; }
-        public BitmapImage NetHistogram { get; private set; }
-        public BitmapImage MassMzImage { get; private set; }
-        public BitmapImage MassScanImage { get; private set; }
-        public string WindowTitle { get; private set; }
-
-        public AlignmentViewModel()
-        {
-
-        }
+        public BitmapImage HeatmapImage { get; }
+        public BitmapImage NetScanImage { get; }
+        public BitmapImage MassHistogram { get; }
+        public BitmapImage NetHistogram { get; }
+        public BitmapImage MassMzImage { get; }
+        public BitmapImage MassScanImage { get; }
+        public string WindowTitle { get; }
 
         public AlignmentViewModel(AlignmentData alignment)
         {
-            this.WindowTitle = string.Format("{0} Alignment Data",alignment.AligneeDataset);
+            this.WindowTitle = string.Format("{0} Alignment Data", alignment.AligneeDataset);
 
             var plots = new AlignmentPlotCreator(alignment);
 

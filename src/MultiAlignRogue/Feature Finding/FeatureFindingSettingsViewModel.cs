@@ -35,8 +35,6 @@ namespace MultiAlignRogue.Feature_Finding
 
         private readonly IFeatureWindowFactory msFeatureWindowFactory;
 
-        private readonly string[] timeOptions = { "Minutes", "Scans" };
-
         private readonly Dictionary<DatasetInformation, IList<UMCLight>> featuresByDataset;
 
         private double totalProgress;
@@ -103,25 +101,25 @@ namespace MultiAlignRogue.Feature_Finding
             this.RestoreDefaultsCommand = new RelayCommand(this.RestoreDefaults);
         }
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; }
 
-        public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; }
+        public ObservableCollection<MsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; }
 
-        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; private set; }
+        public ObservableCollection<GenericClusteringAlgorithmType> LcmsFeatureClusterers { get; }
 
         public RelayCommand FeatureFindingDefaultsCommand { get; private set; }
 
-        public RelayCommand FindMsFeaturesCommand { get; private set; }
+        public RelayCommand FindMsFeaturesCommand { get; }
 
-        public RelayCommand PlotMsFeaturesCommand { get; private set; }
+        public RelayCommand PlotMsFeaturesCommand { get; }
 
-        public RelayCommand PlotAlignedFeaturesCommand { get; private set; }
+        public RelayCommand PlotAlignedFeaturesCommand { get; }
 
-        public RelayCommand RestoreDefaultsCommand { get; private set; }
+        public RelayCommand RestoreDefaultsCommand { get; }
 
         public double MassResolution
         {
-            get { return this.analysis.Options.InstrumentTolerances.Mass; }
+            get => this.analysis.Options.InstrumentTolerances.Mass;
             set
             {
                 this.analysis.Options.AlignmentOptions.MassTolerance = value;
@@ -130,14 +128,11 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public string[] TimeOptions
-        {
-            get { return this.timeOptions; }
-        }
+        public string[] TimeOptions { get; } = { "Minutes", "Scans" };
 
         public string TreatAsTimeOrScan
         {
-            get { return this.FilterOnMinutes ? "Minutes" : "Scans"; }
+            get => this.FilterOnMinutes ? "Minutes" : "Scans";
             set
             {
                 this.FilterOnMinutes = value.Equals("Minutes");
@@ -149,7 +144,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool FilterOnMinutes
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FilterOnMinutes; }
+            get => this.analysis.Options.LcmsFilteringOptions.FilterOnMinutes;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.FilterOnMinutes = value;
@@ -157,9 +152,10 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
+        // ReSharper disable once IdentifierTypo
         public bool CanCreateXics
         {
-            get { return this.canCreateXics; }
+            get => this.canCreateXICs;
             set
             {
                 if (this.canCreateXICs != value)
@@ -222,7 +218,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumFeatureLengthMinutes
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum; }
+            get => this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum = value;
@@ -232,7 +228,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MaximumFeatureLengthMinutes
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum; }
+            get => this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum = value;
@@ -242,7 +238,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumFeatureLengthScans
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum; }
+            get => this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum = value;
@@ -252,7 +248,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MaximumFeatureLengthScans
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum; }
+            get => this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum = value;
@@ -262,7 +258,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumFeatureDataPoints
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.MinimumDataPoints; }
+            get => this.analysis.Options.LcmsFilteringOptions.MinimumDataPoints;
             set
             {
                 this.analysis.Options.LcmsFilteringOptions.MinimumDataPoints = value;
@@ -272,7 +268,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumIntensity
         {
-            get { return this.analysis.Options.MsFilteringOptions.MinimumIntensity; }
+            get => this.analysis.Options.MsFilteringOptions.MinimumIntensity;
             set
             {
                 this.analysis.Options.MsFilteringOptions.MinimumIntensity = value;
@@ -282,7 +278,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double FragmentationTolerance
         {
-            get { return this.analysis.Options.InstrumentTolerances.FragmentationWindowSize; }
+            get => this.analysis.Options.InstrumentTolerances.FragmentationWindowSize;
             set
             {
                 this.analysis.Options.InstrumentTolerances.FragmentationWindowSize = value;
@@ -292,7 +288,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MaximumMz
         {
-            get { return this.analysis.Options.MsFilteringOptions.MzRange.Maximum; }
+            get => this.analysis.Options.MsFilteringOptions.MzRange.Maximum;
             set
             {
                 this.analysis.Options.MsFilteringOptions.MzRange.Maximum = value;
@@ -302,7 +298,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumMz
         {
-            get { return this.analysis.Options.MsFilteringOptions.MzRange.Minimum; }
+            get => this.analysis.Options.MsFilteringOptions.MzRange.Minimum;
             set
             {
                 this.analysis.Options.MsFilteringOptions.MzRange.Minimum = value;
@@ -313,7 +309,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MaximumCharge
         {
-            get { return this.analysis.Options.MsFilteringOptions.ChargeRange.Maximum; }
+            get => this.analysis.Options.MsFilteringOptions.ChargeRange.Maximum;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ChargeRange.Maximum = value;
@@ -323,7 +319,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumCharge
         {
-            get { return this.analysis.Options.MsFilteringOptions.ChargeRange.Minimum; }
+            get => this.analysis.Options.MsFilteringOptions.ChargeRange.Minimum;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ChargeRange.Minimum = value;
@@ -333,7 +329,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double MinimumDeisotopingScore
         {
-            get { return this.analysis.Options.MsFilteringOptions.MinimumDeisotopingScore; }
+            get => this.analysis.Options.MsFilteringOptions.MinimumDeisotopingScore;
             set
             {
                 this.analysis.Options.MsFilteringOptions.MinimumDeisotopingScore = value;
@@ -343,7 +339,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldUseChargeStateFilter
         {
-            get { return this.analysis.Options.MsFilteringOptions.ShouldUseChargeFilter; }
+            get => this.analysis.Options.MsFilteringOptions.ShouldUseChargeFilter;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ShouldUseChargeFilter = value;
@@ -353,7 +349,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldUseMzFilter
         {
-            get { return this.analysis.Options.MsFilteringOptions.ShouldUseMzFilter; }
+            get => this.analysis.Options.MsFilteringOptions.ShouldUseMzFilter;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ShouldUseMzFilter = value;
@@ -363,7 +359,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldUseIntensityFilter
         {
-            get { return this.analysis.Options.MsFilteringOptions.ShouldUseIntensityFilter; }
+            get => this.analysis.Options.MsFilteringOptions.ShouldUseIntensityFilter;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ShouldUseIntensityFilter = value;
@@ -373,7 +369,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldUseDeisotopingFilter
         {
-            get { return this.analysis.Options.MsFilteringOptions.ShouldUseDeisotopingFilter; }
+            get => this.analysis.Options.MsFilteringOptions.ShouldUseDeisotopingFilter;
             set
             {
                 this.analysis.Options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
@@ -381,9 +377,10 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
+        // ReSharper disable once IdentifierTypo
         public bool ShouldCreateXics
         {
-            get { return this.analysis.Options.LcmsFindingOptions.FindXics && this.CanCreateXics; }
+            get => this.analysis.Options.LcmsFindingOptions.FindXics && this.CanCreateXics;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.FindXics != value)
@@ -394,9 +391,10 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
+        // ReSharper disable once IdentifierTypo
         public bool ShouldRefineXics
         {
-            get { return this.analysis.Options.LcmsFindingOptions.RefineXics && this.CanCreateXics; }
+            get => this.analysis.Options.LcmsFindingOptions.RefineXics && this.CanCreateXics;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.RefineXics != value)
@@ -409,7 +407,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public int SmoothingWindowSize
         {
-            get { return this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize; }
+            get => this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize != value)
@@ -422,7 +420,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public int SmoothingPolynomialOrder
         {
-            get { return this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder; }
+            get => this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder != value)
@@ -435,7 +433,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double XicRelativeIntensityThreshold
         {
-            get { return this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold; }
+            get => this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold;
             set
             {
                 if (Math.Abs(this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold - value) > Single.Epsilon)
@@ -448,7 +446,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldPerformSecondPassClustering
         {
-            get { return this.analysis.Options.LcmsFindingOptions.SecondPassClustering; }
+            get => this.analysis.Options.LcmsFindingOptions.SecondPassClustering;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.SecondPassClustering != value)
@@ -461,7 +459,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public MsFeatureClusteringAlgorithmType FirstPassClusterer
         {
-            get { return this.analysis.Options.LcmsFindingOptions.FirstPassClusterer; }
+            get => this.analysis.Options.LcmsFindingOptions.FirstPassClusterer;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.FirstPassClusterer != value)
@@ -474,7 +472,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public GenericClusteringAlgorithmType SecondPassClusterer
         {
-            get { return this.analysis.Options.LcmsFindingOptions.SecondPassClusterer; }
+            get => this.analysis.Options.LcmsFindingOptions.SecondPassClusterer;
             set
             {
                 if (this.analysis.Options.LcmsFindingOptions.SecondPassClusterer != value)
@@ -487,7 +485,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public double TotalProgress
         {
-            get { return this.totalProgress; }
+            get => this.totalProgress;
             set
             {
                 if (Math.Abs(this.totalProgress - value) > Single.Epsilon)
@@ -500,7 +498,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         public bool ShouldShowProgress
         {
-            get { return this.shouldShowProgress; }
+            get => this.shouldShowProgress;
             set
             {
                 if (this.shouldShowProgress != value)

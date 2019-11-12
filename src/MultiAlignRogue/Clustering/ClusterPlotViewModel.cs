@@ -61,7 +61,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private UMCClusterLight selectedCluster;
 
-        public RelayCommand SavePlotCommand { get; private set; }
+        public RelayCommand SavePlotCommand { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterPlotViewModel"/> class.
@@ -127,14 +127,14 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the plot model for cluster plot.
         /// </summary>
-        public PlotModel ClusterPlotModel { get; private set; }
+        public PlotModel ClusterPlotModel { get; }
 
         /// <summary>
         /// Gets or sets the settings for the cluster viewer.
         /// </summary>
         public ClusterViewerSettings ClusterViewerSettings
         {
-            get { return this.clusterViewerSettings; }
+            get => this.clusterViewerSettings;
             set
             {
                 if (this.clusterViewerSettings != value)
@@ -160,7 +160,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public UMCClusterLight SelectedCluster
         {
-            get { return this.selectedCluster; }
+            get => this.selectedCluster;
             set
             {
                 if (this.selectedCluster != value)

@@ -197,22 +197,22 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets a command that displays a charge state distribution plot.
         /// </summary>
-        public ICommand ShowChargeStateDistributionCommand { get; private set; }
+        public ICommand ShowChargeStateDistributionCommand { get; }
 
         /// <summary>
         /// Gets a command that displays the dataset cluster histogram plot.
         /// </summary>
-        public ICommand ShowDatasetHistogramCommand { get; private set; }
+        public ICommand ShowDatasetHistogramCommand { get; }
 
         /// <summary>
         /// Gets a command that shows the settings window.
         /// </summary>
-        public ICommand SettingsCommand { get; private set; }
+        public ICommand SettingsCommand { get; }
 
         /// <summary>
         /// Gets the list of clusters.
         /// </summary>
-        public ObservableCollection<ClusterMatch> Matches { get; private set; }
+        public ObservableCollection<ClusterMatch> Matches { get; }
 
         /// <summary>
         /// Gets the average abundance for features in a cluster.
@@ -222,19 +222,19 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the list of features for the selected cluster.
         /// </summary>
-        public ObservableCollection<UMCLightViewModel> Features { get; private set; }
+        public ObservableCollection<UMCLightViewModel> Features { get; }
 
         /// <summary>
         /// Gets the list of MsMs spectra.
         /// </summary>
-        public ObservableCollection<MSSpectra> MsMsSpectra { get; private set; }
+        public ObservableCollection<MSSpectra> MsMsSpectra { get; }
 
         /// <summary>
         /// Gets or sets the selected MS/MS spectrum.
         /// </summary>
         public MSSpectra SelectedMsMsSpectra
         {
-            get { return this.selectedMsMsSpectra; }
+            get => this.selectedMsMsSpectra;
             set
             {
                 if (this.selectedMsMsSpectra != value)
@@ -249,24 +249,24 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the view model for extracted ion chromatogram plots.
         /// </summary>
-        public XicPlotViewModel XicPlotViewModel { get; private set; }
+        public XicPlotViewModel XicPlotViewModel { get; }
 
         /// <summary>
         /// Gets the view model for the cluster plot.
         /// </summary>
-        public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
+        public ClusterPlotViewModel ClusterPlotViewModel { get; }
 
         /// <summary>
         /// Gets the view model for displaying cluster features.
         /// </summary>
-        public ClusterFeaturePlotViewModel ClusterFeaturePlotViewModel { get; private set; }
+        public ClusterFeaturePlotViewModel ClusterFeaturePlotViewModel { get; }
 
         /// <summary>
         /// Gets the path to the layout file.
         /// </summary>
         public string LayoutFilePath
         {
-            get { return this.layoutFilePath; }
+            get => this.layoutFilePath;
             private set
             {
                 if (this.layoutFilePath != value)
@@ -282,7 +282,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public LayoutRoot LayoutRoot
         {
-            get { return this.layoutRoot; }
+            get => this.layoutRoot;
             set
             {
                 if (this.layoutRoot != value)
@@ -298,7 +298,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         public ClusterMatch SelectedMatch
         {
-            get { return this.selectedMatch; }
+            get => this.selectedMatch;
             set
             {
                 if (this.selectedMatch != value)
