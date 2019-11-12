@@ -47,19 +47,13 @@ namespace MultiAlignRogue.Clustering
             this.SaveCommand = new RelayCommand(() =>
             {
                 this.Status = true;
-                if (this.ReadyToClose != null)
-                {
-                    this.ReadyToClose(this, EventArgs.Empty);
-                }
+                ReadyToClose?.Invoke(this, EventArgs.Empty);
             });
 
             this.CancelCommand = new RelayCommand(() =>
             {
                 this.Status = false;
-                if (this.ReadyToClose != null)
-                {
-                    this.ReadyToClose(this, EventArgs.Empty);
-                }
+                ReadyToClose?.Invoke(this, EventArgs.Empty);
             });
         }
 

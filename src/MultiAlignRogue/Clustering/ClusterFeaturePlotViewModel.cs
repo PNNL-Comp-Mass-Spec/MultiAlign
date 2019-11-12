@@ -199,18 +199,11 @@ namespace MultiAlignRogue.Clustering
         private void FeatureClusterPlotMouseDown(object sender, OxyMouseEventArgs args)
         {
             var series = this.ClusterFeaturePlotModel.GetSeriesFromPoint(args.Position, 10);
-            if (series != null)
+            var result = series?.GetNearestPoint(args.Position, false);
+            if (result?.Item is UMCLightViewModel featurePoint)
             {
-                var result = series.GetNearestPoint(args.Position, false);
-                if (result != null)
-                {
-                    var featurePoint = result.Item as UMCLightViewModel;
-                    if (featurePoint != null)
-                    {
-                        featurePoint.Selected = !featurePoint.Selected;
-                        this.BuildClusterFeaturePlot(false);
-                    }
-                }
+                featurePoint.Selected = !featurePoint.Selected;
+                this.BuildClusterFeaturePlot(false);
             }
         }
 

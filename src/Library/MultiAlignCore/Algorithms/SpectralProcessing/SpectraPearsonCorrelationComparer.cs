@@ -66,6 +66,9 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         {
             public int Compare(XYData x, XYData y)
             {
+                if (x == null || y == null)
+                    return 0;
+
                 return x.X.CompareTo(y.X);
             }
         }

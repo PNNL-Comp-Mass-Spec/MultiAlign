@@ -769,7 +769,7 @@ namespace MultiAlignRogue.Feature_Finding
                 this.CanCreateXics = this.Datasets
                         .Where(dataset => dataset.IsSelected)
                         .Select(dataset => RawLoaderFactory.CreateFileReader(dataset.Dataset.RawFile.Path, dataset.DatasetId))
-                        .Any(reader => reader != null && reader is ISpectraProvider);
+                        .Any(reader => reader is ISpectraProvider);
             }
         }
     }

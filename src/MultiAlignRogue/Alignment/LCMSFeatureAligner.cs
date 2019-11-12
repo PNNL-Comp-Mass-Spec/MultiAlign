@@ -68,10 +68,7 @@ namespace MultiAlignRogue.Alignment
 
         void aligner_Progress(object sender, ProgressNotifierArgs e)
         {
-            if (Progress != null)
-            {
-                Progress(sender, e);
-            }
+            Progress?.Invoke(sender, e);
         }
 
         #endregion

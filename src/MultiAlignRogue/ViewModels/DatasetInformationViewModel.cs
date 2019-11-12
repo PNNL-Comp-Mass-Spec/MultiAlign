@@ -42,10 +42,7 @@ namespace MultiAlignRogue.ViewModels
             RequestRemovalCommand = new RelayCommand(
                 () =>
                 {
-                    if (RemovalRequested != null)
-                    {
-                        RemovalRequested(this, EventArgs.Empty);
-                    }
+                    RemovalRequested?.Invoke(this, EventArgs.Empty);
                 }, () => !this.DoingWork);
 
             this.SetDatasetState();
@@ -90,9 +87,9 @@ namespace MultiAlignRogue.ViewModels
 
                     var isFinishedState = (value == DatasetStates.FeaturesFound || value == DatasetStates.Aligned ||
                                            value == DatasetStates.Clustered     || value == DatasetStates.Matched);
-                    if (isFinishedState && this.StateChanged != null)
+                    if (isFinishedState)
                     {
-                        this.StateChanged(this, EventArgs.Empty);
+                        StateChanged?.Invoke(this, EventArgs.Empty);
                     }
 
                     this.RaisePropertyChanged(nameof(FindingFeatureLabelColor));

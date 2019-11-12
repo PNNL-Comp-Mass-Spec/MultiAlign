@@ -38,21 +38,15 @@ namespace MultiAlignRogue.Alignment
 
             this.MoveUpCommand = new RelayCommand(
                 () =>
-                    {
-                        if (this.MoveUpRequested != null)
-                        {
-                            this.MoveUpRequested(this, EventArgs.Empty);
-                        }
-                    },
+                {
+                    MoveUpRequested?.Invoke(this, EventArgs.Empty);
+                },
                     () => this.ShouldAlignDimension);
 
             this.MoveDownCommand = new RelayCommand(
                 () =>
                 {
-                    if (this.MoveDownRequested != null)
-                    {
-                        this.MoveDownRequested(this, EventArgs.Empty);
-                    }
+                    MoveDownRequested?.Invoke(this, EventArgs.Empty);
                 },
                 () => this.ShouldAlignDimension);
         }

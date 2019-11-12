@@ -453,20 +453,19 @@ namespace MultiAlignRogue
                 var viewmodel = new DatasetInformationViewModel(info);
                 viewmodel.RemovalRequested += (s, e) =>
                 {
-                    var vm = s as DatasetInformationViewModel;
-                    if (vm != null)
+                    if (!(s is DatasetInformationViewModel vm))
+                        return;
+
+                    var result =
+                        MessageBox.Show(
+                            string.Format("Are you sure that you'd like to remove {0}", vm.Dataset.DatasetName),
+                            "Remove Dataset?",
+                            MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        var result =
-                            MessageBox.Show(
-                                string.Format("Are you sure that you'd like to remove {0}", vm.Dataset.DatasetName),
-                                "Remove Dataset?",
-                                MessageBoxButton.YesNo);
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            this.Datasets.Remove(vm);
-                            this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
-                            this.deletedDatasets.Add(vm.Dataset);
-                        }
+                        this.Datasets.Remove(vm);
+                        this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
+                        this.deletedDatasets.Add(vm.Dataset);
                     }
                 };
 

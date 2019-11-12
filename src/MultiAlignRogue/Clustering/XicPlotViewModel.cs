@@ -333,8 +333,7 @@ namespace MultiAlignRogue.Clustering
             {
                 foreach (var point in series.ItemsSource)
                 {
-                    var msFeature = point as MSFeatureLight;
-                    if (msFeature != null && msFeature.Net >= minX && msFeature.Net <= maxX)
+                    if (point is MSFeatureLight msFeature && msFeature.Net >= minX && msFeature.Net <= maxX)
                     {
                         maxY = Math.Max(maxY, msFeature.Abundance);
                         minY = Math.Min(minY, msFeature.Abundance);
@@ -356,24 +355,22 @@ namespace MultiAlignRogue.Clustering
         /// <param name="arg">The event arguments.</param>
         private void ChargeStateSelectionChanged(PropertyChangedMessage<bool> arg)
         {
-            var chargeStateViewModel = arg.Sender as ChargeStateViewModel;
-            if (chargeStateViewModel != null)
-            {
-                foreach (var series in this.XicPlotModel.Series)
-                {
-                    var lineSeries = series as LineSeries;
-                    if (lineSeries != null && lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
-                    {
-                        var msfeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
-                        if (msfeature != null && msfeature.ChargeState == chargeStateViewModel.ChargeState)
-                        {
-                            lineSeries.IsVisible = arg.NewValue;
-                        }
-                    }
-                }
+            if (!(arg.Sender is ChargeStateViewModel chargeStateViewModel))
+                return;
 
-                this.XicPlotModel.InvalidatePlot(true);
+            foreach (var series in this.XicPlotModel.Series)
+            {
+                if (!(series is LineSeries lineSeries) || !lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
+                    continue;
+
+                var msFeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
+                if (msFeature != null && msFeature.ChargeState == chargeStateViewModel.ChargeState)
+                {
+                    lineSeries.IsVisible = arg.NewValue;
+                }
             }
+
+            this.XicPlotModel.InvalidatePlot(true);
         }
 
         /// <summary>
@@ -382,24 +379,22 @@ namespace MultiAlignRogue.Clustering
         /// <param name="arg">Event arguments.</param>
         private void FeatureSelectionChanged(PropertyChangedMessage<bool> arg)
         {
-            var umcLightViewModel = arg.Sender as UMCLightViewModel;
-            if (umcLightViewModel != null)
-            {
-                foreach (var series in this.XicPlotModel.Series)
-                {
-                    var lineSeries = series as LineSeries;
-                    if (lineSeries != null && lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
-                    {
-                        var msfeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
-                        if (msfeature != null && msfeature.GroupId == umcLightViewModel.UMCLight.GroupId)
-                        {
-                            lineSeries.IsVisible = arg.NewValue;
-                        }
-                    }
-                }
+            if (!(arg.Sender is UMCLightViewModel umcLightViewModel))
+                return;
 
-                this.XicPlotModel.InvalidatePlot(true);
+            foreach (var series in this.XicPlotModel.Series)
+            {
+                if (!(series is LineSeries lineSeries) || !lineSeries.ItemsSource.OfType<MSFeatureLight>().Any())
+                    continue;
+
+                var msFeature = lineSeries.ItemsSource.OfType<MSFeatureLight>().First();
+                if (msFeature != null && msFeature.GroupId == umcLightViewModel.UMCLight.GroupId)
+                {
+                    lineSeries.IsVisible = arg.NewValue;
+                }
             }
+
+            this.XicPlotModel.InvalidatePlot(true);
         }
 
         /// <summary>
@@ -415,17 +410,10 @@ namespace MultiAlignRogue.Clustering
             }
 
             var series = this.XicPlotModel.GetSeriesFromPoint(args.Position, 10);
-            if (series != null)
+            var result = series?.GetNearestPoint(args.Position, false);
+            if (result?.Item is MSFeatureLight msFeaturePoint)
             {
-                var result = series.GetNearestPoint(args.Position, false);
-                if (result != null)
-                {
-                    var msfeaturePoint = result.Item as MSFeatureLight;
-                    if (msfeaturePoint != null)
-                    {
-                        this.SelectedMsFeature = msfeaturePoint;
-                    }
-                }
+                this.SelectedMsFeature = msFeaturePoint;
             }
         }
 
@@ -436,32 +424,31 @@ namespace MultiAlignRogue.Clustering
         /// <returns>The XIC.</returns>
         private IEnumerable<List<MSFeatureLight>> GetXic(UMCLight feature)
         {
-            var xics = new List<List<MSFeatureLight>>();
-            var ipr = this.rawProvider.GetScanSummaryProvider(feature.GroupId) as InformedProteomicsReader;
-            if (ipr != null)
+            var xicList = new List<List<MSFeatureLight>>();
+            if (!(this.rawProvider.GetScanSummaryProvider(feature.GroupId) is InformedProteomicsReader ipr))
+                return xicList;
+
+            var lcms = ipr.LcMsRun;
+            for (var charge = feature.MinCharge; charge <= feature.MaxCharge; charge++)
             {
-                var lcms = ipr.LcMsRun;
-                for (int charge = feature.MinCharge; charge <= feature.MaxCharge; charge++)
-                {
-                    var mz = (feature.MassMonoisotopicAligned + charge * Constants.Proton) / charge;
-                    var xic = lcms.GetFullPrecursorIonExtractedIonChromatogram(mz, new Tolerance(10, ToleranceUnit.Ppm))
-                                  .Where(xicP => xicP.ScanNum >= feature.ScanStart && xicP.ScanNum <= feature.ScanEnd)
-                                  .ToList();
-                    var msFeatures = xic.Select(
-                        xicPoint =>
+                var mz = (feature.MassMonoisotopicAligned + charge * Constants.Proton) / charge;
+                var xic = lcms.GetFullPrecursorIonExtractedIonChromatogram(mz, new Tolerance(10, ToleranceUnit.Ppm))
+                    .Where(xicP => xicP.ScanNum >= feature.ScanStart && xicP.ScanNum <= feature.ScanEnd)
+                    .ToList();
+                var msFeatures = xic.Select(
+                    xicPoint =>
                         new MSFeatureLight
-                            {
-                                GroupId = feature.GroupId,
-                                Scan = xicPoint.ScanNum,
-                                Net = ipr.GetScanSummary(xicPoint.ScanNum).Net,
-                                Abundance = xicPoint.Intensity,
-                                ChargeState = charge,
-                            }).ToList();
-                    xics.Add(msFeatures);
-                }
+                        {
+                            GroupId = feature.GroupId,
+                            Scan = xicPoint.ScanNum,
+                            Net = ipr.GetScanSummary(xicPoint.ScanNum).Net,
+                            Abundance = xicPoint.Intensity,
+                            ChargeState = charge,
+                        }).ToList();
+                xicList.Add(msFeatures);
             }
 
-            return xics;
+            return xicList;
         }
 
         /// <summary>

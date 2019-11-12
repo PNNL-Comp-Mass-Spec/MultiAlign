@@ -135,7 +135,7 @@ namespace MultiAlignRogue.Clustering
             this.originalSettings = new ClusterViewerSettings();
 
             // Set up standard layout path
-            var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            var assemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
             if (!string.IsNullOrEmpty(assemblyPath))
             {
                 this.standardLayoutFilePath = Path.Combine(assemblyPath, StandardLayoutFileName);

@@ -135,11 +135,7 @@ namespace MultiAlignRogue.Clustering
             {
                 if (this.clusterViewerSettings != value)
                 {
-                    this.clusterViewerSettings = value;
-                    if (this.clusterViewerSettings == null)
-                    {
-                        this.clusterViewerSettings = new ClusterViewerSettings();
-                    }
+                    this.clusterViewerSettings = value ?? new ClusterViewerSettings();
 
                     if (this.throttler != null && this.ClusterPlotModel != null)
                     {
@@ -295,17 +291,10 @@ namespace MultiAlignRogue.Clustering
             }
 
             var series = this.ClusterPlotModel.GetSeriesFromPoint(args.Position, 10);
-            if (series != null)
+            var result = series?.GetNearestPoint(args.Position, false);
+            if (result?.Item is ClusterPoint clusterPoint)
             {
-                var result = series.GetNearestPoint(args.Position, false);
-                if (result != null)
-                {
-                    var clusterPoint = result.Item as ClusterPoint;
-                    if (clusterPoint != null)
-                    {
-                        this.SelectedCluster = clusterPoint.UMCClusterLight;
-                    }
-                }
+                this.SelectedCluster = clusterPoint.UMCClusterLight;
             }
         }
 
