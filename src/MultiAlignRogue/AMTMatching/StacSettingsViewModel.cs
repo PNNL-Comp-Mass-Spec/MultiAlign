@@ -256,7 +256,7 @@ namespace MultiAlignRogue.AMTMatching
             get => this.totalProgress;
             set
             {
-                if (this.totalProgress != value)
+                if (Math.Abs(this.totalProgress - value) > float.Epsilon)
                 {
                     this.totalProgress = value;
                     this.RaisePropertyChanged();

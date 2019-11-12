@@ -175,7 +175,7 @@ namespace MultiAlignRogue.Clustering
             get => this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance;
             set
             {
-                if (this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance != value)
+                if (Math.Abs(this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance - value) > float.Epsilon)
                 {
                     this.options.ClusterPostProcessingoptions.MsMsComparisonTolerance = value;
                     this.RaisePropertyChanged();
@@ -205,7 +205,7 @@ namespace MultiAlignRogue.Clustering
             get => this.progressPercent;
             set
             {
-                if (this.progressPercent != value)
+                if (Math.Abs(this.progressPercent - value) > float.Epsilon)
                 {
                     this.progressPercent = value;
                     this.RaisePropertyChanged();
