@@ -429,7 +429,7 @@ namespace MultiAlignRogue.Clustering
             this.clusterViewFactory.CreateNewWindow(matches, this.analysis.DataProviders.ScanSummaryProviderCache);
         }
 
-        private List<ClusterMatch> ReconstructClusterMatches(IEnumerable<UMCClusterLight> clusters)
+        private List<ClusterMatch> ReconstructClusterMatches(IReadOnlyCollection<UMCClusterLight> clusters)
         {
             var matches = new List<ClusterMatch>();
             var clusterMap = clusters.ToDictionary(cluster => cluster.Id);
@@ -471,10 +471,8 @@ namespace MultiAlignRogue.Clustering
         /// Writes cluster data to a comma-separated values file.
         /// </summary>
         /// <param name="path">The path to the CSV file to write.</param>
-        /// <param name="matches">The cluster-mass tag matches to write.</param>
-        /// <param name="clusterIdMap">Dictionary mapping cluster IDs to clusters.</param>
-        /// <param name="progress">Progress reporter.</param>
-        private void WriteClusterData(string path, IEnumerable<UMCClusterLight> clusters)
+        /// <param name="clusters">The cluster-mass tag matches to write.</param>
+        private void WriteClusterData(string path, IReadOnlyCollection<UMCClusterLight> clusters)
         {
             //var progressData = new PRISM.ProgressData { ProgressObj = progress };
 

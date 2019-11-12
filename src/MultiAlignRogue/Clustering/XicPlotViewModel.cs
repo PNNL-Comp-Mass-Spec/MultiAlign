@@ -435,7 +435,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         /// <param name="feature">The feature to get the XIC for.</param>
         /// <returns>The XIC.</returns>
-        private List<List<MSFeatureLight>> GetXic(UMCLight feature)
+        private IEnumerable<List<MSFeatureLight>> GetXic(UMCLight feature)
         {
             var xics = new List<List<MSFeatureLight>>();
             var ipr = this.rawProvider.GetScanSummaryProvider(feature.GroupId) as InformedProteomicsReader;

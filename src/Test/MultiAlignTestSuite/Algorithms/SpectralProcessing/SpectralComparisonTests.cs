@@ -328,7 +328,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         /// <param name="matches"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private Dictionary<int, Dictionary<int, PeptideMatch>> CreateMatches(List<PeptideMatch> matches, int type)
+        private Dictionary<int, Dictionary<int, PeptideMatch>> CreateMatches(IEnumerable<PeptideMatch> matches, int type)
         {
             var matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
             foreach (var match in matches)

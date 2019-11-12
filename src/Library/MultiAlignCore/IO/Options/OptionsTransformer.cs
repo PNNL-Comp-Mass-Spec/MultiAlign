@@ -161,7 +161,7 @@ namespace MultiAlignCore.IO.Options
         /// <param name="optionsClass"></param>
         /// <param name="list"></param>
         /// <returns></returns>
-        private static object ParseProperties(Type optionsClass, IList<OptionPair> list)
+        private static object ParseProperties(Type optionsClass, IEnumerable<OptionPair> list)
         {
             // create a new object of type optionsClass
             var options = Activator.CreateInstance(optionsClass);

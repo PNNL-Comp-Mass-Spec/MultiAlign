@@ -24,8 +24,9 @@ namespace MultiAlignTestSuite.Algorithms
     public class UmcTreeFeatureFinding: TestBase
     {
         [Test]
+        // ReSharper disable once NUnit.TestCaseAttributeRequiresExpectedResult
         [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv", 77034)]
-        public IEnumerable<UMCLight> TestUmcFeatures(string relativePath, int expectedFeatureCount)
+        public IList<UMCLight> TestUmcFeatures(string relativePath, int expectedFeatureCount)
         {
             // Get the absolute path
             var path = GetPath(relativePath);

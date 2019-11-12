@@ -365,7 +365,7 @@
         /// </summary>
         /// <param name="files">List of files to get dataset combination for.</param>
         /// <returns>The dataset combination.</returns>
-        private SupportedFileCombination GetDatasetCombination(List<InputFile> files)
+        private SupportedFileCombination GetDatasetCombination(IEnumerable<InputFile> files)
         {
             var supportedComboMap = SupportedFileCombinations.ToDictionary(c => c.BaseType.Extension);
             var featureFile = files.FirstOrDefault(file => file.FileType == InputFileType.Features);
@@ -434,7 +434,7 @@
         /// Adds a new dataset to the list.
         /// </summary>
         /// <returns>A list of added datasets</returns>
-        private List<DatasetInformation> ConvertInputFilesIntoDatasets(List<InputFile> inputFiles)
+        private List<DatasetInformation> ConvertInputFilesIntoDatasets(IEnumerable<InputFile> inputFiles)
         {
             var addedSets = new List<DatasetInformation>();
             var datasetMap = new Dictionary<string, DatasetInformation>();
@@ -485,7 +485,7 @@
             return addedSets;
         }
 
-        private List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles, bool findAdditionalFiles = false)
+        private List<DatasetInformation> CreateDatasetsFromInputFile(IEnumerable<InputFile> inputFiles, bool findAdditionalFiles = false)
         {
             var datasets = new List<DatasetInformation>();
 

@@ -485,7 +485,7 @@ namespace MultiAlignCore.Algorithms
 
         private IList<UMCLight> AlignDataset(
             IList<UMCLight> features,
-            IEnumerable<UMCLight> baselineFeatures,
+            IList<UMCLight> baselineFeatures,
             MassTagDatabase database,
             DatasetInformation datasetInfo,
             DatasetInformation baselineInfo)
