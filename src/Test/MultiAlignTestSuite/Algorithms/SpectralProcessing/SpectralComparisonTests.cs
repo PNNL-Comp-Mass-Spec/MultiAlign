@@ -77,7 +77,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             linearAxis1.MinimumPadding = 0.06;
             plotModel1.Axes.Add(linearAxis1);
 
-            var xseries = new StemSeries();
+            var xSeries = new StemSeries();
             for (var j = 0; j < peaksY.Count; j++)
             {
                 var peakX = peaksX[j];
@@ -88,11 +88,11 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
                 {
                     value = 1;
                 }
-                xseries.Points.Add(new DataPoint(peakX.X, value));
+                xSeries.Points.Add(new DataPoint(peakX.X, value));
             }
-            xseries.Color = OxyColors.Green;
+            xSeries.Color = OxyColors.Green;
 
-            //plotModel1.Series.Add(xseries);
+            //plotModel1.Series.Add(xSeries);
 
             var series = new StemSeries();
             series.Title = "Spectra X";
@@ -333,12 +333,12 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             var matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
             foreach (var match in matches)
             {
-                var scanx = match.ScanX;
-                var scany = match.ScanY;
+                var scanX = match.ScanX;
+                var scanY = match.ScanY;
                 if (type == 1)
                 {
-                    scanx = match.ScanY;
-                    scany = match.ScanX;
+                    scanX = match.ScanY;
+                    scanY = match.ScanX;
                 }
 
 

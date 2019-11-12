@@ -184,46 +184,46 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
             LcmsWarpAlignmentOptions alignmentOptions,
             IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new PRISM.ProgressData(progress);
-            var localProgress = new Progress<PRISM.ProgressData>(p => progData.Report(p.Percent, p.Status));
+            var progressData = new PRISM.ProgressData(progress);
+            var localProgress = new Progress<PRISM.ProgressData>(p => progressData.Report(p.Percent, p.Status));
             var alignmentData = new AlignmentData();
             OnStatus("Starting alignment of features.");
 
-            // Set minMtdbnet and maxMtdbnet to 0
+            // Set minMTDBNET and maxMTDBNET to 0
             alignmentData.MinMTDBNET = 0;
             alignmentData.MaxMTDBNET = 0;
 
             var umcLights = features as List<UMCLight> ?? features.ToList();
 
-            progData.StepRange(5, "Starting alignment of features.");
+            progressData.StepRange(5, "Starting alignment of features.");
             var filteredFeatures = FilterFeaturesByAbundance(umcLights, alignmentOptions);
 
             // Convert the features, and make a map, so that we can re-adjust the aligned values later.
             var map = FeatureDataConverters.MapFeature(umcLights);
 
-            progData.StepRange(10, "Setting alignee features.");
+            progressData.StepRange(10, "Setting alignee features.");
             // Set features
             OnStatus("Setting alignee features.");
             alignmentProcessor.SetAligneeDatasetFeatures(filteredFeatures);
 
-            progData.StepRange(90, "Performing alignment warping.");
+            progressData.StepRange(90, "Performing alignment warping.");
             // Find alignment
             OnStatus("Performing alignment warping.");
             alignmentProcessor.PerformAlignmentToMsFeatures(localProgress);
 
-            progData.StepRange(95);
+            progressData.StepRange(95);
             // Extract alignment function
             alignmentData.AlignmentFunction = alignmentProcessor.GetAlignmentFunction();
 
-            progData.StepRange(100);
+            progressData.StepRange(100);
             // Extract the NET value for every scan
-            _scanToNETMap = alignmentProcessor.GetScanToNETMapping();
+            ScanToNETMap = alignmentProcessor.GetScanToNETMapping();
 
             // Correct the features (updates NetAligned and MassMonoisotopicAligned)
             OnStatus("Applying alignment function to all features.");
-            progData.Status = "Applying alignment function to all features.";
+            progressData.Status = "Applying alignment function to all features.";
             umcLights = alignmentProcessor.ApplyNetMassFunctionToAligneeDatasetFeatures(umcLights);
-            progData.Report(100);
+            progressData.Report(100);
 
             // Find min/max scan for meta-data
             var minScanBaseline = int.MaxValue;
@@ -246,7 +246,7 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
 
             // Pull out the heat maps...
             OnStatus("Retrieving alignment data.");
-            progData.Status = "Retrieving alignment data.";
+            progressData.Status = "Retrieving alignment data.";
             alignmentData.HeatScores = alignmentProcessor.GetAlignmentHeatMap(alignmentOptions.StandardizeHeatScores);
 
             // Mass and net error histograms!

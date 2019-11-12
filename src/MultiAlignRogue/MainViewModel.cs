@@ -986,24 +986,24 @@ namespace MultiAlignRogue
                 taskBarProgress.ShowProgress(this, true);
 
                 // Reporting to UI
-                var progData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
+                var progressData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
                 {
-                    var prog = pd.Percent;
-                    this.ProgressTracker = (int)prog;
-                    taskBarProgress.SetProgress(this, prog);
+                    var progressPercent = pd.Percent;
+                    this.ProgressTracker = (int)progressPercent;
+                    taskBarProgress.SetProgress(this, progressPercent);
                 }));
-                // Internal progress, fed through progData, which will trigger the reports to the UI
-                var totalProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
+                // Internal progress, fed through progressData, which will trigger the reports to the UI
+                var totalProgress = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
-                progData.StepRange(50);
+                progressData.StepRange(50);
 
                 // Make copy of selected datasets at time of function call so all work is done on the same set of files
                 // even if the user changes the selection while the workflow is running.
                 var selectedDatasetsCopy = this.FeatureFindingSettingsViewModel.Datasets.Where(ds => ds.IsSelected).ToList();
                 this.FeatureFindingSettingsViewModel.LoadFeatures(selectedDatasetsCopy, totalProgress);
-                progData.StepRange(80);
+                progressData.StepRange(80);
                 this.AlignmentSettingsViewModel.AlignToBaseline(selectedDatasetsCopy, totalProgress);
-                progData.StepRange(100);
+                progressData.StepRange(100);
                 this.ClusterSettingsViewModel.ClusterFeatures(totalProgress);
                 this.ShouldShowProgress = false;
 

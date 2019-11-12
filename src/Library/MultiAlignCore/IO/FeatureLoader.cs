@@ -114,8 +114,8 @@ namespace MultiAlignCore.IO
             //TODO: Fix!!! make sure sequence maps are unique
             sequenceMaps.ForEach(x => x.Id = count++);
 
-            var progData = new PRISM.ProgressData(progress);
-            var internalProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
+            var progressData = new PRISM.ProgressData(progress);
+            var internalProgress = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
             ////if (msmsFeatures.Count > 0)
             ////{
@@ -131,13 +131,13 @@ namespace MultiAlignCore.IO
 
             if (sequenceMaps.Count > 0)
             {
-                progData.StepRange(3);
+                progressData.StepRange(3);
                 Providers.SequenceMsnMapCache.AddAll(sequenceMaps, internalProgress);
             }
 
             if (mappedPeptides.Count > 0)
             {
-                progData.StepRange(4);
+                progressData.StepRange(4);
                 Providers.DatabaseSequenceCache.AddAll(mappedPeptides, internalProgress);
             }
 
@@ -150,7 +150,7 @@ namespace MultiAlignCore.IO
 
             if (features.Count > 0)
             {
-                progData.StepRange(100);
+                progressData.StepRange(100);
                 Providers.FeatureCache.DeleteByDataset(features[0].GroupId);
                 Providers.FeatureCache.AddAllStateless(features, internalProgress);
             }
@@ -230,7 +230,7 @@ namespace MultiAlignCore.IO
             IdentificationProviderCache identificationProviders,
             IProgress<PRISM.ProgressData> progress = null)
         {
-            var progData = new PRISM.ProgressData();
+            var progressData = new PRISM.ProgressData();
             IScanSummaryProvider provider = null;
             if (!string.IsNullOrWhiteSpace(dataset.RawFile.Path))
             {
@@ -238,8 +238,8 @@ namespace MultiAlignCore.IO
                 provider = providerCache.GetScanSummaryProvider(dataset.RawFile.Path, dataset.DatasetId);
             }
 
-            progData.StepRange(1);
-            progData.Status = "Looking for existing features in the database.";
+            progressData.StepRange(1);
+            progressData.Status = "Looking for existing features in the database.";
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
             var features = UmcLoaderFactory.LoadUmcFeatureData(dataset, Providers.FeatureCache, provider);
@@ -248,8 +248,8 @@ namespace MultiAlignCore.IO
             var msFeatures = new List<MSFeatureLight>();
             if (!hasMsFeatures)
             {
-                progData.StepRange(2);
-                progData.Status = "Loading MS Feature Data.";
+                progressData.StepRange(2);
+                progressData.Status = "Loading MS Feature Data.";
                 UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                     dataset.DatasetName));
 
@@ -257,12 +257,12 @@ namespace MultiAlignCore.IO
                 msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path, isosFilterOptions);
             }
 
-            progData.StepRange(3);
-            progData.Status = "Loading scan summaries.";
+            progressData.StepRange(3);
+            progressData.Status = "Loading scan summaries.";
             ////var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             ////dataset.BuildScanTimes(scansInfo);
 
-            progData.StepRange(100);
+            progressData.StepRange(100);
 
             var msnSpectra = new List<MSSpectra>();
 
@@ -273,13 +273,13 @@ namespace MultiAlignCore.IO
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
                 msFeatures = Filter(msFeatures, provider, ref dataset);
 
-                progData.Status = "Creating LCMS features.";
+                progressData.Status = "Creating LCMS features.";
                 features = CreateLcmsFeatures(dataset,
                     msFeatures,
                     lcmsFindingOptions,
                     lcmsFilteringOptions,
                     provider,
-                    new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent)));
+                    new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent)));
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
@@ -355,7 +355,7 @@ namespace MultiAlignCore.IO
                 linker.LinkPeptidesToSpectra(msnSpectra, peptideList);
             }
 
-            progData.Report(100);
+            progressData.Report(100);
 
             return features;
         }

@@ -96,16 +96,16 @@ namespace MultiAlignChargeStateProcessor
                 var features = new List<UMCLight>();
                 if (datasetList != null)
                 {
-                    var featuremap = datasets.ToDictionary(info => info.DatasetName.ToLower());
+                    var featureMap = datasets.ToDictionary(info => info.DatasetName.ToLower());
 
                     var focusedDatasetList = new Dictionary<int, DatasetInformation>();
                     foreach (var name in datasetList)
                     {
                         var key = name.ToLower();
-                        if (featuremap.ContainsKey(key))
+                        if (featureMap.ContainsKey(key))
                         {
                             Logger.PrintMessage("Using dataset: " + name);
-                            focusedDatasetList.Add(featuremap[key].DatasetId, featuremap[key]);
+                            focusedDatasetList.Add(featureMap[key].DatasetId, featureMap[key]);
                         }
                         else
                             throw new Exception("Didn't find the dataset required..." + name);

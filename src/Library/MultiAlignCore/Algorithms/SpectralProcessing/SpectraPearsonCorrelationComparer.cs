@@ -24,8 +24,8 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
         public double CompareSpectra(MSSpectra spectraX, MSSpectra spectraY)
         {
-            var xIntensities = this.ExpandVector(spectraY.Peaks, spectraX.Peaks).Select(xpeak => xpeak.X).ToArray();
-            var yIntensities = this.ExpandVector(spectraX.Peaks, spectraY.Peaks).Select(ypeak => ypeak.Y).ToArray();
+            var xIntensities = this.ExpandVector(spectraY.Peaks, spectraX.Peaks).Select(xPeak => xPeak.X).ToArray();
+            var yIntensities = this.ExpandVector(spectraX.Peaks, spectraY.Peaks).Select(yPeak => yPeak.Y).ToArray();
 
             return FitScoreCalculator.GetPearsonCorrelation(xIntensities, yIntensities, yIntensities.Length);
         }
@@ -37,29 +37,27 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
         /// </summary>
         /// <param name="spectraX">The spectrum to expand to.</param>
         /// <param name="spectraY">The spectrum to expand.</param>
-        private List<XYData> ExpandVector(List<XYData> spectraX, List<XYData> spectraY)
+        private List<XYData> ExpandVector(IReadOnlyList<XYData> spectraX, IReadOnlyList<XYData> spectraY)
         {
             var yTempSpec = new List<XYData>();
 
             var yIt = 0;
-            for (int xIt = 0; xIt < spectraX.Count; xIt++)
+            foreach (var xPeak in spectraX)
             {
-                var xpeak = spectraX[xIt];
+                var toleranceTh = this.tolerance.GetToleranceAsMz(xPeak.X);
 
-                var toleranceTh = this.tolerance.GetToleranceAsMz(xpeak.X);
+                var minMz = Math.Max(0.0, xPeak.X + toleranceTh);
+                var maxMz = xPeak.X + toleranceTh;
 
-                var minMz = Math.Max(0.0, xpeak.X + toleranceTh);
-                var maxMz = xpeak.X + toleranceTh;
-
-                var ypeak = spectraY[yIt];
-                while (ypeak.X < minMz && yIt < spectraY.Count - 1)
+                var yPeak = spectraY[yIt];
+                while (yPeak.X < minMz && yIt < spectraY.Count - 1)
                 {
-                    ypeak = spectraY[++yIt];
+                    yPeak = spectraY[++yIt];
                 }
 
-                if (ypeak.X > maxMz)
+                if (yPeak.X > maxMz)
                 {
-                    yTempSpec.Add(new XYData(xpeak.X, 0.0));
+                    yTempSpec.Add(new XYData(xPeak.X, 0.0));
                 }
             }
 

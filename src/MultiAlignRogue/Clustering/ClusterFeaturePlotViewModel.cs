@@ -19,7 +19,7 @@ namespace MultiAlignRogue.Clustering
     {
         private readonly LinearAxis clusterFeaturePlotXaxis;
 
-        private readonly LinearAxis clusterFeatureplotYaxis;
+        private readonly LinearAxis clusterFeaturePlotYaxis;
 
         public RelayCommand SavePlotCommand { get; private set; }
 
@@ -42,13 +42,13 @@ namespace MultiAlignRogue.Clustering
             };
             this.ClusterFeaturePlotModel.Axes.Add(this.clusterFeaturePlotXaxis);
 
-            this.clusterFeatureplotYaxis = new LinearAxis
+            this.clusterFeaturePlotYaxis = new LinearAxis
             {
                 Title = "Mass",
                 Position = AxisPosition.Left,
                 AbsoluteMinimum = 0
             };
-            this.ClusterFeaturePlotModel.Axes.Add(this.clusterFeatureplotYaxis);
+            this.ClusterFeaturePlotModel.Axes.Add(this.clusterFeaturePlotYaxis);
 
             this.ClusterFeaturePlotModel.MouseDown += this.FeatureClusterPlotMouseDown;
 
@@ -190,8 +190,8 @@ namespace MultiAlignRogue.Clustering
 
             this.clusterFeaturePlotXaxis.Minimum = minNet;
             this.clusterFeaturePlotXaxis.Maximum = maxNet;
-            this.clusterFeatureplotYaxis.Minimum = minMass;
-            this.clusterFeatureplotYaxis.Maximum = maxMass;
+            this.clusterFeaturePlotYaxis.Minimum = minMass;
+            this.clusterFeaturePlotYaxis.Maximum = maxMass;
         }
 
         /// <summary>

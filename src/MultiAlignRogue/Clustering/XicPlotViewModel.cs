@@ -28,7 +28,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// For throttling plot updates.
         /// </summary>
-        private readonly Throttler plotBuilderthrottler;
+        private readonly Throttler plotBuilderThrottler;
 
         /// <summary>
         /// For throttling Y-Axis scale adjustments.
@@ -79,7 +79,7 @@ namespace MultiAlignRogue.Clustering
         public XicPlotViewModel(ScanSummaryProviderCache rawProvider)
         {
             this.rawProvider = rawProvider;
-            this.plotBuilderthrottler = new Throttler(TimeSpan.FromMilliseconds(100));
+            this.plotBuilderThrottler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.yaxisScaleThrottler = new Throttler(TimeSpan.FromMilliseconds(20));
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
             this.XicPlotModel = new PlotModel
@@ -264,12 +264,12 @@ namespace MultiAlignRogue.Clustering
                     // Get dataset info for mapping scan # -> retention time
                     var dsInfo = SingletonDataProviders.GetDatasetInformation(feature.UMCLight.GroupId);
 
-                    foreach (var msfeature in xic)
+                    foreach (var msFeature in xic)
                     {
-                        minX = Math.Min(minX, msfeature.Net);
-                        maxX = Math.Max(maxX, msfeature.Net);
-                        minY = Math.Min(minY, msfeature.Abundance);
-                        maxY = Math.Max(maxY, msfeature.Abundance);
+                        minX = Math.Min(minX, msFeature.Net);
+                        maxX = Math.Max(maxX, msFeature.Net);
+                        minY = Math.Min(minY, msFeature.Abundance);
+                        maxY = Math.Max(maxY, msFeature.Abundance);
                     }
 
                     var maxA = xic.Max(msf => msf.Abundance);

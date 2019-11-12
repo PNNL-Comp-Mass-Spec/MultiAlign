@@ -378,13 +378,13 @@ namespace MultiAlignRogue.AMTMatching
         /// <param name="clusterIdMap">Dictionary mapping cluster IDs to clusters.</param>
         /// <param name="progress">Progress reporter.</param>
         private void WriteClusterData(
-                                      string path,
-                                      List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches,
-                                      Dictionary<int, UMCClusterLight> clusterIdMap,
-                                      IProgress<PRISM.ProgressData> progress)
+            string path,
+            IReadOnlyCollection<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches,
+            IReadOnlyDictionary<int, UMCClusterLight> clusterIdMap,
+            IProgress<PRISM.ProgressData> progress)
         {
-            var progData = new PRISM.ProgressData(progress);
-            int i = 1;
+            var progressData = new PRISM.ProgressData(progress);
+            var i = 1;
 
             using (var writer = File.CreateText(path))
             {
@@ -406,7 +406,7 @@ namespace MultiAlignRogue.AMTMatching
                         }
                     }
 
-                    progData.Report(i++, matches.Count);
+                    progressData.Report(i++, matches.Count);
                 }
 
                 // Write dataset headers

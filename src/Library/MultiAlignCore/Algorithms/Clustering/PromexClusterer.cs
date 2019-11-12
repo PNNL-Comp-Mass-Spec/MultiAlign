@@ -100,7 +100,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             var clusteredFeatures = lcmsFeatureAligner.GetAlignedFeatures();
 
             // Convert InformedProteomics clusters to UMCClusterLight
-            int clustId = 0;
+            var clusterId = 0;
             var clusters = new List<UMCClusterLight>();
             foreach (var cluster in clusteredFeatures)
             {
@@ -112,7 +112,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 var umcCluster = new UMCClusterLight
                 {
-                    Id = clustId++,
+                    Id = clusterId++,
                 };
 
                 int datasetId = 0;  // Promex doesn't keep track of which dataset noise features belong to, so we need to.

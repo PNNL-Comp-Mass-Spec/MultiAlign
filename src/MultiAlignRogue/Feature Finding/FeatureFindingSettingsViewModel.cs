@@ -162,15 +162,15 @@ namespace MultiAlignRogue.Feature_Finding
             get { return this.canCreateXics; }
             set
             {
-                if (this.canCreateXics != value)
+                if (this.canCreateXICs != value)
                 {
-                    this.canCreateXics = value;
+                    this.canCreateXICs = value;
                     this.RaisePropertyChanged();
                 }
             }
         }
 
-        private bool canCreateXics;
+        private bool canCreateXICs;
 
         public double MinimumFeatureLength
         {
@@ -549,7 +549,7 @@ namespace MultiAlignRogue.Feature_Finding
                 totalProgressData.StepRange((i++ * 100.0) / selectedFiles.Count);
                 var fileInstance = file;
 
-                var progData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
+                var progressData = new PRISM.ProgressData(new Progress<PRISM.ProgressData>(pd =>
                 {
                     fileInstance.Progress = pd.Percent;
 
@@ -557,9 +557,9 @@ namespace MultiAlignRogue.Feature_Finding
                     totalProgressData.Report(fileInstance.Progress);
                 }));
 
-                var progressRpt = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
+                var progressRpt = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
-                progData.StepRange(30);
+                progressData.StepRange(30);
 
                 IList<UMCLight> features;
 
@@ -610,14 +610,14 @@ namespace MultiAlignRogue.Feature_Finding
                         // Add all of the Scan Summaries for this dataset to the database, but first properly set the dataset ID
                         ssDao.AddAllStateless(
                             scanSumProvider.GetScanSummaries().Select(
-                                summ =>
+                                sum =>
                                     {
-                                        summ.DatasetId = file.Dataset.DatasetId;
-                                        return summ;
+                                        sum.DatasetId = file.Dataset.DatasetId;
+                                        return sum;
                                     }).ToList());
                     }
 
-                    progData.StepRange(100);
+                    progressData.StepRange(100);
 
                     // Cache features to database.
                     try

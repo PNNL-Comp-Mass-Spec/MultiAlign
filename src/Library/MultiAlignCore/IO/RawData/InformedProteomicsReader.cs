@@ -369,15 +369,14 @@ namespace MultiAlignCore.IO.RawData
                 DatasetId = this.GroupId,
             };
 
-            if (spec is ProductSpectrum)
+            if (spec is ProductSpectrum productSpectrum)
             {
-                var pspec = spec as ProductSpectrum;
-                if (pspec.IsolationWindow.MonoisotopicMass != null)
+                if (productSpectrum.IsolationWindow.MonoisotopicMass != null)
                 {
-                    summary.PrecursorMz = pspec.IsolationWindow.MonoisotopicMass.Value;
+                    summary.PrecursorMz = productSpectrum.IsolationWindow.MonoisotopicMass.Value;
                 }
 
-                switch (pspec.ActivationMethod)
+                switch (productSpectrum.ActivationMethod)
                 {
                     case ActivationMethod.CID:
                         summary.CollisionType = CollisionType.Cid;

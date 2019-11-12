@@ -92,13 +92,13 @@
                     supportedFileCombinations.Add(promexCombo);
 
                     // LC-IMS Feature Finder:       FeatureFile && Scans
-                    var lcimsCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_LCMSFeatures.txt"))
+                    var lcImsCombo = new SupportedFileCombination(SupportedFileTypes.FirstOrDefault(sft => sft.Extension == "_LCMSFeatures.txt"))
                     {
                         DatasetType = SupportedDatasetTypes.LcImsFeatureFinder
                     };
-                    lcimsCombo.RequiredTypes.Add(InputFileType.Scans);
-                    lcimsCombo.OptionalTypes.Add(InputFileType.Raw);
-                    supportedFileCombinations.Add(lcimsCombo);
+                    lcImsCombo.RequiredTypes.Add(InputFileType.Scans);
+                    lcImsCombo.OptionalTypes.Add(InputFileType.Raw);
+                    supportedFileCombinations.Add(lcImsCombo);
                 }
 
                 return supportedFileCombinations;

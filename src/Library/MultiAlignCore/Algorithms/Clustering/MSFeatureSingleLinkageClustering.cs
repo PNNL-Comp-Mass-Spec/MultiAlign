@@ -57,7 +57,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             var maxDistance  = Parameters.MaxDistance;
             var currentIndex    = 0;
             var N               = rawMSFeatures.Count;
-            var numUmcsSoFar    = 0;
+            var numUMCsSoFar    = 0;
 
             var idFeatureMap = new Dictionary<int, List<T>>();
             var msFeatures                    = new List<T>();
@@ -74,11 +74,11 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 if (currentFeatureClusterID == -1)
                 {
-                    idFeatureMap.Add(numUmcsSoFar, new List<T>());
-                    idFeatureMap[numUmcsSoFar].Add(currentFeature);
+                    idFeatureMap.Add(numUMCsSoFar, new List<T>());
+                    idFeatureMap[numUMCsSoFar].Add(currentFeature);
 
-                    currentFeatureClusterID                 = numUmcsSoFar;
-                    featureIDToClusterID[currentFeature.Id] = numUmcsSoFar++;
+                    currentFeatureClusterID                 = numUMCsSoFar;
+                    featureIDToClusterID[currentFeature.Id] = numUMCsSoFar++;
                 }
 
                 var matchIndex = currentIndex + 1;

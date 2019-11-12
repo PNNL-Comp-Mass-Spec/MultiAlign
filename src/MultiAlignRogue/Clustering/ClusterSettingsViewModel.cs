@@ -268,8 +268,8 @@ namespace MultiAlignRogue.Clustering
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             this.ShouldShowProgress = true;
-            var progData = new PRISM.ProgressData(internalProgress);
-            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
+            var progressData = new PRISM.ProgressData(internalProgress);
+            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
             this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
             DatabaseIndexer.IndexClustersDrop(NHibernateUtil.Path);
@@ -283,7 +283,7 @@ namespace MultiAlignRogue.Clustering
             // IMS is said to require charge separation
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                progData.StepRange(45);
+                progressData.StepRange(45);
                 var features = new List<UMCLight>();
                 var i = 0;
                 var datasets = this.Datasets.Where(ds => ds.FeaturesFound).ToList();
@@ -292,10 +292,10 @@ namespace MultiAlignRogue.Clustering
                     this.analysis.DataProviders.DatabaseLock.EnterReadLock();
                     features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
                     this.analysis.DataProviders.DatabaseLock.ExitReadLock();
-                    progData.Report(++i, datasets.Count);
+                    progressData.Report(++i, datasets.Count);
                 }
 
-                progData.StepRange(100);
+                progressData.StepRange(100);
                 ClusterGroupOfFeatures(clusterer, features, ref clusterCount, clusterProgress);
             }
             else
@@ -313,7 +313,7 @@ namespace MultiAlignRogue.Clustering
                         continue;
                     }
 
-                    progData.StepRange(maxPercent);
+                    progressData.StepRange(maxPercent);
                     ClusterGroupOfFeatures(clusterer, features, ref clusterCount, clusterProgress);
                 }
 
@@ -355,16 +355,16 @@ namespace MultiAlignRogue.Clustering
 
         internal void ClusterGroupOfFeatures(IClusterer<UMCLight, UMCClusterLight> clusterer, List<UMCLight> features, ref int clusterCount, IProgress<PRISM.ProgressData> internalProgress = null)
         {
-            var progData = new PRISM.ProgressData(internalProgress);
-            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progData.Report(pd.Percent));
+            var progressData = new PRISM.ProgressData(internalProgress);
+            var clusterProgress = new Progress<PRISM.ProgressData>(pd => progressData.Report(pd.Percent));
 
             if (this.ShouldRefineWithMsMs)
             {
-                progData.StepRange(35);
+                progressData.StepRange(35);
             }
             else
             {
-                progData.StepRange(70);
+                progressData.StepRange(70);
             }
 
             var clusters = clusterer.Cluster(features, clusterProgress);
@@ -386,7 +386,7 @@ namespace MultiAlignRogue.Clustering
             {
                 try
                 {
-                    progData.StepRange(70);
+                    progressData.StepRange(70);
                     var clusterRefiner =
                         ClusterPostProcessorBuilder.GetClusterPostProcessor<UMCClusterLight, UMCLight>(
                             this.analysis.Options.ClusterPostProcessingoptions,
@@ -415,10 +415,10 @@ namespace MultiAlignRogue.Clustering
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             this.analysis.DataProviders.DatabaseLock.EnterWriteLock();
-            progData.StepRange(85);
+            progressData.StepRange(85);
             this.analysis.DataProviders.ClusterCache.AddAllStateless(clusters, clusterProgress);
 
-            progData.StepRange(100);
+            progressData.StepRange(100);
             this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
             this.analysis.DataProviders.DatabaseLock.ExitWriteLock();
         }
@@ -482,7 +482,7 @@ namespace MultiAlignRogue.Clustering
         /// <param name="progress">Progress reporter.</param>
         private void WriteClusterData(string path, IEnumerable<UMCClusterLight> clusters)
         {
-            //var progData = new PRISM.ProgressData { ProgressObj = progress };
+            //var progressData = new PRISM.ProgressData { ProgressObj = progress };
 
             using (var writer = File.CreateText(path))
             {
