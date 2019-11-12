@@ -176,7 +176,7 @@ namespace MultiAlignCore.IO.Options
                 // break off the first prefix, if there is one
                 var basename = option.Name;
                 var subkey = string.Empty;
-                var dot = basename.IndexOf(".");
+                var dot = basename.IndexOf(".", StringComparison.Ordinal);
                 // prefixed: is part of an object that needs to be handled separately
                 if (dot > 0)
                 {
@@ -186,7 +186,7 @@ namespace MultiAlignCore.IO.Options
                     // Array of objects
                     if (basename.Contains("#"))
                     {
-                        var hash = basename.IndexOf("#");
+                        var hash = basename.IndexOf("#", StringComparison.Ordinal);
                         var indexStr = basename.Substring(hash + 1);
                         var index = Convert.ToInt32(indexStr);
                         var name = basename.Substring(0, hash);
@@ -218,7 +218,7 @@ namespace MultiAlignCore.IO.Options
                     // Array of basic types
                     if (basename.Contains("#"))
                     {
-                        var hash = basename.IndexOf("#");
+                        var hash = basename.IndexOf("#", StringComparison.Ordinal);
                         var indexStr = basename.Substring(hash + 1);
                         var index = Convert.ToInt32(indexStr);
                         var name = basename.Substring(0, hash);
