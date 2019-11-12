@@ -163,7 +163,7 @@ namespace MultiAlignRogue.Clustering
                 {
                     this.selectedCluster = value;
                     this.throttler.Run(this.BuildClusterPlot);
-                    this.RaisePropertyChanged("SelectedCluster", null, value, true);
+                    this.RaisePropertyChanged(nameof(SelectedCluster), null, value, true);
                 }
             }
         }

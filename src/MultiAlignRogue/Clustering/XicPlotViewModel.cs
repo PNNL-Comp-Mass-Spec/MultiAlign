@@ -187,7 +187,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.selectedMsFeature != value)
                 {
                     this.selectedMsFeature = value;
-                    this.RaisePropertyChanged("SelectedMsFeature", null, value, true);
+                    this.RaisePropertyChanged(nameof(SelectedMsFeature), null, value, true);
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.autoScaleYAxis != value)
                 {
                     this.autoScaleYAxis = value;
-                    this.RaisePropertyChanged("AutoScaleYAxis", !value, value, true);
+                    this.RaisePropertyChanged(nameof(AutoScaleYAxis), !value, value, true);
                 }
             }
         }

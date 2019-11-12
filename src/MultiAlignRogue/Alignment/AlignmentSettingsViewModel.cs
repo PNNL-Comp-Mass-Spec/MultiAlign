@@ -244,7 +244,7 @@ namespace MultiAlignRogue.Alignment
 
                 this.analysis.Options.AlignmentOptions.AlignToAMT = alignToAmt;
                 this.AlignCommand.RaiseCanExecuteChanged();
-                this.RaisePropertyChanged("ShouldAlignToAMT");
+                this.RaisePropertyChanged(nameof(ShouldAlignToAMT));
                 this.RaisePropertyChanged();
             }
         }
@@ -264,7 +264,7 @@ namespace MultiAlignRogue.Alignment
 
                 this.analysis.Options.AlignmentOptions.AlignToAMT = value;
                 this.AlignCommand.RaiseCanExecuteChanged();
-                this.RaisePropertyChanged("ShouldAlignToBaseline");
+                this.RaisePropertyChanged(nameof(ShouldAlignToBaseline));
                 this.RaisePropertyChanged();
             }
         }

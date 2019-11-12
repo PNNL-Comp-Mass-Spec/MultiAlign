@@ -100,7 +100,7 @@ namespace MultiAlignRogue.Clustering
             set
             {
                 this.options.LcmsClusteringOptions.ShouldSeparateCharge = value;
-                this.RaisePropertyChanged("ShouldSeparateByCharge");
+                this.RaisePropertyChanged(nameof(ShouldSeparateByCharge));
             }
         }
 
@@ -112,8 +112,8 @@ namespace MultiAlignRogue.Clustering
                 if (this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
                 {
                     this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
-                    this.RaisePropertyChanged("SelectedLcmsFeatureClusteringAlgorithm");
-                    this.RaisePropertyChanged("ShouldEnableClustererSettings");
+                    this.RaisePropertyChanged(nameof(SelectedLcmsFeatureClusteringAlgorithm));
+                    this.RaisePropertyChanged(nameof(ShouldEnableClustererSettings));
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.options.LcmsClusteringOptions.ClusterCentroidRepresentation != value)
                 {
                     this.options.LcmsClusteringOptions.ClusterCentroidRepresentation = value;
-                    this.RaisePropertyChanged("SelectedCentroidMethod");
+                    this.RaisePropertyChanged(nameof(SelectedCentroidMethod));
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.options.LcmsClusteringOptions.DistanceFunction != value)
                 {
                     this.options.LcmsClusteringOptions.DistanceFunction = value;
-                    this.RaisePropertyChanged("SelectedDistanceFunction");
+                    this.RaisePropertyChanged(nameof(SelectedDistanceFunction));
                 }
             }
         }

@@ -241,7 +241,7 @@ namespace MultiAlignRogue.Clustering
                 {
                     this.selectedMsMsSpectra = value;
 
-                    this.RaisePropertyChanged("SelectedMsMsSpectra", null, value, true);
+                    this.RaisePropertyChanged(nameof(SelectedMsMsSpectra), null, value, true);
                 }
             }
         }
@@ -272,7 +272,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.layoutFilePath != value)
                 {
                     this.layoutFilePath = value;
-                    this.RaisePropertyChanged("LayoutFilePath", string.Empty, this.layoutFilePath, true);
+                    this.RaisePropertyChanged(nameof(LayoutFilePath), string.Empty, this.layoutFilePath, true);
                 }
             }
         }
@@ -288,7 +288,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.layoutRoot != value)
                 {
                     this.layoutRoot = value;
-                    this.RaisePropertyChanged("LayoutRoot", null, value, true);
+                    this.RaisePropertyChanged(nameof(LayoutRoot), null, value, true);
                 }
             }
         }
@@ -304,7 +304,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.selectedMatch != value)
                 {
                     this.selectedMatch = value;
-                    this.RaisePropertyChanged("SelectedMatch", null, value, true);
+                    this.RaisePropertyChanged(nameof(SelectedMatch), null, value, true);
                 }
             }
         }

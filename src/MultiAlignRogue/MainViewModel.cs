@@ -476,7 +476,7 @@ namespace MultiAlignRogue
 
             await this.LoadRawData(this.Datasets);
 
-            this.RaisePropertyChanged("analysisConfig");
+            this.RaisePropertyChanged(nameof(analysisConfig));
         }
 
         private async Task AddDatasets(string folderPath)

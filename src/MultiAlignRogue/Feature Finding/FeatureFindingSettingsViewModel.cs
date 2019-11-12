@@ -136,8 +136,8 @@ namespace MultiAlignRogue.Feature_Finding
             {
                 this.FilterOnMinutes = value.Equals("Minutes");
                 this.RaisePropertyChanged();
-                this.RaisePropertyChanged("MinimumFeatureLength");
-                this.RaisePropertyChanged("MaximumFeatureLength");
+                this.RaisePropertyChanged(nameof(MinimumFeatureLength));
+                this.RaisePropertyChanged(nameof(MaximumFeatureLength));
             }
         }
 

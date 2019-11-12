@@ -95,10 +95,10 @@ namespace MultiAlignRogue.ViewModels
                         this.StateChanged(this, EventArgs.Empty);
                     }
 
-                    this.RaisePropertyChanged("FindingFeatureLabelColor");
-                    this.RaisePropertyChanged("AligningLabelColor");
-                    this.RaisePropertyChanged("ClusterLabelColor");
-                    this.RaisePropertyChanged("DatasetState", prevValue, value, true);
+                    this.RaisePropertyChanged(nameof(FindingFeatureLabelColor));
+                    this.RaisePropertyChanged(nameof(AligningLabelColor));
+                    this.RaisePropertyChanged(nameof(ClusterLabelColor));
+                    this.RaisePropertyChanged(nameof(DatasetState), prevValue, value, true);
                 }
             }
         }
@@ -153,8 +153,8 @@ namespace MultiAlignRogue.ViewModels
                 if (this.isClustering != value)
                 {
                     this.isClustering = value;
-                    this.RaisePropertyChanged("ClusterLabelColor");
-                    this.RaisePropertyChanged("DoingWork");
+                    this.RaisePropertyChanged(nameof(ClusterLabelColor));
+                    this.RaisePropertyChanged(nameof(DoingWork));
                     this.RaisePropertyChanged();
                 }
             }
@@ -206,8 +206,8 @@ namespace MultiAlignRogue.ViewModels
                     this.isFindingFeatures = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged("FindingFeatureLabelColor");
-                    this.RaisePropertyChanged("DoingWork");
+                    this.RaisePropertyChanged(nameof(FindingFeatureLabelColor));
+                    this.RaisePropertyChanged(nameof(DoingWork));
                 }
             }
         }
@@ -245,8 +245,8 @@ namespace MultiAlignRogue.ViewModels
                     this.isAligning = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged("AligningLabelColor");
-                    this.RaisePropertyChanged("DoingWork");
+                    this.RaisePropertyChanged(nameof(AligningLabelColor));
+                    this.RaisePropertyChanged(nameof(DoingWork));
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace MultiAlignRogue.ViewModels
                     this.isLoadingRawData = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.RaiseCanExecuteChanged());
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged("DoingWork");
+                    this.RaisePropertyChanged(nameof(DoingWork));
                 }
             }
         }
@@ -394,7 +394,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.isSelected != value)
                 {
                     this.isSelected = value;
-                    this.RaisePropertyChanged("IsSelected", !value, value, true);
+                    this.RaisePropertyChanged(nameof(IsSelected), !value, value, true);
                 }
             }
         }
