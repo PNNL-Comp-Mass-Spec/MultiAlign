@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMSWarpConsole_with_MultiAlign", "LCMSWarpConsole_with_MultiAlign.csproj", "{39937870-A394-47FF-BA54-BB2D28A511B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCore", "..\..\Library\MultiAlignCore\MultiAlignCore.csproj", "{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureAlignment", "..\..\Library\FeatureAlignment\FeatureAlignment.csproj", "{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{39937870-A394-47FF-BA54-BB2D28A511B1}.Release|x86.Build.0 = Release|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.Build.0 = Debug|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.ActiveCfg = Release|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.Build.0 = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Debug|x86.Build.0 = Debug|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D6190D9-3001-4DD8-B8A5-3BB41D58BE9E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5FA50802-2361-4230-A299-5CAC575FAF4B}
+	EndGlobalSection
+EndGlobal
