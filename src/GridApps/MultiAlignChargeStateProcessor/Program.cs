@@ -88,7 +88,7 @@ namespace MultiAlignChargeStateProcessor
                 IUmcDAO featureDao = database;
 
 
-                Logger.PrintMessage(string.Format("Extracting Features"), true);
+                Logger.PrintMessage("Extracting Features", true);
                 var tempFeatures = featureDao.FindByCharge(chargeState);
                 Logger.PrintMessage(string.Format("Found {0} features", tempFeatures.Count), true);
 

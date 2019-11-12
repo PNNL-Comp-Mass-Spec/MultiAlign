@@ -11,7 +11,7 @@
         NET_WARP = 0,
 
         /// <summary>
-        /// Alignment type that performs a NET warp, recalibrates with regards to Mass
+        /// Alignment type that performs a NET warp, then recalibrates with regards to Mass
         /// and then performs warping again
         /// </summary>
         NET_MASS_WARP

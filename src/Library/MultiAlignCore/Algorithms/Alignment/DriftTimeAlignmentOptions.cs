@@ -42,7 +42,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
         [ParameterFile("UseAllObservationsForOffset", "DriftTime")]
-        [DataSummary("Uses all observatiosn for the offset calculation")]
+        [DataSummary("Uses all observations for the offset calculation")]
         [Category("Alignment")]
         [Description("")]
         public bool ShouldUseAllObservationsForOffsetCalculation { get; set; }

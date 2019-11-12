@@ -42,7 +42,7 @@ namespace MultiAlignRogue.Feature_Finding
         private bool shouldShowProgress;
 
         /// <summary>
-        /// Cosntructor
+        /// Constructor
         /// </summary>
         /// <param name="analysis"></param>
         /// <param name="datasets"></param>
@@ -765,6 +765,7 @@ namespace MultiAlignRogue.Feature_Finding
                 this.PlotMsFeaturesCommand.RaiseCanExecuteChanged();
                 this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
 
+                // ReSharper disable once CommentTypo
                 // Add an event listener to update CanCreateXics whenever the Datasets collection changes
                 this.CanCreateXics = this.Datasets
                         .Where(dataset => dataset.IsSelected)

@@ -106,7 +106,7 @@
         }
 
         /// <summary>
-        /// Gets the supported file types by multialign.
+        /// Gets the supported file types by MultiAlign.
         /// </summary>
         public static List<SupportedFileType> SupportedFileTypes
         {

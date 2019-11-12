@@ -190,7 +190,6 @@ namespace MultiAlignCore.IO.RawData
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the Raw file
         /// </summary>
-        /// <param name="groupId">File group ID</param>
         /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra(Dictionary<int, int> excludeMap)
@@ -201,7 +200,6 @@ namespace MultiAlignCore.IO.RawData
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the Raw file
         /// </summary>
-        /// <param name="groupId">File group ID</param>
         /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
         /// <param name="loadPeaks">True to also load the mass/intensity pairs for each spectrum</param>
         /// <returns>List of MSMS spectra data</returns>
@@ -248,7 +246,6 @@ namespace MultiAlignCore.IO.RawData
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
-        /// <param name="groupId">File Group ID</param>
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra()
         {
@@ -259,7 +256,6 @@ namespace MultiAlignCore.IO.RawData
         /// Gets the raw data from the data file.
         /// </summary>
         /// <param name="scan"></param>
-        /// <param name="groupId">File Group ID</param>
         /// <param name="summary"></param>
         /// <returns></returns>
         public List<XYData> GetRawSpectra(int scan, out ScanSummary summary)

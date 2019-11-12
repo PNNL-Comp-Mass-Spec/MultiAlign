@@ -70,7 +70,7 @@ namespace MultiAlignRogue.Alignment
         public event EventHandler MoveDownRequested;
 
         /// <summary>
-        /// Gets a commmand that triggers the <see cref="MoveUpRequested" /> event.
+        /// Gets a command that triggers the <see cref="MoveUpRequested" /> event.
         /// </summary>
         public RelayCommand MoveUpCommand { get; }
 
@@ -101,7 +101,7 @@ namespace MultiAlignRogue.Alignment
         }
 
         /// <summary>
-        /// Gets or sets the number of sections to discretize this dimension into.
+        /// Gets or sets the number of sections to discrete-ize this dimension into.
         /// </summary>
         public int NumSections
         {

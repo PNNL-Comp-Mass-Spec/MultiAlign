@@ -159,10 +159,12 @@ namespace MultiAlignCore.IO.InputFiles
                                         info.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
                                         info.Database.DatabaseServer = keys[1];
                                         break;
+                                    // ReSharper disable once StringLiteralTypo
                                     case "sqlite":
                                         info.Database.DatabaseFormat = MassTagDatabaseFormat.Sqlite;
                                         info.Database.LocalPath = keys[1];
                                         break;
+                                    // ReSharper disable once StringLiteralTypo
                                     case "metasample":
                                         info.Database.DatabaseFormat = MassTagDatabaseFormat.DelimitedTextFile;
                                         info.Database.LocalPath = keys[1];

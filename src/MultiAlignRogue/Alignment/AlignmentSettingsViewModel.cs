@@ -192,7 +192,7 @@ namespace MultiAlignRogue.Alignment
         public ObservableCollection<AlignmentDimensionSettingsViewModel> DimensionSettings { get; }
 
         /// <summary>
-        /// Gets a command that performs the alignment on the selected atasets.
+        /// Gets a command that performs the alignment on the selected datasets.
         /// </summary>
         public RelayCommand AlignCommand { get; }
 
@@ -395,7 +395,7 @@ namespace MultiAlignRogue.Alignment
         }
 
         /// <summary>
-        /// Gets or sets the minimum number times a mass tag should be observed to be elgible for being
+        /// Gets or sets the minimum number times a mass tag should be observed to be eligible for being
         /// a baseline feature.
         /// </summary>
         public int MinObservationCount

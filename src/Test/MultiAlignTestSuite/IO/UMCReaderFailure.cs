@@ -12,7 +12,7 @@ namespace MultiAlignTestSuite.IO
         [Test]
         public void Test()
         {
-            const string relativePath = @"Data\BUG_FILES\AbudanceBug-691\Sarc_P01_F04_0064_18Apr11_Cheetah_11-02-24_LCMSFeatures - Copy.txt";
+            const string relativePath = @"Data\BUG_FILES\AbundanceBug-691\Sarc_P01_F04_0064_18Apr11_Cheetah_11-02-24_LCMSFeatures - Copy.txt";
 
             var path = GetPath(relativePath);
 

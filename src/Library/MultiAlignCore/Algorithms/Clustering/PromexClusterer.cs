@@ -21,6 +21,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         private readonly Dictionary<int, int> promexToMultiAlignDatasetIdMap;
 
+        // ReSharper disable once IdentifierTypo
         private readonly Dictionary<int, int> multiAlignToPromexDatasetIdMap;
 
         private int maxFeatureId;
@@ -41,7 +42,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         /// <summary>
-        /// Gets the clusterer paramaters.
+        /// Gets the clusterer parameters.
         /// These are not actually used by the Promex clusterer right now.
         /// </summary>
         public FeatureClusterParameters<UMCLight> Parameters { get; set; }
@@ -94,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             // Perform clustering
             lcmsFeatureAligner.AlignFeatures();
 
-            // Fill in mising features using noise.
+            // Fill in missing features using noise.
             lcmsFeatureAligner.RefineAbundance(-30, progress);
 
             var clusteredFeatures = lcmsFeatureAligner.GetAlignedFeatures();

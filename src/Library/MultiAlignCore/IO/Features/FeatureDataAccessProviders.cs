@@ -47,9 +47,17 @@ namespace MultiAlignCore.IO.Features
         /// <param name="clusterCache">LCMS Feature clusters</param>
         /// <param name="msFeatureCache">MS Features</param>
         /// <param name="msnFeatureCache">MS/MS Features</param>
-        /// <param name="msFeatureMap">MS To LCMS Feature map</param>
         /// <param name="msnFeatureMap">MS to MSn Feature map</param>
-        public FeatureDataAccessProviders(IUmcDAO featureCache,
+        /// <param name="datasetCache"></param>
+        /// <param name="massTagMatches"></param>
+        /// <param name="massTags"></param>
+        /// <param name="factorCache"></param>
+        /// <param name="factorAssignmentCache"></param>
+        /// <param name="msmsClusterCache"></param>
+        /// <param name="sequenceCache"></param>
+        /// <param name="sequenceMapCache"></param>
+        public FeatureDataAccessProviders(
+            IUmcDAO featureCache,
             IUmcClusterDAO clusterCache,
             IMSFeatureDAO msFeatureCache,
             IMSnFeatureDAO msnFeatureCache,
@@ -115,7 +123,7 @@ namespace MultiAlignCore.IO.Features
         public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache { get; set; }
 
         /// <summary>
-        /// Gets or sets the data acces object to LCMS features
+        /// Gets or sets the data access object to LCMS features
         /// </summary>
         public IUmcDAO FeatureCache { get; set; }
 

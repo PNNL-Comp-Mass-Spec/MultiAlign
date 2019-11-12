@@ -27,17 +27,29 @@ namespace MultiAlignCore.Algorithms.Clustering
         where T: FeatureLight, new ()
     {
         FeatureClusterParameters<T> Parameters { get; set; }
+
         /// <summary>
         /// Clusters the data objects provided in the list.
         /// </summary>
         /// <param name="data">Data to cluster.</param>
+        /// <param name="clusters"></param>
+        /// <param name="progress"></param>
         List<U> Cluster(List<T> data, List<U> clusters, IProgress<PRISM.ProgressData> progress = null);
+
+        /// <summary>
+        /// Progress information
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
         List<U> Cluster(List<T> data, IProgress<PRISM.ProgressData> progress = null);
+
         /// <summary>
         /// Clusters and writes data to teh stream writer provided.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="writer"></param>
+        /// <param name="progress"></param>
         void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<PRISM.ProgressData> progress = null);
     }
 }

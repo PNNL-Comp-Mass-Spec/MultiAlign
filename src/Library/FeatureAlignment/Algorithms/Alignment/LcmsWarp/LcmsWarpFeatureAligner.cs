@@ -268,7 +268,7 @@ namespace FeatureAlignment.Algorithms.Alignment.LcmsWarp
             LcmsWarpAlignmentOptions alignmentOptions)
         {
             // Sort by abundance to ease filtering process. Options look at the percentage of abundance
-            // so threshhold needs to be converted to what the abundance sum would be.
+            // so threshold needs to be converted to what the abundance sum would be.
             features.Sort((x, y) => x.AbundanceSum.CompareTo(y.AbundanceSum));
 
             if (alignmentOptions.TopFeatureAbundancePercent <= 0)
