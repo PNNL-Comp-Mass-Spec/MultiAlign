@@ -84,7 +84,6 @@ namespace MultiAlignRogue.Clustering
             this.XicPlotModel = new PlotModel
             {
                 Title = "Extracted Ion Chromatograms",
-                ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
             this.AutoScaleYAxis = true;

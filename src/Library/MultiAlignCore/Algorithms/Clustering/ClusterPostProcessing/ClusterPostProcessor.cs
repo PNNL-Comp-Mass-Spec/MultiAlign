@@ -13,7 +13,10 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
     {
         private readonly IFeatureComparisonScorer clusterScorer;
 
+#pragma warning disable 67
+        // ReSharper disable once UnusedMember.Global
         public event EventHandler<ProgressNotifierArgs> Progress;
+#pragma warning restore 67
 
         public ClusterPostProcessor(IFeatureComparisonScorer clusterScorer)
         {

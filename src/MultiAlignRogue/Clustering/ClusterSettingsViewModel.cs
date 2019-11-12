@@ -35,9 +35,7 @@ namespace MultiAlignRogue.Clustering
 
         private IUmcDAO featureCache;
 
-        private readonly IClusterViewFactory clusterWindowFactory;
-
-        private IClusterViewFactory clusterViewFactory;
+        private readonly IClusterViewFactory clusterViewFactory;
 
         private readonly IProgress<int> progress;
 
@@ -241,9 +239,8 @@ namespace MultiAlignRogue.Clustering
             var clusterer = this.algorithms.Clusterer;
             clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(this.options.LcmsClusteringOptions);
             this.featureCache = this.analysis.DataProviders.FeatureCache;
-            if (clusterer is PromexClusterer)
+            if (clusterer is PromexClusterer promexClusterer)
             {
-                var promexClusterer = clusterer as PromexClusterer;
                 promexClusterer.Readers = this.analysis.DataProviders.ScanSummaryProviderCache;
             }
 

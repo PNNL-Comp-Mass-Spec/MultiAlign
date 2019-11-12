@@ -10,8 +10,12 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
     public class SpectraPearsonCorrelationComparer : ISpectralComparer
     {
-        private Tolerance tolerance;
+        private readonly Tolerance tolerance;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="tolerance"></param>
         public SpectraPearsonCorrelationComparer(Tolerance tolerance)
         {
             this.tolerance = tolerance;

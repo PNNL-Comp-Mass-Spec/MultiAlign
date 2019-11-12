@@ -35,13 +35,9 @@
         /// </summary>
         private static readonly Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>> supportedDatasetCombinations;
 
-        public DatasetLoader()
-        {
-
-        }
-
         static DatasetLoader()
         {
+            // ReSharper disable once UseObjectOrCollectionInitializer
             supportedDatasetCombinations = new Dictionary<SupportedDatasetTypes, List<SupportedDatasetTypes>>();
 
             supportedDatasetCombinations.Add(
@@ -173,10 +169,8 @@
         {
             var datasetName = path;
 
-            var supportedTypes = SupportedFileTypes;
-
             var newPath = path.ToLower();
-            foreach (var extension in supportedTypes)
+            foreach (var extension in SupportedFileTypes)
             {
                 var ext = extension.Extension.ToLower();
                 if (newPath.EndsWith(ext))
@@ -185,7 +179,7 @@
                     break;
                 }
             }
-            return System.IO.Path.GetFileNameWithoutExtension(datasetName);
+            return Path.GetFileNameWithoutExtension(datasetName);
         }
 
         /// <summary>
@@ -204,6 +198,7 @@
         /// </summary>
         /// <param name="folderPath">The folder to get the input files for.</param>
         /// <param name="extensions">The extensions to find files for.</param>
+        /// <param name="options">Options</param>
         /// <param name="findAdditionalFiles">A value indicating whether additional files should be found for each dataset.</param>
         /// <returns>The list of valid datasets.</returns>
         public List<DatasetInformation> GetValidDatasets(string folderPath, List<string> extensions, SearchOption options, bool findAdditionalFiles = true)
@@ -491,7 +486,7 @@
 
             foreach (var file in inputFiles)
             {
-                var name = System.IO.Path.GetFileName(file.Path);
+                var name = Path.GetFileName(file.Path);
                 var datasetName = ExtractDatasetName(name);
                 var isEntryMade = datasetMap.ContainsKey(datasetName);
                 if (!isEntryMade)

@@ -83,7 +83,7 @@ namespace MultiAlignCore.IO.InputFiles
 
                 // If wasModeChanged = true, then the current
                 // line is not data, but a tag to say change how read the next section.
-                var wasModeChanged = false;
+                bool wasModeChanged;
                 switch (fixedLine)
                 {
                     case FILE_HEADER:
@@ -137,9 +137,10 @@ namespace MultiAlignCore.IO.InputFiles
                             }
                             else if (!string.IsNullOrEmpty(baselineCheck[0]))
                             {
-                                var newFile = new InputFile();
-                                newFile.Path = baselineCheck[0];
-                                newFile.FileType = InputFileType.Features;
+                                var newFile = new InputFile {
+                                    Path = baselineCheck[0],
+                                    FileType = InputFileType.Features
+                                };
                                 info.Files.Add(newFile);
                             }
                             break;

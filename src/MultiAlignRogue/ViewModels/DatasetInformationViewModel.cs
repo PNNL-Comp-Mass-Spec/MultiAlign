@@ -30,14 +30,16 @@ namespace MultiAlignRogue.ViewModels
             Matched,
         };
 
-        private readonly DatasetInformation m_information;
         private bool m_expand;
-        private bool m_isSelected;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="information"></param>
         public DatasetInformationViewModel(DatasetInformation information)
         {
-            m_information = information;
-            var data = information.PlotData;
+            Dataset = information;
+            // var data = information.PlotData;
 
             RequestRemovalCommand = new RelayCommand(
                 () =>
@@ -65,17 +67,17 @@ namespace MultiAlignRogue.ViewModels
                     var prevValue = this.datasetState;
                     this.datasetState = value;
 
-                    this.IsFindingFeatures = value == DatasetInformationViewModel.DatasetStates.FindingFeatures ||
-                                             value == DatasetInformationViewModel.DatasetStates.PersistingFeatures;
+                    this.IsFindingFeatures = value == DatasetStates.FindingFeatures ||
+                                             value == DatasetStates.PersistingFeatures;
 
-                    this.IsAligning = value == DatasetInformationViewModel.DatasetStates.Aligning ||
-                                      value == DatasetInformationViewModel.DatasetStates.PersistingAlignment;
+                    this.IsAligning = value == DatasetStates.Aligning ||
+                                      value == DatasetStates.PersistingAlignment;
 
-                    this.IsClustering = value == DatasetInformationViewModel.DatasetStates.Clustering ||
-                                        value == DatasetInformationViewModel.DatasetStates.PersistingClusters;
-                    this.FeaturesFound = value >= DatasetInformationViewModel.DatasetStates.FeaturesFound;
-                    this.IsAligned = value >= DatasetInformationViewModel.DatasetStates.Aligned;
-                    this.IsClustered = value >= DatasetInformationViewModel.DatasetStates.Clustered;
+                    this.IsClustering = value == DatasetStates.Clustering ||
+                                        value == DatasetStates.PersistingClusters;
+                    this.FeaturesFound = value >= DatasetStates.FeaturesFound;
+                    this.IsAligned = value >= DatasetStates.Aligned;
+                    this.IsClustered = value >= DatasetStates.Clustered;
 
                     this.IsLoadingRawData = value == DatasetStates.LoadingRawData;
 
@@ -177,10 +179,10 @@ namespace MultiAlignRogue.ViewModels
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformationViewModel.DatasetStates.Clustering:
+                    case DatasetStates.Clustering:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformationViewModel.DatasetStates.PersistingClusters:
+                    case DatasetStates.PersistingClusters:
                         brush = Brushes.Yellow;
                         break;
                     default:
@@ -216,10 +218,10 @@ namespace MultiAlignRogue.ViewModels
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformationViewModel.DatasetStates.FindingFeatures:
+                    case DatasetStates.FindingFeatures:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformationViewModel.DatasetStates.PersistingFeatures:
+                    case DatasetStates.PersistingFeatures:
                         brush = Brushes.Yellow;
                         break;
                     default:
@@ -255,10 +257,10 @@ namespace MultiAlignRogue.ViewModels
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformationViewModel.DatasetStates.Aligning:
+                    case DatasetStates.Aligning:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformationViewModel.DatasetStates.PersistingAlignment:
+                    case DatasetStates.PersistingAlignment:
                         brush = Brushes.Yellow;
                         break;
                     default:
@@ -286,10 +288,7 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
-        public bool DoingWork
-        {
-            get { return this.IsLoadingRawData || this.IsAligning || this.IsFindingFeatures || this.IsClustering; }
-        }
+        public bool DoingWork => this.IsLoadingRawData || this.IsAligning || this.IsFindingFeatures || this.IsClustering;
 
         private double progress;
 
@@ -298,10 +297,10 @@ namespace MultiAlignRogue.ViewModels
             get => this.progress;
             set
             {
-                if (this.progress != value)
+                if (Math.Abs(this.progress - value) > float.Epsilon)
                 {
                     this.progress = value;
-                    this.RaisePropertyChanged("Progress");
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -328,10 +327,10 @@ namespace MultiAlignRogue.ViewModels
             get => Dataset.DatasetId;
             set
             {
-                if (m_information != null)
+                if (Dataset != null)
                 {
-                    m_information.DatasetId = value;
-                    RaisePropertyChanged("DatasetId");
+                    Dataset.DatasetId = value;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -341,9 +340,9 @@ namespace MultiAlignRogue.ViewModels
             get
             {
                 var name = "";
-                if (m_information != null)
+                if (Dataset != null)
                 {
-                    name = m_information.DatasetName;
+                    name = Dataset.DatasetName;
                 }
                 return name;
             }
@@ -361,14 +360,15 @@ namespace MultiAlignRogue.ViewModels
             get
             {
                 var id = 0;
-                if (m_information != null)
+                if (Dataset != null)
                 {
-                    id = m_information.DatasetId;
+                    id = Dataset.DatasetId;
                 }
                 return id;
             }
         }
 
+        // ReSharper disable once UnusedMember.Global
         public bool ShouldExpand
         {
             get => m_expand;
@@ -377,7 +377,7 @@ namespace MultiAlignRogue.ViewModels
                 if (value != m_expand)
                 {
                     m_expand = value;
-                    RaisePropertyChanged("ShouldExpand");
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -396,7 +396,9 @@ namespace MultiAlignRogue.ViewModels
             }
         }
 
+#pragma warning disable 67
         public event EventHandler Selected;
+#pragma warning restore 67
 
         private void SetDatasetState()
         {

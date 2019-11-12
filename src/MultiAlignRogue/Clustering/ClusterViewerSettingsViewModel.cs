@@ -80,20 +80,15 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the <see cref="ClusterViewerSettings" /> model for this view model.
         /// </summary>
-        public ClusterViewerSettings ClusterViewerSettings
-        {
-            get
+        public ClusterViewerSettings ClusterViewerSettings =>
+            new ClusterViewerSettings
             {
-                return new ClusterViewerSettings
-                {
-                    ShouldReducePoints = this.ShouldReducePoints,
-                    NetDivisions = this.NetDivisions,
-                    MassDivisions = this.MassDivisions,
-                    PointsPerDivision = this.PointsPerDivision,
-                    ShowDivisionLines = this.ShowDivisionLines
-                };
-            }
-        }
+                ShouldReducePoints = this.ShouldReducePoints,
+                NetDivisions = this.NetDivisions,
+                MassDivisions = this.MassDivisions,
+                PointsPerDivision = this.PointsPerDivision,
+                ShowDivisionLines = this.ShowDivisionLines
+            };
 
         /// <summary>
         /// Gets or sets a value indicating whether the points should be

@@ -612,7 +612,7 @@ namespace MultiAlignRogue
         /// <param name="isNewProject">If the project is a new one</param>
         /// <param name="datasets">Datasets to add to the project, if it is a new project.</param>
         /// <returns></returns>
-        private async Task LoadRogueProject(bool isNewProject, List<DatasetInformation> datasets = null)
+        private async Task LoadRogueProject(bool isNewProject, IReadOnlyCollection<DatasetInformation> datasets = null)
         {
             Directory.SetCurrentDirectory(this.outputDirectory);
             this.Analysis = new MultiAlignAnalysis
@@ -963,7 +963,7 @@ namespace MultiAlignRogue
 
         private async void AsyncWorkflow()
         {
-            await Task.Run(() => this.RunFullWorkflow());
+            await Task.Run(this.RunFullWorkflow);
         }
 
         private void RunFullWorkflow()

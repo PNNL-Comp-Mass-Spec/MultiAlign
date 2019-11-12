@@ -35,11 +35,6 @@ namespace MultiAlignRogue.AMTMatching
         private readonly MultiAlignAnalysis analysis;
 
         /// <summary>
-        /// All possible datasets to run AMT tag matching on.
-        /// </summary>
-        private readonly ObservableCollection<DatasetInformationViewModel> datasets;
-
-        /// <summary>
         /// A value indicating whether the total progress bar should be displayed.
         /// </summary>
         private bool shouldShowTotalProgress;
@@ -50,14 +45,13 @@ namespace MultiAlignRogue.AMTMatching
         private double totalProgress;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StacSettingsViewModel"/> class.
+        /// Constructor
         /// </summary>
         /// <param name="analysis">The analysis information to run matching on.</param>
         /// <param name="datasets">All possible datasets to run AMT tag matching on.</param>
-        public StacSettingsViewModel(MultiAlignAnalysis analysis, ObservableCollection<DatasetInformationViewModel> datasets)
+        public StacSettingsViewModel(MultiAlignAnalysis analysis, IReadOnlyCollection<DatasetInformationViewModel> datasets)
         {
             this.analysis = analysis;
-            this.datasets = datasets;
             this.DatabaseSelectionViewModel = DatabaseSelectionViewModel.Instance;
             this.PeakMatchingTypes = new ObservableCollection<PeakMatchingType>(
                                              Enum.GetValues(typeof(PeakMatchingType))
@@ -89,9 +83,9 @@ namespace MultiAlignRogue.AMTMatching
             // currently being run.
             this.PerformMatchingCommand = new RelayCommand(
                  async () => await this.PerformMatchingAsync(
-                                        this.datasets.Where(ds => ds.IsClustered)
+                                        datasets.Where(ds => ds.IsClustered)
                                                      .Where(ds => !ds.DoingWork)),
-                       () => this.datasets.Any(ds => ds.IsClustered && !ds.DoingWork));
+                       () => datasets.Any(ds => ds.IsClustered && !ds.DoingWork));
         }
 
         /// <summary>

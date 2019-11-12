@@ -153,7 +153,7 @@ namespace MultiAlignRogue.Clustering
                 MinimumY = Math.Max(minMass - (0.05 * massRange), 0),
                 MaximumY = maxMass + (0.05 * massRange),
                 TextColor = OxyColors.Gray,
-                Text = string.Format("{0} ({1} ppm)", massRange.ToString("0.###"), ppm.ToString("0.###")),
+                Text = string.Format("{0:0.###} ({1:0.###} ppm)", massRange, ppm),
                 TextOrientation = AnnotationTextOrientation.Vertical,
                 LineStyle = LineStyle.Dash,
                 Type = LineAnnotationType.Vertical,
