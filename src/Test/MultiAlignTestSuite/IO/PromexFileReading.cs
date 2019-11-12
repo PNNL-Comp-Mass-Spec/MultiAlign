@@ -85,7 +85,7 @@ namespace MultiAlignTestSuite.IO
 
             Assert.AreEqual(features.Count, promexFeatures.Count);
 
-            for (int i = 0; i < features.Count; i++)
+            for (var i = 0; i < features.Count; i++)
             {
                 Assert.AreEqual(features[i].MassMonoisotopic, promexFeatures[i].Mass);
                 ////Assert.AreEqual(features[i].Mz, promexFeatures[i].RepresentativeMz);

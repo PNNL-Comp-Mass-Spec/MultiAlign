@@ -345,13 +345,12 @@ namespace MultiAlignRogue.Clustering
                                : this.standardLayoutFilePath;
 
             var viewSettingsSerializer = new XmlSerializer(typeof(ViewSettings));
-            var viewSettings = new ViewSettings();
 
             using (var reader = File.Open(filePath, FileMode.Open))
             {
                 try
                 {
-                    viewSettings = (ViewSettings)viewSettingsSerializer.Deserialize(reader);
+                    var viewSettings = (ViewSettings)viewSettingsSerializer.Deserialize(reader);
                     this.LayoutRoot = viewSettings.ClusterViewLayoutRoot;
                     this.LayoutRoot.PropertyChanged += (o, e) => this.layoutUpdated = true;
                     this.ClusterPlotViewModel.ClusterViewerSettings = viewSettings.ClusterViewerSettings;

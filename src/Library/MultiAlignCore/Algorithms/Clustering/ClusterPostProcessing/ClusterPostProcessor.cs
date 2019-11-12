@@ -36,13 +36,13 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
         {
             var progressData = new PRISM.ProgressData(progress);
             var processedClusters = new List<T>();
-            for (int i = 0; i < data.Count; i++)
+            for (var i = 0; i < data.Count; i++)
             {
                 processedClusters.AddRange(this.ProcessCluster(data[i]));
                 progressData.Report(i++, data.Count);
             }
 
-            int id = 0;
+            var id = 0;
             processedClusters.ForEach(cluster => cluster.Id = id++);
             return processedClusters;
         }
@@ -63,10 +63,10 @@ namespace MultiAlignCore.Algorithms.Clustering.ClusterPostProcessing
             var seedCluster = new T();
             seedCluster.AddChildFeature(features[0]);
             var umcToClusterHash = new Dictionary<FeatureLight, T> { { features[0], seedCluster } };
-            for (int leftFeatureIndex = 1; leftFeatureIndex < features.Count; leftFeatureIndex++)
+            for (var leftFeatureIndex = 1; leftFeatureIndex < features.Count; leftFeatureIndex++)
             {
                 var leftFeature = features[leftFeatureIndex];
-                for (int rightFeatureIndex = 0; rightFeatureIndex < leftFeatureIndex; rightFeatureIndex++)
+                for (var rightFeatureIndex = 0; rightFeatureIndex < leftFeatureIndex; rightFeatureIndex++)
                 {
                     var rightFeature = features[rightFeatureIndex];
 

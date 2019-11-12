@@ -681,12 +681,10 @@ namespace MultiAlignCore.Algorithms
 
                 UpdateStatus("Updating database with peak matched results.");
                 var writer = new PeakMatchResultsWriter();
-                int matchedMassTags;
-                int matchedProteins;
                 writer.WritePeakMatchResults(matchResults,
                     m_config.Analysis.MassTagDatabase,
-                    out matchedMassTags,
-                    out matchedProteins);
+                    out var matchedMassTags,
+                    out var matchedProteins);
 
                 UpdateStatus(string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.",
                     matchedMassTags,

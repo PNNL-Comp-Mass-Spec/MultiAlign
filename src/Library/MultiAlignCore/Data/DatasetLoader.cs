@@ -229,9 +229,10 @@
                     continue;
                 }
 
-                var file = new InputFile();
-                file.Path = path;
-                file.FileType = type;
+                var file = new InputFile {
+                    Path = path,
+                    FileType = type
+                };
 
                 datasetList.Add(file);
             }
@@ -252,7 +253,7 @@
 
             // make sure we only show each message once.
             var combinationTypes = new HashSet<SupportedFileCombination>();
-            bool noFeatureFileFound = false;
+            var noFeatureFileFound = false;
 
             foreach (var dataset in datasets)
             {
@@ -297,8 +298,7 @@
         /// <returns></returns>
         private static bool IsValidDatasetCombo(SupportedDatasetTypes dataset1, SupportedDatasetTypes dataset2)
         {
-            List<SupportedDatasetTypes> datasets;
-            if (supportedDatasetCombinations.TryGetValue(dataset1, out datasets))
+            if (supportedDatasetCombinations.TryGetValue(dataset1, out var datasets))
             {
                 return datasets.Contains(dataset2);
             }

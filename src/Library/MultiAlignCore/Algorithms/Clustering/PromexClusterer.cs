@@ -116,7 +116,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     Id = clusterId++,
                 };
 
-                int datasetId = 0;  // Promex doesn't keep track of which dataset noise features belong to, so we need to.
+                var datasetId = 0;  // Promex doesn't keep track of which dataset noise features belong to, so we need to.
                 foreach (var feature in cluster)
                 {
                     if (feature == null)

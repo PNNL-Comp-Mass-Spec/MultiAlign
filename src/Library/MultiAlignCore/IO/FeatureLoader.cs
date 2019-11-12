@@ -180,7 +180,7 @@ namespace MultiAlignCore.IO
             var features = finder.FindFeatures(msFeatures, options, provider, progress);
 
             UpdateStatus("Filtering features.");
-            List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, provider);
+            var filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, provider);
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;
@@ -365,7 +365,7 @@ namespace MultiAlignCore.IO
         /// </summary>
         public List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, IScanSummaryProvider provider, ref DatasetInformation dataset)
         {
-            string rawPath = dataset.RawFile.Path;
+            var rawPath = dataset.RawFile.Path;
             if (rawPath == null || string.IsNullOrWhiteSpace(rawPath))
                 return msFeatures;
 
@@ -392,7 +392,7 @@ namespace MultiAlignCore.IO
 
                 foreach (var scan in scanMap.Keys)
                 {
-                    ScanSummary summary = provider.GetScanSummary(scan);
+                    var summary = provider.GetScanSummary(scan);
 
                     if (summary == null) { continue; }
                     if (summary.MsLevel == 1) { fullScans.Add(scan, true); }

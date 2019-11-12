@@ -235,20 +235,20 @@ namespace MultiAlignRogue.Clustering
         {
             this.XicPlotModel.Series.Clear();
 
-            double minX = double.PositiveInfinity;
-            double maxX = 0;
-            double minY = double.PositiveInfinity;
-            double maxY = 0;
+            var minX = double.PositiveInfinity;
+            var maxX = 0.0;
+            var minY = double.PositiveInfinity;
+            var maxY = 0.0;
 
             var chargeHash = new HashSet<int>();
 
             MSFeatureLight maxFeature = null;
 
-            int i = 0;
+            var i = 0;
             foreach (var feature in this.Features)
             {
-                var xics = this.GetXic(feature.UMCLight);
-                foreach (var xic in xics)
+                var xicList = this.GetXic(feature.UMCLight);
+                foreach (var xic in xicList)
                 {
                     if (xic.Count == 0)
                     {

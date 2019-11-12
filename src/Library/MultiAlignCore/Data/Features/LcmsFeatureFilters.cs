@@ -39,7 +39,7 @@ namespace MultiAlignCore.Data.Features
                 {
                     try
                     {
-                        double size = 0;
+                        double size;
                         if (x.ScanStart == 0)
                         {
                             //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
@@ -108,8 +108,7 @@ namespace MultiAlignCore.Data.Features
         [Obsolete("I put this functionality into ScanSummaryProvider")]
         private static double GetScanTime(IReadOnlyDictionary<int, double> scanTimes, List<int> knownScanNumbers, int scanNumber)
         {
-            double scanTime;
-            if (scanTimes.TryGetValue(scanNumber, out scanTime))
+            if (scanTimes.TryGetValue(scanNumber, out var scanTime))
                 return scanTime;
 
             // Exact match not found; find the elution time of the nearest scan

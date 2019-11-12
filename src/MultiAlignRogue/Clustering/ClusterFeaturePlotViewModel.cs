@@ -133,10 +133,10 @@ namespace MultiAlignRogue.Clustering
         private void SetAnnotations()
         {
             this.ClusterFeaturePlotModel.Annotations.Clear();
-            double minNet = double.PositiveInfinity;
-            double maxNet = 0;
-            double minMass = double.PositiveInfinity;
-            double maxMass = 0;
+            var minNet = double.PositiveInfinity;
+            var maxNet = 0.0;
+            var minMass = double.PositiveInfinity;
+            var maxMass = 0.0;
             foreach (var feature in this.Features)
             {
                 minNet = Math.Min(feature.UMCLight.NetAligned, minNet);

@@ -235,11 +235,11 @@ namespace MultiAlignRogue.Clustering
                 clusterHash.Add(new ClusterPoint(this.SelectedCluster));
             }
 
-            for (int i = 0; i < this.ClusterViewerSettings.NetDivisions; i++)
+            for (var i = 0; i < this.ClusterViewerSettings.NetDivisions; i++)
             {
                 var minNet = (float) (this.netAxis.ActualMinimum + (i*netRange));
                 var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
-                for (int j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
+                for (var j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
                 {
                     var minMass = (float) (this.massAxis.ActualMinimum + (j*massRange));
                     var maxMass = (float) (this.massAxis.ActualMinimum + ((j + 1)*massRange));
@@ -317,7 +317,7 @@ namespace MultiAlignRogue.Clustering
         {
             var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum) / this.ClusterViewerSettings.NetDivisions;
             var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.ClusterViewerSettings.MassDivisions;
-            for (int i = 0; i < this.clusterViewerSettings.NetDivisions; i++)
+            for (var i = 0; i < this.clusterViewerSettings.NetDivisions; i++)
             {
                 var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
                 var netAnnotation = new LineAnnotation
@@ -327,7 +327,7 @@ namespace MultiAlignRogue.Clustering
                     Type = LineAnnotationType.Vertical,
                 };
                 this.ClusterPlotModel.Annotations.Add(netAnnotation);
-                for (int j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
+                for (var j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
                 {
                     var maxMass = (float)(this.massAxis.ActualMinimum + ((j + 1) * massRange));
                     var massAnnotation = new LineAnnotation
