@@ -7,7 +7,6 @@ namespace LCMSWarpConsole
         static void Main(string[] args)
         {
 
-
             string optionsFilePath;
             string lcmsFeaturesFilePath;
             string aligneePMTsFilePath;
@@ -34,7 +33,6 @@ namespace LCMSWarpConsole
                 optionsFilePath = @"..\..\Data\QC_Shew_16-01_2_26July16_Pippin_16-05-01_NETAlignment\MassMatchCom_Options.txt";
                 lcmsFeaturesFilePath = @"..\..\Data\QC_Shew_16-01_2_26July16_Pippin_16-05-01_NETAlignment\MassMatchCom_LCMSFeaturesFile.txt";
                 aligneePMTsFilePath = @"..\..\Data\QC_Shew_16-01_2_26July16_Pippin_16-05-01_NETAlignment\MassMatchCom_PMTs.txt";
-
             }
 
             var processor = new clsLCMSWarpRunner();
