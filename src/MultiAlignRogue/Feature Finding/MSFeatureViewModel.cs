@@ -7,7 +7,6 @@ namespace MultiAlignRogue.Feature_Finding
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Linq;
     using System.Windows;
     using MultiAlignRogue.Utils;
@@ -80,7 +79,7 @@ namespace MultiAlignRogue.Feature_Finding
                 this.quadTrees.Add(
                     dataset.Key,
                     new QuadTree<FeaturePoint>(
-                        new RectangleF { X = 0, Y = 0, Width = 1, Height = (float)this.globalMaxMass }));
+                        new Rect { X = 0, Y = 0, Width = 1, Height = this.globalMaxMass }));
                 foreach (var feature in dataset.Value)
                 {
                     var dataset1 = dataset;
@@ -252,12 +251,12 @@ namespace MultiAlignRogue.Feature_Finding
                 {
                     var massMin = this.massAxis.ActualMinimum + (j * massStep);
                     var massMax = this.massAxis.ActualMinimum + ((j + 1) * massStep);
-                    var treeFeatures = featureTree.Query(new RectangleF
+                    var treeFeatures = featureTree.Query(new Rect
                                           {
-                                              X = (float)netMin,
-                                              Y = (float)massMin,
-                                              Height = (float)(massMax - massMin),
-                                              Width = (float)(netMax - netMin)
+                                              X = netMin,
+                                              Y = massMin,
+                                              Height = massMax - massMin,
+                                              Width = netMax - netMin
                                           });
                     var featureRange = treeFeatures.OrderByDescending(feat => feat.UMCLight.Abundance)
                                                    .Take(this.featuresPerSection);

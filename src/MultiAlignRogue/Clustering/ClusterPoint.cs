@@ -1,20 +1,19 @@
-﻿using FeatureAlignment.Data.Features;
+﻿using System.Windows;
+using FeatureAlignment.Data.Features;
 using OxyPlot.Series;
+using QuadTreeLib;
 
 namespace MultiAlignRogue.Clustering
 {
-    using System.Drawing;
-    using QuadTreeLib;
-
     public class ClusterPoint : IHasRect, IScatterPointProvider
     {
         public ClusterPoint(UMCClusterLight umcClusterLight)
         {
             this.UMCClusterLight = umcClusterLight;
-            this.Rectangle = new RectangleF
+            this.Rectangle = new Rect
             {
-                X = (float)umcClusterLight.Net,
-                Y = (float)umcClusterLight.MassMonoisotopicAligned,
+                X = umcClusterLight.Net,
+                Y = umcClusterLight.MassMonoisotopicAligned,
                 Width = 0.00001f,
                 Height = 0.01f
             };
@@ -22,7 +21,7 @@ namespace MultiAlignRogue.Clustering
 
         public UMCClusterLight UMCClusterLight { get; }
 
-        public RectangleF Rectangle { get; }
+        public Rect Rectangle { get; }
 
         public ScatterPoint GetScatterPoint()
         {

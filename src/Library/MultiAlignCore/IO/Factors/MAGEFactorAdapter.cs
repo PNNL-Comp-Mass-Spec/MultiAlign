@@ -55,10 +55,7 @@ namespace MultiAlignCore.IO.Factors
             foreach (var info in datasets)
             {
                 var query = m_sqlQuery + string.Format(" = '{0}'", info.DatasetName);
-                var reader = new MSSQLReader();
-                reader.Server = Server;
-                reader.Database = Database;
-                reader.SQLText = query;
+                var reader = new SQLReader { Server = Server, Database = Database, SQLText = query };
 
                 var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
                 pipeline.RunRoot(null);

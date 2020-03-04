@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using FeatureAlignment.Data.Features;
 using GalaSoft.MvvmLight.Command;
 using OxyPlot.Annotations;
@@ -8,15 +9,12 @@ using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
-    using System.Drawing;
-
     using GalaSoft.MvvmLight;
 
     using MultiAlignRogue.Utils;
 
     using OxyPlot;
     using OxyPlot.Axes;
-
 
     using QuadTreeLib;
 
@@ -169,8 +167,8 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void BuildClusterTree()
         {
-            var maxMass = (float) this.clusters.Max(cluster => cluster.MassMonoisotopicAligned);
-            var rectangle = new RectangleF
+            var maxMass = this.clusters.Max(cluster => cluster.MassMonoisotopicAligned);
+            var rectangle = new Rect
             {
                 X = 0,
                 Y = 0,
@@ -229,13 +227,13 @@ namespace MultiAlignRogue.Clustering
 
             for (var i = 0; i < this.ClusterViewerSettings.NetDivisions; i++)
             {
-                var minNet = (float) (this.netAxis.ActualMinimum + (i*netRange));
-                var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
+                var minNet = this.netAxis.ActualMinimum + (i*netRange);
+                var maxNet = this.netAxis.ActualMinimum + ((i + 1)*netRange);
                 for (var j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
                 {
-                    var minMass = (float) (this.massAxis.ActualMinimum + (j*massRange));
-                    var maxMass = (float) (this.massAxis.ActualMinimum + ((j + 1)*massRange));
-                    var rectangle = new RectangleF
+                    var minMass = this.massAxis.ActualMinimum + (j*massRange);
+                    var maxMass = this.massAxis.ActualMinimum + ((j + 1)*massRange);
+                    var rectangle = new Rect
                     {
                         X = minNet,
                         Y = minMass,

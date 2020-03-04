@@ -42,14 +42,10 @@ namespace MultiAlignCore.IO.MTDB
         public ICollection<InputDatabase> LoadDatabases()
         {
             m_databases = new List<InputDatabase>();
-            using (var reader = new MSSQLReader())
-            {
-                reader.Server = Server;
-                reader.Database = Database;
-                reader.SQLText = CONST_DATABASE_LOAD_QUERY;
-                var pipeline = ProcessingPipeline.Assemble("Databases", reader, this);
-                pipeline.RunRoot(null);
-            }
+            var reader = new SQLReader { Server = Server, Database = Database, SQLText = CONST_DATABASE_LOAD_QUERY };
+            var pipeline = ProcessingPipeline.Assemble("Databases", reader, this);
+            pipeline.RunRoot(null);
+
             return m_databases;
         }
 
@@ -143,14 +139,14 @@ namespace MultiAlignCore.IO.MTDB
         {
             m_folders = new List<string>();
 
-            using (var reader = new MSSQLReader())
+            var reader = new SQLReader
             {
-                reader.Server = Server;
-                reader.Database = Database;
-                reader.SQLText = string.Format(CONST_DATABASE_LOAD_QUERY, name);
-                var pipeline = ProcessingPipeline.Assemble("Results", reader, this);
-                pipeline.RunRoot(null);
-            }
+                Server = Server, Database = Database, SQLText = string.Format(CONST_DATABASE_LOAD_QUERY, name)
+            };
+
+            var pipeline = ProcessingPipeline.Assemble("Results", reader, this);
+            pipeline.RunRoot(null);
+
             return m_folders;
         }
 

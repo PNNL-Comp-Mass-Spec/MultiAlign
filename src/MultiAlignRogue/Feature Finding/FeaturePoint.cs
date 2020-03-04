@@ -1,12 +1,9 @@
-﻿using FeatureAlignment.Data.Features;
+﻿using System.Windows;
+using FeatureAlignment.Data.Features;
+using QuadTreeLib;
 
 namespace MultiAlignRogue.Feature_Finding
 {
-    using System;
-    using System.Drawing;
-    using System.Linq;
-    using QuadTreeLib;
-
     class FeaturePoint : IHasRect
     {
         public delegate float GetNet(int scan);
@@ -22,16 +19,16 @@ namespace MultiAlignRogue.Feature_Finding
 
         public UMCLight UMCLight { get; private set; }
 
-        public RectangleF Rectangle { get; private set; }
+        public Rect Rectangle { get; private set; }
 
         private void SetRectangle(bool aligned)
         {
             if (aligned)
             {
-                this.Rectangle = new RectangleF
+                this.Rectangle = new Rect
                 {
-                    X = (float)this.UMCLight.NetAligned,
-                    Y = (float)this.UMCLight.MassMonoisotopicAligned,
+                    X = this.UMCLight.NetAligned,
+                    Y = this.UMCLight.MassMonoisotopicAligned,
                     Width = 0.01f,
                     Height = 1.0f
                 };
@@ -41,10 +38,10 @@ namespace MultiAlignRogue.Feature_Finding
                 var etStart = getNet(this.UMCLight.ScanStart);
                 var etEnd = getNet(this.UMCLight.ScanEnd);
 
-                this.Rectangle = new RectangleF
+                this.Rectangle = new Rect
                 {
                     X = etStart,
-                    Y = (float)this.UMCLight.MassMonoisotopic,
+                    Y = this.UMCLight.MassMonoisotopic,
                     Width = etEnd - etStart,
                     Height = 1
                 };
