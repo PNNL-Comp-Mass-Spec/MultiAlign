@@ -34,7 +34,7 @@ namespace MultiAlignCore.IO.TextFiles
         /// <returns></returns>
         protected override Dictionary<string, int> CreateColumnMapping(TextReader textReader)
         {
-            var columnMap = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
+            var columnMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             var readLine = textReader.ReadLine();
             if (readLine == null) return columnMap;

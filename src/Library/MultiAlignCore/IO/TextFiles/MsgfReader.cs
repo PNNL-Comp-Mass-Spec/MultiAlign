@@ -9,7 +9,7 @@ namespace MultiAlignCore.IO.TextFiles
 
         protected override Dictionary<string, int> CreateColumnMapping(System.IO.TextReader textReader)
         {
-            var columnMap = new Dictionary<String, int>(StringComparer.CurrentCultureIgnoreCase);
+            var columnMap = new Dictionary<String, int>(StringComparer.OrdinalIgnoreCase);
 
             var readLine = textReader.ReadLine();
             if (readLine == null) return columnMap;

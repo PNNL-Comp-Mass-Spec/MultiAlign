@@ -13,7 +13,7 @@ namespace MultiAlignCore.IO.Features
     {
         protected override Dictionary<string, int> CreateColumnMapping(TextReader textReader)
         {
-            var columnMap = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
+            var columnMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             var dateLine = textReader.ReadLine();
             if (string.IsNullOrWhiteSpace(dateLine))

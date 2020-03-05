@@ -57,7 +57,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns>The column map as a Dictionary object</returns>
         private Dictionary<string, int> CreateColumnMapping()
         {
-            var columnMap = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
+            var columnMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             var readLine = m_umcFileReader.ReadLine();
             if (readLine == null) return columnMap;

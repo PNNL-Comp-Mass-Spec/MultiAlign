@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.TextFiles
         /// <returns>Mapping from column name to column index</returns>
         protected override Dictionary<string, int> CreateColumnMapping(TextReader textReader)
         {
-            var columnMap = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
+            var columnMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             mDataPointsLoaded = 0;
             mDataPointsSkipped = 0;
 
