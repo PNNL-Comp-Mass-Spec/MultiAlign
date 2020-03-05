@@ -23,10 +23,6 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
     [TestFixture]
     public class SpectralComparisonTests: TestBase
     {
-        /// <summary>
-        /// Maps the path to a group ID for reading multiple files.
-        /// </summary>
-        private Dictionary<string, int> m_pathMap = new Dictionary<string, int>();
 
         #region Spectra Retrieval
 
@@ -38,8 +34,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
         private MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
-            var summary = new ScanSummary();
-            var peaks = reader.GetRawSpectra(scan, 2, out summary);
+            var peaks = reader.GetRawSpectra(scan, 2, out _);
             var spectrum = new MSSpectra {Peaks = peaks};
 
             return spectrum;
