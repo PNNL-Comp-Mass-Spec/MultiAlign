@@ -20,6 +20,7 @@ namespace MultiAlignCore.IO.TextFiles
             for (var i = 0; i < numOfColumns; i++)
             {
                 var column = columnTitles[i].ToLower().Trim();
+                // ReSharper disable StringLiteralTypo
                 switch (column)
                 {
                     case "scan":
@@ -35,11 +36,14 @@ namespace MultiAlignCore.IO.TextFiles
                         columnMap.Add("Peptide.Sequence", i);
                         break;
                     case "msgfdb_specprob":
+                    case "msgfdb_specevalue":
                         columnMap.Add("Peptide.ScorePRISM", i);
                         break;
+                    case "msgfscore":
                     case "specprob":
                         columnMap.Add("Peptide.Score", i);
                         break;
+                    case "pvalue":
                     case "evalue":
                         columnMap.Add("peptide.evalue", i);
                         break;
@@ -47,6 +51,7 @@ namespace MultiAlignCore.IO.TextFiles
                         columnMap.Add("Peptide.PrecursorMz", i);
                         break;
                 }
+                // ReSharper restore StringLiteralTypo
             }
 
             return columnMap;

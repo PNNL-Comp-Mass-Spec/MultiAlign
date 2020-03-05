@@ -35,6 +35,7 @@ namespace MultiAlignCore.IO.TextFiles
                         columnMap.Add("Peptide.Sequence", i);
                         break;
                     case "msgfdb_specprob":
+                    case "msgfdb_specevalue":
                         columnMap.Add("Peptide.ScorePRISM", i);
                         break;
                     case "msgfscore":

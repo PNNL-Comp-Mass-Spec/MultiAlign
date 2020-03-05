@@ -370,6 +370,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             var i = 0;
             foreach (var x in headerData)
             {
+                // ReSharper disable StringLiteralTypo
                 switch (x.ToLower())
                 {
                     case "scan":
@@ -379,14 +380,16 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
                         peptideIndex = i;
                         break;
                     case "fdr":
+                    case "qvalue":
                         fdrIndex = i;
                         break;
                     case "msgfdb_specprob":
+                    case "msgfdb_specevalue":
                         scoreIndex = i;
                         break;
-                    default:
-                        break;
                 }
+                // ReSharper restore StringLiteralTypo
+
                 i++;
             }
 
