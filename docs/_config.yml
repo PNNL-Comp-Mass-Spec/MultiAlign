@@ -2,3 +2,6 @@
 name: MultiAlign
 description: Aligns multiple LC-MS datasets to one another after which LC-MS features can be matched to a database of peptides (typically an AMT tag database)
 url: https://pnnl-comp-mass-spec.github.io/MultiAlign/
+
+# Google Analytics
+google_analytics: G-LXXKP1N66C
